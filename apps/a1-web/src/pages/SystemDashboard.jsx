@@ -24,6 +24,8 @@ import actionLabels from '../../../../system/labels/action.json'
 import backlogLabels from '../../../../system/labels/backlog.json'
 import calendarLabels from '../../../../system/labels/calendar.json'
 import codeLabels from '../../../../system/labels/code.json'
+import canvasLabels from '../../../../system/labels/canvas.json'
+import stickyNoteLabels from '../../../../system/labels/sticky-note.json'
 import fieldLabels from '../../../../system/labels/field.json'
 import statusBarLabels from '../../../../system/labels/status-bar.json'
 import treeMenuLabels from '../../../../system/labels/tree-menu.json'
@@ -82,6 +84,8 @@ const SYSTEM_LABEL_SOURCES = [
   { name: 'Action', data: actionLabels },
   { name: 'Backlog', data: backlogLabels },
   { name: 'Calendar', data: calendarLabels },
+  { name: 'Canvas', data: canvasLabels },
+  { name: 'Sticky note', data: stickyNoteLabels },
   { name: 'Code', data: codeLabels },
   { name: 'Field', data: fieldLabels },
   { name: 'Status bar', data: statusBarLabels },

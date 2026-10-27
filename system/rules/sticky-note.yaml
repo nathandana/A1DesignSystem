@@ -1,0 +1,41 @@
+component: StickyNote
+rules:
+  - id: sticky-note-annotation-only
+    components:
+      - StickyNote
+    requirement: Use sticky notes for annotations about nearby content, not for primary content, alerts, or status messages.
+    do: Use a StickyNote for review comments, reminders, and notes that sit beside or over the content they describe.
+    dont: Put primary page content, errors, or status updates in a StickyNote; use Paragraph, Banner, Card, or Snackbar instead.
+    applies_to:
+      - content
+      - usability
+
+  - id: sticky-note-floating-layer
+    components:
+      - StickyNote
+    requirement: A floating sticky note stays on the content z-layer inside a positioned parent.
+    do: Place `placement="floating"` notes inside a container with `position: relative` (or another positioned layout) and choose a corner with `anchor`.
+    dont: Raise a sticky note above sticky chrome, menus, popovers, or dialogs with a custom z-index.
+    applies_to:
+      - layout
+      - interaction
+
+  - id: sticky-note-not-colour-only
+    components:
+      - StickyNote
+    requirement: Note colour is decorative and must not be the only way meaning is conveyed (WCAG 1.4.1).
+    do: When colour groups notes, for example by reviewer or topic, also say so in the title, author badge, or content.
+    dont: Rely on a yellow versus pink note alone to signal priority or ownership.
+    applies_to:
+      - accessibility
+      - content
+
+  - id: sticky-note-short-content
+    components:
+      - StickyNote
+    requirement: Keep notes short and glanceable.
+    do: Use a fixed or resizable `height` when a note must stay compact; longer content scrolls inside the focusable note.
+    dont: Use a sticky note for long-form content that needs headings, tables, or forms.
+    applies_to:
+      - content
+      - usability

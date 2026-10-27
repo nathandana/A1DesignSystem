@@ -90,10 +90,10 @@ export, by category:
 - **Actions & controls:** `Button` `SplitButton` `IconButton` `ActionTiles` `ActionTile` `Chip` `ChipGroup` `Switch` `SegmentedControl` `Slider` `Toolbar` `ToolbarToggle` `ToolbarButton` `ToolbarGroup` `ToolbarMenu` `ToolbarDivider` `TOOLBAR_NONE_ICON` `Accordion` `Tabs` `TabList` `Tab` `TabPanel` `Link`
 - **Navigation:** `TopHeader` `SideNav` `SideNavItem` `SideNavGroup` `BottomDrawer` `BottomSheet` `Breadcrumb` `PageNav` `TreeMenu` `Pagination`
 - **Inputs:** `TextField` `SearchField` `NumberField` `DateField` `TimeField` `PhoneField` `ZipField` `ZIP_MASKS` `CreditCardField` `TextareaField` `SelectField` `Autocomplete` `CheckboxGroup` `RadioGroup` `ChoiceGroup` `Fieldset` `FieldRow` `InlineEditable` `TokenSelect`
-- **Feedback:** `Banner` `MessageBadge` `MessageEmptyState` `Notification` `Snackbar` `SnackbarStack` `StatusBar` `CircularProgress` `StepTracker` `Stat`
+- **Feedback:** `Banner` `MessageBadge` `MessageEmptyState` `Notification` `Snackbar` `SnackbarStack` `StatusBar` `CircularProgress` `StepTracker` `Stat` `StickyNote`
 - **Overlay:** `Dialog` `Overlay` `Menu` `MenuSection` `MenuItem` `ContextMenu` `Tooltip`
 - **Recharts:** `AreaChart` `BarChart` `Chart` `ComposedChart` `FunnelChart` `LineChart` `PieChart` `RadarChart` `RadialBarChart` `SankeyChart` `ScatterChart` `SunburstChart` `TreemapChart`
-- **Data:** `DataTable` `DataTableFilters` `DefinitionList` `Calendar` `Canvas` `Node` `CanvasEdge` `NodeConnector`
+- **Data:** `DataTable` `DataTableFilters` `DefinitionList` `Calendar` `Canvas` `CanvasFrame` `Node` `CanvasEdge` `NodeConnector`
 - **Icons:** `Icon` `registerCustomIconFont` `clearCustomIconFont`
 - **Localization:** `LabelsProvider` `useLabel`
 

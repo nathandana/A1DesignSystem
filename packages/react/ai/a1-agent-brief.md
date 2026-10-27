@@ -186,6 +186,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 | `StatusBar` | — | Progress bar. | `value`, `max`, `size`, `label`, `labelPosition`, `indeterminate` |
 | `CircularProgress` | — | Ring progress. | `value`, `max`, `size`, `indeterminate`, `aria-label` |
 | `StepTracker` | — | Step position indicator. | `steps`, `current`, `align` |
+| `StickyNote` | — | Post-it style annotation (not primary content). Text via `content` (basic Markdown: **bold**, *italic*, [link](url), `- ` lists). | `title`, `author` (badge), `color` (yellow/orange/green/blue/pink/purple/grey), `width`/`height` (auto/xs/sm/md/lg/xl), `resizable` (bool), `placement` (inline/floating), `anchor` (top-start/top-end/bottom-start/bottom-end), `movable` (bool, floating only) |
 
 ### Navigation & data
 | type | C | role | key props |

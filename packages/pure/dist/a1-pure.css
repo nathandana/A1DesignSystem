@@ -1293,6 +1293,8 @@ aside > .a1-blockquote .a1-link:hover {
 .a1-textarea {
   min-block-size: calc(var(--a1-field-height, var(--component-field-default-height)) * 2.5);
   padding-block: var(--component-field-textarea-padding-block);
+  /* Multi-line text can't sit inside a pill-shaped field (Kong): cap the radius. */
+  border-radius: min(var(--a1-field-border-radius, var(--component-field-default-border-radius)), var(--component-field-textarea-max-border-radius));
 }
 
 .a1-input:hover,

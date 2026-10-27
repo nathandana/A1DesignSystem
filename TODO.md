@@ -31,7 +31,11 @@ _None._
 
 ## P1 — High
 
-_None._
+_Follow-up slices of the project canvas epic (A1-2700). Slices 1–2 shipped: pages as frames, pan/zoom/fit, drag to arrange, per-frame device, custom background, and connections derived from page links. Sorted quick wins first._
+
+- [ ] **Project canvas — multiple frames per page** `P1 · M` — place the same page at several devices side by side (e.g. XS + LG). Needs a frame id separate from the page id in `project.canvas.frames`, add/remove frame actions, and connectors from a page's links to every frame of the target page.
+- [ ] **Project canvas — add connections** `P1 · L` — draw a connection from one frame to another to create a link: choose (or create) the source element that links, then write its `/?page=` href. Canvas already has `onAddEdge` and a connect mode for nodes; extend the connect affordance to CanvasFrame. _Q: which element gets the link when a page has several candidates?_
+- [ ] **Project canvas — edit on canvas** `P1 · XL` — select and edit components inside a frame without leaving the canvas (inline editing, Configure panel for the selected node). Frames are inert iframes today; editing needs the editor canvas inside the frame and a way to hand pointer input to it while keeping canvas pan/zoom.
 
 ## P2 — Medium
 

@@ -131,7 +131,7 @@ and update this document in the same change.
 | Layout | `PageLayout`, `Section`, `Stack`, `Grid`, `GridItem`, `Cluster`, `Card`, `Bleed`, `Inset`, `Spacer`, `ButtonContainer` |
 | Typography and media | `Heading`, `Paragraph`, `Blockquote`, `Code`, `Divider`, `List`, `ListItem`, `Avatar`, `Icon`, `Figure` |
 | Actions and controls | `Link`, `Button`, `IconButton`, `Switch`, `SegmentedControl`, `Slider`, `Toolbar`, `Tabs`, `StickyActions`, `Accordion` |
-| Feedback | `Banner`, `MessageBadge`, `MessageEmptyState`, `StatusBar`, `CircularProgress`, `StepTracker` |
+| Feedback | `Banner`, `MessageBadge`, `MessageEmptyState`, `StatusBar`, `CircularProgress`, `StepTracker`, `StickyNote` |
 | Form inputs | `TextField`, `TextareaField`, `SelectField`, `NumberField`, `DateField`, `TimeField`, `PhoneField`, `ZipField`, `CreditCardField`, `Fieldset`, `FieldRow`, `CheckboxGroup`, `RadioGroup`, `ChoiceGroup` |
 | Data and navigation | `DefinitionList`, `Pagination`, `Calendar`, `Breadcrumb`, `TopHeader`, `BottomDrawer`, `PageNav`, `TreeMenu`, `DataTable` |
 | Custom content | `CustomBlock` |

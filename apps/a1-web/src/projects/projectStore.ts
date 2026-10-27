@@ -45,6 +45,32 @@ import {
  *  shared copy predates them, so a newly bundled sample isn't wiped on sign-in. */
 const SAMPLE_PROJECT_IDS = new Set([RESTAURANT_PROJECT_ID, VEHICLE_PROJECT_ID, SPORTS_BLOG_PROJECT_ID]);
 
+export interface ProjectCanvasFrame { x: number; y: number; device?: string }
+/** A sticky note on the project canvas (top-left corner in canvas px). */
+export interface ProjectCanvasNote {
+  id: string;
+  x: number;
+  y: number;
+  title?: string;
+  author?: string;
+  /** Basic Markdown, rendered by StickyNote. */
+  content?: string;
+  color?: 'yellow' | 'orange' | 'green' | 'blue' | 'pink' | 'purple' | 'grey';
+}
+export interface ProjectCanvas {
+  background?: string;
+  showConnections?: boolean;
+  /** Show the canvas dot grid (default on). */
+  showGrid?: boolean;
+  /** Clip each frame to its breakpoint's viewport height; the page scrolls inside. */
+  viewportHeight?: boolean;
+  frames?: Record<string, ProjectCanvasFrame>;
+  /** Sticky notes; a patch replaces the whole list. */
+  notes?: ProjectCanvasNote[];
+  /** Show sticky notes on the canvas (default on). */
+  showNotes?: boolean;
+}
+
 export interface Project {
   id: string;
   name: string;
@@ -65,6 +91,9 @@ export interface Project {
   hidden?: boolean;
   /** Free-form tags for filtering the Projects list (A1-2712). */
   tags?: string[];
+  /** Project canvas view layout (A1-2700): background, connections toggle and
+   *  each page frame's position (top-left, canvas px) and device preset. */
+  canvas?: ProjectCanvas;
   /** Primary navigation style for the project's prototype: an auto TopHeader
    *  (default) or a left sidebar (SideNav + TreeMenu from the page hierarchy). */
   navStyle?: 'header' | 'sidebar';
@@ -259,6 +288,18 @@ export function moveProjectToEdge(id: string, edge: 'top' | 'bottom'): Project[]
   const next = [...rest.slice(0, at), moving, ...rest.slice(at)];
   saveProjects(next);
   return next;
+}
+
+/** Merge a change into a project's canvas layout (A1-2700). Layout isn't a content
+ *  edit, so `updatedAt` is unchanged. Frame entries merge per page. */
+export function saveProjectCanvas(id: string, patch: ProjectCanvas): Project[] {
+  const projects = loadProjectsRaw().map((p) => {
+    if (p.id !== id) return p;
+    const frames = patch.frames ? { ...p.canvas?.frames, ...patch.frames } : p.canvas?.frames;
+    return { ...p, canvas: { ...p.canvas, ...patch, ...(frames ? { frames } : {}) } };
+  });
+  saveProjects(projects);
+  return projects;
 }
 
 /** Every tag used by an active project, sorted for display. */
@@ -816,7 +857,7 @@ export function exportAllText(): string {
     '',
   ];
   for (const proj of projects) {
-    parts.push(`##### PROJECT ${JSON.stringify({ id: proj.id, name: proj.name, description: proj.description ?? '', icon: proj.icon ?? 'folder', theme: proj.theme ?? '', archived: proj.archived ?? false, favorite: proj.favorite ?? false, hidden: proj.hidden ?? false, tags: proj.tags ?? [], navStyle: proj.navStyle ?? '', published: proj.published ?? null, figmaPageLinks: proj.figmaPageLinks ?? [] })} #####`);
+    parts.push(`##### PROJECT ${JSON.stringify({ id: proj.id, name: proj.name, description: proj.description ?? '', icon: proj.icon ?? 'folder', theme: proj.theme ?? '', archived: proj.archived ?? false, favorite: proj.favorite ?? false, hidden: proj.hidden ?? false, tags: proj.tags ?? [], canvas: proj.canvas ?? null, navStyle: proj.navStyle ?? '', published: proj.published ?? null, figmaPageLinks: proj.figmaPageLinks ?? [] })} #####`);
     for (const pg of loadPages(proj.id)) {
       parts.push(`===== PAGE ${JSON.stringify({ id: pg.id, title: pg.title, icon: pg.icon ?? '', description: pg.description ?? '', parentId: pg.parentId, order: pg.order })} =====`);
       parts.push(resolvePageJson(pg.id) ?? '(no content)');
@@ -846,7 +887,7 @@ export function importAllText(
   let pageCount = 0;
 
   projMatches.forEach((pm, i) => {
-    let meta: { id: string; name?: string; description?: string; icon?: string; theme?: string; archived?: boolean; favorite?: boolean; hidden?: boolean; tags?: string[]; navStyle?: string; published?: Project['published'] | null; figmaPageLinks?: FigmaPageSyncLink[] };
+    let meta: { id: string; name?: string; description?: string; icon?: string; theme?: string; archived?: boolean; favorite?: boolean; hidden?: boolean; tags?: string[]; canvas?: ProjectCanvas | null; navStyle?: string; published?: Project['published'] | null; figmaPageLinks?: FigmaPageSyncLink[] };
     try { meta = JSON.parse(pm[1]); } catch { return; }
     importedProjectIds.add(meta.id);
     const bodyStart = (pm.index ?? 0) + pm[0].length;
@@ -900,6 +941,7 @@ export function importAllText(
       favorite: (meta.favorite ?? existing?.favorite) || undefined,
       hidden: (meta.hidden ?? existing?.hidden) || undefined,
       tags: tags?.length ? tags : undefined,
+      canvas: meta.canvas ?? existing?.canvas ?? undefined,
       navStyle: (meta.navStyle as Project['navStyle']) || existing?.navStyle || undefined,
       published: meta.published ?? existing?.published ?? undefined,
       figmaPageLinks: Array.isArray(meta.figmaPageLinks) ? meta.figmaPageLinks : existing?.figmaPageLinks,

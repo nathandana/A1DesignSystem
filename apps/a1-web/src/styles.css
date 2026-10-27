@@ -2056,3 +2056,34 @@ span.a1-web-sem-pick { display: inline-block; }
   aspect-ratio: 16 / 9;
   background: var(--semantic-color-surface-inverse);
 }
+
+/* A1-2700 — project canvas view. Full bleed below the project header: its
+   height is measured to the bottom of the window (inline style); its tools live
+   in the Canvas's expandable controls. Page previews are inert iframes — the
+   canvas handles interaction. */
+.a1-web-project-canvas {
+  position: relative;
+  min-block-size: calc(var(--base-spacing-192) * 2);
+  overflow: hidden;
+}
+
+/* Full screen: the canvas covers the viewport above the app chrome (portaled to
+   <body>; the app root is inert meanwhile). Menus still open above it. */
+.a1-web-project-canvas--fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: var(--semantic-z-pinned);
+  block-size: 100dvh;
+}
+
+.a1-web-page-preview-frame {
+  display: block;
+  border: 0;
+  pointer-events: none;
+}
+
+/* Sticky Note configurator: a floating note positions in its nearest positioned
+   ancestor (the component's contract), so the preview stage supplies one. */
+.a1-web-sticky-note-stage {
+  position: relative;
+}

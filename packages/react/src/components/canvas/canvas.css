@@ -14,6 +14,7 @@
 .a1-canvas--page    { background: var(--semantic-color-surface-page); }
 .a1-canvas--panel   { background: var(--semantic-color-surface-panel); }
 .a1-canvas--raised  { background: var(--semantic-color-surface-raised); }
+.a1-canvas--custom  { background: var(--a1-canvas-surface-custom); }
 .a1-canvas--inverse { background: var(--semantic-color-surface-inverse); color: var(--semantic-color-text-inverse); }
 
 /* Grid overlay */
@@ -48,6 +49,10 @@
   pointer-events: none;
   overflow: visible;
 }
+/* Connectors keep the same on-screen thickness at any zoom (A1-2700). */
+.a1-canvas__edges path {
+  vector-effect: non-scaling-stroke;
+}
 .a1-canvas__edge {
   stroke: var(--semantic-color-border-default);
   stroke-width: 1.5;
@@ -71,7 +76,7 @@
 }
 .a1-canvas__edge-label {
   fill: var(--semantic-color-text-muted);
-  font-size: 11px;
+  font-size: calc(11px / var(--a1-canvas-zoom, 1));
   font-family: inherit;
   pointer-events: none;
 }
@@ -245,9 +250,45 @@
   background: var(--semantic-color-surface-panel);
 }
 
+/* A pressed controlsAction (toggle) uses the selected-surface treatment. */
+.a1-canvas__ctrl--pressed {
+  background: var(--semantic-color-action-surface);
+  color: var(--semantic-color-text-default);
+}
+
 .a1-canvas__ctrl:focus-visible {
   outline: 2px solid var(--component-button-focus-ring);
   outline-offset: 1px;
+}
+
+/* Expandable controls (controlsExpandable): the zoom row (plus controlsActions)
+   always shows and the toggle ends it; open, controlsContent sits above. */
+.a1-canvas__controls-row {
+  display: flex;
+  align-items: center;
+  gap: var(--base-spacing-2);
+}
+
+.a1-canvas__controls--open {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-items: end;
+  align-items: center;
+  row-gap: var(--base-spacing-4);
+  max-inline-size: calc(100% - 2 * var(--base-spacing-16));
+}
+
+.a1-canvas__controls-extra {
+  grid-column: 1 / -1;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+}
+
+.a1-canvas__controls-toggle {
+  width: auto;
+  min-width: var(--base-spacing-32);
+  gap: var(--base-spacing-2);
+  padding-inline: var(--base-spacing-4);
 }
 
 .a1-canvas__zoom-pct {
@@ -330,3 +371,95 @@
     transition: none;
   }
 }
+
+/* ── CanvasFrame ─────────────────────────────────────────────────────────────
+   A titled container for arbitrary content (e.g. a rendered page), positioned
+   at its top-left corner in canvas space. Frame chrome — the title, its gap,
+   focus outline, border and selection ring — divides by the canvas zoom
+   (--a1-canvas-zoom, set on the viewport) so it stays the same on-screen size
+   at any zoom level; the content scales with the canvas. */
+.a1-canvas__frame {
+  --a1-canvas-frame-scale: var(--a1-canvas-zoom, 1);
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--component-canvas-frame-title-gap) / var(--a1-canvas-frame-scale));
+  pointer-events: auto;
+}
+
+.a1-canvas__frame-title {
+  align-self: flex-start;
+  max-inline-size: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--semantic-color-text-muted);
+  font-family: var(--component-paragraph-font-family);
+  font-size: calc(var(--semantic-font-size-body-sm) / var(--a1-canvas-frame-scale));
+  text-align: start;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.a1-canvas__frame-title:focus-visible {
+  outline: calc(var(--component-button-focus-ring-width) / var(--a1-canvas-frame-scale)) solid var(--component-button-focus-ring);
+  outline-offset: calc(var(--component-button-focus-ring-offset) / var(--a1-canvas-frame-scale));
+}
+
+.a1-canvas__frame--selected .a1-canvas__frame-title {
+  color: var(--semantic-color-action-background);
+}
+
+.a1-canvas__frame-body {
+  overflow: hidden;
+  border: calc(var(--component-canvas-frame-border-width) / var(--a1-canvas-frame-scale)) solid var(--semantic-color-border-subtle);
+  background: var(--semantic-color-surface-page);
+}
+
+/* scrollable + height: the body scrolls content taller than the frame. */
+.a1-canvas__frame-body--scrollable {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.a1-canvas__frame-body--scrollable:focus-visible {
+  outline: calc(var(--component-button-focus-ring-width) / var(--a1-canvas-frame-scale)) solid var(--component-button-focus-ring);
+  outline-offset: calc(var(--component-button-focus-ring-offset) / var(--a1-canvas-frame-scale));
+}
+
+.a1-canvas__frame--selected .a1-canvas__frame-body {
+  box-shadow: 0 0 0 calc(var(--component-canvas-frame-selected-ring-width) / var(--a1-canvas-frame-scale)) var(--semantic-color-action-background);
+}
+
+/* plain: no frame chrome — for content that brings its own surface (e.g. a
+   StickyNote). The title stays the keyboard handle (select, arrow-key nudge)
+   but is only shown while focused, above the content so nothing shifts. */
+.a1-canvas__frame--plain {
+  gap: 0;
+}
+.a1-canvas__frame--plain .a1-canvas__frame-body {
+  overflow: visible;
+  border: 0;
+  background: none;
+}
+.a1-canvas__frame--plain .a1-canvas__frame-title {
+  position: absolute;
+  inset-block-end: 100%;
+  inset-inline-start: 0;
+  max-inline-size: none;
+  margin-block-end: calc(var(--component-canvas-frame-title-gap) / var(--a1-canvas-frame-scale));
+}
+.a1-canvas__frame--plain .a1-canvas__frame-title:not(:focus-visible) {
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.a1-canvas__frame--draggable,
+.a1-canvas__frame--draggable .a1-canvas__frame-title { cursor: grab; }
+.a1-canvas__frame--draggable:active,
+.a1-canvas__frame--draggable:active .a1-canvas__frame-title { cursor: grabbing; }

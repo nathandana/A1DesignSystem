@@ -372,7 +372,7 @@ A popover portaled to `<body>` (the current `Menu` / `Autocomplete` pattern) is 
 
 For elements that stay in the normal layer — sticky chrome, pinned app furniture, non-modal popovers, and toasts that never overlap a modal — use this single ordered scale. **Never invent values between the bands.**
 
-| Layer | Token (target) | Value | Used by |
+| Layer | Token | Value | Used by |
 |-------|----------------|-------|---------|
 | Content | — | `auto` / 0 | In-flow content. Component-**local** `-1` / `0` / `1` for internal stacking only (Tabs active tab, Slider thumb, Heading mark) — never part of the global scale |
 | Sticky | `--semantic-z-sticky` | 100 | TopHeader, PageLayout sticky regions |
@@ -380,6 +380,8 @@ For elements that stay in the normal layer — sticky chrome, pinned app furnitu
 | Popover | `--semantic-z-popover` | 1000 | Menu, Autocomplete listbox, Select, ContextMenu, tooltips |
 | Modal (non-top-layer) | `--semantic-z-modal` | 1100 | Any modal that does **not** use the native top layer |
 | Toast | `--semantic-z-toast` | 1200 | Snackbar / toasts, above non-top-layer modals |
+
+The `--semantic-z-*` tokens exist as of A1-2700 (`system/tokens/z-index.json`); the a1-web full-screen project canvas is their first consumer (`--semantic-z-pinned`). Migrating the components below onto them is still to do.
 
 ### Current state (audit) — June 2026
 

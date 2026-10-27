@@ -296,6 +296,11 @@
   --semantic-font-line-height-body: 1.5em;
   --semantic-font-line-height-heading: 1.25em;
   --semantic-font-line-height-display: 1.125em;
+  --semantic-z-sticky: 100; /** Sticky chrome in the normal layer: TopHeader, PageLayout sticky regions. */
+  --semantic-z-pinned: 200; /** Pinned app chrome and full-viewport app surfaces: SideNav overlay, BottomDrawer, PageNav, StickyActions, a full-screen canvas. */
+  --semantic-z-popover: 1000; /** Normal-layer popovers: Menu, Autocomplete listbox, Select, ContextMenu, tooltips. */
+  --semantic-z-modal: 1100; /** Modals that do not use the native top layer. */
+  --semantic-z-toast: 1200; /** Snackbars and toasts, above non-top-layer modals. */
   --component-button-primary-background: #7c3aed;
   --component-button-primary-background-hover: #5916b5;
   --component-button-primary-background-pressed: #230051;
@@ -527,6 +532,9 @@
   --component-calendar-cell-size-compact: 1.5rem;
   --component-calendar-cell-border-radius: 0.25rem;
   --component-canvas-node-size: 5rem;
+  --component-canvas-frame-title-gap: 0.5rem; /** Space between a CanvasFrame's title and its body. */
+  --component-canvas-frame-border-width: 1px; /** Hairline border around a CanvasFrame body. */
+  --component-canvas-frame-selected-ring-width: 0.1875rem; /** Width of the action-colour ring around a selected CanvasFrame body. */
   --component-card-padding: 1rem;
   --component-card-border-radius: 0.5rem;
   --component-card-border-width: 1px;
@@ -825,6 +833,7 @@
   --component-field-textarea-padding-block: 0.625rem;
   --component-field-textarea-padding-block-comfortable: 0.875rem;
   --component-field-textarea-padding-block-compact: 0.375rem;
+  --component-field-textarea-max-border-radius: 0.75rem; /** Upper bound on a multi-line textarea's corner radius, so themes with pill-shaped fields (Kong) keep rounded rectangles for multi-line text. */
   --component-field-credit-card-badge-font-weight: 600;
   --component-field-credit-card-badge-border-width: 1px;
   --component-field-credit-card-badge-padding-block: 0.125rem;
@@ -1410,6 +1419,29 @@
   --component-sticky-actions-padding-inline: 1rem;
   --component-sticky-actions-gap: 0.75rem;
   --component-sticky-actions-z-index: 150;
+  --component-sticky-note-color-yellow: var(--base-color-highlighted-200); /** Classic sticky-note paper. Runtime reference so theme ramp overrides apply. */
+  --component-sticky-note-color-orange: var(--base-color-warn-200); /** Runtime reference so theme ramp overrides apply. */
+  --component-sticky-note-color-green: var(--base-color-success-200); /** Runtime reference so theme ramp overrides apply. */
+  --component-sticky-note-color-blue: var(--base-color-info-200); /** Runtime reference so theme ramp overrides apply. */
+  --component-sticky-note-color-pink: var(--base-color-error-200); /** Runtime reference so theme ramp overrides apply. */
+  --component-sticky-note-color-purple: var(--base-color-accent-200); /** Runtime reference so theme ramp overrides apply. */
+  --component-sticky-note-color-grey: var(--base-color-neutral-100); /** Runtime reference so theme ramp overrides apply. */
+  --component-sticky-note-foreground: var(--base-color-neutral-900); /** Text on every note colour — paper stays light in dark mode, so this does not flip. */
+  --component-sticky-note-muted-foreground: var(--base-color-neutral-700); /** Secondary text on a note; one step darker than the page's muted text to keep AA on tinted paper. */
+  --component-sticky-note-raised-surface: var(--base-color-neutral-0); /** Surface for raised elements on a note, such as the author badge. */
+  --component-sticky-note-subtle-border: var(--base-color-neutral-200);
+  --component-sticky-note-padding: 1rem;
+  --component-sticky-note-gap: 0.5rem;
+  --component-sticky-note-border-radius: 0.25rem;
+  --component-sticky-note-strip-height: 0.5rem; /** The slightly darker adhesive strip along the top edge. */
+  --component-sticky-note-floating-offset: 1rem; /** Inset from the positioned parent's corner for placement="floating". */
+  --component-sticky-note-size-xs: 10rem;
+  --component-sticky-note-size-sm: 13rem;
+  --component-sticky-note-size-md: 16rem;
+  --component-sticky-note-size-lg: 20rem;
+  --component-sticky-note-size-xl: 24rem;
+  --component-sticky-note-z-index: 1; /** Content layer: a floating note sits above in-flow content but below sticky chrome (semantic.z.sticky) and popovers. */
+  --component-sticky-note-shadow: var(--semantic-shadow-lg); /** Note elevation: one step above cards so notes read as lifted off the page. Follows theme shadow overrides. */
   --component-switch-morph-scale-standard: 1;
   --component-switch-morph-scale-small: 2;
   --component-switch-morph-scale-medium: 3;

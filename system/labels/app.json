@@ -3843,6 +3843,594 @@
             "zh": "添加标签",
             "ar": "إضافة وسوم"
           }
+        },
+        "canvasView": {
+          "$type": "string",
+          "$value": "Canvas",
+          "$description": "Project overview view option that shows every page as a frame on an infinite canvas.",
+          "locale": {
+            "es": "Lienzo",
+            "fr": "Canevas",
+            "de": "Canvas",
+            "pt": "Tela",
+            "ja": "キャンバス",
+            "zh": "画布",
+            "ar": "لوحة"
+          }
+        },
+        "canvasLabel": {
+          "$type": "string",
+          "$value": "Project canvas",
+          "$description": "Accessible name of the project canvas, where each page is a frame.",
+          "locale": {
+            "es": "Lienzo del proyecto",
+            "fr": "Canevas du projet",
+            "de": "Projekt-Canvas",
+            "pt": "Tela do projeto",
+            "ja": "プロジェクトキャンバス",
+            "zh": "项目画布",
+            "ar": "لوحة المشروع"
+          }
+        },
+        "canvasToolbar": {
+          "$type": "string",
+          "$value": "Canvas",
+          "$description": "Accessible name of the toolbar above the project canvas.",
+          "locale": {
+            "es": "Lienzo",
+            "fr": "Canevas",
+            "de": "Canvas",
+            "pt": "Tela",
+            "ja": "キャンバス",
+            "zh": "画布",
+            "ar": "لوحة"
+          }
+        },
+        "canvasConnections": {
+          "$type": "string",
+          "$value": "Connections",
+          "$description": "Toggle on the project canvas that shows arrows for links between pages.",
+          "locale": {
+            "es": "Conexiones",
+            "fr": "Connexions",
+            "de": "Verbindungen",
+            "pt": "Conexões",
+            "ja": "接続",
+            "zh": "连接",
+            "ar": "الروابط"
+          }
+        },
+        "canvasBreakpoint": {
+          "$type": "string",
+          "$value": "Breakpoint",
+          "$description": "Project canvas control and frame menu group for the breakpoint a page frame renders at (XS–XL).",
+          "locale": {
+            "es": "Punto de ruptura",
+            "fr": "Point de rupture",
+            "de": "Breakpoint",
+            "pt": "Ponto de interrupção",
+            "ja": "ブレークポイント",
+            "zh": "断点",
+            "ar": "نقطة التوقف"
+          }
+        },
+        "canvasBreakpointAll": {
+          "$type": "string",
+          "$value": "Breakpoint for all pages",
+          "$description": "Accessible name of the project canvas breakpoint control when no frame is selected, so it sets every frame.",
+          "locale": {
+            "es": "Punto de ruptura de todas las páginas",
+            "fr": "Point de rupture de toutes les pages",
+            "de": "Breakpoint für alle Seiten",
+            "pt": "Ponto de interrupção de todas as páginas",
+            "ja": "すべてのページのブレークポイント",
+            "zh": "所有页面的断点",
+            "ar": "نقطة التوقف لجميع الصفحات"
+          }
+        },
+        "canvasDuplicatePage": {
+          "$type": "string",
+          "$value": "Duplicate page",
+          "$description": "Project canvas frame menu item that copies the page and places the copy at the end of the row.",
+          "locale": {
+            "es": "Duplicar página",
+            "fr": "Dupliquer la page",
+            "de": "Seite duplizieren",
+            "pt": "Duplicar página",
+            "ja": "ページを複製",
+            "zh": "复制页面",
+            "ar": "تكرار الصفحة"
+          }
+        },
+        "canvasOpenInWindow": {
+          "$type": "string",
+          "$value": "Open in new window",
+          "$description": "Project canvas frame menu item that opens that page in the standalone prototype in a new window.",
+          "locale": {
+            "es": "Abrir en una ventana nueva",
+            "fr": "Ouvrir dans une nouvelle fenêtre",
+            "de": "In neuem Fenster öffnen",
+            "pt": "Abrir em nova janela",
+            "ja": "新しいウィンドウで開く",
+            "zh": "在新窗口中打开",
+            "ar": "فتح في نافذة جديدة"
+          }
+        },
+        "canvasDeletePage": {
+          "$type": "string",
+          "$value": "Delete page…",
+          "$description": "Project canvas frame menu item that opens a confirmation dialog to delete the page.",
+          "locale": {
+            "es": "Eliminar página…",
+            "fr": "Supprimer la page…",
+            "de": "Seite löschen …",
+            "pt": "Excluir página…",
+            "ja": "ページを削除…",
+            "zh": "删除页面…",
+            "ar": "حذف الصفحة…"
+          }
+        },
+        "canvasDeleteTitle": {
+          "$type": "string",
+          "$value": "Delete page?",
+          "$description": "Title of the confirmation dialog for deleting a page from the project canvas.",
+          "locale": {
+            "es": "¿Eliminar la página?",
+            "fr": "Supprimer la page ?",
+            "de": "Seite löschen?",
+            "pt": "Excluir a página?",
+            "ja": "ページを削除しますか？",
+            "zh": "删除页面？",
+            "ar": "حذف الصفحة؟"
+          }
+        },
+        "canvasDeleteBody": {
+          "$type": "string",
+          "$value": "This page will be permanently deleted.",
+          "$description": "Confirmation dialog text when deleting a page with no subpages from the project canvas.",
+          "locale": {
+            "es": "Esta página se eliminará de forma permanente.",
+            "fr": "Cette page sera définitivement supprimée.",
+            "de": "Diese Seite wird endgültig gelöscht.",
+            "pt": "Esta página será excluída permanentemente.",
+            "ja": "このページは完全に削除されます。",
+            "zh": "此页面将被永久删除。",
+            "ar": "سيتم حذف هذه الصفحة نهائيًا."
+          }
+        },
+        "canvasDeleteBodySubpages": {
+          "$type": "string",
+          "$value": "This page and its subpages will be permanently deleted.",
+          "$description": "Confirmation dialog text when deleting a page that has subpages from the project canvas.",
+          "locale": {
+            "es": "Esta página y sus subpáginas se eliminarán de forma permanente.",
+            "fr": "Cette page et ses sous-pages seront définitivement supprimées.",
+            "de": "Diese Seite und ihre Unterseiten werden endgültig gelöscht.",
+            "pt": "Esta página e suas subpáginas serão excluídas permanentemente.",
+            "ja": "このページとそのサブページは完全に削除されます。",
+            "zh": "此页面及其子页面将被永久删除。",
+            "ar": "سيتم حذف هذه الصفحة وصفحاتها الفرعية نهائيًا."
+          }
+        },
+        "canvasDeleteConfirm": {
+          "$type": "string",
+          "$value": "Delete",
+          "$description": "Destructive button that confirms deleting a page from the project canvas.",
+          "locale": {
+            "es": "Eliminar",
+            "fr": "Supprimer",
+            "de": "Löschen",
+            "pt": "Excluir",
+            "ja": "削除",
+            "zh": "删除",
+            "ar": "حذف"
+          }
+        },
+        "canvasDeleteCancel": {
+          "$type": "string",
+          "$value": "Cancel",
+          "$description": "Button that closes the delete page dialog on the project canvas without deleting.",
+          "locale": {
+            "es": "Cancelar",
+            "fr": "Annuler",
+            "de": "Abbrechen",
+            "pt": "Cancelar",
+            "ja": "キャンセル",
+            "zh": "取消",
+            "ar": "إلغاء"
+          }
+        },
+        "canvasFullScreen": {
+          "$type": "string",
+          "$value": "Full screen",
+          "$description": "Project canvas toggle that lets the canvas take over the whole window, hiding the app header, project header and side panel.",
+          "locale": {
+            "es": "Pantalla completa",
+            "fr": "Plein écran",
+            "de": "Vollbild",
+            "pt": "Tela cheia",
+            "ja": "全画面",
+            "zh": "全屏",
+            "ar": "ملء الشاشة"
+          }
+        },
+        "canvasAutoArrange": {
+          "$type": "string",
+          "$value": "Auto arrange",
+          "$description": "Project canvas control that aligns page frames into a sitemap of the page hierarchy: top-level pages in the first row, each page's children below it.",
+          "locale": {
+            "es": "Organizar automáticamente",
+            "fr": "Organiser automatiquement",
+            "de": "Automatisch anordnen",
+            "pt": "Organizar automaticamente",
+            "ja": "自動整列",
+            "zh": "自动排列",
+            "ar": "ترتيب تلقائي"
+          }
+        },
+        "canvasViewportHeight": {
+          "$type": "string",
+          "$value": "Viewport height",
+          "$description": "Project canvas toggle that limits each page frame to its breakpoint's standard viewport height, with the page scrolling inside the frame.",
+          "locale": {
+            "es": "Altura de la ventana",
+            "fr": "Hauteur de la fenêtre",
+            "de": "Viewport-Höhe",
+            "pt": "Altura da janela",
+            "ja": "ビューポートの高さ",
+            "zh": "视口高度",
+            "ar": "ارتفاع إطار العرض"
+          }
+        },
+        "canvasAddNote": {
+          "$type": "string",
+          "$value": "Add sticky note",
+          "$description": "Project canvas control that adds a sticky note in view.",
+          "locale": {
+            "es": "Añadir nota adhesiva",
+            "fr": "Ajouter une note adhésive",
+            "de": "Haftnotiz hinzufügen",
+            "pt": "Adicionar nota adesiva",
+            "ja": "付箋を追加",
+            "zh": "添加便签",
+            "ar": "إضافة ملاحظة لاصقة"
+          }
+        },
+        "canvasAddNoteHere": {
+          "$type": "string",
+          "$value": "Add sticky note here",
+          "$description": "Project canvas context-menu item that adds a sticky note where the user right-clicked.",
+          "locale": {
+            "es": "Añadir nota adhesiva aquí",
+            "fr": "Ajouter une note adhésive ici",
+            "de": "Haftnotiz hier hinzufügen",
+            "pt": "Adicionar nota adesiva aqui",
+            "ja": "ここに付箋を追加",
+            "zh": "在此处添加便签",
+            "ar": "إضافة ملاحظة لاصقة هنا"
+          }
+        },
+        "canvasNotes": {
+          "$type": "string",
+          "$value": "Notes",
+          "$description": "Project canvas toggle that shows or hides sticky notes.",
+          "locale": {
+            "es": "Notas",
+            "fr": "Notes",
+            "de": "Notizen",
+            "pt": "Notas",
+            "ja": "付箋",
+            "zh": "便签",
+            "ar": "الملاحظات"
+          }
+        },
+        "canvasEditNote": {
+          "$type": "string",
+          "$value": "Edit note",
+          "$description": "Project canvas context-menu item that edits a sticky note.",
+          "locale": {
+            "es": "Editar nota",
+            "fr": "Modifier la note",
+            "de": "Notiz bearbeiten",
+            "pt": "Editar nota",
+            "ja": "付箋を編集",
+            "zh": "编辑便签",
+            "ar": "تعديل الملاحظة"
+          }
+        },
+        "canvasDeleteNote": {
+          "$type": "string",
+          "$value": "Delete note",
+          "$description": "Project canvas context-menu item that deletes a sticky note.",
+          "locale": {
+            "es": "Eliminar nota",
+            "fr": "Supprimer la note",
+            "de": "Notiz löschen",
+            "pt": "Excluir nota",
+            "ja": "付箋を削除",
+            "zh": "删除便签",
+            "ar": "حذف الملاحظة"
+          }
+        },
+        "canvasNoteDetails": {
+          "$type": "string",
+          "$value": "Note details…",
+          "$description": "Project canvas context-menu item that opens a sticky note's details (title, author, content and colour).",
+          "locale": {
+            "es": "Detalles de la nota…",
+            "fr": "Détails de la note…",
+            "de": "Notizdetails …",
+            "pt": "Detalhes da nota…",
+            "ja": "付箋の詳細…",
+            "zh": "便签详情…",
+            "ar": "تفاصيل الملاحظة…"
+          }
+        },
+        "canvasNoteEditTitle": {
+          "$type": "string",
+          "$value": "Edit sticky note",
+          "$description": "Title of the dialog that edits a sticky note on the project canvas.",
+          "locale": {
+            "es": "Editar nota adhesiva",
+            "fr": "Modifier la note adhésive",
+            "de": "Haftnotiz bearbeiten",
+            "pt": "Editar nota adesiva",
+            "ja": "付箋を編集",
+            "zh": "编辑便签",
+            "ar": "تعديل الملاحظة اللاصقة"
+          }
+        },
+        "canvasNoteTitle": {
+          "$type": "string",
+          "$value": "Title",
+          "$description": "Sticky note dialog field: the note's title.",
+          "locale": {
+            "es": "Título",
+            "fr": "Titre",
+            "de": "Titel",
+            "pt": "Título",
+            "ja": "タイトル",
+            "zh": "标题",
+            "ar": "العنوان"
+          }
+        },
+        "canvasNoteAuthor": {
+          "$type": "string",
+          "$value": "Author",
+          "$description": "Sticky note dialog field: who wrote the note.",
+          "locale": {
+            "es": "Autor",
+            "fr": "Auteur",
+            "de": "Autor",
+            "pt": "Autor",
+            "ja": "作成者",
+            "zh": "作者",
+            "ar": "الكاتب"
+          }
+        },
+        "canvasNoteContent": {
+          "$type": "string",
+          "$value": "Note",
+          "$description": "Sticky note dialog field: the note's content.",
+          "locale": {
+            "es": "Nota",
+            "fr": "Note",
+            "de": "Notiz",
+            "pt": "Nota",
+            "ja": "メモ",
+            "zh": "便签内容",
+            "ar": "الملاحظة"
+          }
+        },
+        "canvasNoteContentHint": {
+          "$type": "string",
+          "$value": "Supports Markdown: **bold**, *italic*, [links](https://…) and “- ” lists.",
+          "$description": "Hint under the sticky note content field describing the supported Markdown.",
+          "locale": {
+            "es": "Admite Markdown: **negrita**, *cursiva*, [enlaces](https://…) y listas con «- ».",
+            "fr": "Prend en charge le Markdown : **gras**, *italique*, [liens](https://…) et listes avec « - ».",
+            "de": "Unterstützt Markdown: **fett**, *kursiv*, [Links](https://…) und Listen mit „- “.",
+            "pt": "Aceita Markdown: **negrito**, *itálico*, [links](https://…) e listas com “- ”.",
+            "ja": "Markdown に対応：**太字**、*斜体*、[リンク](https://…)、「- 」で始まるリスト。",
+            "zh": "支持 Markdown：**粗体**、*斜体*、[链接](https://…) 和以“- ”开头的列表。",
+            "ar": "يدعم Markdown: **غامق** و*مائل* و[روابط](https://…) وقوائم تبدأ بـ «- »."
+          }
+        },
+        "canvasNoteColor": {
+          "$type": "string",
+          "$value": "Color",
+          "$description": "Sticky note dialog field: the paper colour.",
+          "locale": {
+            "es": "Color",
+            "fr": "Couleur",
+            "de": "Farbe",
+            "pt": "Cor",
+            "ja": "色",
+            "zh": "颜色",
+            "ar": "اللون"
+          }
+        },
+        "canvasNoteSave": {
+          "$type": "string",
+          "$value": "Save note",
+          "$description": "Button that saves a sticky note on the project canvas.",
+          "locale": {
+            "es": "Guardar nota",
+            "fr": "Enregistrer la note",
+            "de": "Notiz speichern",
+            "pt": "Salvar nota",
+            "ja": "付箋を保存",
+            "zh": "保存便签",
+            "ar": "حفظ الملاحظة"
+          }
+        },
+        "canvasNoteCancel": {
+          "$type": "string",
+          "$value": "Cancel",
+          "$description": "Button that closes the sticky note dialog without saving.",
+          "locale": {
+            "es": "Cancelar",
+            "fr": "Annuler",
+            "de": "Abbrechen",
+            "pt": "Cancelar",
+            "ja": "キャンセル",
+            "zh": "取消",
+            "ar": "إلغاء"
+          }
+        },
+        "canvasGrid": {
+          "$type": "string",
+          "$value": "Grid",
+          "$description": "Project canvas toggle that shows or hides the background dot grid.",
+          "locale": {
+            "es": "Cuadrícula",
+            "fr": "Grille",
+            "de": "Raster",
+            "pt": "Grade",
+            "ja": "グリッド",
+            "zh": "网格",
+            "ar": "الشبكة"
+          }
+        },
+        "canvasColorMode": {
+          "$type": "string",
+          "$value": "Color mode",
+          "$description": "Accessible name of the project canvas control that sets the color mode pages render in.",
+          "locale": {
+            "es": "Modo de color",
+            "fr": "Mode de couleur",
+            "de": "Farbmodus",
+            "pt": "Modo de cor",
+            "ja": "カラーモード",
+            "zh": "颜色模式",
+            "ar": "وضع الألوان"
+          }
+        },
+        "canvasColorModeLight": {
+          "$type": "string",
+          "$value": "Light",
+          "$description": "Project canvas color mode option: render pages in light mode.",
+          "locale": {
+            "es": "Claro",
+            "fr": "Clair",
+            "de": "Hell",
+            "pt": "Claro",
+            "ja": "ライト",
+            "zh": "浅色",
+            "ar": "فاتح"
+          }
+        },
+        "canvasColorModeDark": {
+          "$type": "string",
+          "$value": "Dark",
+          "$description": "Project canvas color mode option: render pages in dark mode.",
+          "locale": {
+            "es": "Oscuro",
+            "fr": "Sombre",
+            "de": "Dunkel",
+            "pt": "Escuro",
+            "ja": "ダーク",
+            "zh": "深色",
+            "ar": "داكن"
+          }
+        },
+        "canvasColorModeAuto": {
+          "$type": "string",
+          "$value": "Auto",
+          "$description": "Project canvas color mode option: pages follow the app's color mode.",
+          "locale": {
+            "es": "Automático",
+            "fr": "Auto",
+            "de": "Automatisch",
+            "pt": "Automático",
+            "ja": "自動",
+            "zh": "自动",
+            "ar": "تلقائي"
+          }
+        },
+        "canvasEditPage": {
+          "$type": "string",
+          "$value": "Edit page",
+          "$description": "Project canvas action that opens the selected page in the editor.",
+          "locale": {
+            "es": "Editar página",
+            "fr": "Modifier la page",
+            "de": "Seite bearbeiten",
+            "pt": "Editar página",
+            "ja": "ページを編集",
+            "zh": "编辑页面",
+            "ar": "تعديل الصفحة"
+          }
+        },
+        "canvasBackground": {
+          "$type": "string",
+          "$value": "Canvas background",
+          "$description": "Field label for the project canvas background colour.",
+          "locale": {
+            "es": "Fondo del lienzo",
+            "fr": "Arrière-plan du canevas",
+            "de": "Canvas-Hintergrund",
+            "pt": "Fundo da tela",
+            "ja": "キャンバスの背景",
+            "zh": "画布背景",
+            "ar": "خلفية اللوحة"
+          }
+        },
+        "canvasBackgroundPanel": {
+          "$type": "string",
+          "$value": "Panel",
+          "$description": "Canvas background option: the panel surface colour.",
+          "locale": {
+            "es": "Panel",
+            "fr": "Panneau",
+            "de": "Panel",
+            "pt": "Painel",
+            "ja": "パネル",
+            "zh": "面板",
+            "ar": "لوحة جانبية"
+          }
+        },
+        "canvasBackgroundPage": {
+          "$type": "string",
+          "$value": "Page",
+          "$description": "Canvas background option: the page surface colour.",
+          "locale": {
+            "es": "Página",
+            "fr": "Page",
+            "de": "Seite",
+            "pt": "Página",
+            "ja": "ページ",
+            "zh": "页面",
+            "ar": "الصفحة"
+          }
+        },
+        "canvasBackgroundRaised": {
+          "$type": "string",
+          "$value": "Raised",
+          "$description": "Canvas background option: the raised surface colour.",
+          "locale": {
+            "es": "Elevado",
+            "fr": "Surélevé",
+            "de": "Erhöht",
+            "pt": "Elevado",
+            "ja": "浮き上がり",
+            "zh": "凸起",
+            "ar": "مرتفع"
+          }
+        },
+        "canvasBackgroundCustom": {
+          "$type": "string",
+          "$value": "Custom",
+          "$description": "Canvas background option that opens a dialog to choose a custom colour.",
+          "locale": {
+            "es": "Personalizado",
+            "fr": "Personnalisé",
+            "de": "Benutzerdefiniert",
+            "pt": "Personalizado",
+            "ja": "カスタム",
+            "zh": "自定义",
+            "ar": "مخصّص"
+          }
         }
       },
       "backlog": {

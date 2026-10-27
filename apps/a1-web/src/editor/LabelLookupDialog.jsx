@@ -6,6 +6,8 @@ import actionJson from '../../../../system/labels/action.json'
 import backlogJson from '../../../../system/labels/backlog.json'
 import calendarJson from '../../../../system/labels/calendar.json'
 import codeJson from '../../../../system/labels/code.json'
+import canvasJson from '../../../../system/labels/canvas.json'
+import stickyNoteJson from '../../../../system/labels/sticky-note.json'
 import fieldJson from '../../../../system/labels/field.json'
 import overlayJson from '../../../../system/labels/overlay.json'
 import statusBarJson from '../../../../system/labels/status-bar.json'
@@ -38,6 +40,8 @@ const SYSTEM_LABEL_OPTIONS = [
   ...flattenSystemLabels(backlogJson.label.backlog, 'backlog'),
   ...flattenSystemLabels(calendarJson.label.calendar, 'calendar'),
   ...flattenSystemLabels(codeJson.label.code, 'code'),
+  ...flattenSystemLabels(canvasJson.label.canvas, 'canvas'),
+  ...flattenSystemLabels(stickyNoteJson.label.stickyNote, 'stickyNote'),
   ...flattenSystemLabels(fieldJson.label.field, 'field'),
   ...flattenSystemLabels(overlayJson.label.overlay, 'overlay'),
   ...flattenSystemLabels(statusBarJson.label.statusBar, 'statusBar'),

@@ -2,6 +2,8 @@ import appLabels       from '../../../../system/labels/app.json'
 import actionLabels    from '../../../../system/labels/action.json'
 import backlogLabels   from '../../../../system/labels/backlog.json'
 import calendarLabels  from '../../../../system/labels/calendar.json'
+import canvasLabels    from '../../../../system/labels/canvas.json'
+import stickyNoteLabels from '../../../../system/labels/sticky-note.json'
 import customBlockLabels from '../../../../system/labels/custom-block.json'
 import codeLabels      from '../../../../system/labels/code.json'
 import fieldLabels     from '../../../../system/labels/field.json'
@@ -14,6 +16,8 @@ export const SYSTEM_LABELS = {
     ...actionLabels.label,
     ...backlogLabels.label,
     ...calendarLabels.label,
+    ...canvasLabels.label,
+    ...stickyNoteLabels.label,
     ...codeLabels.label,
     ...customBlockLabels.label,
     ...fieldLabels.label,
