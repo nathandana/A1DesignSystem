@@ -7,6 +7,7 @@
 import type { A11yDefinition, ComponentNode, ComponentProps, PageDefinition } from './pageTypes';
 import { utilityClassesFor } from './utilityRegistry';
 import { responsiveVisibilityClasses } from './responsiveVisibility.js';
+import { applyZoneItemProps, patternAreaProp } from './patternAreas';
 
 function escapeAttr(value: string): string {
   return value.replace(/"/g, '&quot;');
@@ -51,17 +52,47 @@ function propsWithUtilityClass(node: ComponentNode): ComponentProps | undefined 
   };
 }
 
-function serializeNode(node: ComponentNode, indent: string): string {
-  const open = `${indent}<${node.type}${serializeProps(propsWithUtilityClass(node), node.a11y, node.type === 'CustomBlock')}`;
+// A Button with `split` is a SplitButton in code: its `menuActions` data
+// becomes the `actions` prop.
+function exportedNode(node: ComponentNode): ComponentNode {
+  if (node.type !== 'Button' || node.props?.split !== true) return node;
+  const { split: _split, menuActions, as: _as, href: _href, fullWidth: _fullWidth, ...props } = node.props;
+  const actions = (Array.isArray(menuActions) ? menuActions : []).map((action, index) => ({ id: `action-${index + 1}`, ...action }));
+  return { ...node, type: 'SplitButton' as ComponentNode['type'], props: { ...props, actions } };
+}
+
+function serializeChildren(children: ComponentNode[], indent: string): string {
+  return children.map((child) => serializeNode(child, indent)).join('\n');
+}
+
+function serializeNode(rawNode: ComponentNode, indent: string): string {
+  const node = exportedNode(rawNode);
+  // A blank area (Slot) is editor structure, not a component: a pattern zone's
+  // items become the pattern prop it renders into, and any other area's items
+  // are written in place.
+  const zoneProps: string[] = [];
+  const children: ComponentNode[] = [];
+  for (const child of node.children ?? []) {
+    if (child.type !== 'Slot') { children.push(child); continue; }
+    const area = child.props?.area as string | undefined;
+    const prop = patternAreaProp(node.type, area);
+    const items = applyZoneItemProps(node.type, area, child.children ?? []);
+    if (prop && items.length) {
+      zoneProps.push(`${prop}={(\n${indent}    <>\n${serializeChildren(items, `${indent}      `)}\n${indent}    </>\n${indent}  )}`);
+    } else if (!prop) {
+      children.push(...items);
+    }
+  }
+  const zoneTokens = zoneProps.length ? `\n${indent}  ${zoneProps.join(`\n${indent}  `)}\n${indent}` : '';
+  const open = `${indent}<${node.type}${serializeProps(propsWithUtilityClass(node), node.a11y, node.type === 'CustomBlock')}${zoneTokens}`;
   const text = node.content?.fallback;
-  const children = node.children ?? [];
 
   if (!text && children.length === 0) {
     return `${open} />`;
   }
   const inner = text
     ? `${indent}  ${escapeText(text)}`
-    : children.map((child) => serializeNode(child, `${indent}  `)).join('\n');
+    : serializeChildren(children, `${indent}  `);
   return `${open}>\n${inner}\n${indent}</${node.type}>`;
 }
 

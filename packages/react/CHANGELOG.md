@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **ButtonContainer — button groups and split buttons** (A1-2720) — a ButtonContainer nested directly in another now joins its parent's row, so a group of related buttons flows and stacks with the other actions instead of taking a row of its own. A SplitButton stretches to full width when the container stacks, like a Button. New story: Button Container › Nested group and split button.
+
+- **Page title pattern** (A1-2720) — the first first-class pattern. `PageTitle` composes Section, Breadcrumb, Heading, Paragraph and ButtonContainer into the standard top band of a page: `breadcrumb`, `eyebrow`, `title` (always the page's h1, + `titleId`), `description`, a `meta` row of badges always directly below the title (badge data or composed badges), `actions` (composed Button, SplitButton, Link, IconButton, ButtonContainer group, Toolbar or SegmentedControl, or `{ kind, label, variant, icon, href }` data rendered as a Button, Link or IconButton — at most one primary button, always rendered last; `normalizePageTitleActions` exposes the rule) and `contentWidth`. The panel surface, title scale and heading level are locked, so patterns stay minimally configurable. Props only — no CSS or tokens of its own. Patterns live in `src/patterns/` and are also available at `@gtivr4/a1-design-system-react/patterns/*`. A composed `Button` or `SplitButton` with no `variant` counts as the primary action (its default), so it is moved last too; a `ButtonContainer` group stays together, with its primary at its end and the group last.
+
 ## 0.33.0 — 2026-10-12
 
 - **Package export documentation** — included `codeLineIndent` in the shipped guidelines export inventory.

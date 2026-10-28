@@ -51,7 +51,8 @@
     "./utilities/spacing.css": "./src/utilities/spacing.css",
     "./utilities/width.css": "./src/utilities/width.css",
     "./utilities/sr-only.css": "./src/utilities/sr-only.css",
-    "./components/*": "./src/components/*"
+    "./components/*": "./src/components/*",
+    "./patterns/*": "./src/patterns/*"
   },
   "publishConfig": {
     "access": "public"

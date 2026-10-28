@@ -146,6 +146,16 @@ packages/react/src/components/{component-name}/
 
 The same checklist applies when updating or removing an existing component (steps 1–12 as relevant). Never ship an API change, feature addition, or feature removal without updating documentation, stories, examples, the **a1-web configurator**, and relevant changelogs in the same change.
 
+### Adding a pattern
+
+A pattern is a first-class composition of A1 components (A1-2720) — Page title is the reference. It is treated like a component, with a shorter checklist because it owns no CSS or tokens:
+
+1. **React** — Create `packages/react/src/patterns/{name}/` with the JSX (`"use client"`, props only — no CSS file; any visual value belongs on a composed component), `.d.ts` and stories titled `Patterns/{Name}`. Keep it **minimally configurable**: open the content and the few layout props that must vary; lock structure, surface, scale and heading level inside the pattern, and enforce composition rules (such as one primary action) in code rather than documentation. Export it from the package root and list it under **Patterns** in `guidelines/Guidelines.md`.
+2. **Rules** — Add `system/rules/{name}.yaml` and register it in `apps/a1-web/src/pages/components/data.js` `ruleSourceFiles`.
+3. **a1-web Pattern library** — Add the entry to `apps/a1-web/src/pages/patterns/data.js` (category + `{ id, icon, title, body }`, status, coverage, related components, keywords, history), a configurator at `apps/a1-web/src/pages/components/detail/{name}.jsx` (Preview, Controls with switch-linked helper text, Snippet, and `jsonType` / `toJson` / `fromJson`) registered in `detail/index.js`, and rows in `generatedPropTables.js`.
+4. **Editor** — Add the type to `pageTypes.ts`, the component to `componentRegistry.ts`, an entry under the **Patterns** group in `componentCatalog.ts`, the props bridge in `EditorPropsPanel.jsx` and an icon in `EditorSidebar.jsx`. Declare the pattern's editable areas once in `editor/patternAreas.ts` — a **zone** (`zone: { allow, max, prop, rules }`: what it accepts, how many, the pattern prop its items render into, and the rule sentence people see) or an open area — and build its `Slot` children with `patternAreaSlot()` in both the catalog entry and the configurator's `toJson`. The renderer, Add panel, locks, Layers tree and placeholders read the registry and the node's `zone` flag, so nothing else needs wiring per pattern.
+5. **Docs** — Add it to the **Patterns** section of `components.md` (the MCP index reads that section), the page-definition standard and agent brief, the maintenance log and the changelogs.
+
 ### Adding a prop to an existing component (mandatory steps)
 
 Every time a new prop is added to any component, all of the following must happen **in the same change** — no exceptions:

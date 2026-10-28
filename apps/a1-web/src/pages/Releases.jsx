@@ -7,6 +7,7 @@ import {
   Code,
   Heading,
   Link,
+  PageTitle,
   Paragraph,
   SearchField,
   Section,
@@ -24,7 +25,6 @@ import reactNativeReleaseNotesMarkdown from '../../../../packages/react-native/C
 import webComponentsReleaseNotesMarkdown from '../../../../packages/web-components/CHANGELOG.md?raw'
 import pureReleaseNotesMarkdown from '../../../../packages/pure/CHANGELOG.md?raw'
 import eslintPluginReleaseNotesMarkdown from '../../../../packages/eslint-plugin-a1/CHANGELOG.md?raw'
-import { PageTitleArea } from './PageTitleArea.jsx'
 
 const RELEASE_NOTE_MODES = {
   simplified: 'simplified',
@@ -597,10 +597,10 @@ export function Releases({
 
   if (releases.length === 0) {
     return (
-      <PageTitleArea
+      <PageTitle
         contentWidth="md"
-        headingId="releases-heading"
-        breadcrumbItems={[
+        titleId="releases-heading"
+        breadcrumb={[
           { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
           { label: 'Releases' },
         ]}
@@ -630,10 +630,10 @@ export function Releases({
 
   return (
     <>
-      <PageTitleArea
+      <PageTitle
         contentWidth="md"
-        headingId="releases-heading"
-        breadcrumbItems={[
+        titleId="releases-heading"
+        breadcrumb={[
           { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
           { label: 'Releases' },
         ]}

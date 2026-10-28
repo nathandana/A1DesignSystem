@@ -2,11 +2,11 @@ import {
   DataTable,
   Heading,
   MessageBadge,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
-import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function Code({ children }) {
@@ -217,9 +217,9 @@ const ISSUE_ROWS = [
 export function PropConventionsFoundationPage({ onNavigate }) {
   return (
     <>
-      <PageTitleArea
-        headingId="prop-conventions-heading"
-        breadcrumbItems={getFoundationBreadcrumbItems('Prop conventions', onNavigate)}
+      <PageTitle
+        titleId="prop-conventions-heading"
+        breadcrumb={getFoundationBreadcrumbItems('Prop conventions', onNavigate)}
         title="Prop conventions"
         description="Shared prop names and value sets used consistently across A1 components. When building or extending a component, use these contracts — do not introduce synonyms or alternative scales."
       />

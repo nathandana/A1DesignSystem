@@ -32,6 +32,7 @@ import {
 import { EditorSelectionBoundary } from "./EditorSelectionBoundary";
 import type { ComponentType as ReactComponentType } from "react";
 import { componentRegistry } from "./componentRegistry";
+import { applyZoneItemProps, patternAreaProp } from "./patternAreas";
 import { resolveSrc as resolveImageSrc } from "../lib/imageLibrary";
 import { useImageLibraryVersion } from "./ImageLibraryContext";
 import { useDataSources } from "../data/DataSourcesContext.jsx";
@@ -58,6 +59,56 @@ import type {
   PageLayoutDefinition,
   PageRegion,
 } from "./pageTypes";
+
+// Components whose text lives in several named props rather than one text
+// child. In editor mode each listed string prop is wrapped in a seamless
+// InlineEditable so it can be edited in place (patterns: the Page title band).
+const INLINE_TEXT_PROPS_BY_TYPE: Record<string, { prop: string; multiline?: boolean }[]> = {
+  PageTitle: [{ prop: "eyebrow" }, { prop: "title" }, { prop: "description", multiline: true }],
+};
+
+// A pattern's zones (see patternAreas.ts): a child `Slot` whose `props.area`
+// names a zone renders its items into the pattern prop the registry maps it to
+// instead of into the children. The Page title's Actions zone feeds its action
+// row; the open Content area stays in children.
+
+// The Page title's action rule, applied to the Actions zone's nodes so the edit
+// canvas, preview and prototype agree with the React pattern: one primary at
+// most, shown last. A Button (or split button) with no variant renders primary.
+// A ButtonContainer is a button group: it stays together, its primary moves to
+// its end and the group is shown last.
+function isPrimaryActionNode(node: ComponentNode): boolean {
+  return node.type === "Button" && ((node.props?.variant as string | undefined) ?? "primary") === "primary";
+}
+
+function demoteActionNode(node: ComponentNode): ComponentNode {
+  return { ...node, props: { ...node.props, variant: "secondary" } };
+}
+
+function orderPageTitleActionNodes(nodes: ComponentNode[]): ComponentNode[] {
+  let primary: ComponentNode | null = null;
+  const rest: ComponentNode[] = [];
+  for (const node of nodes) {
+    if (node.type === "ButtonContainer") {
+      let groupPrimary: ComponentNode | null = null;
+      const groupRest: ComponentNode[] = [];
+      for (const item of node.children ?? []) {
+        if (!isPrimaryActionNode(item)) groupRest.push(item);
+        else if (primary || groupPrimary) groupRest.push(demoteActionNode(item));
+        else groupPrimary = item;
+      }
+      const group = { ...node, children: groupPrimary ? [...groupRest, groupPrimary] : groupRest };
+      if (groupPrimary) primary = group;
+      else rest.push(group);
+    } else if (isPrimaryActionNode(node)) {
+      if (primary) rest.push(demoteActionNode(node));
+      else primary = node;
+    } else {
+      rest.push(node);
+    }
+  }
+  return primary ? [...rest, primary] : rest;
+}
 
 const CONTAINER_TYPES = new Set([
   "Section",
@@ -181,6 +232,8 @@ interface EditorModeContextValue {
   onDetachPattern: (nodeId: string) => void;
   onCreatePattern: (nodeId: string) => void;
   /** Edit the text of a child-item field (e.g. a DefinitionList item's label/value). */
+  /** A named text prop edited in place (see INLINE_TEXT_PROPS_BY_TYPE). */
+  onPropTextChange: (nodeId: string, prop: string, value: string) => void;
   onItemTextChange: (
     nodeId: string,
     index: number,
@@ -226,12 +279,18 @@ const EditorModeContext = createContext<EditorModeContextValue>({
   getNodeInfo: () => ({ isFirst: false, isLast: false, hasChildren: false }),
   onRequestAddChild: () => {},
   onItemTextChange: () => {},
+  onPropTextChange: () => {},
   activeItem: null,
   onItemSelect: () => {},
   onCatalogDrop: () => {},
   onDetachPattern: () => {},
   onCreatePattern: () => {},
 });
+
+/** Whether the nearest RenderPageDefinition is in editor mode (editor adapters use it). */
+export function useEditorMode(): boolean {
+  return useContext(EditorModeContext).enabled;
+}
 
 /**
  * Look a component up by name. Typed against `string` (not `ComponentType`) so
@@ -501,6 +560,7 @@ function RenderNode({
     getNodeInfo,
     onRequestAddChild,
     onItemTextChange,
+    onPropTextChange,
     activeItem,
     onItemSelect,
     onCatalogDrop,
@@ -648,8 +708,27 @@ function RenderNode({
     textContent !== undefined
   )
     childList.push(textContent);
+  const areaElements: Record<string, ReactNode> = {};
   if (!VOID_CHILD_TYPES.has(node.type) && node.children?.length) {
-    node.children.forEach((child) =>
+    node.children.forEach((child) => {
+      const area = child.type === "Slot" ? (child.props?.area as string | undefined) : undefined;
+      const propName = patternAreaProp(node.type, area);
+      if (propName) {
+        const items = child.children ?? [];
+        if (items.length) {
+          const fixed = applyZoneItemProps(node.type, area, items);
+          const ordered = node.type === "PageTitle" && propName === "actions" ? orderPageTitleActionNodes(fixed) : fixed;
+          areaElements[propName] = ordered.map((item) => (
+            <RenderNode key={item.id} node={item} inPattern={childInPattern} patternActive={childPatternActive} />
+          ));
+        } else if (editorMode) {
+          // Empty: the slot's own placeholder is the drop target; previews show nothing.
+          areaElements[propName] = (
+            <RenderNode key={child.id} node={child} inPattern={childInPattern} patternActive={childPatternActive} />
+          );
+        }
+        return;
+      }
       childList.push(
         <RenderNode
           key={child.id}
@@ -657,14 +736,15 @@ function RenderNode({
           inPattern={childInPattern}
           patternActive={childPatternActive}
         />,
-      ),
-    );
+      );
+    });
   }
 
   const resolvedProps: Record<string, unknown> = {
     ...(node.props ?? {}),
     ...a11yProps(node.a11y),
   };
+  Object.assign(resolvedProps, areaElements);
   resolvedProps.className = mergeClassNames(
     resolvedProps.className,
     utilityClassesFor(node.type, node.utilities),
@@ -682,6 +762,25 @@ function RenderNode({
     const v = resolvedProps[k];
     if (typeof v === "string" && hasBinding(v))
       resolvedProps[k] = resolveBinding(v, datasetMap, rowContext);
+  }
+
+  // Named text props edit in place in the editor (a locked prop stays read-only;
+  // a data-bound value is shown resolved and edited from the Configure panel).
+  if (editorMode) {
+    for (const { prop, multiline } of INLINE_TEXT_PROPS_BY_TYPE[node.type] ?? []) {
+      const value = node.props?.[prop];
+      const propLocked = enforceLocks && !!node.lock?.props?.includes(prop);
+      if (typeof value !== "string" || propLocked || hasBinding(value)) continue;
+      resolvedProps[prop] = (
+        <InlineEditable
+          seamless
+          multiline={multiline}
+          value={value}
+          onChange={(v) => onPropTextChange(node.id, prop, v)}
+          aria-label={`Edit ${prop}`}
+        />
+      );
+    }
   }
 
   // Data-driven collections: fill an array prop (items/options) from a dataset.
@@ -1057,6 +1156,7 @@ export function RenderPageDefinition({
   getNodeInfo,
   onRequestAddChild,
   onItemTextChange,
+  onPropTextChange,
   activeItem = null,
   onItemSelect,
   onCatalogDrop,
@@ -1107,6 +1207,7 @@ export function RenderPageDefinition({
     field: string,
     value: string,
   ) => void;
+  onPropTextChange?: (nodeId: string, prop: string, value: string) => void;
   activeItem?: { nodeId: string; index: number } | null;
   onItemSelect?: (nodeId: string, index: number) => void;
 }) {
@@ -1158,6 +1259,7 @@ export function RenderPageDefinition({
     getNodeInfo: getNodeInfo ?? noInfo,
     onRequestAddChild: onRequestAddChild ?? (() => {}),
     onItemTextChange: onItemTextChange ?? (() => {}),
+    onPropTextChange: onPropTextChange ?? (() => {}),
     activeItem,
     onItemSelect: onItemSelect ?? (() => {}),
     onCatalogDrop: onCatalogDrop ?? (() => {}),

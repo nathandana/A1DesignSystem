@@ -3,6 +3,7 @@ import {
   Code,
   DataTable,
   Heading,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
@@ -22,7 +23,6 @@ import { componentCategories } from '../components/data.js'
 import '../../../../../packages/react/src/utilities/spacing.css'
 import '../../../../../packages/react/src/utilities/width.css'
 import '../../../../../packages/react/src/utilities/sr-only.css'
-import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
@@ -143,9 +143,9 @@ export function UtilitiesFoundationPage({ onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        headingId="utilities-heading"
-        breadcrumbItems={getFoundationBreadcrumbItems('Utilities', onNavigate)}
+      <PageTitle
+        titleId="utilities-heading"
+        breadcrumb={getFoundationBreadcrumbItems('Utilities', onNavigate)}
         title="Utilities"
         description={(
           <>

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import {
   DataTable,
   Heading,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
@@ -14,7 +15,6 @@ import actionJson   from '../../../../../system/labels/action.json'
 import calendarJson from '../../../../../system/labels/calendar.json'
 import codeJson     from '../../../../../system/labels/code.json'
 import fieldJson    from '../../../../../system/labels/field.json'
-import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 // ── Locale column definitions (canonical order) ──────────────────────────────
@@ -98,9 +98,9 @@ export function LabelsFoundationPage({ onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        headingId="labels-heading"
-        breadcrumbItems={getFoundationBreadcrumbItems('Labels', onNavigate)}
+      <PageTitle
+        titleId="labels-heading"
+        breadcrumb={getFoundationBreadcrumbItems('Labels', onNavigate)}
         title="Labels"
         description="Localised UI strings used by A1 components. Every user-facing string is a named label with a default English value and optional per-locale translations. Use the locale selector in Settings to preview translations across the site."
       />

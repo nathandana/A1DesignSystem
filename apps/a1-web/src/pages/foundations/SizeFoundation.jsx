@@ -2,6 +2,7 @@ import {
   DataTable,
   DataTableFilters,
   Heading,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
@@ -12,7 +13,6 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { useState } from 'react'
 import tokens from '../../../../../build/json/tokens.json'
-import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
@@ -101,9 +101,9 @@ export function SizeFoundationPage({ onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        headingId="size-heading"
-        breadcrumbItems={getFoundationBreadcrumbItems('Size', onNavigate)}
+      <PageTitle
+        titleId="size-heading"
+        breadcrumb={getFoundationBreadcrumbItems('Size', onNavigate)}
         title="Size"
         description="Spacing, dimensions, density, component sizing, and layout rhythm. Every spacing value in A1 traces back to a base spacing token — nothing is hardcoded."
       />

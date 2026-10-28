@@ -61,6 +61,8 @@ export type ComponentType =
   | "StatusBar"
   | "CircularProgress"
   | "StepTracker"
+  // Patterns (A1-2720)
+  | "PageTitle"
   | "TextField"
   | "SearchField"
   | "TextareaField"

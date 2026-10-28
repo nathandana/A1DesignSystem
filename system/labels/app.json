@@ -58,6 +58,34 @@
             "ar": "البحث في المكونات"
           }
         },
+        "patterns": {
+          "$type": "string",
+          "$value": "Patterns",
+          "$description": "Top-level navigation group for the Pattern library (first-class patterns).",
+          "locale": {
+            "es": "Patrones",
+            "fr": "Modèles",
+            "de": "Muster",
+            "pt": "Modelos",
+            "ja": "パターン",
+            "zh": "模式",
+            "ar": "الأنماط"
+          }
+        },
+        "searchPatterns": {
+          "$type": "string",
+          "$value": "Search patterns",
+          "$description": "Accessible label for the search field in the Pattern library sidebar.",
+          "locale": {
+            "es": "Buscar patrones",
+            "fr": "Rechercher des modèles",
+            "de": "Muster suchen",
+            "pt": "Pesquisar padrões",
+            "ja": "パターンを検索",
+            "zh": "搜索模式",
+            "ar": "البحث في الأنماط"
+          }
+        },
         "editors": {
           "$type": "string",
           "$value": "Editors",
@@ -228,6 +256,20 @@
             "ja": "始める",
             "zh": "开始使用",
             "ar": "البدء"
+          }
+        },
+        "patternLibrary": {
+          "$type": "string",
+          "$value": "Pattern library",
+          "$description": "Pattern library overview page title (first-class patterns, /pattern-library).",
+          "locale": {
+            "es": "Biblioteca de patrones",
+            "fr": "Bibliothèque de modèles",
+            "de": "Musterbibliothek",
+            "pt": "Biblioteca de padrões",
+            "ja": "パターンライブラリ",
+            "zh": "模式库",
+            "ar": "مكتبة الأنماط"
           }
         },
         "patterns": {
@@ -3013,7 +3055,261 @@
           }
         }
       },
+      "components": {
+        "all": {
+          "$type": "string",
+          "$value": "All components",
+          "$description": "Components sidebar: the overview entry at the top of the tree.",
+          "locale": {
+            "es": "Todos los componentes",
+            "fr": "Tous les composants",
+            "de": "Alle Komponenten",
+            "pt": "Todos os componentes",
+            "ja": "すべてのコンポーネント",
+            "zh": "所有组件",
+            "ar": "جميع المكونات"
+          }
+        },
+        "tree": {
+          "$type": "string",
+          "$value": "Component tree",
+          "$description": "Accessible name of the Components sidebar tree.",
+          "locale": {
+            "es": "Árbol de componentes",
+            "fr": "Arborescence des composants",
+            "de": "Komponentenbaum",
+            "pt": "Árvore de componentes",
+            "ja": "コンポーネントツリー",
+            "zh": "组件树",
+            "ar": "شجرة المكونات"
+          }
+        },
+        "listView": {
+          "$type": "string",
+          "$value": "Component list view",
+          "$description": "Accessible name of the Components sidebar view toolbar (tree or A–Z).",
+          "locale": {
+            "es": "Vista de lista de componentes",
+            "fr": "Vue en liste des composants",
+            "de": "Komponentenlistenansicht",
+            "pt": "Visualização em lista de componentes",
+            "ja": "コンポーネントのリスト表示",
+            "zh": "组件列表视图",
+            "ar": "عرض قائمة المكونات"
+          }
+        },
+        "statusHeading": {
+          "$type": "string",
+          "$value": "Component status",
+          "$description": "Heading of the status card on a component page overview.",
+          "locale": {
+            "es": "Estado del componente",
+            "fr": "État du composant",
+            "de": "Komponentenstatus",
+            "pt": "Status do componente",
+            "ja": "コンポーネントのステータス",
+            "zh": "组件状态",
+            "ar": "حالة المكون"
+          }
+        },
+        "relatedHeading": {
+          "$type": "string",
+          "$value": "Related components",
+          "$description": "Heading of the related components list on a component or pattern page.",
+          "locale": {
+            "es": "Componentes relacionados",
+            "fr": "Composants associés",
+            "de": "Verwandte Komponenten",
+            "pt": "Componentes relacionados",
+            "ja": "関連コンポーネント",
+            "zh": "相关组件",
+            "ar": "المكونات ذات الصلة"
+          }
+        },
+        "inventoryTitle": {
+          "$type": "string",
+          "$value": "Component inventory",
+          "$description": "Components overview page title.",
+          "locale": {
+            "es": "Inventario de componentes",
+            "fr": "Inventaire des composants",
+            "de": "Komponenteninventar",
+            "pt": "Inventário de componentes",
+            "ja": "コンポーネント一覧",
+            "zh": "组件清单",
+            "ar": "جرد المكونات"
+          }
+        },
+        "inventoryDescription": {
+          "$type": "string",
+          "$value": "Full list of documented components, route targets, update dates, and package availability.",
+          "$description": "Description under the Components overview title.",
+          "locale": {
+            "es": "Lista completa de componentes documentados, rutas, fechas de actualización y disponibilidad por paquete.",
+            "fr": "Liste complète des composants documentés, de leurs routes, dates de mise à jour et disponibilité par paquet.",
+            "de": "Vollständige Liste der dokumentierten Komponenten mit Routen, Aktualisierungsdaten und Paketverfügbarkeit.",
+            "pt": "Lista completa de componentes documentados, rotas, datas de atualização e disponibilidade por pacote.",
+            "ja": "ドキュメント化されたコンポーネントの全リスト。ルート、更新日、パッケージごとの提供状況を含みます。",
+            "zh": "已记录组件的完整列表，包括路由、更新日期和各软件包的可用性。",
+            "ar": "قائمة كاملة بالمكونات الموثقة ومساراتها وتواريخ تحديثها وتوفرها في الحزم."
+          }
+        },
+        "tableCaption": {
+          "$type": "string",
+          "$value": "All A1 components",
+          "$description": "Caption of the Components overview table.",
+          "locale": {
+            "es": "Todos los componentes de A1",
+            "fr": "Tous les composants A1",
+            "de": "Alle A1-Komponenten",
+            "pt": "Todos os componentes A1",
+            "ja": "すべての A1 コンポーネント",
+            "zh": "所有 A1 组件",
+            "ar": "جميع مكونات A1"
+          }
+        },
+        "column": {
+          "$type": "string",
+          "$value": "Component",
+          "$description": "Column header naming the component in the Components overview table.",
+          "locale": {
+            "es": "Componente",
+            "fr": "Composant",
+            "de": "Komponente",
+            "pt": "Componente",
+            "ja": "コンポーネント",
+            "zh": "组件",
+            "ar": "المكون"
+          }
+        },
+        "categoriesLabel": {
+          "$type": "string",
+          "$value": "Categories",
+          "$description": "Overview stat: number of categories in a catalogue.",
+          "locale": {
+            "es": "Categorías",
+            "fr": "Catégories",
+            "de": "Kategorien",
+            "pt": "Categorias",
+            "ja": "カテゴリ",
+            "zh": "类别",
+            "ar": "الفئات"
+          }
+        },
+        "ruleFilesLabel": {
+          "$type": "string",
+          "$value": "Rule files",
+          "$description": "Overview stat: number of design rule files.",
+          "locale": {
+            "es": "Archivos de reglas",
+            "fr": "Fichiers de règles",
+            "de": "Regeldateien",
+            "pt": "Arquivos de regras",
+            "ja": "ルールファイル",
+            "zh": "规则文件",
+            "ar": "ملفات القواعد"
+          }
+        }
+      },
       "patterns": {
+        "all": {
+          "$type": "string",
+          "$value": "All patterns",
+          "$description": "Pattern library sidebar: the overview entry at the top of the tree.",
+          "locale": {
+            "es": "Todos los patrones",
+            "fr": "Tous les modèles",
+            "de": "Alle Muster",
+            "pt": "Todos os padrões",
+            "ja": "すべてのパターン",
+            "zh": "所有模式",
+            "ar": "جميع الأنماط"
+          }
+        },
+        "tree": {
+          "$type": "string",
+          "$value": "Pattern tree",
+          "$description": "Accessible name of the Pattern library sidebar tree.",
+          "locale": {
+            "es": "Árbol de patrones",
+            "fr": "Arborescence des modèles",
+            "de": "Musterbaum",
+            "pt": "Árvore de padrões",
+            "ja": "パターンツリー",
+            "zh": "模式树",
+            "ar": "شجرة الأنماط"
+          }
+        },
+        "listView": {
+          "$type": "string",
+          "$value": "Pattern list view",
+          "$description": "Accessible name of the Pattern library sidebar view toolbar (tree or A–Z).",
+          "locale": {
+            "es": "Vista de lista de patrones",
+            "fr": "Vue en liste des modèles",
+            "de": "Musterlistenansicht",
+            "pt": "Visualização em lista de padrões",
+            "ja": "パターンのリスト表示",
+            "zh": "模式列表视图",
+            "ar": "عرض قائمة الأنماط"
+          }
+        },
+        "statusHeading": {
+          "$type": "string",
+          "$value": "Pattern status",
+          "$description": "Heading of the status card on a pattern page overview.",
+          "locale": {
+            "es": "Estado del patrón",
+            "fr": "État du modèle",
+            "de": "Musterstatus",
+            "pt": "Status do padrão",
+            "ja": "パターンのステータス",
+            "zh": "模式状态",
+            "ar": "حالة النمط"
+          }
+        },
+        "libraryDescription": {
+          "$type": "string",
+          "$value": "Reusable compositions built from A1 components, configured like components and added to projects as one piece.",
+          "$description": "Description under the Pattern library overview title.",
+          "locale": {
+            "es": "Composiciones reutilizables creadas con componentes A1, que se configuran como componentes y se añaden a los proyectos como una sola pieza.",
+            "fr": "Compositions réutilisables construites à partir de composants A1, configurées comme des composants et ajoutées aux projets d'un seul bloc.",
+            "de": "Wiederverwendbare Kompositionen aus A1-Komponenten, die wie Komponenten konfiguriert und als Ganzes zu Projekten hinzugefügt werden.",
+            "pt": "Composições reutilizáveis criadas com componentes A1, configuradas como componentes e adicionadas aos projetos como uma única peça.",
+            "ja": "A1 コンポーネントから構築された再利用可能なコンポジション。コンポーネントと同じように設定し、ひとつのまとまりとしてプロジェクトに追加できます。",
+            "zh": "由 A1 组件构建的可重用组合，可像组件一样配置，并作为一个整体添加到项目中。",
+            "ar": "تركيبات قابلة لإعادة الاستخدام مبنية من مكونات A1، تُضبط مثل المكونات وتُضاف إلى المشاريع كقطعة واحدة."
+          }
+        },
+        "tableCaption": {
+          "$type": "string",
+          "$value": "All A1 patterns",
+          "$description": "Caption of the Pattern library overview table.",
+          "locale": {
+            "es": "Todos los patrones de A1",
+            "fr": "Tous les modèles A1",
+            "de": "Alle A1-Muster",
+            "pt": "Todos os padrões A1",
+            "ja": "すべての A1 パターン",
+            "zh": "所有 A1 模式",
+            "ar": "جميع أنماط A1"
+          }
+        },
+        "column": {
+          "$type": "string",
+          "$value": "Pattern",
+          "$description": "Column header naming the pattern in the Pattern library overview table.",
+          "locale": {
+            "es": "Patrón",
+            "fr": "Modèle",
+            "de": "Muster",
+            "pt": "Padrão",
+            "ja": "パターン",
+            "zh": "模式",
+            "ar": "النمط"
+          }
+        },
         "subtitle": {
           "$type": "string",
           "$value": "Reusable, governed compositions — a page header, a footer, or a standardized card. Open one to edit it and lock the parts that should stay consistent.",
@@ -5658,20 +5954,6 @@
             "ja": "endContentは実行時に構成され、JSONには含まれません。",
             "zh": "endContent 在运行时组合，不包含在 JSON 中。",
             "ar": "يُركَّب endContent أثناء التشغيل ولا يُضمَّن في JSON."
-          }
-        },
-        "jsonSplitNote": {
-          "$type": "string",
-          "$value": "Split button is not part of the page-definition schema — the JSON describes a standard Button.",
-          "$description": "Info banner in the Button configurator's JSON view when the split (menu) option is on, which has no page-definition node type.",
-          "locale": {
-            "es": "El botón dividido no forma parte del esquema de definición de página; el JSON describe un botón estándar.",
-            "fr": "Le bouton scindé ne fait pas partie du schéma de définition de page — le JSON décrit un bouton standard.",
-            "de": "Der geteilte Button ist nicht Teil des Seitendefinitionsschemas — das JSON beschreibt einen Standard-Button.",
-            "pt": "O botão dividido não faz parte do esquema de definição de página — o JSON descreve um botão padrão.",
-            "ja": "スプリットボタンはページ定義スキーマに含まれていないため、JSONは標準のボタンを表します。",
-            "zh": "拆分按钮不在页面定义架构中——JSON 描述的是标准按钮。",
-            "ar": "الزر المنقسم ليس جزءًا من مخطط تعريف الصفحة — يصف JSON زرًا قياسيًا."
           }
         }
       },

@@ -16,6 +16,7 @@ import {
   MessageBadge,
   MessageEmptyState,
   Pagination,
+  PageTitle,
   Paragraph,
   SearchField,
   Section,
@@ -521,30 +522,26 @@ export function Backlog({ onNavigate }) {
   return (
     <>
 
+      <PageTitle
+        contentWidth="2xl"
+        breadcrumb={[
+          { label: t('app.page.home', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+          { label: t('app.page.backlog', 'Backlog') },
+        ]}
+        title={t('app.page.backlog', 'Backlog')}
+        meta={[
+          { label: `${counts.open} open`, status: 'info' },
+          { label: `${counts.total} total`, status: 'neutral' },
+        ]}
+      >
+        {/* Search + New ticket live in the right-hand panel (A1-154). */}
+        {backlog && !backlog.isCloud && (
+          <Banner status="info" variant="inline">
+            {t('app.backlog.notSignedInBanner', "You're not signed in — tickets are saved in this browser only. Sign in to share the backlog with the team.")}
+          </Banner>
+        )}
+      </PageTitle>
       <Section padding="xs" aria-label={t('app.page.backlog', 'Backlog')}>
-        <Stack direction="column" gap="none">
-          <Breadcrumb
-            items={[
-              { label: t('app.page.home', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { label: t('app.page.backlog', 'Backlog') },
-            ]}
-          />
-          {/* Search + New ticket now live in the right-hand panel (A1-154). */}
-          <Stack direction="row" gap="xs" align="center" wrap>
-          <Heading as="h1" size={{ xs: 'lg', md: 'xxl' }}>{t('app.page.backlog', 'Backlog')}</Heading>
-            {/* <Paragraph size="sm" color="muted">
-              A lightweight, shared ticket tracker. Suggest a priority, complexity and type; vote;
-              and follow what's in flight.
-            </Paragraph> */}
-            <MessageBadge status="info"  size="md">{counts.open} open</MessageBadge>
-            <MessageBadge status="neutral" subtle size="mdprefe">{counts.total} total</MessageBadge>
-          </Stack>
-          {backlog && !backlog.isCloud && (
-            <Banner status="info" variant="inline">
-              {t('app.backlog.notSignedInBanner', "You're not signed in — tickets are saved in this browser only. Sign in to share the backlog with the team.")}
-            </Banner>
-          )}
-        </Stack>
         <Stack gap="md">
         {/* The search lives in the left-side panel; here we echo the result count +
             the smart-search syntax hint while a query is active. */}

@@ -13,8 +13,19 @@
   gap: var(--base-spacing-8);
 }
 
-.a1-button-container__inner > .a1-button {
+.a1-button-container__inner > .a1-button,
+.a1-button-container__inner > .a1-split-button {
   width: 100%;
+}
+
+/* A ButtonContainer nested as a button group joins its parent's row: its
+   buttons flow, wrap and stack with the others, in order, and their container
+   queries answer to the parent. On its own a container is always full width,
+   so a nested one would otherwise take a row of its own. */
+.a1-button-container__inner > .a1-button-container,
+.a1-button-container__inner > .a1-button-container > .a1-button-container__inner {
+  display: contents;
+  container-type: normal;
 }
 
 /* Links sit inline alongside buttons; vertically centered in row layout */
@@ -29,7 +40,8 @@
     align-items: center;
   }
 
-  .a1-button-container__inner > .a1-button {
+  .a1-button-container__inner > .a1-button,
+  .a1-button-container__inner > .a1-split-button {
     width: auto;
   }
 

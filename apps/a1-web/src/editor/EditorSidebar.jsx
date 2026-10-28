@@ -37,6 +37,7 @@ const TYPE_ICONS = {
   StatusBar:        'linear_scale',
   CircularProgress: 'donut_large',
   StepTracker:      'more_horiz',
+  PageTitle:        'title',
   TextField:        'text_fields',
   TextareaField:    'subject',
   CheckboxGroup:    'check_box',
@@ -62,14 +63,21 @@ function nodeToTreeItem(node, resolveText) {
     ? node.name
     : node.patternInstance
       ? node.patternInstance.name
-      : text
-        ? (text.length > 32 ? `${text.slice(0, 32)}…` : text)
-        : node.type
+      : node.type === 'Slot' && node.props?.label
+        ? node.props.label
+        : text
+          ? (text.length > 32 ? `${text.slice(0, 32)}…` : text)
+          : node.type
   const isContainer = CONTAINER_TYPES.has(node.type)
   return {
     id: node.id,
     label,
-    icon: node.patternInstance ? 'dashboard_customize' : (TYPE_ICONS[node.type] ?? 'widgets'),
+    // A pattern zone (a Slot with set rules) is marked as such.
+    icon: node.patternInstance
+      ? 'dashboard_customize'
+      : node.type === 'Slot' && node.props?.zone === true
+        ? 'rule'
+        : (TYPE_ICONS[node.type] ?? 'widgets'),
     // Container types always expose children (even when empty) so the tree
     // renders them as branch nodes and allows drag-into in drag-and-drop mode.
     children: isContainer
@@ -223,6 +231,22 @@ export function ComponentTreePanel({
     const isContainer = CONTAINER_TYPES.has(nodeType)
     const hasChildren = !!(node?.children?.length)
     const items = []
+
+    // A pattern zone is fixed by its pattern: the only thing to do with it is
+    // add items (within its rules) — no rename, duplicate, group or delete.
+    if (nodeType === 'Slot' && node?.props?.zone === true) {
+      const max = node.props.max
+      const full = max != null && (node.children?.length ?? 0) >= max
+      items.push({ type: 'group', id: 'zone-label', label: `${node.props.label || 'Zone'} zone` })
+      items.push({
+        id: 'add-inside',
+        label: full ? `Add inside (full, max ${max})` : 'Add inside',
+        icon: 'add',
+        disabled: full,
+        onClick: () => onRequestAdd?.({ targetId: id, position: 'into' }),
+      })
+      return items
+    }
 
     if (node?.patternInstance) {
       items.push({

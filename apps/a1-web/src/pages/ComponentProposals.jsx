@@ -7,11 +7,12 @@ import {
   Card,
   Code,
   DataTable,
-  Divider,
   Dialog,
+  Divider,
   Heading,
   MessageBadge,
   MessageEmptyState,
+  PageTitle,
   Paragraph,
   RadioGroup,
   Section,
@@ -21,7 +22,6 @@ import {
   TextField,
 } from '@gtivr4/a1-design-system-react'
 import { RenderPageDefinition } from '../editor/pageRenderer.tsx'
-import { PageTitleArea } from './PageTitleArea.jsx'
 import { definitionToJsx } from '../editor/definitionToJsx.ts'
 import { chooseModel, listLocalModels, localChat } from '../lib/localAi.ts'
 import { allComponents } from './components/utils.js'
@@ -830,9 +830,9 @@ export function ComponentProposals({ onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        headingId="component-proposals-heading"
-        breadcrumbItems={[
+      <PageTitle
+        titleId="component-proposals-heading"
+        breadcrumb={[
           { label: 'Home', href: '/', onClick: (event) => { event?.preventDefault?.(); onNavigate?.('home') } },
           { label: 'Component proposals' },
         ]}

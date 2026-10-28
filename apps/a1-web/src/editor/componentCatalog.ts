@@ -6,6 +6,7 @@
  * `createNodeFromEntry` to stamp a fresh stable id on it before inserting.
  */
 import type { ComponentNode, ComponentProps, ComponentType, ContentDefinition } from './pageTypes';
+import { patternAreaSlot } from './patternAreas';
 
 /** A node template with no `id` at any level — ids are stamped by `createNodeFromEntry`. */
 export type PartialNode = {
@@ -1456,6 +1457,39 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
       },
     ],
   },
+  {
+    id: 'patterns',
+    label: 'Patterns',
+    icon: 'dashboard_customize',
+    entries: [
+      {
+        type: 'PageTitle',
+        label: 'Page title',
+        icon: 'title',
+        description: 'The top band of a page: breadcrumb, title, description and page actions',
+        defaultNode: {
+          type: 'PageTitle',
+          props: {
+            // `true` = built from the project's page hierarchy at render time.
+            breadcrumb: true,
+            title: 'Page title',
+            description: 'A short description tells people what this page is for.',
+          },
+          // The pattern's areas, from the pattern-area registry: the Metadata
+          // zone (badges, directly below the title), the Actions zone (the
+          // pattern keeps one primary, shown last) seeded with one primary
+          // button, and the open Content area, which accepts any component.
+          children: [
+            patternAreaSlot('PageTitle', 'meta'),
+            patternAreaSlot('PageTitle', 'actions', {
+              children: [{ type: 'Button', props: { variant: 'primary' }, content: { fallback: 'Primary action' } }],
+            }),
+            patternAreaSlot('PageTitle', 'content'),
+          ],
+        },
+      },
+    ],
+  },
 ];
 
 // ── Lookup by component id (matches the `data.js` componentCategories ids) ─────
@@ -1507,6 +1541,8 @@ export const COMMON_COMPONENT_IDS = new Set<string>([
   'figure', 'icon',
   // Data
   'data-table', 'definition-list', 'pagination',
+  // Patterns (A1-2720)
+  'page-title',
 ]);
 
 function freshId(): string {

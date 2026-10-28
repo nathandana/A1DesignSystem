@@ -15,6 +15,7 @@ import overlayRules from '../../../../../system/rules/overlay.yaml?raw'
 import chartRules from '../../../../../system/rules/chart.yaml?raw'
 import customBlockRules from '../../../../../system/rules/custom-block.yaml?raw'
 import avatarRules from '../../../../../system/rules/avatar.yaml?raw'
+import pageTitleRules from '../../../../../system/rules/page-title.yaml?raw'
 import { GENERATED_COMPONENT_HISTORY } from './componentHistory.generated.js'
 
 export const LAST_UPDATED = '2026-06-17'
@@ -756,4 +757,5 @@ export const ruleSourceFiles = [
   { file: 'system/rules/overlay.yaml', raw: overlayRules },
   { file: 'system/rules/chart.yaml', raw: chartRules },
   { file: 'system/rules/avatar.yaml', raw: avatarRules },
+  { file: 'system/rules/page-title.yaml', raw: pageTitleRules },
 ]

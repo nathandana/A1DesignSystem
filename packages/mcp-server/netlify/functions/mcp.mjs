@@ -46,7 +46,7 @@ const TOOLS = [
   {
     name: 'list_components',
     description:
-      "List A1 Design System components with their per-package coverage (React/Native/Pure/Web Components/Figma). Filter by category (e.g. 'Actions & Controls') or by which package must be implemented.",
+      "List A1 Design System components with their per-package coverage (React/Native/Pure/Web Components/Figma). Filter by category (e.g. 'Actions & Controls') or by which package must be implemented. Patterns — compositions of components such as Page Title — are listed under the 'Patterns' category.",
     input: z.object({
       category: z.string().optional().describe('Exact category heading, e.g. "Layout & Display"'),
       package: z.enum(['react', 'native', 'pure', 'webComponents', 'figma']).optional()

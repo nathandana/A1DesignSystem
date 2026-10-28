@@ -4,6 +4,7 @@ import {
   DataTable,
   Heading,
   Icon,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
@@ -15,7 +16,6 @@ import {
 import tokens from '../../../../../build/json/tokens.json'
 import iconUsageMarkdown from '../../../../../system/icons/icon-usage.md?raw'
 import iconRegistry from '../../../../../system/icons/material-symbols.json'
-import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
@@ -163,9 +163,9 @@ export function IconographyFoundationPage({ onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        headingId="iconography-heading"
-        breadcrumbItems={getFoundationBreadcrumbItems('Iconography', onNavigate)}
+      <PageTitle
+        titleId="iconography-heading"
+        breadcrumb={getFoundationBreadcrumbItems('Iconography', onNavigate)}
         title="Iconography"
         description={(
           <>

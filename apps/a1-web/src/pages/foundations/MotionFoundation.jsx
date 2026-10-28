@@ -5,6 +5,7 @@ import {
   Grid,
   Heading,
   MessageBadge,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
@@ -15,7 +16,6 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { useState } from 'react'
 import tokens from '../../../../../build/json/tokens.json'
-import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
@@ -147,9 +147,9 @@ export function MotionFoundationPage({ onNavigate }) {
           animation-duration: var(--semantic-motion-duration-instant);
         }
       `}</style>
-      <PageTitleArea
-        headingId="motion-heading"
-        breadcrumbItems={getFoundationBreadcrumbItems('Motion', onNavigate)}
+      <PageTitle
+        titleId="motion-heading"
+        breadcrumb={getFoundationBreadcrumbItems('Motion', onNavigate)}
         title="Motion"
         description="Duration, easing, and reduced-motion behavior. Every transition in the system uses a semantic motion token — no hardcoded milliseconds or cubic-bezier strings in component CSS."
       />

@@ -5,6 +5,8 @@ import { Heading } from "../heading/Heading.jsx";
 import { IconButton } from "../icon-button/IconButton.jsx";
 import { Link } from "../link/Link.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
+import { SplitButton } from "../split-button/SplitButton.jsx";
+import { Stack } from "../stack/Stack.jsx";
 
 const meta = {
   title: "Components/Controls/Button Container",
@@ -238,4 +240,25 @@ export const FillButtons = {
 
     </div>
   )
+};
+
+// A nested ButtonContainer is a button group: it joins its parent's row, so its
+// buttons wrap and stack with the others in order. A SplitButton stretches
+// like a Button when the container stacks (below 480px). Resize to compare.
+export const NestedGroupAndSplitButton = {
+  render: () => (
+    <Stack gap="lg">
+      {["100%", "360px"].map((width) => (
+        <div key={width} style={{ inlineSize: width }}>
+          <ButtonContainer>
+            <ButtonContainer>
+              <Button variant="secondary">Archive</Button>
+              <Button variant="secondary">Duplicate</Button>
+            </ButtonContainer>
+            <SplitButton icon="add" actions={[{ id: "import", label: "Import", icon: "upload" }]}>Create</SplitButton>
+          </ButtonContainer>
+        </div>
+      ))}
+    </Stack>
+  ),
 };

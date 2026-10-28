@@ -10,6 +10,9 @@
 /* The two targets sit flush; the main rounds its inline-start corners, the
    toggle rounds its inline-end corners, so together they read as one pill. */
 .a1-split-button__main {
+  /* Takes any extra width (e.g. full width when stacked in a ButtonContainer),
+     so the caret stays a snug target at the end. */
+  flex: 1 1 auto;
   --a1-button-border-radius: var(--component-button-border-radius) 0 0 var(--component-button-border-radius);
   border-inline-end-width: 0;
 }

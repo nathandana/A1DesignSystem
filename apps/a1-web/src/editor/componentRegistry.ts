@@ -19,7 +19,6 @@ import {
   Blockquote,
   BottomDrawer,
   Breadcrumb,
-  Button,
   ButtonContainer,
   Calendar,
   Card,
@@ -58,6 +57,7 @@ import {
   PageNav,
   Pagination,
   Paragraph,
+  PageTitle,
   PhoneField,
   PieChart,
   RadarChart,
@@ -102,6 +102,7 @@ import {
   EditorOutlet,
   EditorPageLayout,
   EditorSideNav,
+  EditorButton,
   EditorSlot,
   EditorSnackbar,
   EditorTabs,
@@ -139,7 +140,7 @@ export const componentRegistry: Record<ComponentType, ReactComponentType<any>> =
   Figure,
   // Navigation & actions
   Link,
-  Button,
+  Button: EditorButton,
   ActionTiles: EditorActionTiles,
   ChipGroup: EditorChipGroup,
   IconButton,
@@ -171,6 +172,8 @@ export const componentRegistry: Record<ComponentType, ReactComponentType<any>> =
   CheckboxGroup,
   RadioGroup,
   ChoiceGroup,
+  // Patterns (A1-2720)
+  PageTitle,
   // Data
   Stat,
   LineChart,

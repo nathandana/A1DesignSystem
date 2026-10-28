@@ -102,8 +102,10 @@ function scoreTerms(query, terms, exactScore, startsScore, includesScore, fuzzyS
   }, 0)
 }
 
+// Catalogue items (components and patterns) carry their own keywords; the
+// component map is the fallback for bare data.js entries.
 export function getComponentSearchKeywords(component) {
-  return COMPONENT_SEARCH_KEYWORDS[component.id] ?? []
+  return component.searchKeywords ?? COMPONENT_SEARCH_KEYWORDS[component.id] ?? []
 }
 
 export function getComponentSearchText(component) {
@@ -182,7 +184,7 @@ export const allComponents = componentCategories.flatMap((category) =>
   })
 )
 
-const COMPONENT_ROUTE_SLUGS = {
+export const COMPONENT_ROUTE_SLUGS = {
   'action-tile': 'action-tiles',
   overlay: 'overlay-component',
 }

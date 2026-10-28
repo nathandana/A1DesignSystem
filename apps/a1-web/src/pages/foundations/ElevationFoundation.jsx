@@ -1,12 +1,12 @@
 import {
   DataTable,
   Heading,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import tokens from '../../../../../build/json/tokens.json'
-import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
@@ -47,9 +47,9 @@ const shadowRows = Object.entries(tokens.semantic.shadow).map(([level, layers]) 
 export function ElevationFoundationPage({ onNavigate }) {
   return (
     <>
-      <PageTitleArea
-        headingId="elevation-heading"
-        breadcrumbItems={getFoundationBreadcrumbItems('Elevation', onNavigate)}
+      <PageTitle
+        titleId="elevation-heading"
+        breadcrumb={getFoundationBreadcrumbItems('Elevation', onNavigate)}
         title="Elevation"
         description="Surface hierarchy, shadows, and the visual rules that separate content layers. Five shadow levels cover everything from subtle card lift to modal dialogs above the page."
       />

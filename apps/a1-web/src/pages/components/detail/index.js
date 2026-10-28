@@ -53,6 +53,7 @@ import * as snackbar from './snackbar.jsx'
 import * as emptyState from './empty-state.jsx'
 import * as statusBar from './status-bar.jsx'
 import * as stat from './stat.jsx'
+import * as pageTitle from './page-title.jsx'
 import * as circularProgress from './circular-progress.jsx'
 import * as stepTracker from './step-tracker.jsx'
 import * as definitionList from './definition-list.jsx'
@@ -106,6 +107,7 @@ const REGISTRY = {
   'bottom-sheet': bottomSheet,
   tabs,
   'page-nav': pageNav,
+  'page-title': pageTitle,
   button,
   'action-tile': actionTile,
   chip,
@@ -188,6 +190,9 @@ export function getDetailModule(componentId) {
     // When true, the preview owns its own surface/height and is rendered without
     // the wrapping Section. The Display tab hides the Section-related controls.
     bareDisplay: specific.bareDisplay ?? false,
+    // A pattern's editable areas (`{ id, label, hint }[]`): outlined in the
+    // preview, with a show/hide toggle in the display toolbar.
+    editableAreas: specific.editableAreas ?? null,
     // Platforms the component can be viewed/coded as (React / Native / Pure).
     // Present only on modules that opt in; drives the page's "View as" toolbar.
     viewAsModes: specific.viewAsModes ?? null,

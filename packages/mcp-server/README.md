@@ -49,7 +49,7 @@ The dev server needs a **fresh** `build/json/tokens.json` and `index.json` — r
 
 | Tool | Purpose |
 |---|---|
-| `list_components` | Coverage list (React/Native/Pure/Web Components/Figma), filterable by category or package |
+| `list_components` | Coverage list (React/Native/Pure/Web Components/Figma), filterable by category or package. Patterns (`packages/react/src/patterns/`) appear under the `Patterns` category |
 | `get_component` | Full detail for one component: coverage, structured `.d.ts` props, and the relevant components.md excerpt |
 | `search_tokens` | Substring search over token dotted-paths and CSS variable names |
 | `get_token` | Exact token lookup by path or CSS var, including its value under every theme that overrides it |

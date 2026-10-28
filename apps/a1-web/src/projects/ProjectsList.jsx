@@ -10,6 +10,7 @@ import {
   Heading,
   MessageBadge,
   MessageEmptyState,
+  PageTitle,
   Paragraph,
   Section,
   SplitButton,
@@ -17,7 +18,6 @@ import {
   Toolbar,
   ToolbarButton,
 } from '@gtivr4/a1-design-system-react'
-import { PageTitleArea } from '../pages/PageTitleArea.jsx'
 import { ProjectDialog } from './ProjectDialog.jsx'
 import { ProjectImportDialog } from './ProjectImportDialog.jsx'
 import { AiProjectDialog } from './AiProjectDialog.jsx'
@@ -90,9 +90,9 @@ export function ProjectsList({
 
   return (
     <>
-      <PageTitleArea
-        headingId="projects-heading"
-        breadcrumbItems={[
+      <PageTitle
+        titleId="projects-heading"
+        breadcrumb={[
           { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
           { label: 'Projects' },
         ]}

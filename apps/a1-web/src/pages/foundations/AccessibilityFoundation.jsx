@@ -7,12 +7,12 @@ import {
   List,
   ListItem,
   MessageBadge,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import tokens from '../../../../../build/json/tokens.json'
-import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
@@ -101,9 +101,9 @@ const WCAG_PRINCIPLES = [
 export function AccessibilityFoundationPage({ onNavigate }) {
   return (
     <>
-      <PageTitleArea
-        headingId="a11y-heading"
-        breadcrumbItems={getFoundationBreadcrumbItems('Accessibility', onNavigate)}
+      <PageTitle
+        titleId="a11y-heading"
+        breadcrumb={getFoundationBreadcrumbItems('Accessibility', onNavigate)}
         title="Accessibility"
         description="Contrast, focus states, semantic markup, keyboard interaction, and screen reader labels. Accessibility is designed into every component — not bolted on afterward."
       />

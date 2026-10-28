@@ -9,6 +9,7 @@ import {
   MessageEmptyState,
   Node,
   NodeConnector,
+  PageTitle,
   Paragraph,
   Section,
   SegmentedControl,
@@ -20,7 +21,6 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { useEffect, useMemo, useState } from 'react'
 import tokens from '../../../../../build/json/tokens.json'
-import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 const primitiveColorColumns = [
@@ -426,9 +426,9 @@ export function ColorFoundationPage({ onNavigate, theme, colorMode }) {
   )
   return (
     <>
-      <PageTitleArea
-        headingId="color-foundation-heading"
-        breadcrumbItems={getFoundationBreadcrumbItems('Color', onNavigate)}
+      <PageTitle
+        titleId="color-foundation-heading"
+        breadcrumb={getFoundationBreadcrumbItems('Color', onNavigate)}
         title="Color"
         description="Inspect the generated color system and see how token values are applied across primitives, semantic roles, and component-specific color tokens. Use the settings menu to switch the active theme and color mode."
       />

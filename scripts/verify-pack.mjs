@@ -117,7 +117,7 @@ for (const m of dtsSrc.matchAll(/from\s*"(\.[^"]+)"/g)) {
 
 // ── 7. RSC client-boundary directives ship intact ──────────────────────────
 const clientBoundaryFiles = [...shipped].filter((file) =>
-  /^src\/components\/.*\.(js|jsx)$/.test(file) && !file.endsWith(".stories.jsx")
+  /^src\/(components|patterns)\/.*\.(js|jsx)$/.test(file) && !file.endsWith(".stories.jsx")
 );
 for (const file of clientBoundaryFiles) {
   const source = readFileSync(path.join(pkgDir, file), "utf8");

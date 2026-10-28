@@ -9,6 +9,7 @@ import {
   Grid,
   GridItem,
   Heading,
+  PageTitle,
   Paragraph,
   PieChart,
   Section,
@@ -29,7 +30,6 @@ import {
 } from '../admin/userAdminApi.js'
 import { useAuth } from '../lib/AuthContext.jsx'
 import { useT } from '../labels/useT.js'
-import { PageTitleArea } from './PageTitleArea.jsx'
 
 function formatDurationSeconds(seconds) {
   if (!Number.isFinite(seconds) || seconds < 0) return '0s'
@@ -219,10 +219,10 @@ export function AdminAnalytics({ onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
+      <PageTitle
         contentWidth="lg"
-        headingId="admin-analytics-heading"
-        breadcrumbItems={[
+        titleId="admin-analytics-heading"
+        breadcrumb={[
           {
             label: t('app.page.home', 'Home'),
             href: '/',

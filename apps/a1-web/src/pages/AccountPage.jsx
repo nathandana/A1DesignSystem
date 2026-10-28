@@ -7,6 +7,7 @@ import {
   CheckboxGroup,
   Heading,
   MessageBadge,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
@@ -21,7 +22,6 @@ import { loadProjects } from '../projects/projectStore'
 import { migrateLocalImagesToCloud } from '../lib/imageLibrary'
 import { getStorageStatus } from '../lib/storageStatus'
 import { useT } from '../labels/useT.js'
-import { PageTitleArea } from './PageTitleArea.jsx'
 
 // Account page built from A1 components. Invite-only: sign-in only (no public
 // sign-up). Signed in: account info, a
@@ -108,10 +108,10 @@ export function AccountPage({ onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        headingId="account-heading"
+      <PageTitle
+        titleId="account-heading"
         contentWidth="md"
-        breadcrumbItems={[
+        breadcrumb={[
           { label: t('app.page.home', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
           { label: t('app.page.account', 'Account') },
         ]}

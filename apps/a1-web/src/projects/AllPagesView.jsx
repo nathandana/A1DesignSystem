@@ -10,12 +10,12 @@ import {
   MessageEmptyState,
   Node,
   NodeConnector,
+  PageTitle,
   Paragraph,
   Section,
   SegmentedControl,
   Stack,
 } from '@gtivr4/a1-design-system-react'
-import { PageTitleArea } from '../pages/PageTitleArea.jsx'
 import { ProjectDialog } from './ProjectDialog.jsx'
 import { componentRegistry } from '../editor/componentRegistry'
 import { getPublishedProjectPath, exportProjectJson, resolvePageJson, validateProjectImport } from './projectStore'
@@ -205,9 +205,9 @@ export function AllPagesView({
 
   return (
     <>
-      <PageTitleArea
-        headingId="all-pages-heading"
-        breadcrumbItems={[
+      <PageTitle
+        titleId="all-pages-heading"
+        breadcrumb={[
           { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
           { label: 'Projects', href: '/editor', onClick: (e) => { e?.preventDefault?.(); onBackToProjects?.() } },
           { label: project?.name ?? 'Project' },

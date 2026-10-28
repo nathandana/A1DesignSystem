@@ -34,6 +34,7 @@ import {
   MessageBadge,
   Notification,
   Pagination,
+  PageTitle,
   Paragraph,
   RadioGroup,
   Section,
@@ -59,11 +60,11 @@ import { Toggle } from './detail/Toggle.jsx'
 import { ConfigHelpContext } from './detail/configKit.jsx'
 import { useT } from '../../labels/useT'
 import {
-  COMPONENT_STATUS,
   PACKAGE_COLUMNS,
   STATUS_META,
   LAST_UPDATED,
 } from './data.js'
+import { componentsCatalog } from './catalog.js'
 import { ComponentDocsShell } from './ComponentDocsShell.jsx'
 import { getDetailModule } from './detail/index.js'
 import { CreateTicketButton } from '../../backlog/CreateTicketButton'
@@ -71,9 +72,7 @@ import { ResponsivePreviewFrame, VIEWPORT_PRESETS, viewportSize } from './detail
 import { UtilityControls } from '../../editor/UtilityControls.jsx'
 import { cleanUtilities, utilityClassesFor, utilityTypeForCatalogComponent } from '../../editor/utilityRegistry.ts'
 import {
-  getBreadcrumbItems,
   getComponentPath,
-  getRelatedComponents,
   getRulesForComponent,
   navigateCard,
   navigateBreadcrumb,
@@ -377,6 +376,7 @@ function defaultDisplayConfig(component, category) {
     inverse: false,
     containerQuery: 'auto',
     viewport: 'fit',
+    showSlots: true,
     borderSize: 'xs',
     borderStyle: 'solid',
     borderVariant: 'subtle',
@@ -3061,18 +3061,41 @@ function ConfigurationPanel({
 
 /* Display controls shown as a toolbar in the top-right of the centre preview
    panel: responsive viewport, preview padding, and inverse. */
-function DisplayToolbar({ displayConfig, setDisplayConfig, bareDisplay }) {
+function DisplayToolbar({ displayConfig, setDisplayConfig, bareDisplay, responsiveControl = 'menu', hasEditableAreas = false }) {
   const set = (patch) => setDisplayConfig((current) => ({ ...current, ...patch }))
+  const exposed = responsiveControl === 'toolbar'
   return (
-    <Toolbar aria-label="Display options">
-        <ToolbarMenu
-          aria-label="Responsive view"
-          label="Responsive view"
-          showLabel
-          value={displayConfig.viewport ?? 'fit'}
-          onChange={(viewport) => set({ viewport })}
-          items={VIEWPORT_PRESETS}
-        />
+    <Toolbar aria-label="Display options" overflow={exposed}>
+        {exposed ? (
+          // Pattern pages expose the breakpoints as a group; the toolbar moves
+          // trailing controls into a More menu only when it overflows.
+          <ToolbarGroup
+            aria-label="Responsive view"
+            showLabels
+            labelMode="selected"
+            value={displayConfig.viewport ?? 'fit'}
+            onChange={(viewport) => set({ viewport })}
+            options={VIEWPORT_PRESETS.map(({ value, label, icon }) => ({ value, label, icon }))}
+          />
+        ) : (
+          <ToolbarMenu
+            aria-label="Responsive view"
+            label="Responsive view"
+            showLabel
+            value={displayConfig.viewport ?? 'fit'}
+            onChange={(viewport) => set({ viewport })}
+            items={VIEWPORT_PRESETS}
+          />
+        )}
+        {hasEditableAreas && (
+          <ToolbarToggle
+            icon="select_all"
+            label="Editable areas"
+            showLabel
+            pressed={displayConfig.showSlots !== false}
+            onChange={(showSlots) => set({ showSlots })}
+          />
+        )}
         {!bareDisplay && (
           <ToolbarMenu
             icon="padding"
@@ -3100,6 +3123,7 @@ function DisplayToolbar({ displayConfig, setDisplayConfig, bareDisplay }) {
 function ComponentConfigureSurface({
   component,
   detail,
+  responsiveControl = 'menu',
   config,
   setConfig,
   displayConfig,
@@ -3213,7 +3237,7 @@ function ComponentConfigureSurface({
     <ResponsivePreviewFrame {...(viewportSize(displayConfig.viewport) ?? {})}>
       {barePreview ? (
         <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
-          <detail.Preview component={component} config={config} setConfig={setConfig} viewAs={viewAs} utilityClass={utilityClass} />
+          <detail.Preview editableAreas={displayConfig.showSlots === false ? [] : (detail.editableAreas ?? [])} component={component} config={config} setConfig={setConfig} viewAs={viewAs} utilityClass={utilityClass} />
         </ContainerQueryPreviewFrame>
       ) : (
         <Section
@@ -3227,7 +3251,7 @@ function ComponentConfigureSurface({
           radius={displayConfig.radius}
         >
           <ContainerQueryPreviewFrame component={component} displayConfig={displayConfig}>
-            <detail.Preview component={component} config={config} setConfig={setConfig} viewAs={viewAs} utilityClass={utilityClass} />
+            <detail.Preview editableAreas={displayConfig.showSlots === false ? [] : (detail.editableAreas ?? [])} component={component} config={config} setConfig={setConfig} viewAs={viewAs} utilityClass={utilityClass} />
           </ContainerQueryPreviewFrame>
         </Section>
       )}
@@ -3236,7 +3260,7 @@ function ComponentConfigureSurface({
 
   return (
     <Stack gap="sm">
-      <DisplayToolbar
+      <DisplayToolbar responsiveControl={responsiveControl} hasEditableAreas={!!detail.editableAreas?.length}
         displayConfig={displayConfig}
         setDisplayConfig={setDisplayConfig}
         bareDisplay={barePreview}
@@ -3280,7 +3304,9 @@ function ComponentConfigureSurface({
   )
 }
 
-export function ComponentDetailPage({ component, category, onNavigate, projectId = null, tab = 'overview', onTabChange }) {
+// `catalog` is the component or pattern library the item belongs to; it
+// supplies the breadcrumb, paths, status and the related-items list.
+export function ComponentDetailPage({ catalog = componentsCatalog, component, category, onNavigate, projectId = null, tab = 'overview', onTabChange }) {
   const t = useT()
   const detail = getDetailModule(component.id)
   const examples = detail.examples ?? []
@@ -3311,9 +3337,9 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
   const [displayConfig, setDisplayConfig] = useState(() => defaultDisplayConfig(component, category))
   const [asideNode, setAsideNode] = useState(null)
   const wasExamplePage = useRef(isExamplePage)
-  const statusKey = COMPONENT_STATUS[component.id] ?? 'beta'
+  const statusKey = catalog.statusOf(component.id)
   const statusMeta = STATUS_META[statusKey] ?? STATUS_META.beta
-  const relatedComponents = getRelatedComponents(component)
+  const relatedComponents = catalog.getRelated(component)
   const utilityType = componentUtilityType(component)
   const utilityClass = utilityClassesFor(utilityType, config.utilities)
   const selectedExample = examples.find((example) => example.id === selectedExampleId)
@@ -3421,18 +3447,18 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
 
   const breadcrumbItems = isExamplePage && activeExample
     ? [
-        ...getBreadcrumbItems({ category, component }, onNavigate).map((item, index, items) =>
+        ...catalog.getBreadcrumbItems({ category, item: component }, onNavigate, t).map((item, index, items) =>
           index === items.length - 1
             ? {
-                href: getComponentPath(`component-${component.id}`),
+                href: catalog.getPath(catalog.itemPageId(component.id)),
                 label: component.title,
-                onClick: (event) => navigateBreadcrumb(event, onNavigate, `component-${component.id}`),
+                onClick: (event) => navigateBreadcrumb(event, onNavigate, catalog.itemPageId(component.id)),
               }
             : item,
         ),
         { label: activeExample.title },
       ]
-    : getBreadcrumbItems({ category, component }, onNavigate)
+    : catalog.getBreadcrumbItems({ category, item: component }, onNavigate, t)
 
   return (
     <ComponentDocsShell>
@@ -3452,19 +3478,22 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
           />,
           asideNode,
         )}
-        <Section padding="xs" surface='page' direction="column" gap="xs">
-          <Breadcrumb items={breadcrumbItems} />
-        </Section>
+        {/* An example page is a page of its own, so it opens with the Page title
+            pattern; the component's tabbed detail keeps its breadcrumb row. */}
+        {isExamplePage && activeExample ? (
+          <PageTitle breadcrumb={breadcrumbItems} title={activeExample.title} description={activeExample.description} />
+        ) : (
+          <Section padding="xs" surface='page' direction="column" gap="xs">
+            <Breadcrumb items={breadcrumbItems} />
+          </Section>
+        )}
         <Section padding="xs" surface='page' direction="column" gap="xs">
           {isExamplePage && activeExample ? (
             <Stack gap="lg">
-              <Stack gap="xs">
-                <Heading as="h1" size={{ xs: 'lg', md: 'xxl' }}>{activeExample.title}</Heading>
-                <Paragraph size="sm" color="muted">{activeExample.description}</Paragraph>
-              </Stack>
               <ComponentConfigureSurface
                 component={component}
                 detail={detail}
+                responsiveControl={catalog.responsiveViewControl}
                 config={config}
                 setConfig={setConfig}
                 displayConfig={displayConfig}
@@ -3489,6 +3518,7 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
               <ComponentConfigureSurface
                 component={component}
                 detail={detail}
+                responsiveControl={catalog.responsiveViewControl}
                 config={config}
                 setConfig={setConfig}
                 displayConfig={displayConfig}
@@ -3511,7 +3541,7 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
                 <Card shadow="xs">
                   <Stack direction="column" gap="sm">
                     <MessageBadge status={statusMeta.status} icon={statusMeta.icon}>{statusMeta.label}</MessageBadge>
-                    <Heading as="h3" size="sm">Component status</Heading>
+                    <Heading as="h3" size="sm">{t(...catalog.labels.statusHeading)}</Heading>
                     <Paragraph size="sm" color="muted">{statusMeta.desc}</Paragraph>
                   </Stack>
                 </Card>
@@ -3523,13 +3553,13 @@ export function ComponentDetailPage({ component, category, onNavigate, projectId
 
                 {relatedComponents.length > 0 && (
                   <Stack direction="column" gap="sm">
-                    <Heading as="h3" size="sm">Related components</Heading>
+                    <Heading as="h3" size="sm">{t(...catalog.labels.relatedHeading)}</Heading>
                     <List icon="arrow_forward" size="sm" color="muted">
                       {relatedComponents.map((relatedComponent) => (
                         <ListItem key={relatedComponent.id}>
                           <Link
-                            href={getComponentPath(`component-${relatedComponent.id}`)}
-                            onClick={(event) => navigateCard(event, onNavigate, `component-${relatedComponent.id}`)}
+                            href={relatedComponent.path}
+                            onClick={(event) => navigateCard(event, onNavigate, relatedComponent.pageId)}
                           >
                             {relatedComponent.title}
                           </Link>

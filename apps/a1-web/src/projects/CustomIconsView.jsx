@@ -10,6 +10,7 @@ import {
   Icon,
   MessageBadge,
   MessageEmptyState,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
@@ -17,7 +18,6 @@ import {
   Toolbar,
   ToolbarMenu,
 } from '@gtivr4/a1-design-system-react'
-import { PageTitleArea } from '../pages/PageTitleArea.jsx'
 import {
   addCustomIcon,
   deleteCustomIcon,
@@ -152,8 +152,8 @@ export function CustomIconsView({ projects = [], onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        breadcrumbItems={[
+      <PageTitle
+        breadcrumb={[
           { label: 'Home', onClick: () => onNavigate?.('home') },
           { label: 'Custom icons', current: true },
         ]}

@@ -3,7 +3,7 @@ import { PageLayout, Paragraph, Section, SideNav, TopHeader, TreeMenu } from '@g
 import { RenderPageDefinition } from '../editor/pageRenderer';
 import { EDITOR_EXAMPLES, BLANK_PAGE } from '../editor/examples/index.ts';
 import { decompress, readStored } from '../editor/storage';
-import { buildProjectNav, buildProjectTree } from '../projects/projectNav';
+import { buildProjectNav, buildProjectTree, buildProjectBreadcrumb } from '../projects/projectNav';
 import {
   getPublishedProjectBySlug,
   getPublishedProjectPath,
@@ -11,7 +11,7 @@ import {
   loadProjects,
   loadProjectLayout,
 } from '../projects/projectStore';
-import { combinePageIntoLayout, definitionContainsNodeType } from '../projects/projectLayout';
+import { combinePageIntoLayout, definitionContainsNodeType, resolveAutoBreadcrumbs } from '../projects/projectLayout';
 import { ProjectThemeScope } from '../lib/ProjectThemeScope.jsx';
 import { useT } from '../labels/useT.js';
 import type { PageDefinition } from '../editor/pageTypes';
@@ -245,6 +245,19 @@ export function EditorPreviewPage() {
     [projectPages, screenId, navigateToScreen, urlForScreen],
   );
 
+  // The breadcrumb trail for this page, for Page title patterns with `breadcrumb: true`.
+  const breadcrumb = useMemo(
+    () => (projectPages.length
+      ? buildProjectBreadcrumb(projectPages, {
+          activePageId: screenId,
+          onNavigate: (pageId) => navigateToScreen(pageId),
+          hrefFor: (pageId) => urlForScreen(pageId),
+        })
+      : null),
+    [projectPages, screenId, navigateToScreen, urlForScreen],
+  );
+  const pageDefinition = useMemo(() => (definition ? resolveAutoBreadcrumbs(definition, breadcrumb) : null), [definition, breadcrumb]);
+
   // Sidebar navigation (SideNav + TreeMenu) is opt-in per project (`navStyle`).
   const useSidebarNav = project?.navStyle === 'sidebar' && projectPages.length > 0;
   const tree = useMemo(
@@ -263,16 +276,16 @@ export function EditorPreviewPage() {
     : undefined;
 
   const composed = useMemo(() => {
-    if (!definition) return null;
+    if (!pageDefinition) return null;
     if (layoutDef) {
-      return combinePageIntoLayout(layoutDef, definition, {
+      return combinePageIntoLayout(layoutDef, pageDefinition, {
         navItems,
         logoFallback: projectName ?? '',
         logoHref: projectHomeHref,
       });
     }
-    return definition;
-  }, [definition, layoutDef, navItems, projectName, projectHomeHref]);
+    return pageDefinition;
+  }, [pageDefinition, layoutDef, navItems, projectName, projectHomeHref]);
 
   const fallbackHeader = !useSidebarNav && projectPages.length && (!layoutDef || !layoutHasTopHeader) ? (
     <TopHeader
@@ -327,7 +340,7 @@ export function EditorPreviewPage() {
           )}
         >
           <RenderPageDefinition
-            definition={definition}
+            definition={pageDefinition}
             itemId={itemId}
             onNavigate={(pageId, opts) => navigateToScreen(pageId, opts?.item ?? null)}
           />

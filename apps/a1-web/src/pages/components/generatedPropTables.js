@@ -3888,6 +3888,23 @@ export const GENERATED_PROP_TABLES = {
       ]
     }
   ],
+  "page-title": [
+    {
+      "title": "Page Title",
+      "rows": [
+        { "id": "breadcrumb", "name": "breadcrumb", "type": "BreadcrumbItem[]", "description": "Breadcrumb trail above the title; the last item is the current page. Omit to show none." },
+        { "id": "backLabel", "name": "backLabel", "type": "string", "description": "Label for the breadcrumb's back link in narrow containers. Default: \"Back\"." },
+        { "id": "eyebrow", "name": "eyebrow", "type": "ReactNode", "description": "Short category label above the title (the A1 eyebrow composition)." },
+        { "id": "title", "name": "title", "type": "ReactNode", "description": "The page title, rendered as the page's h1." },
+        { "id": "titleId", "name": "titleId", "type": "string", "description": "id on the heading, for aria-labelledby on the sections that follow." },
+        { "id": "description", "name": "description", "type": "ReactNode", "description": "Short supporting text under the title." },
+        { "id": "meta", "name": "meta", "type": "ReactNode | { label, status?, icon? } | { label, status?, icon? }[]", "description": "The metadata row, always directly below the title: badge data (rendered as small subtle badges) or composed badges. Replaces accessory." },
+        { "id": "actions", "name": "actions", "type": "ReactNode | { id?, kind?, label, variant?, icon?, href?, onClick?, disabled? }[]", "description": "Page actions: composed Button, SplitButton, Link, IconButton, ButtonContainer group, Toolbar or SegmentedControl, or a list of action descriptors (button, link or icon button). At most one primary (a Button or SplitButton, primary by default) and it renders last; a ButtonContainer group stays together with its primary at its end. They sit in a ButtonContainer, so they stack full-width on narrow containers." },
+        { "id": "contentWidth", "name": "contentWidth", "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\"", "description": "Section content width \u2014 match the sections that follow. Default: \"xl\"." },
+        { "id": "children", "name": "children", "type": "ReactNode", "description": "Extra content below the actions, such as a search field or tab strip." }
+      ]
+    }
+  ],
   "paragraph": [
     {
       "title": "Paragraph",

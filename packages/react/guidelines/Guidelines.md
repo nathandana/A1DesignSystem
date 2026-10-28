@@ -91,6 +91,7 @@ export, by category:
 - **Navigation:** `TopHeader` `SideNav` `SideNavItem` `SideNavGroup` `BottomDrawer` `BottomSheet` `Breadcrumb` `PageNav` `TreeMenu` `Pagination`
 - **Inputs:** `TextField` `SearchField` `NumberField` `DateField` `TimeField` `PhoneField` `ZipField` `ZIP_MASKS` `CreditCardField` `TextareaField` `SelectField` `Autocomplete` `CheckboxGroup` `RadioGroup` `ChoiceGroup` `Fieldset` `FieldRow` `InlineEditable` `TokenSelect`
 - **Feedback:** `Banner` `MessageBadge` `MessageEmptyState` `Notification` `Snackbar` `SnackbarStack` `StatusBar` `CircularProgress` `StepTracker` `Stat`
+- **Patterns:** `PageTitle` `normalizePageTitleActions`
 - **Overlay:** `Dialog` `Overlay` `Menu` `MenuSection` `MenuItem` `ContextMenu` `Tooltip`
 - **Recharts:** `AreaChart` `BarChart` `Chart` `ComposedChart` `FunnelChart` `LineChart` `PieChart` `RadarChart` `RadialBarChart` `SankeyChart` `ScatterChart` `SunburstChart` `TreemapChart`
 - **Data:** `DataTable` `DataTableFilters` `DefinitionList` `Calendar` `Canvas` `Node` `CanvasEdge` `NodeConnector`

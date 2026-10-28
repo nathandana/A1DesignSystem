@@ -8,12 +8,12 @@ import {
   Grid,
   Heading,
   MessageEmptyState,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { useT } from '../labels/useT.js'
-import { PageTitleArea } from './PageTitleArea.jsx'
 import { summarizeLocks } from '../patterns/resolvePattern.js'
 import { getPattern } from '../patterns/patterns.js'
 import { createBlankPattern, deletePattern, duplicatePattern, getAllPatterns, isUserPattern, savePattern } from '../patterns/patternStore.js'
@@ -85,9 +85,9 @@ export function Patterns({ onNavigate }) {
 
   return (
     <>
-    <PageTitleArea
-      headingId="patterns-heading"
-      breadcrumbItems={[
+    <PageTitle
+      titleId="patterns-heading"
+      breadcrumb={[
         { label: t('app.page.home', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
         { label: t('app.page.patterns', 'Patterns') },
       ]}

@@ -14,6 +14,8 @@ export { Notification } from "./components/notification/Notification";
 export { Snackbar, SnackbarStack } from "./components/snackbar/Snackbar";
 export { StatusBar } from "./components/status-bar/StatusBar";
 export { Stat } from "./components/stat/Stat";
+export { PageTitle, normalizePageTitleActions } from "./patterns/page-title/PageTitle";
+export type { PageTitleProps, PageTitleAction, PageTitleBadge } from "./patterns/page-title/PageTitle";
 export { Avatar } from "./components/avatar/Avatar";
 export {
   AreaChart,
