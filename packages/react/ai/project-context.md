@@ -3,6 +3,8 @@
 This file is the entry point for all agents and AI assistants working in this repository. Read it first, then follow the linked context files for implementation details.
 
 **Related files in this directory:**
+
+- `packages/react/ai/labs-toolbar-group.md` — Labs Hover state and selected: toolbar, checkbox and single-selection hover treatments, reusable API and validation.
 - `packages/react/ai/npm-releases.md` — automatic npm releases, trusted publishing, version verification and failure recovery. Read before preparing or publishing releases.
 - `packages/react/ai/labs-code-highlighting.md` — Labs code syntax highlighting: tokenizer, `HighlightedCode`/`LiveHighlightEditor` API, palettes and contrast derivation, line spacing, and the A1 Code wrapping/indent/scroll changes it relies on.
 - `packages/react/ai/labs-avatars.md` — Labs avatars: `LabAvatar`/`LabAvatarGroup` API (content, sizes, radii, colour, borders, status, Break the frame, generated pattern), tokens and accessibility.

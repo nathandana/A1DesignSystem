@@ -2,6 +2,51 @@
 
 ## Unreleased
 
+## 0.78.1 — Oct. 28, 2026
+
+- **Shorter hover treatment label** — renames Hover matches selection (pause after click) to Pause after click. Behavior is unchanged.
+
+## 0.78.0 — Oct. 28, 2026
+
+- **Hover state and selected** — renames Toolbar group and adds a checkbox group as the second example, with five notification preferences and two initially checked. All six treatments apply to checkbox rows while preserving native inputs and checkmarks. Hover matches selection pauses after input or label clicks until the pointer leaves the row. Show toolbar labels only affects the toolbar examples. The existing `/experiments/toolbar-group` address stays valid.
+
+## 0.77.5 — Oct. 28, 2026
+
+- **Toolbar hover label** — labels the treatment Hover matches selection (pause after click) to make its post-click behavior clear.
+
+## 0.77.4 — Oct. 28, 2026
+
+- **Show the new state after a click** — Hover matches selection pauses hover feedback after a pointer click changes an item. The committed on/off appearance stays visible until the pointer leaves; returning restores hover. Reselecting an already-selected radio does not pause hover.
+
+## 0.77.3 — Oct. 28, 2026
+
+- **Hover matches selection colors** — off items now use the selected surface on hover (white in the default light theme), while selected items become transparent. Text colors follow the corresponding state. Disabled items keep their resting appearance.
+
+## 0.77.2 — Oct. 28, 2026
+
+- **Toolbar treatment label** — renames Hover matches active to Hover matches selection. Interaction styling and the internal treatment ID remain unchanged.
+
+## 0.77.1 — Oct. 28, 2026
+
+- **Hover feedback on selected items** — Hover matches active now gives on and off items the same distinct hover and pressed colors, so selected items visibly respond too. Disabled items retain their resting appearance.
+- **Large segmented example** — Segmented control transitions now starts at Large, the largest supported size. Small and Medium remain configurable.
+
+## 0.77.0 — Oct. 28, 2026
+
+- **Toolbar hover matches active** — adds a sixth treatment where enabled hovered and pressed items use the selected/on background and text colors. Selection semantics and shadows remain intact, and disabled items keep their resting appearance.
+
+## 0.76.0 — Oct. 28, 2026
+
+- **Distinct toolbar hover when off** — adds a fifth treatment with the strong action-colored hover fill only on enabled off or unselected items. Selected and disabled items keep their resting appearance.
+
+## 0.75.0 — Oct. 28, 2026
+
+- **Toolbar hover when off** — adds a fourth hover treatment. Only enabled off or unselected items show the current subtle hover fill; selected and disabled items stay unchanged.
+
+## 0.74.0 — Oct. 28, 2026
+
+- **Toolbar group** — brings A1 toolbar toggles and single-selection groups into Labs with Current state, No hover state and Distinct hover state treatments. Show labels or icons and inspect disabled states while keeping selections across treatment changes. Shared A1 toolbars retain their existing behavior.
+
 ## 0.73.2 — Oct. 12, 2026
 
 - **Publishing setup** — dedicated Netlify configuration and explicit preview/production deployment commands for `labs.a1design.app`. Builds run Labs tests and regenerate shared tokens; direct experiment URLs use the existing SPA fallback. Hashed assets use immutable caching.

@@ -42,6 +42,8 @@ options. Not a published A1 component or prop. Follow the
   `prefers-reduced-motion: no-preference`.
 - `SegmentedMotionExperiment.jsx` — the Labs page: transition, duration
   (150–750 ms motion tokens), 2–5 options, size, icons and full width.
+  Size defaults to Large (`lg`), the largest supported size; Small and Medium
+  remain available.
 
 ## Tokens
 

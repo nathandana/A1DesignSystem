@@ -22,7 +22,7 @@ export function SegmentedMotionExperiment({ experiment, onOpenSettings }) {
   const [transition, setTransition] = useState('slide')
   const [speed, setSpeed] = useState('slow')
   const [count, setCount] = useState('4')
-  const [size, setSize] = useState('md')
+  const [size, setSize] = useState('lg')
   const [icons, setIcons] = useState(false)
   const [fullWidth, setFullWidth] = useState(false)
   const [value, setValue] = useState('week')

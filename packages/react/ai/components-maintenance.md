@@ -1,5 +1,49 @@
 # A1 Design System — Component Maintenance Log
 
+## 2026-10-28 — Labs Pause after click label
+
+Labs 0.78.1 shortens the hover treatment label to Pause after click. Updated current guidance and browser selectors while preserving behavior and the internal treatment ID. No CSS changes.
+
+## 2026-10-28 — Labs hover checkbox group
+
+Labs 0.78.0 renames Toolbar group to Hover state and selected and adds a labeled five-option CheckboxGroup as the second example. Six scoped hover treatments preserve native checkmarks, focus and disabled state. Toolbar and checkbox wrappers share the post-click pause lifecycle, including label clicks. The existing route stays valid; gallery, search copy and preview reflect the expanded study. No shared component changes or new tokens.
+
+## 2026-10-28 — Labs hover pause label
+
+Labs 0.77.5 labels the treatment Hover matches selection (pause after click), with matching README, guidance and browser selectors. Behavior and the internal treatment ID are unchanged. No CSS added.
+
+## 2026-10-28 — Labs post-click hover pause
+
+Labs 0.77.4 keeps the newly selected toolbar state visible after pointer activation in Hover matches selection. Hover resumes after leaving and returning to the item. Capture plus a layout-effect ARIA comparison prevents pauses for ignored state changes; marker cleanup handles pointer exit, treatment changes and unmount. Scoped CSS uses existing resting-state colors. Browser checks cover on/off clicks, re-entry, radio selection and unchanged re-selection.
+
+## 2026-10-28 — Labs hover selection color swap
+
+Labs 0.77.3 corrects Hover matches selection: off items use the selected surface/foreground on hover, while selected items become transparent with the ordinary toolbar foreground. Disabled appearance, focus and selection shadows remain intact. Scoped CSS uses existing Toolbar color variables. Browser checks compare hovered paint against the opposite resting state and exercise toggling while hovered.
+
+## 2026-10-28 — Labs hover treatment label
+
+Labs 0.77.2 renames Hover matches active to Hover matches selection in the toolbar study, README and browser checks. The internal `match-active` value and styling remain unchanged. No CSS added.
+
+## 2026-10-28 — Labs selected hover feedback and large segmented example
+
+Labs 0.77.1 corrects Hover matches active so selected and unselected toolbar items share distinct hover/pressed colors. Existing action tokens and scoped CSS are reused. Segmented control transitions defaults to the largest supported `lg` size through its existing prop, with no new size CSS.
+
+## 2026-10-28 — Labs toolbar hover matches active
+
+Labs 0.77.0 adds a sixth toolbar treatment with matching hover, press and selected/on colors. Existing Toolbar selected-color variables are reused in study-scoped CSS. Browser checks compare hover/press paint to selected paint across themes and modes; selection and disabled behavior remain intact.
+
+## 2026-10-28 — Labs distinct toolbar hover when off
+
+Labs 0.76.0 adds the fifth toolbar treatment: the strong action-colored hover appears only on enabled off/unselected items. Selected and disabled items retain their resting paint. Existing action tokens and study-scoped CSS are reused; browser coverage includes the new treatment across themes and modes.
+
+## 2026-10-28 — Labs toolbar hover when off
+
+Labs 0.75.0 adds a fourth toolbar treatment: only enabled off/unselected items show the existing subtle hover. Selected and disabled items retain their resting paint. CSS stays scoped to the study and consumes existing Toolbar tokens. The browser check covers the new treatment across themes and modes.
+
+## 2026-10-28 — Labs toolbar group hover study
+
+Labs 0.74.0 adds `/experiments/toolbar-group`: current, no-hover and distinct-hover treatments on shared A1 toggles and single-selection groups. A scoped `HoverToolbar` uses existing action tokens; shared Toolbar implementation and styling are unchanged. Includes label/disabled controls, gallery capture and focused interaction checks. See [Toolbar group](labs-toolbar-group.md).
+
 Dated log of component, token, theme, label, rule, and a1-web changes. **Newest at the top.**
 Split out of `components.md` to keep the registry focused — add an entry here whenever you change a
 component API, variant, token, theme, label, rule, feature, or a1-web behaviour (this is part of the

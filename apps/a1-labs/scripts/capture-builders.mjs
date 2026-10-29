@@ -1,11 +1,11 @@
 export async function captureBuilders(page, origin, output, only) {
-  for (const id of only ? [only] : ['automation-builder', 'token-styling', 'token-hierarchy', 'data-tables', 'pagination-types', 'avatars', 'tabs', 'code-highlighting']) {
+  for (const id of only ? [only] : ['automation-builder', 'token-styling', 'token-hierarchy', 'data-tables', 'pagination-types', 'avatars', 'tabs', 'code-highlighting', 'toolbar-group']) {
     await page.goto(`${origin}/experiments/${id}`)
     if (id === 'tabs') await page.getByRole('radio', { name: 'Folder tabs', exact: true }).press('Space')
-    const selector = { 'code-highlighting': '.a1-code-highlighting-lab', tabs: '.a1-tabs-study', avatars: '.a1-avatars-lab', 'pagination-types': '.a1-pagination-types-lab', 'data-tables': '.a1-data-tables-lab', 'automation-builder': '.a1-automation-builder', 'token-styling': '.a1-token-study', 'token-hierarchy': '.a1-token-hierarchy' }[id]
+    const selector = { 'toolbar-group': '.a1-toolbar-hover-demo', 'code-highlighting': '.a1-code-highlighting-lab', tabs: '.a1-tabs-study', avatars: '.a1-avatars-lab', 'pagination-types': '.a1-pagination-types-lab', 'data-tables': '.a1-data-tables-lab', 'automation-builder': '.a1-automation-builder', 'token-styling': '.a1-token-study', 'token-hierarchy': '.a1-token-hierarchy' }[id]
     await page.locator(selector).waitFor()
     // Keep only the parts that read at card size (for avatars: profile and sizes).
-    const keep = { avatars: ':scope > :nth-child(1), :scope > :nth-child(2)', 'code-highlighting': ':scope > :nth-child(1)' }[id]
+    const keep = { 'toolbar-group': ':scope > :nth-child(1), :scope > :nth-child(2)', avatars: ':scope > :nth-child(1), :scope > :nth-child(2)', 'code-highlighting': ':scope > :nth-child(1)' }[id]
     await page.evaluate(async ({ selector, keep }) => {
       await document.fonts.ready
       const stage = document.createElement('div'); stage.id = 'builder-capture'
@@ -13,6 +13,7 @@ export async function captureBuilders(page, origin, output, only) {
       Object.assign(stage.style, { position: 'fixed', inset: '0 auto auto 0', width: '640px', height: '360px', background: 'var(--semantic-color-surface-page)', overflow: 'hidden' })
       const source = document.querySelector(selector)
       const preview = source.cloneNode(true)
+      if (selector === '.a1-toolbar-hover-demo') preview.querySelectorAll('p').forEach(node => node.remove())
       // cloneNode does not preserve a select's current value.
       const fields = source.querySelectorAll('select, input, textarea')
       preview.querySelectorAll('select, input, textarea').forEach((field, index) => { field.value = fields[index].value })
