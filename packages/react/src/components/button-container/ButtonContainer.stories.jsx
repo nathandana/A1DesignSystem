@@ -244,7 +244,8 @@ export const FillButtons = {
 
 // A nested ButtonContainer is a button group: it joins its parent's row, so its
 // buttons wrap and stack with the others in order. A SplitButton stretches
-// like a Button when the container stacks (below 480px). Resize to compare.
+// like a Button when the container stacks (below 480px); an IconButton keeps
+// its natural square size. Resize to compare.
 export const NestedGroupAndSplitButton = {
   render: () => (
     <Stack gap="lg">
@@ -256,8 +257,26 @@ export const NestedGroupAndSplitButton = {
               <Button variant="secondary">Duplicate</Button>
             </ButtonContainer>
             <SplitButton icon="add" actions={[{ id: "import", label: "Import", icon: "upload" }]}>Create</SplitButton>
+            <IconButton icon="more_horiz" label="More options" variant="tertiary" />
           </ButtonContainer>
         </div>
+      ))}
+    </Stack>
+  ),
+};
+
+// Use a narrow parent to compare natural-width links and icon buttons.
+export const MixedActionAlignment = {
+  render: () => (
+    <Stack gap="md">
+      {['start', 'center', 'end'].map(align => (
+        <Card key={align}>
+          <Heading as="h3" size="sm">{align === 'start' ? 'Start' : align === 'center' ? 'Center' : 'End'}</Heading>
+          <ButtonContainer align={align}>
+            <Link href="#details">View details</Link>
+            <IconButton icon="more_horiz" label="More options" />
+          </ButtonContainer>
+        </Card>
       ))}
     </Stack>
   ),

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Menu tokens** — shared Menu border is 2px and its shadow uses the xl semantic token. SideNav now reads its own border token so Menu changes do not affect its border.
+
 ## 0.3.0 — 2026-10-12
 
 - **Labs token families** (A1-2698) — includes tokens for avatars, code highlighting, celebrations, slides, timelines, page construction and loading, fitted type, contextual help, password strength, mode switches, and animated radio, checkbox, accordion, dialog and segmented-control studies. Experiment implementations remain isolated in A1 Labs.

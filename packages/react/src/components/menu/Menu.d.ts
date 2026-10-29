@@ -15,6 +15,8 @@ export interface MenuProps {
   modalOnMobile?: boolean;
   /** Additional CSS class names for the menu dialog */
   className?: string;
+  /** Panel padding in spacing-token steps. Default: 8. Mobile sheet minimums and safe-area padding are preserved. */
+  padding?: 8 | 12 | 16 | 20 | 24;
   children?: React.ReactNode;
 }
 

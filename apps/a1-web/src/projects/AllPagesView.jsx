@@ -1,7 +1,9 @@
+import { validatePatterns, formatPatternDiagnostics } from '../../../../packages/react/src/patterns/patternValidation.js'
 import { useMemo, useState } from 'react'
 import {
   ActionTile,
   ActionTiles,
+  Banner,
   Button,
   Canvas,
   Code,
@@ -156,6 +158,7 @@ export function AllPagesView({
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [jsonOpen, setJsonOpen] = useState(false)
   const [publishOpen, setPublishOpen] = useState(false)
+  const [publishErrors, setPublishErrors] = useState('')
   const [viewMode, setViewMode] = useState('list')
   const [projectJson, setProjectJson] = useState('')
   const [jsonValidationResult, setJsonValidationResult] = useState(null)
@@ -170,8 +173,17 @@ export function AllPagesView({
     ? `${window.location.origin}${publishedPath}`
     : ''
 
+  function publishValidated() {
+    try {
+      const validation = validatePatterns(JSON.parse(exportProjectJson(project?.id) ?? '{}'))
+      const errors = validation.valid ? '' : formatPatternDiagnostics(validation.diagnostics)
+      setPublishErrors(errors)
+      if (!errors && project?.id) onPublishProject?.(project.id)
+    } catch (error) { setPublishErrors(error.message) }
+  }
+
   function openPublishDialog() {
-    if (project?.id && !project.published) onPublishProject?.(project.id)
+    if (project?.id && !project.published) publishValidated()
     setPublishOpen(true)
   }
 
@@ -367,7 +379,7 @@ export function AllPagesView({
                 <Button variant="secondary" onClick={() => setPublishOpen(false)}>
                   {t('label.app.projects.publishCancel', 'Cancel')}
                 </Button>
-                <Button icon="publish" onClick={() => project?.id && onPublishProject?.(project.id)}>
+                <Button icon="publish" onClick={publishValidated}>
                   {t('label.app.projects.publishProjectConfirm', 'Publish project')}
                 </Button>
               </>
@@ -376,6 +388,7 @@ export function AllPagesView({
         )}
       >
         <Stack direction="column" gap="sm">
+          {publishErrors && <Banner status="error" title="Fix pattern errors before publishing">{publishErrors}</Banner>}
           <Paragraph size="sm" color="muted">
             {project?.published
               ? t('label.app.projects.publishedDialogDescription', 'This project is available as a standalone prototype at this URL.')

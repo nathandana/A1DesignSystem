@@ -15,6 +15,7 @@
  * Everything persists as JSON in localStorage via the shared (gzip-compressed)
  * storage helpers.
  */
+import { validatePatterns, formatPatternDiagnostics } from '../../../../packages/react/src/patterns/patternValidation.js';
 import { readStored, writeStored } from '../editor/storage';
 import { EDITOR_EXAMPLES, makeBlankPage } from '../editor/examples/index';
 import type { PageDefinition } from '../editor/pageTypes';
@@ -238,6 +239,11 @@ export function removeFigmaPageLink(projectId: string, pageId: string): void {
 
 /** Publish a project to a stable local/workspace prototype URL (`/p/{slug}`). */
 export function publishProject(id: string): Project[] {
+  const json = exportProjectJson(id);
+  if (json) {
+    const validation = validatePatterns(JSON.parse(json));
+    if (!validation.valid) throw new Error(formatPatternDiagnostics(validation.diagnostics));
+  }
   const projects = loadProjectsRaw();
   const now = Date.now();
   const next = projects.map((project) => {
@@ -1025,6 +1031,9 @@ export function validateProjectImport(
       checkImportNodes(r.nodes, `${label} › region ${ri}`, errors, warnings, knownTypes);
     });
     for (const w of lintDefinition(def)) warnings.push(`${label}: ${w}`);
+    for (const diagnostic of validatePatterns(def).diagnostics) {
+      (diagnostic.severity === 'error' ? errors : warnings).push(`${label}: ${formatPatternDiagnostics([diagnostic])}`);
+    }
   });
 
   return { errors, warnings };
@@ -1034,6 +1043,8 @@ export function validateProjectImport(
  *  object — a project bundle or a single page definition. Validate first with
  *  {@link validateProjectImport}; this throws only if the shape is unusable. */
 export function importProjectJson(data: unknown): Project {
+  const validation = validateProjectImport(data);
+  if (validation.errors.length) throw new Error(validation.errors.join('\n'));
   const norm = normalizeImport(data);
   if (!norm) throw new Error('Invalid project JSON.');
 
@@ -1061,6 +1072,8 @@ export function importProjectJson(data: unknown): Project {
  * project identity. Existing page ids are retained; newly added pages receive
  * fresh ids so they cannot collide with another project. */
 export function replaceProjectJson(projectId: string, data: unknown): Project {
+  const validation = validateProjectImport(data);
+  if (validation.errors.length) throw new Error(validation.errors.join('\n'));
   const norm = normalizeImport(data);
   if (!norm || !Array.isArray((data as any)?.pages)) throw new Error('Invalid project JSON.');
 

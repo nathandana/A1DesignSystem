@@ -2,6 +2,169 @@
 // Update by regenerating this file when package prop declarations change.
 
 export const GENERATED_PROP_TABLES = {
+  "navigation-tree": [
+  {
+    "title": "NavigationTree",
+    "rows": [
+      {
+        "id": "items",
+        "name": "items",
+        "type": "NavigationTreeItem[]",
+        "description": "Any number of nested categories and items with globally unique IDs."
+      },
+      {
+        "id": "selectedId",
+        "name": "selectedId",
+        "type": "string | null",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "defaultSelectedId",
+        "name": "defaultSelectedId",
+        "type": "string | null",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "onSelect",
+        "name": "onSelect",
+        "type": "(id: string, event?: React.SyntheticEvent) => void",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "searchable",
+        "name": "searchable",
+        "type": "boolean",
+        "description": "Show search. Default: true."
+      },
+      {
+        "id": "sortable",
+        "name": "sortable",
+        "type": "boolean",
+        "description": "Show the A\u2013Z toggle. Default: true."
+      },
+      {
+        "id": "search",
+        "name": "search",
+        "type": "string",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "defaultSearch",
+        "name": "defaultSearch",
+        "type": "string",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "onSearchChange",
+        "name": "onSearchChange",
+        "type": "(search: string) => void",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "view",
+        "name": "view",
+        "type": "'tree' | 'az'",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "defaultView",
+        "name": "defaultView",
+        "type": "'tree' | 'az'",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "onViewChange",
+        "name": "onViewChange",
+        "type": "(view: 'tree' | 'az') => void",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "expandedIds",
+        "name": "expandedIds",
+        "type": "string[]",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "defaultExpandedIds",
+        "name": "defaultExpandedIds",
+        "type": "string[]",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "onExpandedChange",
+        "name": "onExpandedChange",
+        "type": "(ids: string[]) => void",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "scoreItem",
+        "name": "scoreItem",
+        "type": "(item: NavigationTreeItem, query: string) => number",
+        "description": "Optional custom search ranking; positive values match."
+      },
+      {
+        "id": "searchLabel",
+        "name": "searchLabel",
+        "type": "string",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "sortLabel",
+        "name": "sortLabel",
+        "type": "string",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "listViewLabel",
+        "name": "listViewLabel",
+        "type": "string",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "searchFieldProps",
+        "name": "searchFieldProps",
+        "type": "Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'value' | 'onChange' | 'aria-label'>",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "aria-label",
+        "name": "aria-label",
+        "type": "string",
+        "description": "Accessible navigation and tree name."
+      },
+      {
+        "id": "open",
+        "name": "open",
+        "type": "boolean",
+        "description": "Mobile overlay visibility; pair with onClose."
+      },
+      {
+        "id": "onClose",
+        "name": "onClose",
+        "type": "() => void",
+        "description": "Close the mobile overlay after Escape, scrim or close button."
+      },
+      {
+        "id": "collapsed",
+        "name": "collapsed",
+        "type": "boolean",
+        "description": "Controlled desktop icon navigation."
+      },
+      {
+        "id": "defaultCollapsed",
+        "name": "defaultCollapsed",
+        "type": "boolean",
+        "description": "Initial desktop collapsed state. Default: false."
+      },
+      {
+        "id": "onCollapsedChange",
+        "name": "onCollapsedChange",
+        "type": "(collapsed: boolean) => void",
+        "description": "Desktop collapse callback."
+      }
+    ]
+  }
+],
   "avatar": [
     {
       "title": "Avatar",
@@ -1089,6 +1252,79 @@ export const GENERATED_PROP_TABLES = {
       ]
     }
   ],
+  "split-button": [
+  {
+    "title": "SplitButton",
+    "rows": [
+      {
+        "id": "children",
+        "name": "children",
+        "type": "ReactNode",
+        "description": "Main button label."
+      },
+      {
+        "id": "variant",
+        "name": "variant",
+        "type": "primary | secondary | tertiary | destructive | success",
+        "description": "Shared visual style for both targets. Defaults to primary."
+      },
+      {
+        "id": "size",
+        "name": "size",
+        "type": "sm | md | lg",
+        "description": "Resizes the main button and caret together. Defaults to md."
+      },
+      {
+        "id": "icon",
+        "name": "icon",
+        "type": "string",
+        "description": "Optional icon inside the main button."
+      },
+      {
+        "id": "iconPosition",
+        "name": "iconPosition",
+        "type": "start | end",
+        "description": "Main button icon position."
+      },
+      {
+        "id": "loading",
+        "name": "loading",
+        "type": "boolean",
+        "description": "Shows a spinner and disables both targets."
+      },
+      {
+        "id": "disabled",
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Disables both targets."
+      },
+      {
+        "id": "actions",
+        "name": "actions",
+        "type": "SplitButtonAction[]",
+        "description": "Secondary actions with id, label, optional icon, disabled state and onClick callback."
+      },
+      {
+        "id": "menuLabel",
+        "name": "menuLabel",
+        "type": "string",
+        "description": "Accessible menu name. Defaults to More actions."
+      },
+      {
+        "id": "toggleLabel",
+        "name": "toggleLabel",
+        "type": "string",
+        "description": "Accessible caret name. Defaults to More actions."
+      },
+      {
+        "id": "onClick",
+        "name": "onClick",
+        "type": "(event) => void",
+        "description": "Main action callback."
+      }
+    ]
+  }
+],
   "button": [
     {
       "title": "Button",
@@ -2623,6 +2859,7 @@ export const GENERATED_PROP_TABLES = {
     {
       "title": "Dialog",
       "rows": [
+        { "id": "initialFocusId", "name": "initialFocusId", "type": "string", "description": "ID of a descendant to focus after the dialog opens, such as Cancel in a verification dialog." },
         {
           "id": "open",
           "name": "open",
@@ -3425,6 +3662,7 @@ export const GENERATED_PROP_TABLES = {
     {
       "title": "Menu",
       "rows": [
+        { "id": "padding", "name": "padding", "type": "8 | 12 | 16 | 20 | 24", "description": "Panel padding in spacing-token steps. Defaults to 8; mobile keeps minimum spacing and safe-area padding." },
         {
           "id": "open",
           "name": "open",
@@ -3902,6 +4140,44 @@ export const GENERATED_PROP_TABLES = {
         { "id": "actions", "name": "actions", "type": "ReactNode | { id?, kind?, label, variant?, icon?, href?, onClick?, disabled? }[]", "description": "Page actions: composed Button, SplitButton, Link, IconButton, ButtonContainer group, Toolbar or SegmentedControl, or a list of action descriptors (button, link or icon button). At most one primary (a Button or SplitButton, primary by default) and it renders last; a ButtonContainer group stays together with its primary at its end. They sit in a ButtonContainer, so they stack full-width on narrow containers." },
         { "id": "contentWidth", "name": "contentWidth", "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\"", "description": "Section content width \u2014 match the sections that follow. Default: \"xl\"." },
         { "id": "children", "name": "children", "type": "ReactNode", "description": "Extra content below the actions, such as a search field or tab strip." }
+      ]
+    }
+  ],
+  "verification-dialog": [{ "title": "VerificationDialog", "rows": [
+    {"id": "titleKey", "name": "titleKey", "type": "string", "description": "Optional label-service key; corresponding text is the fallback."},
+    {"id": "messageKey", "name": "messageKey", "type": "string", "description": "Optional label-service key; corresponding text is the fallback."},
+    {"id": "confirmLabelKey", "name": "confirmLabelKey", "type": "string", "description": "Optional label-service key; corresponding text is the fallback."},
+    {"id": "cancelLabelKey", "name": "cancelLabelKey", "type": "string", "description": "Optional label-service key; corresponding text is the fallback."},
+    { "id": "title", "name": "title", "type": "string", "description": "Required accessible dialog title." },
+    { "id": "message", "name": "message", "type": "string", "description": "Required explanation of the action's consequence." },
+    { "id": "open", "name": "open", "type": "boolean", "description": "Controlled visibility; defaults to false." },
+    { "id": "confirmLabel", "name": "confirmLabel", "type": "string", "description": "Confirmation verb; defaults to localized Confirm." },
+    { "id": "cancelLabel", "name": "cancelLabel", "type": "string", "description": "Defaults to localized Cancel." },
+    { "id": "destructive", "name": "destructive", "type": "boolean", "description": "Use a destructive confirmation button." },
+    { "id": "disabled", "name": "disabled", "type": "boolean", "description": "Disable confirmation while allowing cancellation." },
+    { "id": "onConfirm", "name": "onConfirm", "type": "() => void", "description": "Invoked only by confirmation, once per open session. React only." },
+    { "id": "onClose", "name": "onClose", "type": "() => void", "description": "Cancellation, Escape, close or backdrop dismissal. React only." },
+    { "id": "children", "name": "children", "type": "ReactNode", "description": "Optional open supporting-content area." }
+  ] }],
+  "overflow-menu": [{ "title": "OverflowMenu", "rows": [
+    { "id": "label", "name": "label", "type": "string", "description": "Accessible trigger/menu label. Defaults to More actions." },
+    { "id": "size", "name": "size", "type": "sm | md | lg", "description": "Icon-button size. Default: md." },
+    { "id": "disabled", "name": "disabled", "type": "boolean", "description": "Disables the trigger and action activation." },
+    { "id": "actions", "name": "actions", "type": "OverflowMenuAction[]", "description": "Ordered actions with unique id, label, optional icon, href, disabled, destructive and a nested VerificationDialog element. Empty by default." },
+    { "id": "onAction", "name": "onAction", "type": "(action: OverflowMenuAction) => void", "description": "Runs once after activation or confirmation, never on dismissal. React only." }
+  ] }],
+  "overview-card": [
+    {
+      "title": "Overview Card",
+      "rows": [
+        { "id": "icon", "name": "icon", "type": "string", "description": "Material Symbols icon in the card's icon block. Default: \"account_circle\". The block itself is fixed." },
+        { "id": "title", "name": "title", "type": "ReactNode", "description": "The card heading (md, fixed)." },
+        { "id": "titleAs", "name": "titleAs", "type": "\"h2\" | \"h3\" | \"h4\"", "description": "Heading level to fit the page outline. Default: \"h3\"." },
+        { "id": "status", "name": "status", "type": "\"neutral\" | \"info\" | \"success\" | \"warn\" | \"error\"", "description": "Status stripe tone; shown only with statusLabel, so status is never colour-only." },
+        { "id": "statusLabel", "name": "statusLabel", "type": "ReactNode", "description": "Status badge text; turns the status on." },
+        { "id": "details", "name": "details", "type": "{ label, value }[]", "description": "Key details, as a row definition list with fixed-width labels." },
+        { "id": "actions", "name": "actions", "type": "ReactNode | { id?, kind?, label, variant?, icon?, iconPosition?, href?, onClick?, disabled? }[]", "description": "Up to two actions: small secondary or tertiary Buttons, Links or small IconButtons (kind \"icon-button\", label = accessible name). A primary or unset button variant becomes secondary." },
+        { "id": "children", "name": "children", "type": "ReactNode", "description": "The content area, between the details and the actions \u2014 a short paragraph, a progress bar or a chart." }
       ]
     }
   ],

@@ -52,7 +52,10 @@
     "./utilities/width.css": "./src/utilities/width.css",
     "./utilities/sr-only.css": "./src/utilities/sr-only.css",
     "./components/*": "./src/components/*",
-    "./patterns/*": "./src/patterns/*"
+    "./patterns/*": "./src/patterns/*",
+    "./patterns/contracts": "./src/patterns/patternPolicies.js",
+    "./patterns/validation": "./src/patterns/patternValidation.js",
+    "./patterns/migrations": "./src/patterns/patternMigrations.js"
   },
   "publishConfig": {
     "access": "public"
@@ -61,6 +64,7 @@
     "react": ">=18"
   },
   "dependencies": {
+    "ajv": "^6.15.0",
     "recharts": "^3.9.2"
   },
   "types": "./src/index.d.ts",

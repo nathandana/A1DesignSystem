@@ -16,6 +16,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
 import manifest from '../../package.json' with { type: 'json' };
+import { validatePatterns } from '../../../react/src/patterns/patternValidation.js';
+import { migratePatternNode } from '../../../react/src/patterns/patternMigrations.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const INDEX_PATH = path.resolve(HERE, '../../index.json');
@@ -37,12 +39,35 @@ function loadIndex() {
 function findComponent(index, name) {
   const target = String(name).trim().toLowerCase();
   return (
-    index.components.find((c) => c.name.toLowerCase() === target) ??
+    index.components.find((c) => c.name.toLowerCase() === target || c.exports.some(e => e.exportedName.toLowerCase() === target)) ??
     index.components.find((c) => c.name.toLowerCase().startsWith(target))
   );
 }
 
 const TOOLS = [
+  {
+    name: 'migrate_pattern',
+    description: 'Propose an explicit supported migration of one formal pattern node. Returns the migrated node and diagnostics; does not save or modify the input. Unknown versions and ambiguous renames retain the original node.',
+    input: z.object({ node: z.record(z.string(), z.unknown()) }),
+    handler(args) { return migratePatternNode(args.node); },
+  },
+  {
+    name: 'get_pattern',
+    description: 'Get a versioned formal A1 pattern contract, props schema, ordered editable areas, policies, empty starter and populated examples.',
+    input: z.object({ name: z.string().describe('Pattern type or slug, e.g. OverviewCard or overview-card') }),
+    handler(args, index) {
+      const name = args.name.toLowerCase();
+      const pattern = index.patterns?.find(p => [p.id, p.type, p.name].some(value => value.toLowerCase() === name));
+      if (!pattern) throw new ToolError(`Unknown formal pattern "${args.name}".`);
+      return pattern;
+    },
+  },
+  {
+    name: 'validate_patterns',
+    description: 'Validate formal patterns in a component node, page definition or project bundle. Returns non-destructive diagnostics with node IDs, JSON paths, rule IDs, severity and recovery guidance. Does not execute actions or validate the entire page schema.',
+    input: z.object({ definition: z.unknown().describe('Parsed JSON node, page or project bundle') }),
+    handler(args) { return validatePatterns(args.definition); },
+  },
   {
     name: 'list_components',
     description:
@@ -56,6 +81,7 @@ const TOOLS = [
       const categoryById = new Map(index.categories.map((c) => [c.id, c.heading]));
       let results = index.components.map((c) => ({
         name: c.name,
+        kind: index.patterns?.some(p => c.exports.some(e => e.exportedName === p.type)) ? 'pattern' : 'component',
         category: categoryById.get(c.categoryId) ?? null,
         coverage: c.coverage,
       }));
@@ -87,6 +113,7 @@ const TOOLS = [
       const category = index.categories.find((c) => c.id === component.categoryId);
       return {
         name: component.name,
+        pattern: index.patterns?.find(p => component.exports.some(e => e.exportedName === p.type)) ?? null,
         category: category?.heading ?? null,
         coverage: component.coverage,
         exports: component.exports,

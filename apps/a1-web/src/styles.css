@@ -626,6 +626,8 @@ html.a1-theme-dark.a1-theme-kong .a1-top-header .a1-web-logo svg {
 /* Preview frame for components that own their full height (e.g. SideNav).
    SideNav is height:100%, so the preview needs a bounded, scrollable box. */
 .a1-web-side-nav-preview {
+  /* Keep fixed mobile scrims inside the bounded component example. */
+  contain: layout paint;
   display: flex;
   block-size: 28rem;
   max-block-size: 70vh;
@@ -716,6 +718,7 @@ html.a1-theme-dark.a1-theme-kong .a1-top-header .a1-web-logo svg {
   margin-inline: auto;
 }
 
+.a1-web-components-tree .a1-side-nav__footer,
 .a1-web-components-tree .a1-side-nav__close-btn,
 .a1-web-components-tree .a1-side-nav__collapse-btn {
   display: none;
@@ -723,7 +726,7 @@ html.a1-theme-dark.a1-theme-kong .a1-top-header .a1-web-logo svg {
 
 
 .a1-web-component-preview {
-  padding: var(--base-spacing-24);
+  padding: 0;
   border: var(--component-card-border-width) dashed var(--semantic-color-border-default);
   border-radius: var(--base-radius-lg);
   background: var(--semantic-color-surface-panel);

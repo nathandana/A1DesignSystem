@@ -129,6 +129,10 @@ import { Controls as NotificationControls, getDefaultConfig as notificationDefau
 import { Controls as SideNavControls, getDefaultConfig as sideNavDefaults } from '../pages/components/detail/side-nav.jsx'
 import { Controls as BottomSheetControls, getDefaultConfig as bottomSheetDefaults } from '../pages/components/detail/bottom-sheet.jsx'
 import { Controls as CanvasControls, getDefaultConfig as canvasDefaults } from '../pages/components/detail/canvas.jsx'
+import { Controls as VerificationDialogControls, configFromProps as verificationDialogConfigFromProps, propsFromConfig as verificationDialogPropsFromConfig } from '../pages/components/detail/verification-dialog.jsx'
+import { Controls as OverflowMenuControls, configFromProps as overflowMenuConfigFromProps, propsFromConfig as overflowMenuPropsFromConfig } from '../pages/components/detail/overflow-menu.jsx'
+import { Controls as NavigationTreeControls, configFromProps as navigationTreeConfigFromProps, propsFromConfig as navigationTreePropsFromConfig } from '../pages/components/detail/navigation-tree.jsx'
+import { Controls as OverviewCardControls, configFromProps as overviewCardConfigFromProps, propsFromConfig as overviewCardPropsFromConfig } from '../pages/components/detail/overview-card.jsx'
 import { Controls as PageTitleControls, configFromProps as pageTitleConfigFromProps, propsFromConfig as pageTitlePropsFromConfig } from '../pages/components/detail/page-title.jsx'
 
 const TEXT_LABEL_CONFIG_FIELD_BY_TYPE = {
@@ -986,6 +990,11 @@ export const propsToConfig = {
   // PageTitle (pattern) renders as the real component; its breadcrumb and
   // metadata row travel as data props, its actions as nodes in the Actions zone.
   PageTitle: (props) => pageTitleConfigFromProps(props ?? {}),
+  // OverviewCard (pattern): details and status are data props, actions are nodes in its zone.
+  VerificationDialog: (props) => verificationDialogConfigFromProps(props ?? {}),
+  OverflowMenu: (props) => overflowMenuConfigFromProps(props ?? {}),
+  NavigationTree: (props) => navigationTreeConfigFromProps(props ?? {}),
+  OverviewCard: (props) => overviewCardConfigFromProps(props ?? {}),
   Notification: (props) => ({ ...notificationDefaults(), ...(props ?? {}) }),
   BottomSheet: (props) => ({ ...bottomSheetDefaults(), ...(props ?? {}) }),
   Canvas: (props) => ({ ...canvasDefaults(), ...(props ?? {}) }),
@@ -1832,6 +1841,10 @@ export const configToNodeUpdate = {
   ContextMenu: (config) => ({ props: { ...config } }),
   Snackbar: (config) => ({ props: { ...config } }),
   PageTitle: (config) => ({ props: pageTitlePropsFromConfig(config) }),
+  VerificationDialog: (config) => ({ props: verificationDialogPropsFromConfig(config) }),
+  OverflowMenu: (config) => ({ props: overflowMenuPropsFromConfig(config) }),
+  NavigationTree: (config) => ({ props: navigationTreePropsFromConfig(config) }),
+  OverviewCard: (config) => ({ props: overviewCardPropsFromConfig(config) }),
   Notification: (config) => ({ props: { ...config } }),
   BottomSheet: (config) => ({ props: { ...config } }),
   Canvas: (config) => ({ props: { ...config } }),
@@ -2270,6 +2283,10 @@ const CONTROLS_BY_TYPE = {
   ContextMenu: ContextMenuControls,
   Snackbar: SnackbarControls,
   PageTitle: PageTitleControls,
+  NavigationTree: NavigationTreeControls,
+  OverviewCard: OverviewCardControls,
+  OverflowMenu: OverflowMenuControls,
+  VerificationDialog: VerificationDialogControls,
   Notification: NotificationControls,
   SideNav: SideNavControls,
   BottomSheet: BottomSheetControls,

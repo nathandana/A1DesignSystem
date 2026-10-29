@@ -11,6 +11,7 @@
  * - Actions are NOT executed yet — see the TODO in `RenderNode`.
  */
 import {
+  VerificationDialog,
   Code,
   InlineEditable,
   Heading,
@@ -33,6 +34,8 @@ import { EditorSelectionBoundary } from "./EditorSelectionBoundary";
 import type { ComponentType as ReactComponentType } from "react";
 import { componentRegistry } from "./componentRegistry";
 import { applyZoneItemProps, patternAreaProp } from "./patternAreas";
+import { canonicalizePatternTree, getPatternManifest } from "../../../../packages/react/src/patterns/patternPolicies.js";
+import { validatePatterns } from "../../../../packages/react/src/patterns/patternValidation.js";
 import { resolveSrc as resolveImageSrc } from "../lib/imageLibrary";
 import { useImageLibraryVersion } from "./ImageLibraryContext";
 import { useDataSources } from "../data/DataSourcesContext.jsx";
@@ -65,50 +68,13 @@ import type {
 // InlineEditable so it can be edited in place (patterns: the Page title band).
 const INLINE_TEXT_PROPS_BY_TYPE: Record<string, { prop: string; multiline?: boolean }[]> = {
   PageTitle: [{ prop: "eyebrow" }, { prop: "title" }, { prop: "description", multiline: true }],
+  OverviewCard: [{ prop: "title" }],
 };
 
 // A pattern's zones (see patternAreas.ts): a child `Slot` whose `props.area`
 // names a zone renders its items into the pattern prop the registry maps it to
 // instead of into the children. The Page title's Actions zone feeds its action
 // row; the open Content area stays in children.
-
-// The Page title's action rule, applied to the Actions zone's nodes so the edit
-// canvas, preview and prototype agree with the React pattern: one primary at
-// most, shown last. A Button (or split button) with no variant renders primary.
-// A ButtonContainer is a button group: it stays together, its primary moves to
-// its end and the group is shown last.
-function isPrimaryActionNode(node: ComponentNode): boolean {
-  return node.type === "Button" && ((node.props?.variant as string | undefined) ?? "primary") === "primary";
-}
-
-function demoteActionNode(node: ComponentNode): ComponentNode {
-  return { ...node, props: { ...node.props, variant: "secondary" } };
-}
-
-function orderPageTitleActionNodes(nodes: ComponentNode[]): ComponentNode[] {
-  let primary: ComponentNode | null = null;
-  const rest: ComponentNode[] = [];
-  for (const node of nodes) {
-    if (node.type === "ButtonContainer") {
-      let groupPrimary: ComponentNode | null = null;
-      const groupRest: ComponentNode[] = [];
-      for (const item of node.children ?? []) {
-        if (!isPrimaryActionNode(item)) groupRest.push(item);
-        else if (primary || groupPrimary) groupRest.push(demoteActionNode(item));
-        else groupPrimary = item;
-      }
-      const group = { ...node, children: groupPrimary ? [...groupRest, groupPrimary] : groupRest };
-      if (groupPrimary) primary = group;
-      else rest.push(group);
-    } else if (isPrimaryActionNode(node)) {
-      if (primary) rest.push(demoteActionNode(node));
-      else primary = node;
-    } else {
-      rest.push(node);
-    }
-  }
-  return primary ? [...rest, primary] : rest;
-}
 
 const CONTAINER_TYPES = new Set([
   "Section",
@@ -519,7 +485,7 @@ function inlineLinkNodes(
  * its red lock outlines while it is active.
  */
 function RenderNode({
-  node,
+  node: sourceNode,
   inPattern = false,
   patternActive = false,
 }: {
@@ -527,6 +493,8 @@ function RenderNode({
   inPattern?: boolean;
   patternActive?: boolean;
 }) {
+  const node = useMemo(() => getPatternManifest(sourceNode.type) ? canonicalizePatternTree(sourceNode) : sourceNode, [sourceNode]);
+  const patternResult = useMemo(() => getPatternManifest(sourceNode.type) || sourceNode.patternVersion ? validatePatterns(sourceNode) : null, [sourceNode]);
   // Hooks must run unconditionally and before any early return.
   const text = useResolvedContent(node.content);
   const labelKey =
@@ -581,6 +549,12 @@ function RenderNode({
   const childInPattern = nodeInPattern;
   const childPatternActive = nodeInPattern ? thisActive : false;
 
+  if (patternResult && !patternResult.valid && !editorMode) {
+    return <Section role="alert" padding="sm" surface="panel">
+      <Heading as="h3" size="sm">Pattern needs attention</Heading>
+      {patternResult.diagnostics.filter(d => d.severity === 'error').map((d, index) => <Paragraph key={index} size="sm">{d.message} {d.recovery}</Paragraph>)}
+    </Section>;
+  }
   if (!Component) {
     return <UnsupportedComponent type={node.type} />;
   }
@@ -714,10 +688,12 @@ function RenderNode({
       const area = child.type === "Slot" ? (child.props?.area as string | undefined) : undefined;
       const propName = patternAreaProp(node.type, area);
       if (propName) {
+        // An authored empty area overrides legacy data props as well.
+        areaElements[propName] = undefined;
         const items = child.children ?? [];
         if (items.length) {
           const fixed = applyZoneItemProps(node.type, area, items);
-          const ordered = node.type === "PageTitle" && propName === "actions" ? orderPageTitleActionNodes(fixed) : fixed;
+          const ordered = fixed;
           areaElements[propName] = ordered.map((item) => (
             <RenderNode key={item.id} node={item} inPattern={childInPattern} patternActive={childPatternActive} />
           ));
@@ -1041,6 +1017,8 @@ function RenderNode({
     }
   }
 
+  if (node.type === "OverflowMenu") resolvedProps.actions = overflowMenuActions(resolvedProps.actions as any[] ?? []);
+
   const componentEl = createElement(Component, resolvedProps, ...childList);
 
   if (!editorMode) return componentEl;
@@ -1280,3 +1258,15 @@ export function RenderPageDefinition({
 
 /** Exported for the editor page to demonstrate the unsupported-type fallback. */
 export { RenderNode };
+
+
+/** Materialize nested verification patterns without interpreting executable JSON. */
+export function overflowMenuActions(actions: any[] = []) {
+  return actions.map(action => ({ ...action, ...(action.verification ? {
+    verification: createElement(VerificationDialog, {
+      ...action.verification.props,
+      ...a11yProps(action.verification.a11y),
+      children: (action.verification.children ?? []).map((node: ComponentNode) => createElement(RenderNode, { key: node.id, node })),
+    }),
+  } : {}) }));
+}

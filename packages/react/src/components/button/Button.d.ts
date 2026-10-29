@@ -17,6 +17,8 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
   fullWidth?: boolean;
   /** Show a loading spinner (replacing the icon) and make the button inert (disabled + aria-busy). Use while an action is in progress, e.g. submitting a form. Default: false */
   loading?: boolean;
+  /** Disabled links have no href, leave the tab order and suppress pointer/keyboard activation. */
+  disabled?: boolean;
   children?: React.ReactNode;
 }
 

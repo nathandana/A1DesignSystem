@@ -1,3 +1,4 @@
+import { validatePatterns, formatPatternDiagnostics } from '../../../../../packages/react/src/patterns/patternValidation.js'
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import {
@@ -372,7 +373,6 @@ function defaultDisplayAlign(component, category) {
 function defaultDisplayConfig(component, category) {
   return {
     align: defaultDisplayAlign(component, category),
-    padding: 'md',
     inverse: false,
     containerQuery: 'auto',
     viewport: 'fit',
@@ -1681,14 +1681,6 @@ function ContainerQueryPreviewFrame({ component, displayConfig, children }) {
 // Viewport presets for the responsive preview. Each renders the preview inside
 // an iframe of the given width — a real nested viewport, so CSS @media (and
 // container) queries respond accurately — then scales it down to fit the panel.
-// Preview padding options for the center-panel display toolbar.
-const PADDING_ITEMS = [
-  { value: 'none', label: 'None' },
-  { value: 'xs', label: 'XS' },
-  { value: 'md', label: 'MD' },
-  { value: 'lg', label: 'LG' },
-]
-
 const VISIBLE_DETAIL_TABS = new Set(DETAIL_TAB_IDS)
 const EXAMPLE_TAB_PREFIX = 'example:'
 const GENERATED_PROP_ALIASES = {
@@ -3060,7 +3052,7 @@ function ConfigurationPanel({
 }
 
 /* Display controls shown as a toolbar in the top-right of the centre preview
-   panel: responsive viewport, preview padding, and inverse. */
+   panel: responsive viewport and inverse. */
 function DisplayToolbar({ displayConfig, setDisplayConfig, bareDisplay, responsiveControl = 'menu', hasEditableAreas = false }) {
   const set = (patch) => setDisplayConfig((current) => ({ ...current, ...patch }))
   const exposed = responsiveControl === 'toolbar'
@@ -3094,17 +3086,6 @@ function DisplayToolbar({ displayConfig, setDisplayConfig, bareDisplay, responsi
             showLabel
             pressed={displayConfig.showSlots !== false}
             onChange={(showSlots) => set({ showSlots })}
-          />
-        )}
-        {!bareDisplay && (
-          <ToolbarMenu
-            icon="padding"
-            aria-label="Padding"
-            label="Padding"
-            showLabel
-            value={displayConfig.padding}
-            onChange={(padding) => set({ padding })}
-            items={PADDING_ITEMS}
           />
         )}
         {!bareDisplay && (
@@ -3177,7 +3158,7 @@ function ComponentConfigureSurface({
   useEffect(() => {
     if (jsonArrival > 0 && hasJson) {
       setSnippetFormat('json')
-      if (jsonArrivalHadChildren) {
+      if (jsonArrivalHadChildren && !detail.acceptsJsonChildren) {
         jsonArrivalRef.current = true
         setJsonInfo(childrenIgnoredNotice)
       }
@@ -3222,8 +3203,10 @@ function ComponentConfigureSurface({
       setJsonError(t('label.app.configurator.importJsonWrongType', 'The node type must be "{type}".').replace('{type}', detail.jsonType))
       return
     }
+    const validation = validatePatterns(data)
+    if (!validation.valid) { setJsonError(formatPatternDiagnostics(validation.diagnostics)); return }
     setJsonError(null)
-    setJsonInfo(Array.isArray(data.children) && data.children.length > 0 ? childrenIgnoredNotice : null)
+    setJsonInfo(validation.diagnostics.length ? formatPatternDiagnostics(validation.diagnostics) : !detail.acceptsJsonChildren && Array.isArray(data.children) && data.children.length > 0 ? childrenIgnoredNotice : null)
     jsonEditRef.current = true
     setConfig(() => ({
       ...detail.fromJson(data),
@@ -3242,7 +3225,7 @@ function ComponentConfigureSurface({
       ) : (
         <Section
           align={displayConfig.align}
-          padding={displayConfig.padding}
+          padding={component.id === 'button' || component.id === 'split-button' ? 'sm' : 'none'}
           inverse={displayConfig.inverse}
           gap="lg"
           borderSize={displayConfig.borderSize}

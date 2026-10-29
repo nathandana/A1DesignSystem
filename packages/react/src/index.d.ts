@@ -14,6 +14,8 @@ export { Notification } from "./components/notification/Notification";
 export { Snackbar, SnackbarStack } from "./components/snackbar/Snackbar";
 export { StatusBar } from "./components/status-bar/StatusBar";
 export { Stat } from "./components/stat/Stat";
+export { OverviewCard, normalizeOverviewCardActions } from "./patterns/overview-card/OverviewCard";
+export type { OverviewCardProps, OverviewCardDetail, OverviewCardAction } from "./patterns/overview-card/OverviewCard";
 export { PageTitle, normalizePageTitleActions } from "./patterns/page-title/PageTitle";
 export type { PageTitleProps, PageTitleAction, PageTitleBadge } from "./patterns/page-title/PageTitle";
 export { Avatar } from "./components/avatar/Avatar";
@@ -110,3 +112,12 @@ export { StickyActions } from "./components/sticky-actions/StickyActions";
 
 export { CustomBlock } from "./components/custom-block/CustomBlock";
 export type { CustomBlockProps } from "./components/custom-block/CustomBlock";
+
+export { OverflowMenu } from "./patterns/overflow-menu/OverflowMenu";
+export type { OverflowMenuProps, OverflowMenuAction, OverflowMenuVerification } from "./patterns/overflow-menu/OverflowMenu";
+
+export { NavigationTree } from "./patterns/navigation-tree/NavigationTree";
+export type { NavigationTreeProps, NavigationTreeItem } from "./patterns/navigation-tree/NavigationTree";
+
+export { VerificationDialog } from "./patterns/verification-dialog/VerificationDialog";
+export type { VerificationDialogProps } from "./patterns/verification-dialog/VerificationDialog";

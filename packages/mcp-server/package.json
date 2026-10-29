@@ -7,7 +7,7 @@
   "scripts": {
     "build:mcp-index": "node scripts/build-index.mjs",
     "dev": "cd ../.. && netlify dev --cwd packages/mcp-server --port 5190",
-    "netlify:build": "cd ../.. && npm ci && npm run build:tokens && npm run build:mcp-index --workspace=@gtivr4/a1-design-system-mcp"
+    "netlify:build": "cd ../.. && npm ci && npm run build:tokens && npm run patterns:check && npm run build:mcp-index:check && npm run test:patterns"
   },
   "dependencies": {
     "yaml": "^2.9.0",

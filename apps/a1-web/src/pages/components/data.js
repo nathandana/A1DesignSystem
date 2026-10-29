@@ -15,6 +15,10 @@ import overlayRules from '../../../../../system/rules/overlay.yaml?raw'
 import chartRules from '../../../../../system/rules/chart.yaml?raw'
 import customBlockRules from '../../../../../system/rules/custom-block.yaml?raw'
 import avatarRules from '../../../../../system/rules/avatar.yaml?raw'
+import verificationDialogRules from '../../../../../system/rules/verification-dialog.yaml?raw'
+import overflowMenuRules from '../../../../../system/rules/overflow-menu.yaml?raw'
+import navigationTreeRules from '../../../../../system/rules/navigation-tree.yaml?raw'
+import overviewCardRules from '../../../../../system/rules/overview-card.yaml?raw'
 import pageTitleRules from '../../../../../system/rules/page-title.yaml?raw'
 import { GENERATED_COMPONENT_HISTORY } from './componentHistory.generated.js'
 
@@ -757,5 +761,9 @@ export const ruleSourceFiles = [
   { file: 'system/rules/overlay.yaml', raw: overlayRules },
   { file: 'system/rules/chart.yaml', raw: chartRules },
   { file: 'system/rules/avatar.yaml', raw: avatarRules },
+  { file: 'system/rules/verification-dialog.yaml', raw: verificationDialogRules },
+  { file: 'system/rules/overflow-menu.yaml', raw: overflowMenuRules },
+  { file: 'system/rules/navigation-tree.yaml', raw: navigationTreeRules },
+  { file: 'system/rules/overview-card.yaml', raw: overviewCardRules },
   { file: 'system/rules/page-title.yaml', raw: pageTitleRules },
 ]

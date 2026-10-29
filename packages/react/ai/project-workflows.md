@@ -156,6 +156,13 @@ A pattern is a first-class composition of A1 components (A1-2720) — Page title
 4. **Editor** — Add the type to `pageTypes.ts`, the component to `componentRegistry.ts`, an entry under the **Patterns** group in `componentCatalog.ts`, the props bridge in `EditorPropsPanel.jsx` and an icon in `EditorSidebar.jsx`. Declare the pattern's editable areas once in `editor/patternAreas.ts` — a **zone** (`zone: { allow, max, prop, rules }`: what it accepts, how many, the pattern prop its items render into, and the rule sentence people see) or an open area — and build its `Slot` children with `patternAreaSlot()` in both the catalog entry and the configurator's `toJson`. The renderer, Add panel, locks, Layers tree and placeholders read the registry and the node's `zone` flag, so nothing else needs wiring per pattern.
 5. **Docs** — Add it to the **Patterns** section of `components.md` (the MCP index reads that section), the page-definition standard and agent brief, the maintenance log and the changelogs.
 
+Pattern starter JSON includes its area definitions but no sample area children.
+Populate an area's `children` only when explicitly configured. Keep demonstration
+content in stories. A pattern's parent controls its allocated width; do not add
+preview-only width limits to Overview Card. See
+[formal pattern recommendations](pattern-contract-recommendations.md) for the
+proposed shared manifest and validation roadmap.
+
 ### Adding a prop to an existing component (mandatory steps)
 
 Every time a new prop is added to any component, all of the following must happen **in the same change** — no exceptions:

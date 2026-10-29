@@ -8,9 +8,11 @@ import type { A11yDefinition, ComponentNode, ComponentProps, PageDefinition } fr
 import { utilityClassesFor } from './utilityRegistry';
 import { responsiveVisibilityClasses } from './responsiveVisibility.js';
 import { applyZoneItemProps, patternAreaProp } from './patternAreas';
+import { canonicalizePatternTree } from '../../../../packages/react/src/patterns/patternPolicies.js';
+import { validatePatterns, formatPatternDiagnostics } from '../../../../packages/react/src/patterns/patternValidation.js';
 
 function escapeAttr(value: string): string {
-  return value.replace(/"/g, '&quot;');
+  return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 }
 
 function escapeText(value: string): string {
@@ -26,7 +28,7 @@ function propToken([key, value]: [string, unknown]): string | null {
   return `${key}={${JSON.stringify(value)}}`;
 }
 
-function serializeProps(props: ComponentProps | undefined, a11y?: A11yDefinition, literalStrings = false): string {
+function propTokens(props: ComponentProps | undefined, a11y?: A11yDefinition, literalStrings = false): string[] {
   const tokens = Object.entries(props ?? {})
     // Custom source must preserve newlines, entities and quotes as literal strings.
     .map(([key, value]) => literalStrings && typeof value === 'string'
@@ -34,7 +36,14 @@ function serializeProps(props: ComponentProps | undefined, a11y?: A11yDefinition
       : propToken([key, value]))
     .filter((token): token is string => token !== null);
   if (a11y?.label) tokens.push(`aria-label="${escapeAttr(a11y.label)}"`);
+  if (a11y?.labelledBy) tokens.push(`aria-labelledby="${escapeAttr(a11y.labelledBy)}"`);
+  if (a11y?.describedBy) tokens.push(`aria-describedby="${escapeAttr(a11y.describedBy)}"`);
   if (a11y?.role) tokens.push(`role="${escapeAttr(a11y.role)}"`);
+  return tokens;
+}
+
+function serializeProps(props: ComponentProps | undefined): string {
+  const tokens = propTokens(props);
   return tokens.length ? ` ${tokens.join(' ')}` : '';
 }
 
@@ -71,33 +80,66 @@ function serializeNode(rawNode: ComponentNode, indent: string): string {
   // items become the pattern prop it renders into, and any other area's items
   // are written in place.
   const zoneProps: string[] = [];
+  let props = { ...propsWithUtilityClass(node) };
+  if (node.type === 'VerificationDialog') {
+    // Keep each translation binding next to its fallback text.
+    const ordered = Object.fromEntries(['title', 'message', 'confirmLabel', 'cancelLabel']
+      .flatMap(key => [`${key}Key`, key])
+      .filter(key => props[key] !== undefined)
+      .map(key => [key, props[key]]));
+    props = { ...ordered, ...props };
+  }
+  if (node.type === 'OverflowMenu' && Array.isArray(props.actions)) {
+    const actions = props.actions.map(action => {
+      const { verification, ...data } = action;
+      const fields = Object.entries(data).filter(([, value]) => value !== undefined).map(([key, value]) =>
+        `${indent}      ${/^[A-Za-z_$][\w$]*$/.test(key) ? key : JSON.stringify(key)}: ${JSON.stringify(value)}`);
+      if (verification) fields.push(`${indent}      verification: (\n${serializeNode(verification, `${indent}        `)}\n${indent}      )`);
+      return `${indent}    {\n${fields.join(',\n')},\n${indent}    }`;
+    });
+    zoneProps.push(`actions={[\n${actions.join(',\n')}\n${indent}  ]}`);
+    delete props.actions;
+  }
   const children: ComponentNode[] = [];
   for (const child of node.children ?? []) {
     if (child.type !== 'Slot') { children.push(child); continue; }
     const area = child.props?.area as string | undefined;
     const prop = patternAreaProp(node.type, area);
+    if (prop) delete props[prop];
     const items = applyZoneItemProps(node.type, area, child.children ?? []);
     if (prop && items.length) {
       zoneProps.push(`${prop}={(\n${indent}    <>\n${serializeChildren(items, `${indent}      `)}\n${indent}    </>\n${indent}  )}`);
     } else if (!prop) {
-      children.push(...items);
+      if (items.length) {
+        // Filled open areas render through Grid in the editor; retain their layout in code.
+        const { area: _area, zone: _zone, label: _label, rules: _rules, allow: _allow, allowPatterns: _patterns, min: _min, max: _max, ...layout } = child.props ?? {};
+        children.push({ ...child, type: 'Grid', props: { gap: 'md', ...layout }, children: items });
+      }
     }
   }
-  const zoneTokens = zoneProps.length ? `\n${indent}  ${zoneProps.join(`\n${indent}  `)}\n${indent}` : '';
-  const open = `${indent}<${node.type}${serializeProps(propsWithUtilityClass(node), node.a11y, node.type === 'CustomBlock')}${zoneTokens}`;
   const text = node.content?.fallback;
+  const empty = !text && children.length === 0;
+  const tokens = [...propTokens(props, node.a11y, node.type === 'CustomBlock'), ...zoneProps];
+  const compact = `${indent}<${node.type}${tokens.length ? ` ${tokens.join(' ')}` : ''}${empty ? ' />' : '>'}`;
+  const open = compact.length <= 100 && !compact.includes('\n')
+    ? compact
+    : `${indent}<${node.type}\n${tokens.map(token => `${indent}  ${token}`).join('\n')}\n${indent}${empty ? '/>' : '>'}`;
+  if (empty) return open;
+  const inner = [text ? `${indent}  ${escapeText(text)}` : '', serializeChildren(children, `${indent}  `)].filter(Boolean).join('\n');
+  return `${open}\n${inner}\n${indent}</${node.type}>`;
+}
 
-  if (!text && children.length === 0) {
-    return `${open} />`;
-  }
-  const inner = text
-    ? `${indent}  ${escapeText(text)}`
-    : serializeChildren(children, `${indent}  `);
-  return `${open}>\n${inner}\n${indent}</${node.type}>`;
+/** Serialize one component or pattern with the same zone rules as a full page. */
+export function nodeToJsx(node: ComponentNode): string {
+  const result = validatePatterns(node);
+  if (!result.valid) return formatPatternDiagnostics(result.diagnostics).split('\n').map(line => `// ${line}`).join('\n');
+  return serializeNode(canonicalizePatternTree(node), '');
 }
 
 export function definitionToJsx(definition: PageDefinition): string {
-  const layout = definition?.page?.layout;
+  const result = validatePatterns(definition);
+  if (!result.valid) return formatPatternDiagnostics(result.diagnostics).split('\n').map(line => `// ${line}`).join('\n');
+  const layout = canonicalizePatternTree(definition)?.page?.layout;
   if (!layout) return '// No layout in this page definition.';
 
   const regions = (layout.regions ?? []).map((region) => {

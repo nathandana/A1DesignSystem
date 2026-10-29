@@ -1,0 +1,146 @@
+{
+  "label": {
+    "verificationDialog": {
+      "cancel": {
+        "$type": "string",
+        "$value": "Cancel",
+        "$description": "Dismiss a verification dialog without performing its action.",
+        "locale": {
+          "es": "Cancelar",
+          "fr": "Annuler",
+          "de": "Abbrechen",
+          "pt": "Cancelar",
+          "ja": "キャンセル",
+          "zh": "取消",
+          "ar": "إلغاء"
+        }
+      },
+      "confirm": {
+        "$type": "string",
+        "$value": "Confirm",
+        "$description": "Default action label in VerificationDialog. Prefer a specific verb when configured.",
+        "locale": {
+          "es": "Confirmar",
+          "fr": "Confirmer",
+          "de": "Bestätigen",
+          "pt": "Confirmar",
+          "ja": "確認",
+          "zh": "确认",
+          "ar": "تأكيد"
+        }
+      },
+      "title": {
+        "$type": "string",
+        "$value": "Confirm action?",
+        "$description": "Default verification title.",
+        "locale": {
+          "es": "¿Confirmar acción?",
+          "fr": "Confirmer l’action ?",
+          "de": "Aktion bestätigen?",
+          "pt": "Confirmar ação?",
+          "ja": "操作を確認しますか？",
+          "zh": "确认操作？",
+          "ar": "تأكيد الإجراء؟"
+        }
+      },
+      "message": {
+        "$type": "string",
+        "$value": "Review this action before continuing.",
+        "$description": "Default verification message.",
+        "locale": {
+          "es": "Revisa esta acción antes de continuar.",
+          "fr": "Vérifiez cette action avant de continuer.",
+          "de": "Prüfen Sie diese Aktion, bevor Sie fortfahren.",
+          "pt": "Revise esta ação antes de continuar.",
+          "ja": "続行する前に、この操作を確認してください。",
+          "zh": "请在继续之前检查此操作。",
+          "ar": "راجع هذا الإجراء قبل المتابعة."
+        }
+      },
+      "deleteTitle": {
+        "$type": "string",
+        "$value": "Delete item?",
+        "$description": "Title for the example delete verification.",
+        "locale": {
+          "es": "¿Eliminar elemento?",
+          "fr": "Supprimer l’élément ?",
+          "de": "Element löschen?",
+          "pt": "Excluir item?",
+          "ja": "項目を削除しますか？",
+          "zh": "删除项目？",
+          "ar": "حذف العنصر؟"
+        }
+      },
+      "deleteMessage": {
+        "$type": "string",
+        "$value": "This will delete the selected item.",
+        "$description": "Consequence in the example delete verification.",
+        "locale": {
+          "es": "Se eliminará el elemento seleccionado.",
+          "fr": "L’élément sélectionné sera supprimé.",
+          "de": "Das ausgewählte Element wird gelöscht.",
+          "pt": "O item selecionado será excluído.",
+          "ja": "選択した項目が削除されます。",
+          "zh": "这将删除所选项目。",
+          "ar": "سيؤدي هذا إلى حذف العنصر المحدد."
+        }
+      },
+      "delete": {
+        "$type": "string",
+        "$value": "Delete",
+        "$description": "Confirm deletion in a verification dialog.",
+        "locale": {
+          "es": "Eliminar",
+          "fr": "Supprimer",
+          "de": "Löschen",
+          "pt": "Excluir",
+          "ja": "削除",
+          "zh": "删除",
+          "ar": "حذف"
+        }
+      },
+      "duplicateTitle": {
+        "$type": "string",
+        "$value": "Duplicate item?",
+        "$description": "Title for the example duplicate verification.",
+        "locale": {
+          "es": "¿Duplicar elemento?",
+          "fr": "Dupliquer l’élément ?",
+          "de": "Element duplizieren?",
+          "pt": "Duplicar item?",
+          "ja": "項目を複製しますか？",
+          "zh": "复制项目？",
+          "ar": "تكرار العنصر؟"
+        }
+      },
+      "duplicateMessage": {
+        "$type": "string",
+        "$value": "This will create a copy of the selected item.",
+        "$description": "Consequence in the example duplicate verification.",
+        "locale": {
+          "es": "Se creará una copia del elemento seleccionado.",
+          "fr": "Une copie de l’élément sélectionné sera créée.",
+          "de": "Eine Kopie des ausgewählten Elements wird erstellt.",
+          "pt": "Uma cópia do item selecionado será criada.",
+          "ja": "選択した項目のコピーが作成されます。",
+          "zh": "这将创建所选项目的副本。",
+          "ar": "سيؤدي هذا إلى إنشاء نسخة من العنصر المحدد."
+        }
+      },
+      "duplicate": {
+        "$type": "string",
+        "$value": "Duplicate",
+        "$description": "Confirm duplication in a verification dialog.",
+        "locale": {
+          "es": "Duplicar",
+          "fr": "Dupliquer",
+          "de": "Duplizieren",
+          "pt": "Duplicar",
+          "ja": "複製",
+          "zh": "复制",
+          "ar": "تكرار"
+        }
+      }
+    }
+  }
+}

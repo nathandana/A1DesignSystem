@@ -26,6 +26,7 @@ import { useT } from '../labels/useT.js'
 import { getLabels, saveLabels, subscribeLabels } from '../labels/labelStore.js'
 import { appendHistory, fetchHistory, updateHistoryLabel } from '../services/historyDb.js'
 import { EditorHistoryPanel } from '../editor/EditorHistoryPanel.jsx'
+import verificationJson from '../../../../system/labels/verification-dialog.json'
 import appJson       from '../../../../system/labels/app.json'
 import actionJson    from '../../../../system/labels/action.json'
 import backlogJson   from '../../../../system/labels/backlog.json'
@@ -75,6 +76,7 @@ function flattenSystemKeys(obj, prefix = '') {
 }
 
 const SYSTEM_KEYS = [
+  ...flattenSystemKeys(verificationJson.label),
   ...flattenSystemKeys(appJson.label),
   ...flattenSystemKeys(actionJson.label),
   ...flattenSystemKeys(backlogJson.label),

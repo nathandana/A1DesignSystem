@@ -1,0 +1,260 @@
+{
+  "schemaVersion": "1.1.0",
+  "version": "1.0.0",
+  "kind": "pattern",
+  "status": "experimental",
+  "id": "overflow-menu",
+  "type": "OverflowMenu",
+  "name": "Overflow menu",
+  "description": "A more_vert icon button opens contextual actions. Any action can optionally require verification in a dialog.",
+  "coverage": {
+    "react": true,
+    "native": false,
+    "pure": false,
+    "webComponents": false,
+    "figma": false
+  },
+  "compatibility": {
+    "unversioned": "1.0.0",
+    "pageSchemaVersions": [
+      "0.1.0",
+      "1.0.0",
+      "1.1.0"
+    ]
+  },
+  "migrations": [],
+  "propsSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "label": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "size": {
+        "enum": [
+          "sm",
+          "md",
+          "lg"
+        ],
+        "default": "md"
+      },
+      "disabled": {
+        "type": "boolean",
+        "default": false
+      },
+      "actions": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "id",
+            "label"
+          ],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "label": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "icon": {
+              "type": "string"
+            },
+            "disabled": {
+              "type": "boolean"
+            },
+            "destructive": {
+              "type": "boolean"
+            },
+            "href": {
+              "type": "string",
+              "pattern": "\\S"
+            },
+            "verification": {
+              "type": "object",
+              "required": [
+                "id",
+                "type",
+                "props"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "\\S"
+                },
+                "type": {
+                  "const": "VerificationDialog"
+                },
+                "patternVersion": {
+                  "type": "string"
+                },
+                "props": {
+                  "type": "object"
+                },
+                "children": {
+                  "type": "array"
+                }
+              },
+              "additionalProperties": true
+            }
+          },
+          "additionalProperties": true
+        },
+        "default": []
+      },
+      "onAction": false
+    },
+    "additionalProperties": true
+  },
+  "lockedProps": {
+    "icon": "more_vert",
+    "variant": "tertiary",
+    "as": "button"
+  },
+  "areas": [],
+  "collections": [
+    {
+      "id": "actions",
+      "label": "Actions",
+      "path": "/props/actions",
+      "ruleId": "overflow-menu-actions",
+      "rules": "Ordered, uniquely identified menu actions with visible labels. Any action can require verification.",
+      "policies": {
+        "activation": "optional-verification",
+        "uniqueBy": "id",
+        "navigation": "safe-target",
+        "disabled": "block-activation"
+      },
+      "patterns": {
+        "verification": "VerificationDialog"
+      }
+    }
+  ],
+  "rules": [
+    {
+      "id": "overflow-menu-actions",
+      "severity": "error"
+    },
+    {
+      "id": "overflow-menu-verification",
+      "severity": "error"
+    },
+    {
+      "id": "overflow-menu-trigger",
+      "severity": "error"
+    }
+  ],
+  "starter": {
+    "props": {}
+  },
+  "examples": [
+    {
+      "id": "edit-duplicate-delete",
+      "props": {
+        "label": "More actions",
+        "actions": [
+          {
+            "id": "edit",
+            "label": "Edit",
+            "icon": "edit"
+          },
+          {
+            "id": "duplicate",
+            "label": "Duplicate",
+            "icon": "content_copy"
+          },
+          {
+            "id": "delete",
+            "label": "Delete",
+            "icon": "delete",
+            "destructive": true,
+            "verification": {
+              "id": "delete-verification",
+              "type": "VerificationDialog",
+              "patternVersion": "1.0.0",
+              "props": {
+                "title": "Delete item?",
+                "message": "This will delete the selected item.",
+                "confirmLabel": "Delete",
+                "cancelLabel": "Cancel",
+                "destructive": true,
+                "titleKey": "verificationDialog.deleteTitle",
+                "messageKey": "verificationDialog.deleteMessage",
+                "confirmLabelKey": "verificationDialog.delete",
+                "cancelLabelKey": "verificationDialog.cancel"
+              },
+              "children": [
+                {
+                  "id": "delete-verification-content",
+                  "type": "Slot",
+                  "props": {
+                    "area": "content",
+                    "label": "Content",
+                    "columns": 1,
+                    "gap": "sm"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "areas": {}
+    },
+    {
+      "id": "verify-duplicate",
+      "props": {
+        "label": "More actions",
+        "actions": [
+          {
+            "id": "edit",
+            "label": "Edit",
+            "icon": "edit"
+          },
+          {
+            "id": "duplicate",
+            "label": "Duplicate",
+            "icon": "content_copy",
+            "verification": {
+              "id": "duplicate-verification",
+              "type": "VerificationDialog",
+              "patternVersion": "1.0.0",
+              "props": {
+                "title": "Duplicate item?",
+                "message": "This will create a copy of the selected item.",
+                "confirmLabel": "Duplicate",
+                "destructive": false,
+                "titleKey": "verificationDialog.duplicateTitle",
+                "messageKey": "verificationDialog.duplicateMessage",
+                "confirmLabelKey": "verificationDialog.duplicate",
+                "cancelLabelKey": "verificationDialog.cancel"
+              },
+              "children": [
+                {
+                  "id": "duplicate-verification-content",
+                  "type": "Slot",
+                  "props": {
+                    "area": "content",
+                    "label": "Content",
+                    "columns": 1,
+                    "gap": "sm"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "id": "delete",
+            "label": "Delete",
+            "icon": "delete",
+            "destructive": true
+          }
+        ]
+      },
+      "areas": {}
+    }
+  ]
+}

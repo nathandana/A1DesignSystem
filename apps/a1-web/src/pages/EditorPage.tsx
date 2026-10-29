@@ -12,6 +12,7 @@
 import { createPortal } from 'react-dom';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
+  Banner,
   Button,
   Code,
   IconButton,
@@ -56,6 +57,8 @@ import { readStored, writeStored } from '../editor/storage';
 import type { CatalogEntry } from '../editor/componentCatalog';
 import { COMPONENT_CATALOG, createNodeFromEntry } from '../editor/componentCatalog';
 import { effectiveLock, isPatternZone, zoneLabel, zoneLock } from '../editor/patternAreas';
+import { canonicalizePatternTree } from '../../../../packages/react/src/patterns/patternPolicies.js';
+import { validatePatterns, validatePatternEdit, formatPatternDiagnostics } from '../../../../packages/react/src/patterns/patternValidation.js';
 import { definitionToJsx } from '../editor/definitionToJsx';
 import { instantiatePattern } from '../patterns/instantiatePattern.js';
 import { getAllPatterns, loadPattern, newPatternId, patternAvailableToProject, registerPattern, savePattern } from '../patterns/patternStore.js';
@@ -819,6 +822,13 @@ export function EditorPage({
         appendHistory({ entityType: historyEntityType, entityId: historyEntityId as string, label, snapshot: json }).then(refreshHistory);
       }
     },
+    (json, previous) => {
+      try {
+        const result = validatePatternEdit(JSON.parse(previous), JSON.parse(json));
+        if (!result.valid) setNotice(formatPatternDiagnostics(result.diagnostics.filter(d => d.severity === 'error')));
+        return result.valid;
+      } catch { return false; } // Keep an incomplete JSON draft without committing it.
+    },
   );
 
   // Map the cloud log into the History panel's entry shape (pages + patterns).
@@ -1200,10 +1210,18 @@ export function EditorPage({
 
   const parsedDefinition = useMemo<ParseResult>(() => {
     try {
-      return { ok: true, value: JSON.parse(previewJson ?? history.workingJson) as PageDefinition };
+      const source = JSON.parse(previewJson ?? history.workingJson);
+      const validation = validatePatterns(source);
+      if (!validation.valid) return { ok: false, error: formatPatternDiagnostics(validation.diagnostics.filter(d => d.severity === 'error')) };
+      return { ok: true, value: canonicalizePatternTree(source) as PageDefinition };
     } catch (e) {
       return { ok: false, error: e instanceof Error ? e.message : 'Invalid JSON' };
     }
+  }, [previewJson, history.workingJson]);
+
+  const patternDiagnostics = useMemo(() => {
+    try { return validatePatterns(JSON.parse(previewJson ?? history.workingJson)).diagnostics; }
+    catch { return []; }
   }, [previewJson, history.workingJson]);
 
   // Read-only React (JSX) rendition of the current definition.
@@ -2563,6 +2581,13 @@ export function EditorPage({
           ) : parseError
         )}
 
+        {patternDiagnostics.length > 0 && (
+          <Banner status={patternDiagnostics.some(d => d.severity === 'error') ? 'error' : 'warn'} title="Pattern validation">
+            <Stack gap="xs">{patternDiagnostics.map((diagnostic, index) => (
+              <Paragraph key={index} size="sm">{diagnostic.nodeId}: {diagnostic.message} {diagnostic.recovery}</Paragraph>
+            ))}</Stack>
+          </Banner>
+        )}
         {view === 'json' && (
           <Stack direction="column" gap="sm">
             {codeFormat === 'json' ? (

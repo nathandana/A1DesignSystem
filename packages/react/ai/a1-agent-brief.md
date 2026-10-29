@@ -188,9 +188,24 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 | `StepTracker` | — | Step position indicator. | `steps`, `current`, `align` |
 
 ### Patterns (compositions)
+
+Formal patterns are defined by versioned `system/patterns/*.json` manifests.
+Use MCP `get_pattern` for props schema, locked props, ordered areas and an empty
+starter; use `validate_patterns` before handing off generated JSON. New nodes
+carry `patternVersion: "1.0.0"`. Keep area definitions but omit their `children`
+unless explicitly configured. Never copy sample actions into a starter. Zone
+rules come from the parent manifest, not editable Slot overrides. Preserve IDs,
+localization, behavior descriptors and accessibility metadata when editing.
+Unknown future versions must be retained for recovery. `migrate_pattern`
+proposes explicit legacy migrations without overwriting input. Overview Card
+has no prescribed width: its parent owns it.
+
 | type | C | role | key props |
 |------|:-:|------|-----------|
-| `PageTitle` | C | The top band of a page: breadcrumb, eyebrow, the h1, description, actions. One per page, first in the content. Surface, title scale and heading level are locked. Children are three `Slot` nodes, emitted exactly like this, in this order: the Metadata **zone** `{ "type": "Slot", "props": { "area": "meta", "zone": true, "label": "Metadata", "rules": "Up to 5 badges, shown small and subtle directly below the title.", "allow": ["MessageBadge"], "max": 5 }, "children": [ …MessageBadge nodes… ] }` (badges directly below the title), the Actions **zone** `{ "type": "Slot", "props": { "area": "actions", "zone": true, "label": "Actions", "rules": "Up to 4 buttons, split buttons, links, icon buttons, button groups, toolbars or segmented controls. One primary button, shown last.", "allow": ["Button", "Link", "IconButton", "ButtonContainer", "Toolbar", "SegmentedControl"], "max": 4 }, "children": [ …action nodes… ] }` (at most one primary Button — a Button with no `variant` is primary; it renders last; a split button is a Button with `split: true` and `menuActions`; a ButtonContainer group stays together; the editor derives the zone's lock from `zone: true`) and the open area `{ "type": "Slot", "props": { "area": "content", "label": "Content", "columns": 1, "gap": "sm" } }` for anything below the actions. | `breadcrumb` (`true` = built from the project's page tree), `eyebrow`, `title`, `description`, `contentWidth` — metadata and actions are child nodes in their zones, not props |
+| `PageTitle` | C | The top band of a page: breadcrumb, eyebrow, the h1, description, actions. One per page, first in the content. Surface, title scale and heading level are locked. Children are three `Slot` nodes, emitted exactly like this, in this order: the Metadata **zone** `{ "type": "Slot", "props": { "area": "meta", "zone": true, "label": "Metadata", "rules": "Up to 5 badges, shown small and subtle directly below the title.", "allow": ["MessageBadge"], "max": 5 }, "children": [ …MessageBadge nodes… ] }` (badges directly below the title), the Actions **zone** `{ "type": "Slot", "props": { "area": "actions", "zone": true, "label": "Actions", "rules": "Up to 4 buttons, split buttons, links, icon buttons, button groups, toolbars or segmented controls. One primary button, shown last.", "allow": ["Button", "Link", "IconButton", "ButtonContainer", "Toolbar", "SegmentedControl"], "max": 4 }, "children": [ …action nodes… ] }` (at most one primary Button — a Button with no `variant` is primary; it renders last; a split button is a Button with `split: true` and `menuActions`; a ButtonContainer group stays together; the editor derives zone rules and locks from the parent manifest) and the open area `{ "type": "Slot", "props": { "area": "content", "label": "Content", "columns": 1, "gap": "sm" } }` for anything below the actions. | `breadcrumb` (`true` = built from the project's page tree), `eyebrow`, `title`, `description`, `contentWidth` — metadata and actions are child nodes in their zones, not props |
+| `VerificationDialog` | C | Reusable verification dialog, also nested in OverflowMenu actions. | `title`, `message`, `confirmLabel`, `cancelLabel`; optional label-service keys `titleKey`, `messageKey`, `confirmLabelKey`, `cancelLabelKey` with text fallbacks; `destructive`, `disabled`, `open`; open Content Slot. React owns `onConfirm`/`onClose`. |
+| `OverflowMenu` | — | Contextual menu with a fixed more_vert IconButton. Any action can require a verification Dialog. | `label`, `size` (sm/md/lg), `disabled`, `actions: [{ id, label, icon?, href?, disabled?, destructive?, verification?: VerificationDialogNode }]`; unique IDs; empty when unconfigured. No child slots. `onAction` is React-only. |
+| `OverviewCard` | C | A summary card for one item in a set: icon block, heading, key details, a content area, optional labelled status, up to two actions. Surface, icon block, heading size and details layout are locked. Children are two `Slot` nodes, emitted exactly like this: the open area `{ "type": "Slot", "props": { "area": "content", "label": "Content", "columns": 1, "gap": "sm" } }` (between the details and the actions) and `{ "type": "Slot", "props": { "area": "actions", "zone": true, "label": "Actions", "rules": "Up to 2 small buttons, links or icon buttons. No primary button: cards repeat, and the page title holds the primary action.", "allow": ["Button", "Link", "IconButton"], "max": 2 }, "children": [ …Button / Link / IconButton nodes… ] }` (Buttons and IconButtons render small; a primary or unset variant becomes secondary). | `icon`, `title`, `titleAs` (`h2`/`h3`/`h4`, default `h3`), `status` + `statusLabel` (status only shows with its label), `details` (`[{label,value}]`) — content and actions are child nodes in their areas |
 
 ### Navigation & data
 | type | C | role | key props |
@@ -363,3 +378,14 @@ Review each authored block across themes, breakpoints and assistive technology.
 The component is currently React-only. Pure CSS cannot reproduce its document
 and script lifecycle; Native would need an explicit WebView contract. Neither
 package claims support. Figma translation is also outside this contract.
+
+### Formal pattern starters
+
+Keep the named Slot area definitions in PageTitle and OverviewCard JSON, but omit
+area `children` until the author explicitly configures content. Do not populate
+empty areas with example actions or badges. OverviewCard has no intrinsic fixed
+width; its parent layout allocates its width.
+
+### NavigationTree pattern
+
+`NavigationTree` (`patternVersion: "1.0.0"`) accepts recursive `items` data, not Slot children. Each item needs a globally unique `id` and visible `label`; optional fields are `icon`, `href`, `disabled`, `category`, `pinned`, `excludeFromAz`, `keywords`, `sortLabel` and `children`. `searchable` and `sortable` default to true. `defaultView` is `tree` or `az`; `defaultSelectedId` and `defaultSearch` seed interactive state. Accessible labels: `aria-label`, `searchLabel`, `sortLabel`, `listViewLabel`. Desktop collapse state is configurable; placement is always start and the collapse button is always in the footer; React hosts control mobile `open` with `onClose`. Starters have `items: []` and no editable component areas. The editor offers unrestricted nested category/item controls.

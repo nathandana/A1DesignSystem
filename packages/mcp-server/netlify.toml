@@ -16,6 +16,7 @@
 
 [functions]
   node_bundler = "esbuild"
+  included_files = ["index.json"]
 
 # Friendlier public path than /.netlify/functions/mcp.
 [[redirects]]

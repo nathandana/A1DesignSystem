@@ -1,0 +1,12 @@
+component: NavigationTree
+rules:
+  - id: navigation-tree-structure
+    components:
+      - NavigationTree
+    requirement: Compose SideNav, a compact SearchField, an A–Z ToolbarToggle and TreeMenu. Search and sorting are independently optional. Placement is always start and the collapse button is fixed to the footer. Items have globally unique IDs and support unlimited nesting.
+    do: Supply categories and items as data, mark category nodes explicitly, and give navigation a meaningful accessible name. Keep routing and saved preferences in the host application.
+    dont: Copy the catalog sidebar, add custom CSS, cap the category count or nesting depth, or mutate the supplied item tree during sorting and filtering.
+    applies_to:
+      - consistency
+      - accessibility
+      - usability

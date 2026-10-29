@@ -2663,7 +2663,7 @@ function App() {
         onComplete={completeProductTour}
       />
 
-      <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} anchorRef={settingsAnchorRef} aria-label="Settings">
+      <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} anchorRef={settingsAnchorRef} aria-label="Settings" className="a1-min-w-sm" padding={12}>
         <MenuSection label={t('app.page.theme', 'Theme')}>
           {settingsThemeOptions.length > 5 ? (
             <SelectField

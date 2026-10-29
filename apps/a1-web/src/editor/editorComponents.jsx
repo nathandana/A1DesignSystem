@@ -22,6 +22,7 @@ import { Preview as ContextMenuPreview } from '../pages/components/detail/contex
 import { Preview as TabsPreview } from '../pages/components/detail/tabs.jsx';
 import { Preview as ToolbarPreview } from '../pages/components/detail/toolbar.jsx';
 import { Preview as DataTablePreview, renderCompactPagination } from '../pages/components/detail/data-table.jsx';
+import { Preview as VerificationDialogPreview } from '../pages/components/detail/verification-dialog.jsx';
 import { Preview as DialogPreview } from '../pages/components/detail/dialog.jsx';
 import { Preview as InlinePreview } from '../pages/components/detail/inline.jsx';
 import { Preview as MenuPreview } from '../pages/components/detail/menu.jsx';
@@ -65,6 +66,7 @@ export const EditorActionTiles = makeAdapter(ActionTilesPreview);
 export const EditorChipGroup = makeAdapter(ChipPreview);
 export const EditorCanvas = makeAdapter(CanvasPreview);
 export const EditorContextMenu = makeAdapter(ContextMenuPreview);
+export const EditorVerificationDialog = makeAdapter(VerificationDialogPreview);
 export const EditorDialog = makeAdapter(DialogPreview);
 export const EditorInline = makeAdapter(InlinePreview);
 export const EditorMenu = makeAdapter(MenuPreview);

@@ -91,7 +91,7 @@ export, by category:
 - **Navigation:** `TopHeader` `SideNav` `SideNavItem` `SideNavGroup` `BottomDrawer` `BottomSheet` `Breadcrumb` `PageNav` `TreeMenu` `Pagination`
 - **Inputs:** `TextField` `SearchField` `NumberField` `DateField` `TimeField` `PhoneField` `ZipField` `ZIP_MASKS` `CreditCardField` `TextareaField` `SelectField` `Autocomplete` `CheckboxGroup` `RadioGroup` `ChoiceGroup` `Fieldset` `FieldRow` `InlineEditable` `TokenSelect`
 - **Feedback:** `Banner` `MessageBadge` `MessageEmptyState` `Notification` `Snackbar` `SnackbarStack` `StatusBar` `CircularProgress` `StepTracker` `Stat`
-- **Patterns:** `PageTitle` `normalizePageTitleActions`
+- **Patterns:** `VerificationDialog` `NavigationTree` `OverflowMenu` `OverviewCard` `normalizeOverviewCardActions` `PageTitle` `normalizePageTitleActions`
 - **Overlay:** `Dialog` `Overlay` `Menu` `MenuSection` `MenuItem` `ContextMenu` `Tooltip`
 - **Recharts:** `AreaChart` `BarChart` `Chart` `ComposedChart` `FunnelChart` `LineChart` `PieChart` `RadarChart` `RadialBarChart` `SankeyChart` `ScatterChart` `SunburstChart` `TreemapChart`
 - **Data:** `DataTable` `DataTableFilters` `DefinitionList` `Calendar` `Canvas` `Node` `CanvasEdge` `NodeConnector`
@@ -147,3 +147,5 @@ Wrap any section in `<Inverse>` to render it in the opposite color mode without 
 - `PageLayout` is the correct shell for full-page layouts — don't hand-roll header/sidebar/footer structure.
 - `MessageBadge` uses `subtle` (a boolean prop), not `variant="subtle"`.
 - Follow `content-standards.md` for product copy and documentation. AP Style is the default unless the A1 standard or an approved product term explicitly overrides it.
+
+NavigationTree composes SideNav, SearchField, ToolbarToggle and TreeMenu. Supply recursive `items` with globally unique IDs; mark category nodes with `category: true`. `searchable` and `sortable` independently control the optional header controls. `view` / `defaultView` use `tree` or `az`; `pinned` keeps overview links first and `excludeFromAz` hides detail-only subtrees. Supply `open` / `onClose` for the mobile overlay. Desktop collapse uses TreeMenu icon flyouts; the full tree returns below the desktop breakpoint.

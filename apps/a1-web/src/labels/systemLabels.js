@@ -8,10 +8,17 @@ import fieldLabels     from '../../../../system/labels/field.json'
 import statusBarLabels from '../../../../system/labels/status-bar.json'
 import treeMenuLabels  from '../../../../system/labels/tree-menu.json'
 
+import verificationDialogLabels from '../../../../system/labels/verification-dialog.json'
+import overflowMenuLabels from '../../../../system/labels/overflow-menu.json'
+
+import navigationTreeLabels from '../../../../system/labels/navigation-tree.json'
+
 export const SYSTEM_LABELS = {
   label: {
     ...appLabels.label,
     ...actionLabels.label,
+    ...overflowMenuLabels.label,
+    ...verificationDialogLabels.label,
     ...backlogLabels.label,
     ...calendarLabels.label,
     ...codeLabels.label,
@@ -19,6 +26,7 @@ export const SYSTEM_LABELS = {
     ...fieldLabels.label,
     ...statusBarLabels.label,
     ...treeMenuLabels.label,
+    ...navigationTreeLabels.label,
   },
 }
 

@@ -1,0 +1,36 @@
+name: Formal pattern contracts
+on:
+  push:
+    branches: [main, release]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      mcp_url:
+        description: Optional deployed MCP endpoint to verify after publication
+        required: false
+        type: string
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          lfs: true
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build:tokens
+      - run: npm run patterns:check
+      - run: npm run build:mcp-index:check
+      - run: npm run test:patterns
+      - run: npm run test:rsc && npm run pack:check
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build:a1-web:test
+      - run: npx playwright test --config playwright.a1-web.config.js tests/a1-web/formal-patterns.spec.js tests/a1-web/overflow-menu.spec.js tests/a1-web/verification-labels.spec.js tests/a1-web/navigation-tree.spec.js tests/a1-web/tree-menu-configurator.spec.js tests/a1-web/split-button-configurator.spec.js
+      - name: Verify deployed MCP parity
+        if: github.event_name == 'workflow_dispatch' && inputs.mcp_url != ''
+        env:
+          MCP_VERIFY_URL: ${{ inputs.mcp_url }}
+        run: npm run patterns:verify-mcp

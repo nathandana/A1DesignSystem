@@ -57,6 +57,9 @@ import {
   PageNav,
   Pagination,
   Paragraph,
+  OverflowMenu,
+  NavigationTree,
+  OverviewCard,
   PageTitle,
   PhoneField,
   PieChart,
@@ -95,6 +98,7 @@ import {
   EditorChipGroup,
   EditorContextMenu,
   EditorDataTable,
+  EditorVerificationDialog,
   EditorDialog,
   EditorInline,
   EditorMenu,
@@ -173,6 +177,10 @@ export const componentRegistry: Record<ComponentType, ReactComponentType<any>> =
   RadioGroup,
   ChoiceGroup,
   // Patterns (A1-2720)
+  VerificationDialog: EditorVerificationDialog,
+  OverflowMenu,
+  NavigationTree,
+  OverviewCard,
   PageTitle,
   // Data
   Stat,

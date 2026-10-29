@@ -1,3 +1,7 @@
+import { createElement } from 'react'
+import { Banner } from '@gtivr4/a1-design-system-react'
+import { getPatternManifest } from '../../../../../../packages/react/src/patterns/patternPolicies.js'
+import { validatePatterns, formatPatternDiagnostics } from '../../../../../../packages/react/src/patterns/patternValidation.js'
 import * as generic from './generic.jsx'
 import * as heading from './heading.jsx'
 import * as paragraph from './paragraph.jsx'
@@ -21,6 +25,7 @@ import * as bottomSheet from './bottom-sheet.jsx'
 import * as tabs from './tabs.jsx'
 import * as pageNav from './page-nav.jsx'
 import * as button from './button.jsx'
+import * as splitButton from './split-button.jsx'
 import * as actionTile from './action-tile.jsx'
 import * as chip from './chip.jsx'
 import * as iconButton from './icon-button.jsx'
@@ -53,6 +58,10 @@ import * as snackbar from './snackbar.jsx'
 import * as emptyState from './empty-state.jsx'
 import * as statusBar from './status-bar.jsx'
 import * as stat from './stat.jsx'
+import * as verificationDialog from './verification-dialog.jsx'
+import * as overflowMenu from './overflow-menu.jsx'
+import * as navigationTree from './navigation-tree.jsx'
+import * as overviewCard from './overview-card.jsx'
 import * as pageTitle from './page-title.jsx'
 import * as circularProgress from './circular-progress.jsx'
 import * as stepTracker from './step-tracker.jsx'
@@ -107,8 +116,13 @@ const REGISTRY = {
   'bottom-sheet': bottomSheet,
   tabs,
   'page-nav': pageNav,
+  'navigation-tree': navigationTree,
+  'overview-card': overviewCard,
+  'overflow-menu': overflowMenu,
+  'verification-dialog': verificationDialog,
   'page-title': pageTitle,
   button,
+  'split-button': splitButton,
   'action-tile': actionTile,
   chip,
   'icon-button': iconButton,
@@ -180,13 +194,31 @@ const REGISTRY = {
   accordion,
 }
 
+const patternAdapterCache = new WeakMap()
+function patternAdapters(specific) {
+  if (patternAdapterCache.has(specific)) return patternAdapterCache.get(specific)
+  const rejected = config => config?.rejectedPatternNode
+  const errorPreview = config => createElement(Banner, { status: 'error', title: 'Pattern needs attention' }, formatPatternDiagnostics(validatePatterns(rejected(config)).diagnostics))
+  const adapters = {
+    Preview: props => rejected(props.config) ? errorPreview(props.config) : createElement(specific.Preview, props),
+    Controls: props => rejected(props.config) ? errorPreview(props.config) : createElement(specific.Controls, props),
+    Snippet: props => rejected(props.config) ? errorPreview(props.config) : createElement(specific.Snippet, props),
+    toJson: config => rejected(config) ? { node: rejected(config), note: null } : specific.toJson(config),
+    fromJson: node => validatePatterns(node).valid ? specific.fromJson(node) : { ...specific.getDefaultConfig(), rejectedPatternNode: node },
+  }
+  patternAdapterCache.set(specific, adapters)
+  return adapters
+}
+
 export function getDetailModule(componentId) {
   const specific = REGISTRY[componentId] ?? {}
+  const formal = !!getPatternManifest(specific.jsonType)
+  const adapters = formal ? patternAdapters(specific) : specific
   return {
     getDefaultConfig: specific.getDefaultConfig ?? generic.getDefaultConfig,
-    Preview: specific.Preview ?? generic.Preview,
-    Controls: specific.Controls ?? generic.Controls,
-    Snippet: specific.Snippet ?? generic.Snippet,
+    Preview: adapters.Preview ?? generic.Preview,
+    Controls: adapters.Controls ?? generic.Controls,
+    Snippet: adapters.Snippet ?? generic.Snippet,
     // When true, the preview owns its own surface/height and is rendered without
     // the wrapping Section. The Display tab hides the Section-related controls.
     bareDisplay: specific.bareDisplay ?? false,
@@ -203,7 +235,8 @@ export function getDetailModule(componentId) {
     // toJson + fromJson get the Code | JSON format toggle with copy/import on
     // their configurator snippet.
     jsonType: specific.jsonType ?? null,
-    toJson: specific.toJson ?? null,
-    fromJson: specific.fromJson ?? null,
+    toJson: adapters.toJson ?? null,
+    fromJson: adapters.fromJson ?? null,
+    acceptsJsonChildren: specific.acceptsJsonChildren === true,
   }
 }

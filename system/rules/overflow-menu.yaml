@@ -1,0 +1,20 @@
+component: OverflowMenu
+rules:
+  - id: overflow-menu-trigger
+    components: [OverflowMenu]
+    requirement: Use a tertiary IconButton with more_vert and a meaningful accessible label. Disable the trigger when there are no actions.
+    do: Name the context when several menus appear on a page, such as More actions for Account.
+    dont: Replace the trigger with an unlabeled icon or custom button styling.
+    applies_to: [accessibility, consistency]
+  - id: overflow-menu-actions
+    components: [OverflowMenu]
+    requirement: Actions have unique stable IDs and visible labels. Preserve their authored order and block disabled actions.
+    do: Use concise action verbs; distinguish destructive actions using their destructive flag.
+    dont: Seed unconfigured JSON with example actions or encode callbacks as strings.
+    applies_to: [content, usability]
+  - id: overflow-menu-verification
+    components: [OverflowMenu]
+    requirement: Any action may declare a verification title and message. Execute it only after confirmation, never after cancel, Escape or dismissal.
+    do: State the consequence and use the action verb for confirmation. Focus Cancel first and restore focus to the trigger on dismissal.
+    dont: Restrict verification to Delete or run the action before the dialog is confirmed.
+    applies_to: [accessibility, usability]

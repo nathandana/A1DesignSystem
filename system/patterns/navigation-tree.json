@@ -1,0 +1,224 @@
+{
+  "schemaVersion": "1.1.0",
+  "version": "1.0.0",
+  "kind": "pattern",
+  "status": "experimental",
+  "coverage": {
+    "react": true,
+    "native": false,
+    "pure": false,
+    "webComponents": false,
+    "figma": false
+  },
+  "compatibility": {
+    "unversioned": "1.0.0",
+    "pageSchemaVersions": [
+      "0.1.0",
+      "1.0.0",
+      "1.1.0"
+    ]
+  },
+  "migrations": [],
+  "id": "navigation-tree",
+  "type": "NavigationTree",
+  "name": "Navigation tree",
+  "description": "A side navigation tree with optional search and categorized or A\u2013Z views.",
+  "propsSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "definitions": {
+      "item": {
+        "type": "object",
+        "required": [
+          "id",
+          "label"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "icon": {
+            "type": "string"
+          },
+          "href": {
+            "type": "string"
+          },
+          "category": {
+            "type": "boolean"
+          },
+          "pinned": {
+            "type": "boolean"
+          },
+          "excludeFromAz": {
+            "type": "boolean"
+          },
+          "disabled": {
+            "type": "boolean"
+          },
+          "keywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sortLabel": {
+            "type": "string"
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/item"
+            }
+          }
+        },
+        "additionalProperties": true
+      }
+    },
+    "properties": {
+      "items": {
+        "type": "array",
+        "items": {
+          "$ref": "#/definitions/item"
+        },
+        "default": []
+      },
+      "searchable": {
+        "type": "boolean",
+        "default": true
+      },
+      "sortable": {
+        "type": "boolean",
+        "default": true
+      },
+      "view": {
+        "enum": [
+          "tree",
+          "az"
+        ]
+      },
+      "defaultView": {
+        "enum": [
+          "tree",
+          "az"
+        ]
+      },
+      "search": {
+        "type": "string"
+      },
+      "defaultSearch": {
+        "type": "string"
+      },
+      "searchLabel": {
+        "type": "string"
+      },
+      "sortLabel": {
+        "type": "string"
+      },
+      "listViewLabel": {
+        "type": "string"
+      },
+      "aria-label": {
+        "type": "string"
+      },
+      "selectedId": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "defaultSelectedId": {
+        "type": [
+          "string",
+          "null"
+        ]
+      },
+      "expandedIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "defaultExpandedIds": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "defaultCollapsed": {
+        "type": "boolean",
+        "default": false
+      },
+      "collapsed": {
+        "type": "boolean"
+      },
+      "open": {
+        "type": "boolean",
+        "default": false
+      }
+    },
+    "additionalProperties": true
+  },
+  "lockedProps": {
+    "placement": "start",
+    "collapseButtonPlacement": "footer"
+  },
+  "areas": [],
+  "rules": [
+    {
+      "id": "navigation-tree-structure",
+      "severity": "error"
+    }
+  ],
+  "starter": {
+    "props": {
+      "items": [],
+      "searchable": true,
+      "sortable": true,
+      "defaultView": "tree",
+      "aria-label": "Navigation"
+    }
+  },
+  "examples": [
+    {
+      "id": "nested",
+      "props": {
+        "items": [
+          {
+            "id": "account",
+            "label": "Account",
+            "category": true,
+            "children": [
+              {
+                "id": "profile",
+                "label": "Profile",
+                "href": "/profile"
+              }
+            ]
+          }
+        ]
+      },
+      "areas": {}
+    }
+  ],
+  "collections": [
+    {
+      "id": "items",
+      "label": "Navigation items",
+      "path": "/props/items",
+      "ruleId": "navigation-tree-structure",
+      "rules": "Any number of nested categories and items with globally unique IDs and visible labels.",
+      "policies": {
+        "activation": "selection",
+        "uniqueBy": "id",
+        "navigation": "safe-target",
+        "disabled": "block-activation",
+        "children": "children"
+      }
+    }
+  ]
+}

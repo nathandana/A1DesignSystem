@@ -1,6 +1,7 @@
 "use client";
 
-import { Children, Fragment, cloneElement, isValidElement } from "react";
+import { normalizePatternReactItems, normalizePatternActionData } from "../patternReact.jsx";
+import { getPatternManifest } from "../patternPolicies.js";
 import { Breadcrumb } from "../../components/breadcrumb/Breadcrumb.jsx";
 import { Button } from "../../components/button/Button.jsx";
 import { ButtonContainer } from "../../components/button-container/ButtonContainer.jsx";
@@ -10,10 +11,10 @@ import { Link } from "../../components/link/Link.jsx";
 import { MessageBadge } from "../../components/message/Message.jsx";
 import { Paragraph } from "../../components/paragraph/Paragraph.jsx";
 import { Section } from "../../components/section/Section.jsx";
-import { SplitButton } from "../../components/split-button/SplitButton.jsx";
 import { Stack } from "../../components/stack/Stack.jsx";
 
-const CONTENT_WIDTHS = ["xs", "sm", "md", "lg", "xl", "2xl"];
+const manifest = getPatternManifest("PageTitle");
+const CONTENT_WIDTHS = manifest.propsSchema.properties.contentWidth.enum;
 // Locked presentation: the band sits on the panel surface, the title is always
 // the page's h1 and steps from lg (xs) to xxl (md+) so long titles wrap well.
 const TITLE_SIZE = { xs: "lg", md: "xxl" };
@@ -32,19 +33,14 @@ function renderMeta(meta) {
       </MessageBadge>
     ));
   }
-  return Array.isArray(meta) && meta.length === 0 ? null : meta;
+  return normalizePatternReactItems("PageTitle", "meta", meta);
 }
 
 const ACTION_KINDS = ["button", "link", "icon-button"];
-const ICON_BUTTON_VARIANTS = ["tertiary", "secondary", "destructive", "success"];
+const ICON_BUTTON_VARIANTS = manifest.areas.find(area => area.id === "actions").policies.variants.IconButton.allow;
 
 function actionKind(action) {
   return ACTION_KINDS.includes(action.kind) ? action.kind : "button";
-}
-
-// Only a Button can be the primary action; links and icon buttons never are.
-function isPrimaryAction(action) {
-  return actionKind(action) === "button" && action.variant === "primary";
 }
 
 function isActionList(actions) {
@@ -57,17 +53,7 @@ function isActionList(actions) {
  * primaries become secondary; the other actions keep their order.
  */
 export function normalizePageTitleActions(actions) {
-  let primary = null;
-  const rest = [];
-  for (const action of actions) {
-    if (isPrimaryAction(action)) {
-      if (primary) rest.push({ ...action, variant: "secondary" });
-      else primary = action;
-    } else {
-      rest.push(action);
-    }
-  }
-  return primary ? [...rest, primary] : rest;
+  return normalizePatternActionData("PageTitle", actions);
 }
 
 // One action descriptor → the matching A1 control.
@@ -110,52 +96,6 @@ function renderAction(action, index) {
   );
 }
 
-function flattenNodes(nodes) {
-  return Children.toArray(nodes).flatMap((child) =>
-    isValidElement(child) && child.type === Fragment ? flattenNodes(child.props.children) : [child],
-  );
-}
-
-// Button and SplitButton are primary unless told otherwise, so a composed
-// action with no `variant` counts as the primary one. Links, icon buttons,
-// toolbars and segmented controls never do.
-const DEFAULT_PRIMARY_TYPES = new Set([Button, SplitButton]);
-
-function isPrimaryNode(child) {
-  if (!isValidElement(child) || child.type === Link || child.type === IconButton) return false;
-  const variant = child.props?.variant;
-  return variant === undefined ? DEFAULT_PRIMARY_TYPES.has(child.type) : variant === "primary";
-}
-
-const demote = (child) => cloneElement(child, { variant: "secondary" });
-
-// The same rule for composed actions. A ButtonContainer is a button group: it
-// stays together, the rule applies inside it (its primary moves to its end)
-// and the group holding the primary is shown last.
-function normalizeActionNodes(actions) {
-  let primary = null;
-  const rest = [];
-  for (const child of flattenNodes(actions)) {
-    if (isValidElement(child) && child.type === ButtonContainer) {
-      let groupPrimary = null;
-      const groupRest = [];
-      for (const item of flattenNodes(child.props.children)) {
-        if (!isPrimaryNode(item)) groupRest.push(item);
-        else if (primary || groupPrimary) groupRest.push(demote(item));
-        else groupPrimary = item;
-      }
-      if (groupPrimary) primary = cloneElement(child, { children: [...groupRest, groupPrimary] });
-      else rest.push(cloneElement(child, { children: groupRest }));
-    } else if (isPrimaryNode(child)) {
-      if (primary) rest.push(demote(child));
-      else primary = child;
-    } else {
-      rest.push(child);
-    }
-  }
-  return primary ? [...rest, primary] : rest;
-}
-
 /**
  * PageTitle — the standard top band of a page: an optional breadcrumb and
  * eyebrow, the page's h1, an optional metadata row of badges directly below it,
@@ -190,19 +130,14 @@ export function PageTitle({
   // stack on narrow containers like every other action row.
   const actionNodes = isActionList(actions)
     ? normalizePageTitleActions(actions).map(renderAction)
-    : normalizeActionNodes(actions);
+    : normalizePatternReactItems("PageTitle", "actions", actions);
 
   return (
     <Section
-      as="header"
-      padding="xs"
-      surface="panel"
-      contentWidth={resolvedContentWidth}
-      borderSize="sm"
-      borderVariant="accent"
-      borderSides="bottom"
-      className={["a1-page-title", className].filter(Boolean).join(" ")}
       {...rest}
+      {...manifest.lockedProps}
+      contentWidth={resolvedContentWidth}
+      className={["a1-page-title", className].filter(Boolean).join(" ")}
     >
       <Stack direction="column" gap="xs">
         {Array.isArray(breadcrumb) && breadcrumb.length ? <Breadcrumb items={breadcrumb} backLabel={backLabel} /> : null}

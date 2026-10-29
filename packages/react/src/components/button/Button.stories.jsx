@@ -164,3 +164,11 @@ export const Loading = {
     </div>
   )
 };
+
+// Disabled navigation remains a named link but has no destination or tab stop.
+export const DisabledNavigation = {
+  args: { as: 'a', href: '#unavailable', disabled: true, children: 'Unavailable destination' },
+};
+export const LoadingNavigation = {
+  args: { as: 'a', href: '#loading', loading: true, children: 'Opening destination' },
+};

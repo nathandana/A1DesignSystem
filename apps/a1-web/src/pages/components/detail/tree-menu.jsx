@@ -144,7 +144,7 @@ export function fromJson(node) {
   config.showExpandControls = props.showExpandControls === true
   config.draggable = props.draggable === true
   const items = normalizeTreeItems(props.items)
-  if (items.length > 0) config.items = items
+  if (Array.isArray(props.items)) config.items = items
   return config
 }
 
@@ -157,6 +157,9 @@ export function Preview({ config, utilityClass = '' }) {
   useEffect(() => {
     setLocalItems(stripPanelFlag(config.items))
   }, [config.items])
+
+  useEffect(() => { setSelectedId(config.selectedId) }, [config.selectedId])
+  useEffect(() => { setExpandedIds(config.expandedIds) }, [config.expandedIds])
 
   function handleMove({ draggedId, targetId, position }) {
     setLocalItems((prev) => moveItem(prev, { draggedId, targetId, position }))
@@ -200,6 +203,7 @@ function ItemEditor({ item, depth, onUpdate, onRemove, openIds, onToggle }) {
   function addChild() {
     const newChild = { id: uid(), label: 'New item', icon: '', openInPanel: false, children: [] }
     onUpdate(item.id, { children: [...(item.children ?? []), newChild] })
+    onToggle(newChild.id, true)
   }
 
   const indent = depth * 12

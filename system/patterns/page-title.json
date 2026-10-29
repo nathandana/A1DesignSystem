@@ -1,0 +1,267 @@
+{
+  "schemaVersion": "1.0.0",
+  "version": "1.0.0",
+  "kind": "pattern",
+  "status": "experimental",
+  "coverage": {
+    "react": true,
+    "native": false,
+    "pure": false,
+    "webComponents": false,
+    "figma": false
+  },
+  "compatibility": {
+    "unversioned": "1.0.0",
+    "pageSchemaVersions": [
+      "0.1.0",
+      "1.0.0",
+      "1.1.0"
+    ]
+  },
+  "migrations": [
+    {
+      "from": "unversioned",
+      "to": "1.0.0",
+      "operations": [
+        {
+          "op": "adoptAreas"
+        }
+      ]
+    }
+  ],
+  "id": "page-title",
+  "type": "PageTitle",
+  "name": "Page title",
+  "description": "The standard page heading band with metadata, actions and open content.",
+  "propsSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "required": [
+      "title"
+    ],
+    "properties": {
+      "title": {
+        "type": "string"
+      },
+      "eyebrow": {
+        "type": "string"
+      },
+      "description": {
+        "type": "string"
+      },
+      "titleId": {
+        "type": "string"
+      },
+      "backLabel": {
+        "type": "string"
+      },
+      "contentWidth": {
+        "enum": [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+          "2xl"
+        ],
+        "default": "xl"
+      },
+      "breadcrumb": {
+        "anyOf": [
+          {
+            "type": "boolean"
+          },
+          {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "label"
+              ],
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "href": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "additionalProperties": true
+  },
+  "lockedProps": {
+    "as": "header",
+    "padding": "xs",
+    "surface": "panel",
+    "borderSize": "sm",
+    "borderVariant": "accent",
+    "borderSides": "bottom"
+  },
+  "areas": [
+    {
+      "id": "meta",
+      "label": "Metadata",
+      "hint": "Badges about the page, directly below the title.",
+      "placement": "after:title",
+      "kind": "zone",
+      "destination": "meta",
+      "allow": [
+        "MessageBadge"
+      ],
+      "max": 5,
+      "count": "direct-items",
+      "ruleId": "page-title-metadata-below-title",
+      "rules": "Up to 5 badges, shown small and subtle directly below the title.",
+      "policies": {
+        "fixedProps": {
+          "MessageBadge": {
+            "size": "sm",
+            "subtle": true
+          }
+        }
+      }
+    },
+    {
+      "id": "actions",
+      "label": "Actions",
+      "hint": "The page actions, after the description.",
+      "placement": "after:description",
+      "kind": "zone",
+      "destination": "actions",
+      "allow": [
+        "Button",
+        "Link",
+        "IconButton",
+        "ButtonContainer",
+        "Toolbar",
+        "SegmentedControl"
+      ],
+      "max": 4,
+      "count": "direct-items",
+      "ruleId": "page-title-allowed-actions",
+      "rules": "Up to 4 buttons, split buttons, links, icon buttons, button groups, toolbars or segmented controls. One primary button, shown last.",
+      "policies": {
+        "ordering": "primary-last",
+        "primary": {
+          "types": [
+            "Button",
+            "SplitButton"
+          ],
+          "defaultVariant": "primary",
+          "max": 1,
+          "overflowVariant": "secondary"
+        },
+        "groups": {
+          "ButtonContainer": [
+            "Button",
+            "Link",
+            "IconButton",
+            "ButtonContainer"
+          ]
+        },
+        "variants": {
+          "IconButton": {
+            "allow": [
+              "tertiary",
+              "secondary",
+              "destructive",
+              "success"
+            ],
+            "fallback": "tertiary"
+          }
+        }
+      }
+    },
+    {
+      "id": "content",
+      "label": "Content",
+      "hint": "Below the actions. Add a search field, tabs or filters.",
+      "placement": "after:actions",
+      "kind": "open",
+      "destination": "children",
+      "layout": {
+        "columns": 1,
+        "gap": "sm"
+      }
+    }
+  ],
+  "rules": [
+    {
+      "id": "page-title-allowed-actions",
+      "severity": "error"
+    },
+    {
+      "id": "page-title-metadata-below-title",
+      "severity": "error"
+    },
+    {
+      "id": "page-title-one-primary-action-last",
+      "severity": "warning"
+    }
+  ],
+  "starter": {
+    "props": {
+      "title": "Page title",
+      "breadcrumb": true,
+      "description": "A short description tells people what this page is for."
+    }
+  },
+  "examples": [
+    {
+      "id": "with-content",
+      "props": {
+        "title": "Projects",
+        "description": "Manage your projects."
+      },
+      "areas": {
+        "meta": [
+          {
+            "id": "status",
+            "type": "MessageBadge",
+            "props": {
+              "status": "success"
+            },
+            "content": {
+              "fallback": "Active"
+            }
+          }
+        ],
+        "actions": [
+          {
+            "id": "create",
+            "type": "Button",
+            "props": {
+              "variant": "primary"
+            },
+            "content": {
+              "fallback": "Create project"
+            }
+          },
+          {
+            "id": "help",
+            "type": "Link",
+            "props": {
+              "href": "/help"
+            },
+            "content": {
+              "fallback": "Help"
+            }
+          }
+        ],
+        "content": [
+          {
+            "id": "intro",
+            "type": "Paragraph",
+            "content": {
+              "fallback": "Choose a project to continue."
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -5,7 +5,7 @@ System's component registry, design tokens, design rules, and page-definition co
 agents — inside this repo or in any other project consuming `@gtivr4/a1-design-system-react`.
 
 It's a **stateless Streamable HTTP** endpoint: one JSON-RPC 2.0 request in, one response out, no
-session state. Deployed as a single Netlify Function backed by a static index rebuilt on every deploy.
+session state. Deployed as a single Netlify Function backed by a generated static index whose freshness is checked on every deploy.
 
 ## Why this exists
 
@@ -40,6 +40,9 @@ Run from the repo root (see `packages/react/ai/quick-orientation.md`):
 | Task | Command |
 |---|---|
 | Rebuild the static index | `npm run build:mcp-index` |
+| Check index freshness | `npm run build:mcp-index:check` |
+| Check pattern manifests and tests | `npm run patterns:check && npm run test:patterns` |
+| Verify deployed contract parity | `npm run patterns:verify-mcp -- <endpoint-url>` |
 | Local dev server | `npm run dev:mcp-server` (fixed port `5190`) |
 
 The dev server needs a **fresh** `build/json/tokens.json` and `index.json` — run
@@ -51,6 +54,9 @@ The dev server needs a **fresh** `build/json/tokens.json` and `index.json` — r
 |---|---|
 | `list_components` | Coverage list (React/Native/Pure/Web Components/Figma), filterable by category or package. Patterns (`packages/react/src/patterns/`) appear under the `Patterns` category |
 | `get_component` | Full detail for one component: coverage, structured `.d.ts` props, and the relevant components.md excerpt |
+| `get_pattern` | Versioned manifest, props schema, ordered areas, locked props, policies, empty starter, populated examples and migrations |
+| `validate_patterns` | Shared structured pattern diagnostics without mutating input (not whole-page validation) |
+| `migrate_pattern` | Explicit proposed legacy migration; conflicts/future versions retain source |
 | `search_tokens` | Substring search over token dotted-paths and CSS variable names |
 | `get_token` | Exact token lookup by path or CSS var, including its value under every theme that overrides it |
 | `list_themes` | Theme id/name/description/selectors |
@@ -61,6 +67,7 @@ The dev server needs a **fresh** `build/json/tokens.json` and `index.json` — r
 
 | URI | Content |
 |---|---|
+| `a1://docs/pattern-contracts` | Generated reference from `system/patterns/*.json` |
 | `a1://docs/agent-brief` | `packages/react/ai/a1-agent-brief.md`, full text |
 | `a1://docs/page-definition-standard` | `packages/react/ai/page-definition-standard.md`, full text |
 
@@ -84,6 +91,12 @@ claude mcp add --transport http a1-design https://mcp.a1design.app/mcp  # deploy
   matched props.
 - **No auth.** Everything served is already-published, non-sensitive documentation, so the endpoint is
   public and unauthenticated. Revisit if usage patterns ever call for a shared-secret header.
-- **No automated tests yet.** The parsers were verified by hand against the generated `index.json`
-  (see the build order in the implementation plan). A `vitest` suite around `scripts/lib/*.mjs` is a
-  reasonable follow-up if this grows.
+- **Pattern parity is tested.** `tests/patterns/mcp.test.mjs` calls the function handler and checks discovery, diagnostics and migrations. The postdeploy parity script checks the actual HTTP endpoint. Token/theme parser behavior is outside this focused suite.
+
+## Formal pattern generation
+
+Author contracts under `system/patterns/`, then run `npm run build:patterns` and
+`npm run build:mcp-index`. Index schema `0.2.0` adds `patterns`; existing component
+discovery remains compatible and `get_component` includes the matching contract.
+Do not hand-edit the generated artifacts. Netlify and release CI reject stale
+artifacts. See [implementation and release checks](../react/ai/pattern-contract-recommendations.md).

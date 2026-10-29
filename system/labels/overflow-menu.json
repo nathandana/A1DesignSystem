@@ -1,0 +1,20 @@
+{
+  "label": {
+    "overflowMenu": {
+      "label": {
+        "$type": "string",
+        "$value": "More actions",
+        "$description": "Accessible default name for the OverflowMenu trigger and menu.",
+        "locale": {
+          "es": "Más acciones",
+          "fr": "Plus d’actions",
+          "de": "Weitere Aktionen",
+          "pt": "Mais ações",
+          "ja": "その他の操作",
+          "zh": "更多操作",
+          "ar": "المزيد من الإجراءات"
+        }
+      }
+    }
+  }
+}

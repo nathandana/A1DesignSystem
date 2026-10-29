@@ -11,7 +11,7 @@
   "scripts": {
     "build": "npm run build:priority-guide && npm run build:cat-stack-cafe && npm run build:careguide && npm run build:storybook",
     "build:priority-guide": "npm run build:tokens && vite build examples/priority-guide -- --outDir dist",
-    "build:a1-web": "npm run build:tokens && npm run a11y:reports:check && vite build apps/a1-web",
+    "build:a1-web": "npm run patterns:check && npm run build:tokens && npm run a11y:reports:check && vite build apps/a1-web",
     "build:a1-web:test": "VITE_SUPABASE_URL= VITE_SUPABASE_ANON_KEY= VITE_POSTHOG_KEY= npm run build:a1-web",
     "build:a1-jobs": "npm run build:tokens && vite build apps/a1-jobs",
     "build:tesla-a1": "npm run build:tokens && vite build apps/tesla-a1",
@@ -86,14 +86,19 @@
     "history:generate": "node scripts/build-component-history.mjs",
     "history:generate:check": "node scripts/build-component-history.mjs --check",
     "build:eslint-rules": "node scripts/build-eslint-rules.mjs",
-    "lint": "node scripts/build-eslint-rules.mjs --check && eslint . && node scripts/lint-a1-css.mjs",
+    "lint": "npm run patterns:check && node scripts/build-eslint-rules.mjs --check && eslint . && node scripts/lint-a1-css.mjs",
     "lint:fix": "node scripts/build-eslint-rules.mjs && eslint . --fix && node scripts/lint-a1-css.mjs",
     "lint:rules": "npm test --workspace=eslint-plugin-a1",
     "dev:a1-labs": "vite apps/a1-labs --host 127.0.0.1 --strictPort --port 5187",
     "build:a1-labs": "npm run build:tokens && vite build apps/a1-labs",
     "preview:a1-labs": "vite preview apps/a1-labs --host 127.0.0.1 --strictPort --port 4189",
     "deploy:a1-labs:preview": "netlify deploy --filter a1-labs --site 92a835d6-4240-4984-aef3-bc744f9d81db",
-    "deploy:a1-labs": "netlify deploy --filter a1-labs --site 92a835d6-4240-4984-aef3-bc744f9d81db --prod"
+    "deploy:a1-labs": "netlify deploy --filter a1-labs --site 92a835d6-4240-4984-aef3-bc744f9d81db --prod",
+    "build:patterns": "node scripts/build-patterns.mjs",
+    "patterns:check": "node scripts/build-patterns.mjs --check && node scripts/check-pattern-contracts.mjs",
+    "test:patterns": "node --test tests/patterns/*.test.mjs",
+    "build:mcp-index:check": "node packages/mcp-server/scripts/build-index.mjs --check",
+    "patterns:verify-mcp": "node scripts/check-pattern-mcp.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.2",

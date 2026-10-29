@@ -6,10 +6,11 @@
  * `createNodeFromEntry` to stamp a fresh stable id on it before inserting.
  */
 import type { ComponentNode, ComponentProps, ComponentType, ContentDefinition } from './pageTypes';
-import { patternAreaSlot } from './patternAreas';
+import { createPatternNode } from '../../../../packages/react/src/patterns/patternPolicies.js';
 
 /** A node template with no `id` at any level — ids are stamped by `createNodeFromEntry`. */
 export type PartialNode = {
+  patternVersion?: string;
   type: ComponentType;
   props?: ComponentProps;
   content?: ContentDefinition;
@@ -1467,26 +1468,35 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
         label: 'Page title',
         icon: 'title',
         description: 'The top band of a page: breadcrumb, title, description and page actions',
-        defaultNode: {
-          type: 'PageTitle',
-          props: {
-            // `true` = built from the project's page hierarchy at render time.
-            breadcrumb: true,
-            title: 'Page title',
-            description: 'A short description tells people what this page is for.',
-          },
-          // The pattern's areas, from the pattern-area registry: the Metadata
-          // zone (badges, directly below the title), the Actions zone (the
-          // pattern keeps one primary, shown last) seeded with one primary
-          // button, and the open Content area, which accepts any component.
-          children: [
-            patternAreaSlot('PageTitle', 'meta'),
-            patternAreaSlot('PageTitle', 'actions', {
-              children: [{ type: 'Button', props: { variant: 'primary' }, content: { fallback: 'Primary action' } }],
-            }),
-            patternAreaSlot('PageTitle', 'content'),
-          ],
-        },
+        defaultNode: createPatternNode('PageTitle') as PartialNode,
+      },
+      {
+        type: 'VerificationDialog',
+        label: 'Verification dialog',
+        icon: 'verified_user',
+        description: 'Verify an action before it runs',
+        defaultNode: createPatternNode('VerificationDialog') as PartialNode,
+      },
+      {
+        type: 'OverflowMenu',
+        label: 'Overflow menu',
+        icon: 'more_vert',
+        description: 'Contextual actions with optional verification dialogs',
+        defaultNode: createPatternNode('OverflowMenu') as PartialNode,
+      },
+      {
+        type: 'NavigationTree',
+        label: 'Navigation tree',
+        icon: 'account_tree',
+        description: 'Nested navigation with optional search and A–Z sorting',
+        defaultNode: createPatternNode('NavigationTree') as PartialNode,
+      },
+      {
+        type: 'OverviewCard',
+        label: 'Overview card',
+        icon: 'summarize',
+        description: 'A summary card: an icon, a heading, key details, a content area and up to two actions',
+        defaultNode: createPatternNode('OverviewCard') as PartialNode,
       },
     ],
   },
@@ -1542,7 +1552,7 @@ export const COMMON_COMPONENT_IDS = new Set<string>([
   // Data
   'data-table', 'definition-list', 'pagination',
   // Patterns (A1-2720)
-  'page-title',
+  'navigation-tree', 'page-title', 'overview-card',
 ]);
 
 function freshId(): string {

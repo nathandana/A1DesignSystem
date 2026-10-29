@@ -142,6 +142,8 @@ Run `node --test examples/portfolio/tests/focus.test.js` for the contract checks
 
 ## A1 Labs
 
+Toolbar hover treatments: `/experiments/toolbar-group`; see [the study contract](labs-toolbar-group.md).
+
 See the [Labs README](../../../apps/a1-labs/README.md) for setup, controls,
 accessibility behavior, source structure and static hosting instructions.
 

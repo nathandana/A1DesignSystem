@@ -170,6 +170,9 @@ export const GENERATED_COMPONENT_HISTORY = {
   "number-field": [
     {"date":"2026-06-10","type":"code","summary":"NumberField unit fix"},
   ],
+  "overflow-menu": [
+    {"date":"2026-10-28","type":"code","summary":"Overflow menu pattern"},
+  ],
   "overlay": [
     {"date":"2026-07-05","type":"code","summary":"Overlay component","ticket":"A1-417"},
   ],

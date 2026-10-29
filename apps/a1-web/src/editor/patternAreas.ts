@@ -3,19 +3,21 @@
  *
  * An area is a `Slot` child of the pattern node whose `props.area` names it.
  * A **zone** is an area with set rules: the pattern fixes what it accepts, how
- * many items it holds and (through `prop`) where those items render. On a page
+ * many items it holds, (through `prop`) where those items render, and
+ * optionally how they look (`itemProps`) and whether one may be primary. On a page
  * a zone can't be removed, moved, duplicated or reconfigured — only its items
  * change, and every way of adding into it (Add panel, drop, tree move, adding
  * beside an item) follows its rules. An open area (no `zone`) is a plain blank
  * area: any component, editable layout.
  *
- * This registry is the single source for those rules. The Add-panel catalog
+ * The system manifest is the source for those rules; this module adapts it. The Add-panel catalog
  * and the Pattern library configurator build their Slot nodes from it, the
  * page renderer maps a zone's items into the pattern prop, and the editor
  * derives a zone's lock from the node itself (`props.zone`), so a page
  * definition written by hand or by an agent is governed the same way.
  */
 import type { ComponentNode, ComponentProps, ComponentType } from './pageTypes';
+import { patternManifests, createPatternArea, normalizePatternItems, ZONE_RULE_PROPS } from '../../../../packages/react/src/patterns/patternPolicies.js';
 
 export type NodeLock = NonNullable<ComponentNode['lock']>;
 
@@ -30,6 +32,7 @@ export interface PatternZoneRules {
   rules: string;
   /** Props the zone fixes on its items, by type — e.g. every badge small and subtle. */
   itemProps?: Partial<Record<ComponentType, ComponentProps>>;
+  policies?: Record<string, unknown>;
 }
 
 export interface PatternArea {
@@ -45,45 +48,18 @@ export interface PatternArea {
   gap?: string;
 }
 
-export const PATTERN_AREAS: Record<string, PatternArea[]> = {
-  PageTitle: [
-    {
-      id: 'meta',
-      label: 'Metadata',
-      hint: 'Badges about the page, directly below the title.',
-      zone: {
-        allow: ['MessageBadge'],
-        max: 5,
-        prop: 'meta',
-        rules: 'Up to 5 badges, shown small and subtle directly below the title.',
-        itemProps: { MessageBadge: { size: 'sm', subtle: true } },
-      },
-    },
-    {
-      id: 'actions',
-      label: 'Actions',
-      hint: 'The page actions, after the description.',
-      zone: {
-        // A split button is a Button with `split` (see the Button bridge); a
-        // ButtonContainer is a button group that stays together.
-        allow: ['Button', 'Link', 'IconButton', 'ButtonContainer', 'Toolbar', 'SegmentedControl'],
-        max: 4,
-        prop: 'actions',
-        rules: 'Up to 4 buttons, split buttons, links, icon buttons, button groups, toolbars or segmented controls. One primary button, shown last.',
-      },
-    },
-    {
-      id: 'content',
-      label: 'Content',
-      hint: 'Below the actions. In a project, drop any component here — a search field, tabs or filters.',
-      columns: 1,
-      gap: 'sm',
-    },
-  ],
-};
+// Compatibility adapter: all authored data belongs to system/patterns/*.json.
+export const PATTERN_AREAS: Record<string, PatternArea[]> = Object.fromEntries(
+  patternManifests.map((manifest) => [manifest.type, manifest.areas.map((area) => ({
+    id: area.id, label: area.label, hint: area.hint,
+    ...(area.kind === 'zone' ? { zone: {
+      allow: area.allow as ComponentType[], max: area.max, prop: area.destination,
+      rules: area.rules, itemProps: area.policies?.fixedProps, policies: area.policies,
+    } } : area.layout),
+  }))]),
+);
 
-/** The Slot props a zone fixes; on a page they are read-only. */
-export const ZONE_RULE_PROPS = ['area', 'zone', 'label', 'rules', 'allow', 'allowPatterns', 'min', 'max', 'columns', 'gap'];
+export { ZONE_RULE_PROPS };
 
 export function getPatternAreas(type: string): PatternArea[] {
   return PATTERN_AREAS[type] ?? [];
@@ -95,12 +71,7 @@ export function getPatternArea(type: string, areaId: string | undefined): Patter
 
 /** A zone's items with the props it fixes applied (see `PatternZoneRules.itemProps`). */
 export function applyZoneItemProps<T extends Pick<ComponentNode, 'type' | 'props'>>(type: string, areaId: string | undefined, items: T[]): T[] {
-  const itemProps = getPatternArea(type, areaId)?.zone?.itemProps;
-  if (!itemProps) return items;
-  return items.map((item) => {
-    const fixed = itemProps[item.type as ComponentType];
-    return fixed ? { ...item, props: { ...item.props, ...fixed } } : item;
-  });
+  return normalizePatternItems(type, areaId, items) as T[];
 }
 
 /** The pattern prop a zone's items render into; undefined for an open area or an unknown area. */
@@ -122,15 +93,7 @@ export interface PatternAreaSlot<T> {
  * label and layout.
  */
 export function patternAreaSlot<T>(type: string, areaId: string, options: { id?: string; children?: T[] } = {}): PatternAreaSlot<T> {
-  const area = getPatternArea(type, areaId);
-  if (!area) throw new Error(`Unknown pattern area ${type}.${areaId}`);
-  const props: ComponentProps = area.zone
-    ? { area: area.id, zone: true, label: area.label, rules: area.zone.rules, allow: area.zone.allow, max: area.zone.max }
-    : { area: area.id, label: area.label, columns: area.columns, gap: area.gap };
-  const slot: PatternAreaSlot<T> = { type: 'Slot', props };
-  if (options.id) slot.id = options.id;
-  if (options.children) slot.children = options.children;
-  return slot;
+  return createPatternArea(type, areaId, options) as PatternAreaSlot<T>;
 }
 
 type NodeLike = Pick<ComponentNode, 'type' | 'props'> & { lock?: ComponentNode['lock'] };
@@ -147,7 +110,9 @@ export function zoneLock(node: NodeLike | null | undefined): NodeLock | undefine
 
 /** A node's authored lock, or the lock its zone status implies. */
 export function effectiveLock(node: NodeLike | null | undefined): NodeLock | undefined {
-  return node?.lock ?? zoneLock(node);
+  const formal = zoneLock(node);
+  if (!formal) return node?.lock;
+  return { ...node?.lock, node: true, props: [...new Set([...(node?.lock?.props ?? []), ...ZONE_RULE_PROPS])] };
 }
 
 export function zoneLabel(node: NodeLike | null | undefined): string {

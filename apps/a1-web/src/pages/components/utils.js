@@ -84,7 +84,7 @@ function scoreTerms(query, terms, exactScore, startsScore, includesScore, fuzzyS
   const compactQuery = compactSearchTerm(query)
   if (!normalizedQuery) return 0
 
-  return terms.reduce((best, term) => {
+  const phraseScore = terms.reduce((best, term) => {
     const normalizedTerm = normalizeSearchTerm(term)
     const compactTerm = compactSearchTerm(term)
     if (!normalizedTerm) return best
@@ -100,6 +100,15 @@ function scoreTerms(query, terms, exactScore, startsScore, includesScore, fuzzyS
 
     return best
   }, 0)
+
+  // Match separate word prefixes in either order, e.g. "button spl" → "Split Button".
+  // Complete phrases retain their stronger exact/start/contains ranking.
+  const words = normalizedQuery.split(' ')
+  const wordMatch = words.length > 1 && terms.some(term => {
+    const candidates = normalizeSearchTerm(term).split(' ')
+    return words.every(word => candidates.some(candidate => candidate.startsWith(word)))
+  })
+  return Math.max(phraseScore, wordMatch ? includesScore : 0)
 }
 
 // Catalogue items (components and patterns) carry their own keywords; the

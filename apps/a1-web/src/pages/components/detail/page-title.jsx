@@ -5,6 +5,7 @@ import {
   Divider,
   IconButton,
   PageTitle,
+  Paragraph,
   Stack,
   TextField,
   normalizePageTitleActions,
@@ -13,12 +14,16 @@ import { Choice, ConfigSlider, WithHelp, statusOptions } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { Toggle } from './Toggle.jsx'
 import { SlotPlaceholder } from '../../../editor/SlotPlaceholder.jsx'
-import { PATTERN_AREAS, patternAreaSlot } from '../../../editor/patternAreas.ts'
+import { RenderNode } from '../../../editor/pageRenderer.tsx'
+import { nodeToJsx } from '../../../editor/definitionToJsx.ts'
+import { patternConfigNode, patternActionFromNode, patternActionToNode } from '../../../editor/patternConfig.js'
+import { PATTERN_AREAS } from '../../../editor/patternAreas.ts'
 
 // The configurator owns the pattern's surface, so the detail page renders it
 // without the usual Section wrapper and the band spans the full preview width.
 export const bareDisplay = true
 export const jsonType = 'PageTitle'
+export const acceptsJsonChildren = true
 // The pattern's areas, from the pattern-area registry: shown as dashed outlines
 // in the configurator preview (toggle in the display toolbar) and shipped as
 // Slot children of the editor's default node. The Actions zone shows its rule
@@ -52,18 +57,10 @@ const VARIANT_OPTIONS = [
 const ICON_BUTTON_VARIANTS = ['tertiary', 'secondary', 'destructive', 'success']
 const BADGE_STATUSES = ['neutral', 'info', 'success', 'warn', 'error']
 const MAX_ACTIONS = ACTIONS_ZONE.max
-const MAX_META = 5
+const MAX_META = PAGE_TITLE_AREAS.find((area) => area.id === 'meta').zone.max
 
 function freshId(prefix) {
   return `${prefix}-${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`
-}
-
-function escapeAttr(value) {
-  return String(value ?? '').replaceAll('"', '&quot;')
-}
-
-function escapeJsString(value) {
-  return String(value ?? '').replaceAll('\\', '\\\\').replaceAll("'", "\\'")
 }
 
 function withIds(items, prefix) {
@@ -84,14 +81,14 @@ function sampleBreadcrumb(title) {
 export function propsFromConfig(config) {
   const props = {}
   // Page definitions: `true` = built from the project's page hierarchy at render time.
-  if (config.showBreadcrumb) props.breadcrumb = true
+  if (config.showBreadcrumb) props.breadcrumb = config.breadcrumbItems ?? true
   if (config.eyebrow) props.eyebrow = config.eyebrow
   props.title = config.title
   if (config.description) props.description = config.description
   const meta = (config.meta ?? []).filter((badge) => badge.label)
   if (meta.length) props.meta = meta.map((badge) => ({ label: badge.label, status: badge.status || 'neutral' }))
   if (config.actions?.length) {
-    props.actions = normalizePageTitleActions(config.actions).map((action) => {
+    props.actions = normalizePageTitleActions(config.actions.filter(action => action.kind !== 'node')).map((action) => {
       const kind = action.kind ?? 'button'
       const out = { id: action.id, label: action.label }
       if (kind !== 'button') out.kind = kind
@@ -129,61 +126,40 @@ export function configFromProps(props = {}) {
     eyebrow: props.eyebrow ?? '',
     description: props.description ?? '',
     meta,
+    breadcrumbItems: Array.isArray(props.breadcrumb) ? props.breadcrumb : undefined,
     showBreadcrumb: props.breadcrumb === true || (Array.isArray(props.breadcrumb) && props.breadcrumb.length > 0),
     actions,
     contentWidth: props.contentWidth ?? 'xl',
   }
 }
 
-// Page definitions carry the actions as nodes in the Actions area, not as data.
-function actionNode(action, index) {
-  const kind = action.kind ?? 'button'
-  const id = `action-${index + 1}`
-  if (kind === 'link') return { id, type: 'Link', props: { href: action.href || '#', ...(action.icon ? { icon: action.icon } : {}) }, content: { fallback: action.label } }
-  if (kind === 'icon-button') return { id, type: 'IconButton', props: { icon: action.icon || 'more_horiz', label: action.label, ...(action.variant && action.variant !== 'tertiary' ? { variant: action.variant } : {}) } }
-  return { id, type: 'Button', props: { ...(action.variant && action.variant !== 'secondary' ? { variant: action.variant } : {}), ...(action.icon ? { icon: action.icon } : {}) }, content: { fallback: action.label } }
-}
-
-function actionFromNode(node) {
-  const props = node.props ?? {}
-  if (node.type === 'Link') return { kind: 'link', label: node.content?.fallback ?? '', variant: 'secondary', icon: props.icon ?? '', href: props.href ?? '' }
-  if (node.type === 'IconButton') return { kind: 'icon-button', label: props.label ?? '', variant: props.variant ?? 'tertiary', icon: props.icon ?? '', href: '' }
-  return { kind: 'button', label: node.content?.fallback ?? '', variant: props.variant ?? 'secondary', icon: props.icon ?? '', href: '' }
-}
-
 // Page definitions carry the metadata as badge nodes in the Metadata zone.
 function metaNode(badge, index) {
-  return { id: `meta-${index + 1}`, type: 'MessageBadge', props: { status: badge.status || 'neutral' }, content: { fallback: badge.label } }
+  const source = badge.sourceNode ?? {}
+  const content = { ...source.content, fallback: badge.label }
+  if (source.content?.fallback !== badge.label) delete content.textKey
+  return { ...source, id: source.id ?? badge.id ?? `meta-${index + 1}`, type: 'MessageBadge', props: { ...source.props, status: badge.status || 'neutral' }, content }
 }
 
 function metaFromNode(node, index) {
-  return { id: `meta-${index + 1}`, label: node.content?.fallback ?? '', status: BADGE_STATUSES.includes(node.props?.status) ? node.props.status : 'neutral' }
+  return { id: node.id ?? `meta-${index + 1}`, sourceNode: node, label: node.content?.fallback ?? '', status: BADGE_STATUSES.includes(node.props?.status) ? node.props.status : 'neutral' }
 }
 
 export function toJson(config) {
   const { actions: _actions, meta: _meta, ...props } = propsFromConfig(config)
-  const actions = normalizePageTitleActions(config.actions ?? []).map(actionNode)
-  const meta = (config.meta ?? []).filter((badge) => badge.label).map(metaNode)
-  return {
-    node: {
-      id: 'page-title-1',
-      type: 'PageTitle',
-      props,
-      children: [
-        patternAreaSlot('PageTitle', 'meta', { id: 'page-title-meta', children: meta }),
-        patternAreaSlot('PageTitle', 'actions', { id: 'page-title-actions', children: actions }),
-        patternAreaSlot('PageTitle', 'content', { id: 'page-title-content' }),
-      ],
-    },
-    note: null,
-  }
+  const actions = (config.actions ?? []).map(patternActionToNode)
+  const meta = (config.meta ?? []).map(metaNode)
+  return { node: patternConfigNode('PageTitle', config,
+    ['title', 'eyebrow', 'description', 'contentWidth', 'breadcrumb', 'actions', 'meta'],
+    props, { actions, meta }), note: null }
 }
 
 export function fromJson(node) {
   const config = configFromProps(node?.props ?? {})
+  config.sourceNode = node
   const actionsSlot = (node?.children ?? []).find((child) => child.type === 'Slot' && child.props?.area === 'actions')
   const nodes = actionsSlot?.children ?? (Array.isArray(node?.props?.actions) ? null : [])
-  if (nodes) config.actions = withIds(nodes.map(actionFromNode), 'action')
+  if (nodes) config.actions = nodes.map(patternActionFromNode)
   const metaSlot = (node?.children ?? []).find((child) => child.type === 'Slot' && child.props?.area === 'meta')
   if (metaSlot) config.meta = (metaSlot.children ?? []).filter((child) => child.type === 'MessageBadge').map(metaFromNode)
   return config
@@ -191,45 +167,11 @@ export function fromJson(node) {
 
 // ── Snippet ───────────────────────────────────────────────────────────────────
 
-function snippetList(items, indent) {
-  return `[\n${items.map((item) => `${indent}  ${item},`).join('\n')}\n${indent}]`
-}
-
-// Code shows the React form: the sample trail as items (a host resolves `true` itself).
-function codeProps(config) {
-  const props = propsFromConfig(config)
-  if (props.breadcrumb === true) props.breadcrumb = sampleBreadcrumb(config.title)
-  return props
-}
-
 function buildSnippet(config, utilityClass = '') {
-  const props = codeProps(config)
-  const lines = []
-  if (utilityClass) lines.push(`className="${escapeAttr(utilityClass)}"`)
-  if (props.breadcrumb) {
-    lines.push(`breadcrumb={${snippetList(props.breadcrumb.map((item) => (
-      item.href ? `{ label: '${escapeJsString(item.label)}', href: '${escapeJsString(item.href)}' }` : `{ label: '${escapeJsString(item.label)}' }`
-    )), '  ')}}`)
-  }
-  if (props.eyebrow) lines.push(`eyebrow="${escapeAttr(props.eyebrow)}"`)
-  lines.push(`title="${escapeAttr(props.title)}"`)
-  if (props.description) lines.push(`description="${escapeAttr(props.description)}"`)
-  if (props.meta) {
-    lines.push(`meta={${snippetList(props.meta.map((badge) => `{ label: '${escapeJsString(badge.label)}', status: '${badge.status}' }`), '  ')}}`)
-  }
-  if (props.actions) {
-    lines.push(`actions={${snippetList(props.actions.map((action) => {
-      const parts = []
-      if (action.kind) parts.push(`kind: '${action.kind}'`)
-      parts.push(`label: '${escapeJsString(action.label)}'`)
-      if (action.variant) parts.push(`variant: '${action.variant}'`)
-      if (action.icon) parts.push(`icon: '${action.icon}'`)
-      if (action.href) parts.push(`href: '${escapeJsString(action.href)}'`)
-      return `{ ${parts.join(', ')} }`
-    }), '  ')}}`)
-  }
-  if (props.contentWidth) lines.push(`contentWidth="${props.contentWidth}"`)
-  return `<PageTitle\n${lines.map((line) => `  ${line}`).join('\n')}\n/>`
+  const { node } = toJson(config)
+  if (node.props.breadcrumb === true) node.props.breadcrumb = sampleBreadcrumb(config.title)
+  if (utilityClass) node.props.className = utilityClass
+  return nodeToJsx(node)
 }
 
 // ── Module API ────────────────────────────────────────────────────────────────
@@ -241,36 +183,36 @@ export function getDefaultConfig() {
     description: 'A short description tells people what this page is for.',
     meta: [],
     showBreadcrumb: true,
-    actions: [
-      { id: 'action-secondary', kind: 'button', label: 'Secondary action', variant: 'secondary', icon: '', href: '' },
-      { id: 'action-primary', kind: 'button', label: 'Primary action', variant: 'primary', icon: '', href: '' },
-    ],
+    actions: [],
     contentWidth: 'xl',
   }
 }
 
 export function Preview({ config, utilityClass = '', editableAreas: visibleAreas = [] }) {
-  const props = codeProps(config)
-  const area = (id) => visibleAreas.find((candidate) => candidate.id === id)
-  // Metadata and Actions are outlined only while they're empty; Content always.
-  const metaArea = !props.meta?.length ? area('meta') : null
-  const actionsArea = !props.actions?.length ? area('actions') : null
-  const contentArea = area('content')
-  return (
-    <PageTitle
-      className={utilityClass || undefined}
-      {...props}
-      meta={metaArea ? <SlotPlaceholder label={metaArea.label} hint={metaArea.hint} /> : props.meta}
-      actions={actionsArea ? <SlotPlaceholder label={actionsArea.label} hint={actionsArea.hint} /> : props.actions}
-    >
-      {contentArea && <SlotPlaceholder label={contentArea.label} hint={contentArea.hint} />}
-    </PageTitle>
-  )
+  const { node } = toJson(config)
+  const props = { ...node.props }
+  if (props.breadcrumb === true) props.breadcrumb = sampleBreadcrumb(config.title)
+  const area = (id) => node.children.find(child => child.props?.area === id)
+  const renderArea = (id) => {
+    const slot = area(id)
+    const outline = visibleAreas.find(candidate => candidate.id === id)
+    if (slot?.children?.length) return id === 'content'
+      ? <RenderNode node={slot} />
+      : slot.children.map(child => <RenderNode key={child.id} node={child} />)
+    return outline ? <SlotPlaceholder label={outline.label} hint={outline.hint} /> : null
+  }
+  return <PageTitle {...props} className={utilityClass || undefined} meta={renderArea('meta')} actions={renderArea('actions')}>
+    {renderArea('content')}
+  </PageTitle>
 }
 
 // One action's controls: the label row carries the remove button; the type and
 // variant are icon toolbars that collapse into a menu rather than wrap.
 function ActionEditor({ action, onChange, onRemove }) {
+  if (action.kind === 'node') return <Stack direction="row" gap="sm" align="center">
+    <Paragraph size="sm">{action.label} — edit its items in JSON or the project editor.</Paragraph>
+    <IconButton icon="delete" variant="destructive" size="sm" label="Remove action" onClick={onRemove} />
+  </Stack>
   const kind = action.kind ?? 'button'
   const variantOptions = kind === 'icon-button'
     ? VARIANT_OPTIONS.filter((option) => ICON_BUTTON_VARIANTS.includes(option.value))
@@ -321,7 +263,7 @@ export function Controls({ config, setConfig, pages }) {
   // actions are nodes in the pattern's Metadata and Actions zones, edited on the
   // canvas and in the Layers tree.
   const inEditor = Array.isArray(pages)
-  const actionSummary = actions.length ? normalizePageTitleActions(actions).map((action) => action.label || 'Untitled').join(' · ') : 'None'
+  const actionSummary = actions.length ? actions.map((action) => action.label || 'Untitled').join(' · ') : 'None'
 
   // One primary at most: making a button primary turns the other primaries secondary.
   function updateAction(id, patch) {

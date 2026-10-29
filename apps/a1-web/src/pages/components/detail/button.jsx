@@ -10,7 +10,7 @@ import {
   Toolbar,
   ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
-import { Choice, ConfigSlider, WithHelp } from './configKit.jsx'
+import { Choice, WithHelp } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { PageLinkField } from './PageLinkField.jsx'
 
@@ -245,7 +245,7 @@ export function Preview({ config, viewAs = 'react', utilityClass = '' }) {
   )
 }
 
-export function Controls({ config, setConfig, pages, viewAs = 'react', textAction = null }) {
+export function Controls({ config, setConfig, pages, viewAs = 'react', textAction = null, splitOnly = false }) {
   const s = support(viewAs)
   return (
     <Stack gap="lg">
@@ -266,7 +266,7 @@ export function Controls({ config, setConfig, pages, viewAs = 'react', textActio
         onChange={(variant) => setConfig((current) => ({ ...current, variant }))}
         options={VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt, icon: VARIANT_ICONS[opt] }))}
       />
-      <ConfigSlider prop="size" label="Size" helper="Controls the button's height, padding, and text size." values={SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
+      <Choice prop="size" label="Size" helper="Controls the button's height, padding, and text size." options={SIZE_OPTIONS.map((value, index) => ({ value, label: ['Small', 'Default', 'Large'][index] }))} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
       <Choice
         label="Icon"
         iconOnly
@@ -287,7 +287,7 @@ export function Controls({ config, setConfig, pages, viewAs = 'react', textActio
           onChange={(icon) => setConfig((current) => ({ ...current, icon }))}
         />
       )}
-      {s.href && (
+      {s.href && !splitOnly && (
         <PageLinkField
           pages={pages}
           value={config.href ?? ''}
@@ -295,16 +295,13 @@ export function Controls({ config, setConfig, pages, viewAs = 'react', textActio
         />
       )}
       <Toolbar label="State">
-        {s.fullWidth && (
+        {s.fullWidth && !splitOnly && (
           <ToolbarToggle icon="width_full" label="Full width" pressed={config.fullWidth} onChange={(fullWidth) => setConfig((current) => ({ ...current, fullWidth }))} />
         )}
         {s.loading && (
           <ToolbarToggle icon="progress_activity" label="Loading" pressed={config.loading} onChange={(loading) => setConfig((current) => ({ ...current, loading }))} />
         )}
         <ToolbarToggle icon="block" label="Disabled" pressed={config.disabled} onChange={(disabled) => setConfig((current) => ({ ...current, disabled }))} />
-        {s.split && (
-          <ToolbarToggle icon="arrow_drop_down_circle" label="Split (menu)" pressed={config.split} onChange={(split) => setConfig((current) => ({ ...current, split, menuActions: current.menuActions?.length ? current.menuActions : [{ id: freshMenuActionId(), label: 'Another action', icon: '' }] }))} />
-        )}
       </Toolbar>
       {s.split && config.split && (
         <MenuActionsEditor
