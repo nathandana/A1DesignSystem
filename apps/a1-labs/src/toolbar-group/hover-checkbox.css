@@ -1,0 +1,32 @@
+/* Study only the row's hover paint. A1 retains the native input, tick, sizes,
+   disabled state and focus outline, so hover never disguises checked state. */
+.a1-checkbox-hover[data-hover-treatment='none'] .a1-checkbox-item:not(.a1-checkbox-item--disabled):hover {
+  background-color: transparent;
+}
+.a1-checkbox-hover:is([data-hover-treatment='none'], [data-hover-treatment='off-only'], [data-hover-treatment='distinct-off-only']) .a1-checkbox-item:not(.a1-checkbox-item--disabled):hover:has(input:checked) {
+  background-color: var(--a1-field-hover-background);
+}
+.a1-checkbox-hover[data-hover-treatment='none'] .a1-checkbox-item:hover input:not(:checked):not(:disabled) {
+  border-color: var(--semantic-color-border-strong);
+}
+
+.a1-checkbox-hover[data-hover-treatment='distinct'] .a1-checkbox-item:not(.a1-checkbox-item--disabled):hover,
+.a1-checkbox-hover[data-hover-treatment='distinct-off-only'] .a1-checkbox-item:not(.a1-checkbox-item--disabled):hover:not(:has(input:checked)) {
+  background-color: var(--semantic-color-action-background);
+}
+.a1-checkbox-hover[data-hover-treatment='distinct'] .a1-checkbox-item:not(.a1-checkbox-item--disabled):hover :is(.a1-checkbox-item__label, .a1-checkbox-item__hint),
+.a1-checkbox-hover[data-hover-treatment='distinct-off-only'] .a1-checkbox-item:not(.a1-checkbox-item--disabled):hover:not(:has(input:checked)) :is(.a1-checkbox-item__label, .a1-checkbox-item__hint) {
+  color: var(--semantic-color-action-foreground);
+}
+
+.a1-checkbox-hover[data-hover-treatment='match-active'] .a1-checkbox-item:not(.a1-checkbox-item--disabled):hover:not(:has(input:checked)),
+.a1-checkbox-hover[data-hover-treatment='match-active'] .a1-checkbox-item[data-a1-hover-paused]:not(.a1-checkbox-item--disabled):hover:has(input:checked) {
+  background-color: var(--a1-field-hover-background);
+}
+.a1-checkbox-hover[data-hover-treatment='match-active'] .a1-checkbox-item:not(.a1-checkbox-item--disabled):hover:has(input:checked),
+.a1-checkbox-hover[data-hover-treatment='match-active'] .a1-checkbox-item[data-a1-hover-paused]:not(.a1-checkbox-item--disabled):hover:not(:has(input:checked)) {
+  background-color: transparent;
+}
+.a1-checkbox-hover[data-hover-treatment='match-active'] .a1-checkbox-item[data-a1-hover-paused]:hover input:not(:checked):not(:disabled) {
+  border-color: var(--semantic-color-border-strong);
+}

@@ -1,0 +1,46 @@
+/* This explicitly opted-in study changes only item hover/press paint. A1 owns layout,
+   selection, focus rings, tooltips and keyboard behavior. Current is untouched. */
+.a1-toolbar-hover[data-hover-treatment='none'] :is([aria-pressed], [role='radio']):hover,
+.a1-toolbar-hover[data-hover-treatment='off-only'] :is([aria-pressed='false'], [aria-checked='false']):disabled:hover,
+.a1-toolbar-hover[data-hover-treatment='distinct-off-only'] :is([aria-pressed='false'], [aria-checked='false']):disabled:hover,
+.a1-toolbar-hover[data-hover-treatment='match-active'] :is([aria-pressed='false'], [aria-checked='false']):disabled:hover,
+.a1-toolbar-hover[data-hover-treatment='distinct'] :is([aria-pressed], [role='radio']):disabled:hover {
+  background: transparent;
+}
+
+.a1-toolbar-hover[data-hover-treatment='none'] :is([aria-pressed='true'], [aria-checked='true']):hover,
+.a1-toolbar-hover[data-hover-treatment='off-only'] :is([aria-pressed='true'], [aria-checked='true']):hover,
+.a1-toolbar-hover[data-hover-treatment='distinct-off-only'] :is([aria-pressed='true'], [aria-checked='true']):hover,
+.a1-toolbar-hover[data-hover-treatment='match-active'] :is([aria-pressed='true'], [aria-checked='true']):hover,
+.a1-toolbar-hover[data-hover-treatment='distinct'] :is([aria-pressed='true'], [aria-checked='true']):disabled:hover {
+  background: var(--a1-toolbar-selected-bg);
+}
+
+.a1-toolbar-hover[data-hover-treatment='match-active'] :is([aria-pressed='false'], [aria-checked='false']):not(:disabled):is(:hover, :active) {
+  background: var(--a1-toolbar-selected-bg);
+  color: var(--a1-toolbar-selected-fg);
+}
+
+.a1-toolbar-hover[data-hover-treatment='match-active'] :is([aria-pressed='true'], [aria-checked='true']):not(:disabled):is(:hover, :active) {
+  background: transparent;
+  color: var(--a1-toolbar-fg);
+}
+
+/* Keep the committed selection visible until the pointer leaves the item. */
+.a1-toolbar-hover[data-hover-treatment='match-active'] :is([aria-pressed='false'], [aria-checked='false'])[data-a1-hover-paused]:not(:disabled):is(:hover, :active) {
+  background: transparent;
+  color: var(--a1-toolbar-fg);
+}
+
+.a1-toolbar-hover[data-hover-treatment='match-active'] :is([aria-pressed='true'], [aria-checked='true'])[data-a1-hover-paused]:not(:disabled):is(:hover, :active) {
+  background: var(--a1-toolbar-selected-bg);
+  color: var(--a1-toolbar-selected-fg);
+}
+
+@media (hover: hover) {
+  .a1-toolbar-hover[data-hover-treatment='distinct'] :is([aria-pressed], [role='radio']:not([aria-checked='true'])):not(:disabled):hover,
+  .a1-toolbar-hover[data-hover-treatment='distinct-off-only'] :is([aria-pressed='false'], [aria-checked='false']):not(:disabled):hover {
+    background: var(--semantic-color-action-background);
+    color: var(--semantic-color-action-foreground);
+  }
+}

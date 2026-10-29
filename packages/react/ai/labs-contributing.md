@@ -716,3 +716,9 @@ grid edits and persisted deletions when switching sizes.
 Read [Publishing Labs](labs-publishing.md) before changing deployment settings.
 Keep the Labs project/configuration separate from A1 Web; use the explicit
 Labs deployment commands and verify direct routes on a draft before publishing.
+
+## Hover state and selected contract
+
+Read [Hover state and selected](labs-toolbar-group.md). Keep current styling identical to A1 and scope experimental hover paint to `HoverToolbar`. Preserve native toggle/radio semantics, selection, focus rings and tooltips. Selected radio items remain unchanged on hover except in Pause after click. No-hover suppresses visual hover only, not focus or selection. Hover when off retains the current subtle hover only for enabled off/unselected items; selected toggles stay unchanged too. Distinct hover when off follows the same state rules with the existing semantic action background/foreground pair. Pause after click swaps resting state colors on hover/press: off items use the selected surface/foreground, and selected toggles and radios become transparent with the ordinary foreground. Preserve selection semantics and shadows, and leave disabled items unchanged. After a pointer click actually changes selection in this treatment, pause hover until the pointer leaves that item; do not pause for an unchanged selected radio or keyboard activation.
+
+The checkbox example uses the real A1 CheckboxGroup with five notification preferences. Keep all labels and checkmarks visible, scope row treatments to `.a1-checkbox-hover`, and share post-click pause behavior through `useHoverPause`. Keep the `toolbar-group` route stable when changing the display title.

@@ -606,6 +606,13 @@ export const allExperiments = [
     description: 'Eight tab treatments: A1 default, folders, bold selection, pills, outlines, raised surfaces, top rails and bookmarks.',
     preview: '/previews/tabs.png', previewAlt: 'Folder-shaped tabs behind a continuously bordered project overview sheet, with Files, Activity, Team and Settings alongside.',
   },
+  {
+    id: 'toolbar-group', addedIn: '0.74.0', category: 'interaction', types: ['microinteraction', 'design-tool'],
+    tags: ['toolbar', 'toolbar group', 'toggle', 'hover', 'selected state', 'checkbox', 'checked', 'formatting', 'alignment'],
+    title: 'Hover state and selected', href: '/experiments/toolbar-group', icon: 'touch_app',
+    description: 'Compare six hover treatments on toolbar toggles, checkboxes and single-selection groups, including feedback that pauses after a click.',
+    preview: '/previews/toolbar-group.png', previewAlt: 'Formatting toggles and five notification checkboxes with both selected and unselected items.',
+  },
 ]
 
 /** Experiments shown in the gallery, sidebar and search. */
