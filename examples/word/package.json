@@ -1,0 +1,13 @@
+{
+  "name": "word",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "cd ../.. && npm run dev:word",
+    "build": "cd ../.. && npm run build:word",
+    "preview": "cd ../.. && npm run preview:word",
+    "test": "node --test tests/solver.test.js",
+    "netlify:build": "cd ../.. && npm ci && npm run build:word"
+  }
+}
