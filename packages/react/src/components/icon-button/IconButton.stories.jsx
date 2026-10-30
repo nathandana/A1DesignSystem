@@ -122,3 +122,7 @@ export const CommonIcons = {
     </div>
   ),
 };
+
+export const DisabledNavigation = {
+  args: { as: 'a', href: '#unavailable', disabled: true, icon: 'open_in_new', label: 'Unavailable destination' },
+};

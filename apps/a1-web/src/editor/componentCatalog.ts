@@ -6,9 +6,11 @@
  * `createNodeFromEntry` to stamp a fresh stable id on it before inserting.
  */
 import type { ComponentNode, ComponentProps, ComponentType, ContentDefinition } from './pageTypes';
+import { createPatternNode } from '../../../../packages/react/src/patterns/patternPolicies.js';
 
 /** A node template with no `id` at any level — ids are stamped by `createNodeFromEntry`. */
 export type PartialNode = {
+  patternVersion?: string;
   type: ComponentType;
   props?: ComponentProps;
   content?: ContentDefinition;
@@ -1467,6 +1469,48 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
       },
     ],
   },
+  {
+    id: 'patterns',
+    label: 'Patterns',
+    icon: 'dashboard_customize',
+    entries: [
+      {
+        type: 'PageTitle',
+        label: 'Page title',
+        icon: 'title',
+        description: 'The top band of a page: breadcrumb, title, description and page actions',
+        defaultNode: createPatternNode('PageTitle') as PartialNode,
+      },
+      {
+        type: 'VerificationDialog',
+        label: 'Verification dialog',
+        icon: 'verified_user',
+        description: 'Verify an action before it runs',
+        defaultNode: createPatternNode('VerificationDialog') as PartialNode,
+      },
+      {
+        type: 'OverflowMenu',
+        label: 'Overflow menu',
+        icon: 'more_vert',
+        description: 'Contextual actions with optional verification dialogs',
+        defaultNode: createPatternNode('OverflowMenu') as PartialNode,
+      },
+      {
+        type: 'NavigationTree',
+        label: 'Navigation tree',
+        icon: 'account_tree',
+        description: 'Nested navigation with optional search and A–Z sorting',
+        defaultNode: createPatternNode('NavigationTree') as PartialNode,
+      },
+      {
+        type: 'OverviewCard',
+        label: 'Overview card',
+        icon: 'summarize',
+        description: 'A summary card: an icon, a heading, key details, a content area and up to two actions',
+        defaultNode: createPatternNode('OverviewCard') as PartialNode,
+      },
+    ],
+  },
 ];
 
 // ── Lookup by component id (matches the `data.js` componentCategories ids) ─────
@@ -1518,6 +1562,8 @@ export const COMMON_COMPONENT_IDS = new Set<string>([
   'figure', 'icon',
   // Data
   'data-table', 'definition-list', 'pagination',
+  // Patterns (A1-2720)
+  'navigation-tree', 'page-title', 'overview-card',
 ]);
 
 function freshId(): string {

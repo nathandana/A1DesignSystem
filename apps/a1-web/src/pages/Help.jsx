@@ -9,6 +9,7 @@ import {
   Icon,
   Link,
   MessageEmptyState,
+  PageTitle,
   Paragraph,
   SearchField,
   Section,
@@ -17,7 +18,6 @@ import {
 import { HELP_CONTENT } from '../help/helpContent.jsx'
 import { matchHelpArticle } from '../help/helpModel.jsx'
 import { useT } from '../labels/useT.js'
-import { PageTitleArea } from './PageTitleArea.jsx'
 
 export const HELP_ARTICLE_PAGE_PREFIX = 'help-article-'
 
@@ -107,9 +107,9 @@ function HelpIndex({ initialQuery, onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        headingId="help-heading"
-        breadcrumbItems={[
+      <PageTitle
+        titleId="help-heading"
+        breadcrumb={[
           { label: 'Home', href: '/', onClick: (event) => { event?.preventDefault?.(); onNavigate?.('home') } },
           { label: 'Help' },
         ]}
@@ -124,7 +124,7 @@ function HelpIndex({ initialQuery, onNavigate }) {
           onChange={(event) => setQuery(event.target.value)}
           onClear={() => setQuery('')}
         />
-      </PageTitleArea>
+      </PageTitle>
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="help-heading">
         <Stack direction="column" gap="lg">
@@ -186,9 +186,9 @@ function HelpArticle({ articleId, onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        headingId="help-article-heading"
-        breadcrumbItems={[
+      <PageTitle
+        titleId="help-article-heading"
+        breadcrumb={[
           { label: 'Home', href: '/', onClick: (event) => { event?.preventDefault?.(); onNavigate?.('home') } },
           { label: 'Help', href: '/help', onClick: (event) => navigateToHelp(event, onNavigate) },
           { label: article.title },

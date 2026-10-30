@@ -14,6 +14,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { useT } from '../labels/useT.js'
 import { componentCategories } from '../pages/components/data.js'
+import { patternCategories } from '../pages/patterns/data.js'
 import { CATALOG_ENTRIES_BY_ID, COMMON_COMPONENT_IDS } from './componentCatalog.ts'
 
 /**
@@ -32,7 +33,12 @@ import { CATALOG_ENTRIES_BY_ID, COMMON_COMPONENT_IDS } from './componentCatalog.
 // Build the display model once: categories (in source-of-truth order) holding the
 // components that have an addable catalog entry, plus a flat alphabetical list.
 function buildModel(t) {
-  const categories = componentCategories
+  // Patterns (A1-2720) join the Add panel as their own group after the components.
+  const sourceCategories = [
+    ...componentCategories,
+    ...patternCategories.map((category) => ({ ...category, components: category.patterns })),
+  ]
+  const categories = sourceCategories
     .map((category) => ({
       id: category.id,
       label: category.title,
@@ -110,11 +116,16 @@ export function EditorAddPanel({ addTarget, onAdd, patternEntries = [], onAddPat
     return { categories, allItems }
   }, [fullModel, effectiveSet])
 
+  // A pattern zone is named and states its rules; a plain blank area keeps the
+  // generic wording.
   let contextLabel
   if (slot) {
-    if (slotFull) contextLabel = `This blank area is full${slot.max != null ? ` (max ${slot.max})` : ''}`
+    const zoneName = slot.zone && slot.label ? slot.label : null
+    if (slotFull) contextLabel = `${zoneName ?? 'This blank area'} is full${slot.max != null ? ` (max ${slot.max})` : ''}`
+    else if (zoneName) contextLabel = `Adding into ${zoneName}`
     else if (slotOpen) contextLabel = 'Adding into blank area'
     else contextLabel = 'Showing only what this blank area accepts'
+    if (slot.rules) contextLabel = `${contextLabel} — ${slot.rules}`
   } else if (addTarget?.targetId) {
     contextLabel = addTarget.position === 'into'
       ? 'Adding inside selected element'
@@ -285,8 +296,9 @@ export function EditorAddPanel({ addTarget, onAdd, patternEntries = [], onAddPat
           </Toolbar>
         </Stack>
 
+      {/* Saved JSON compositions (the legacy pattern workspace); first-class patterns are a component group above. */}
       {patternEntries.length > 0 && visiblePatterns.length > 0 && (
-        <Accordion label="Patterns" defaultOpen size="sm">
+        <Accordion label="Saved patterns" defaultOpen size="sm">
           {wrapItems(visiblePatterns.map(renderPattern))}
         </Accordion>
       )}

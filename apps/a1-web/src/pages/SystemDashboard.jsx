@@ -7,6 +7,7 @@ import {
   GridItem,
   Heading,
   MessageBadge,
+  PageTitle,
   Paragraph,
   PieChart,
   RadarChart,
@@ -46,7 +47,6 @@ import {
   PACKAGE_COVERAGE,
   componentCategories,
 } from './components/data.js'
-import { PageTitleArea } from './PageTitleArea.jsx'
 
 const TONES = ['accent', 'info', 'success', 'warn', 'error']
 const SYSTEM_SIGNALS = [
@@ -534,14 +534,14 @@ export function SystemDashboard({ onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        breadcrumbItems={[
+      <PageTitle
+        breadcrumb={[
           { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
           { label: 'Dashboard' },
         ]}
         title="System dashboard"
         description="A live operating view of A1: backlog health, component coverage, token volume, system flow, rules, and labels. Switch each card to inspect a different lens, then jump into the source area for details."
-        headingId="dashboard-heading"
+        titleId="dashboard-heading"
       />
       <Section padding="sm" contentWidth="xxl" aria-labelledby="dashboard-heading">
         <Grid columns={{ xs: 1, lg: 4 }} gap="md" alignItems="stretch">

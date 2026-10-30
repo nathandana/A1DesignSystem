@@ -88,7 +88,10 @@ export function useEditorHistory(
   fallbackJson: string,
   storageKey?: string,
   onCommit?: (json: string, label: string) => void,
+  guard?: (json: string, previous: string) => boolean,
 ) {
+  const guardRef = useRef(guard)
+  guardRef.current = guard
   const onCommitRef = useRef(onCommit)
   onCommitRef.current = onCommit
 
@@ -162,6 +165,7 @@ export function useEditorHistory(
   }
 
   function doCommit(json: string, label: string) {
+    if (guardRef.current && !guardRef.current(json, latestRef.current.entries[latestRef.current.index].json)) return
     setState(prev => {
       const truncated = prev.entries.slice(0, prev.index + 1)
       const entry: HistoryEntry = { id: uid(), json, label, timestamp: Date.now() }
@@ -190,6 +194,7 @@ export function useEditorHistory(
   // most one history entry per PROP_THROTTLE_MS using a leading + trailing
   // strategy so the first and final values in a burst are both recorded.
   function commitProp(json: string, label: string) {
+    if (guardRef.current && !guardRef.current(json, latestRef.current.entries[latestRef.current.index].json)) return
     setState(prev => ({ ...prev, workingJson: json }))
 
     const now = Date.now()

@@ -11,6 +11,9 @@ export { Snackbar, SnackbarStack } from "./components/snackbar/Snackbar.jsx";
 export { StatusBar } from "./components/status-bar/StatusBar.jsx";
 export { Stat } from "./components/stat/Stat.jsx";
 export { StickyNote } from "./components/sticky-note/StickyNote.jsx";
+// Patterns — compositions of components, treated like components (A1-2720).
+export { OverviewCard, normalizeOverviewCardActions } from "./patterns/overview-card/OverviewCard.jsx";
+export { PageTitle, normalizePageTitleActions } from "./patterns/page-title/PageTitle.jsx";
 export { Avatar } from "./components/avatar/Avatar.jsx";
 export {
   AreaChart,
@@ -104,3 +107,9 @@ export { DataTableFilters } from "./components/data-table/DataTableFilters.jsx";
 export { Figure } from "./components/figure/Figure.jsx";
 export { Spacer } from "./components/spacer/Spacer.jsx";
 export { StickyActions } from "./components/sticky-actions/StickyActions.jsx";
+
+export { OverflowMenu } from "./patterns/overflow-menu/OverflowMenu.jsx";
+
+export { NavigationTree } from "./patterns/navigation-tree/NavigationTree.jsx";
+
+export { VerificationDialog } from "./patterns/verification-dialog/VerificationDialog.jsx";

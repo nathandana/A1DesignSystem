@@ -75,6 +75,7 @@ import {
   DETAIL_TAB_IDS,
 } from './pages/components/utils.js'
 import { Patterns } from './pages/Patterns.jsx'
+import { PATTERN_ROUTE_IDS, PatternLibrary, getPatternsAside, getPatternsSidebar, patternCategories, patternPageTitles } from './pages/patterns/index.jsx'
 import { JsonPlayground, JsonPlaygroundSidebar, formatPlaygroundJson, parsePlaygroundJson } from './pages/JsonPlayground.jsx'
 import {
   acknowledgeFigmaPageCreate,
@@ -123,7 +124,7 @@ import { ThemeWorkspaceSidebar } from './pages/ThemeWorkspaceSidebar.jsx'
 import { getTheme, subscribeThemes } from './lib/themeStore.ts'
 import { ProjectWorkspaceSidebar } from './projects/ProjectWorkspaceSidebar.jsx'
 import { combinePageIntoLayout } from './projects/projectLayout'
-import { buildProjectNav } from './projects/projectNav'
+import { buildProjectNav, buildProjectBreadcrumb } from './projects/projectNav'
 import { materializeResolvedLabelContent } from './editor/contentText.js'
 import { ImageLibraryProvider } from './editor/ImageLibraryContext.jsx'
 import { CustomIconFontProvider } from './editor/CustomIconFontProvider.jsx'
@@ -179,10 +180,11 @@ const PAGE_ICONS = {
   admin: 'admin_panel_settings',
   'admin-analytics': 'monitoring',
   playground: 'code',
+  'pattern-library': 'dashboard_customize',
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'dashboard', 'features', 'get-started', 'presentation', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'playground', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', ...HELP_ARTICLE_PAGE_IDS, 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account', 'admin', 'admin-analytics']
+const PAGES = ['home', 'dashboard', 'features', 'get-started', 'presentation', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, ...PATTERN_ROUTE_IDS, 'patterns', 'playground', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', ...HELP_ARTICLE_PAGE_IDS, 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account', 'admin', 'admin-analytics']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
@@ -195,6 +197,7 @@ const PAGE_TITLES = {
   foundations: 'Foundations',
   ...Object.fromEntries(foundations.map((foundation) => [foundation.id, foundation.title])),
   ...componentPageTitles,
+  ...patternPageTitles,
   patterns: 'Patterns',
   playground: 'JSON playground',
   editor: 'Editor',
@@ -250,14 +253,19 @@ function getComponentTab(pathname = window.location.pathname, search = window.lo
   return DETAIL_TAB_IDS.includes(tab) ? tab : 'configure'
 }
 
-// Build the URL for a component + tab. Example tabs use their path segment; a
-// standard non-default tab is carried as `?tab=`; Configure (the default) stays
-// clean with no query string.
-function componentPathWithTab(componentId, tab) {
-  if (tab && tab.startsWith('example:')) {
-    return getComponentExamplePath(componentId, tab.slice('example:'.length))
+// A component or pattern detail page (both share the tabbed detail layout).
+function isDetailPage(page) {
+  return page.startsWith('component-') || (page.startsWith('pattern-') && page !== 'pattern-library')
+}
+
+// Build the URL for a detail page + tab. Component example tabs use their path
+// segment; a standard non-default tab is carried as `?tab=`; Configure (the
+// default) stays clean with no query string.
+function detailPathWithTab(page, tab) {
+  if (page.startsWith('component-') && tab && tab.startsWith('example:')) {
+    return getComponentExamplePath(page.slice('component-'.length), tab.slice('example:'.length))
   }
-  const base = `/components/${componentRouteSlug(componentId)}`
+  const base = getPath(page)
   return tab && tab !== 'configure' && DETAIL_TAB_IDS.includes(tab) ? `${base}?tab=${tab}` : base
 }
 
@@ -292,6 +300,16 @@ function getPage(search = window.location.search, pathname = window.location.pat
     return 'components'
   }
 
+  // /pattern-library → 'pattern-library', /pattern-library/page-structure →
+  // 'patterns-page-structure', /pattern-library/page-title → 'pattern-page-title'
+  if (path === 'pattern-library') return 'pattern-library'
+  if (path.startsWith('pattern-library/')) {
+    const suffix = path.slice('pattern-library/'.length)
+    if (PAGES.includes(`patterns-${suffix}`)) return `patterns-${suffix}`
+    if (PAGES.includes(`pattern-${suffix}`)) return `pattern-${suffix}`
+    return 'pattern-library'
+  }
+
   // /backlog/A1-{n} → 'backlog-ticket'
   if (/^backlog\/A1-\d+$/i.test(path)) return 'backlog-ticket'
 
@@ -321,6 +339,9 @@ function getPath(page) {
   if (page.startsWith('foundation-')) return `/foundations/${page.slice('foundation-'.length)}`
   if (page.startsWith('components-')) return `/components/${page.slice('components-'.length)}`
   if (page.startsWith('component-')) return `/components/${componentRouteSlug(page.slice('component-'.length))}`
+  if (page === 'pattern-library') return '/pattern-library'
+  if (page.startsWith('patterns-')) return `/pattern-library/${page.slice('patterns-'.length)}`
+  if (page.startsWith('pattern-')) return `/pattern-library/${page.slice('pattern-'.length)}`
   if (page === 'backlog-ticket') return '/backlog'
   if (page === 'admin-analytics') return '/admin/analytics'
   if (page.startsWith(HELP_ARTICLE_PAGE_PREFIX)) return getHelpArticlePath(helpArticleIdFromPage(page))
@@ -401,6 +422,7 @@ const PAGE_TITLE_LABEL_KEYS = {
   'blog-article': 'app.page.blogArticle',
   foundations: 'app.nav.foundations',
   components: 'app.nav.components',
+  'pattern-library': 'app.page.patternLibrary',
   patterns: 'app.page.patterns',
   editor: 'app.page.editor',
   'editor-preview': 'app.page.editorPreview',
@@ -477,6 +499,7 @@ function App() {
   const backlog = useBacklog()
   const [componentMenuSearch, setComponentMenuSearch] = useState('')
   const [componentSearch, setComponentSearch] = useState('')
+  const [patternSearch, setPatternSearch] = useState('')
   const [detailTab, setDetailTab] = useState(() => getComponentTab())
   const [releaseMode, setReleaseMode] = useState('simplified')
   const [releaseSource, setReleaseSource] = useState('a1-web')
@@ -562,6 +585,11 @@ function App() {
                   const composedDefinition = combinePageIntoLayout(layout, definition, {
                     navItems,
                     logoFallback: project.name || '',
+                    breadcrumb: buildProjectBreadcrumb(projectPages, {
+                      activePageId: page.id,
+                      onNavigate: () => {},
+                      hrefFor: (pageId) => `?project=${encodeURIComponent(project.id)}&doc=${encodeURIComponent(pageId)}`,
+                    }),
                   })
                   json = JSON.stringify(
                     materializeResolvedLabelContent(composedDefinition, resolveProjectText),
@@ -944,6 +972,32 @@ function App() {
       })
     })
 
+    if (canAccessPage('pattern-library')) {
+      addPage('pattern-library', 'Reusable compositions built from A1 components.', ['patterns', 'compositions', 'page title'])
+      patternCategories.forEach((category) => {
+        entries.push({
+          id: `pattern-category-${category.id}`,
+          title: category.title,
+          category: 'Pattern categories',
+          description: category.body,
+          icon: category.icon,
+          keywords: [category.id, 'patterns'],
+          onSelect: () => navigate(`patterns-${category.id}`),
+        })
+        category.patterns.forEach((pattern) => {
+          entries.push({
+            id: `pattern-${pattern.id}`,
+            title: pattern.title,
+            category: 'Pattern library',
+            description: pattern.body,
+            icon: pattern.icon,
+            keywords: [pattern.id, category.title, 'pattern', 'composition'],
+            onSelect: () => navigate(`pattern-${pattern.id}`),
+          })
+        })
+      })
+    }
+
     projects.forEach((project) => {
       entries.push({
         id: `project-${project.id}`,
@@ -1306,8 +1360,7 @@ function App() {
     const next = PAGES.includes(page) ? page : 'home'
     let nextPath = pathOverride ?? getPath(next)
     let nextTab = null
-    if (next.startsWith('component-')) {
-      const componentId = next.slice('component-'.length)
+    if (isDetailPage(next)) {
       if (pathOverride) {
         // An explicit destination (e.g. an example link) decides the tab.
         const url = new URL(pathOverride, window.location.origin)
@@ -1317,7 +1370,7 @@ function App() {
         // standard tab so switching components stays on the same tab, and
         // reflect it in the URL so the destination is deep-linkable.
         nextTab = DETAIL_TAB_IDS.includes(detailTab) ? detailTab : 'configure'
-        nextPath = componentPathWithTab(componentId, nextTab)
+        nextPath = detailPathWithTab(next, nextTab)
       }
     }
     const currentPath = `${window.location.pathname}${window.location.search}`
@@ -1326,7 +1379,7 @@ function App() {
     }
     setActivePage(next)
     setRoutePath(new URL(nextPath, window.location.origin).pathname)
-    if (next.startsWith('component-')) {
+    if (isDetailPage(next)) {
       setDetailTab(nextTab ?? 'configure')
     }
     setSidebarOpen(false)
@@ -1337,9 +1390,8 @@ function App() {
   // tab is deep-linkable (replaceState — a tab switch is not a new history entry).
   function selectDetailTab(nextTab) {
     setDetailTab(nextTab)
-    if (!activePage.startsWith('component-')) return
-    const componentId = activePage.slice('component-'.length)
-    const path = componentPathWithTab(componentId, nextTab)
+    if (!isDetailPage(activePage)) return
+    const path = detailPathWithTab(activePage, nextTab)
     const currentPath = `${window.location.pathname}${window.location.search}`
     if (path !== currentPath) {
       window.history.replaceState({ page: activePage }, '', path)
@@ -1839,6 +1891,37 @@ function App() {
       items: componentMenuItems,
     },
     {
+      id: 'pattern-library',
+      icon: 'dashboard_customize',
+      label: t('app.nav.patterns', 'Patterns'),
+      active: PATTERN_ROUTE_IDS.includes(activePage),
+      items: [
+        {
+          icon: 'dashboard_customize',
+          label: t('app.nav.overview', 'Overview'),
+          href: getPath('pattern-library'),
+          onClick: (e) => handleNavClick(e, 'pattern-library'),
+        },
+        { divider: true },
+        ...patternCategories.map((category) => ({
+          icon: category.icon,
+          label: category.title,
+          href: getPath(`patterns-${category.id}`),
+          active: activePage === `patterns-${category.id}`,
+          onClick: (e) => handleNavClick(e, `patterns-${category.id}`),
+          items: category.patterns.map((pattern) => {
+            const page = `pattern-${pattern.id}`
+            return {
+              label: pattern.title,
+              href: getPath(page),
+              active: activePage === page,
+              onClick: (e) => handleNavClick(e, page),
+            }
+          }),
+        })),
+      ],
+    },
+    {
       id: 'editor',
       icon: 'design_services',
       label: t('app.nav.editors', 'Editors'),
@@ -2057,7 +2140,7 @@ function App() {
       ? <div id="a1-web-backlog-aside-slot" className="a1-web-config-aside a1-web-config-aside--start" />
       : activePage === 'foundation-color-visualization'
       ? <div id="a1-web-color-visualization-aside-slot" className="a1-web-config-aside" />
-      : getComponentsAside({ activePage, detailTab })
+      : getComponentsAside({ activePage, detailTab }) ?? getPatternsAside({ activePage, detailTab })
     : undefined
 
   function runSkipMenuAction(action) {
@@ -2256,6 +2339,15 @@ function App() {
                 open={sidebarOpen}
                 onClose={() => setSidebarOpen(false)}
               />
+            : PATTERN_ROUTE_IDS.includes(activePage)
+            ? getPatternsSidebar({
+                activePage,
+                detailTab,
+                onNavigate: navigate,
+                onSelectDetailTab: selectDetailTab,
+                search: patternSearch,
+                setSearch: setPatternSearch,
+              })
             : COMPONENT_ROUTE_IDS.includes(activePage)
             ? getComponentsSidebar({
                 activePage,
@@ -2326,6 +2418,15 @@ function App() {
             projectId={activeProjectId}
             search={componentSearch}
             setSearch={setComponentSearch}
+            detailTab={detailTab}
+            setDetailTab={selectDetailTab}
+          />
+        )}
+        {PATTERN_ROUTE_IDS.includes(activePage) && (
+          <PatternLibrary
+            activePage={activePage}
+            onNavigate={navigate}
+            projectId={activeProjectId}
             detailTab={detailTab}
             setDetailTab={selectDetailTab}
           />
@@ -2611,7 +2712,7 @@ function App() {
         onComplete={completeProductTour}
       />
 
-      <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} anchorRef={settingsAnchorRef} aria-label="Settings">
+      <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} anchorRef={settingsAnchorRef} aria-label="Settings" className="a1-min-w-sm" padding={12}>
         <MenuSection label={t('app.page.theme', 'Theme')}>
           {settingsThemeOptions.length > 5 ? (
             <SelectField

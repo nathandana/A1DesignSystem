@@ -13,11 +13,12 @@ const meta = {
   subcomponents: { MenuSection, MenuItem },
   tags: ["autodocs"],
   parameters: { layout: "padded" },
+  argTypes: { padding: { control: "select", options: [8, 12, 16, 20, 24] } },
 };
 
 export default meta;
 
-function MenuTrigger({ children, label = "Open menu" }) {
+function MenuTrigger({ children, label = "Open menu", padding }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -31,7 +32,7 @@ function MenuTrigger({ children, label = "Open menu" }) {
       >
         {label}
       </Button>
-      <Menu open={open} onClose={() => setOpen(false)} aria-label={label}>
+      <Menu open={open} onClose={() => setOpen(false)} aria-label={label} padding={padding}>
         {children({ close: () => setOpen(false) })}
       </Menu>
     </>
@@ -171,6 +172,7 @@ const LOREM = "Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoqu
 export const ViewportAlignment = {
   name: "Viewport alignment",
   parameters: { layout: "padded" },
+  argTypes: { padding: { control: "select", options: [8, 12, 16, 20, 24] } },
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "var(--base-spacing-24)", maxWidth: "640px" }}>
       <Paragraph color="muted">{LOREM} {LOREM}</Paragraph>
@@ -211,6 +213,7 @@ export const A11yKeyboardNavigation = {
   name: "[A11y] Keyboard navigation",
   tags: ["a11y", "a11y-required"],
   parameters: { layout: "padded" },
+  argTypes: { padding: { control: "select", options: [8, 12, 16, 20, 24] } },
   render: () => (
     <MenuTrigger label="Open actions menu">
       {({ close }) => (
@@ -247,6 +250,7 @@ export const A11yHighContrast = {
   tags: ["a11y", "a11y-theme"],
   globals: { theme: "a1Accessible" },
   parameters: { layout: "padded" },
+  argTypes: { padding: { control: "select", options: [8, 12, 16, 20, 24] } },
   render: () => (
     <MenuTrigger label="Open menu (high contrast)">
       {({ close }) => (
@@ -271,6 +275,7 @@ export const A11yIconTriggerMissingLabel = {
   name: "[A11y] ⚠ Icon trigger missing label (negative example)",
   tags: ["a11y", "a11y-negative-example"],
   parameters: { layout: "padded" },
+  argTypes: { padding: { control: "select", options: [8, 12, 16, 20, 24] } },
   render: () => {
     const [open, setOpen] = useState(false);
     return (
@@ -333,6 +338,7 @@ function CardMenu({ title, description }) {
 export const CardContextMenu = {
   name: "Card context menu",
   parameters: { layout: "padded" },
+  argTypes: { padding: { control: "select", options: [8, 12, 16, 20, 24] } },
   render: () => (
     <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "var(--base-spacing-16)", maxWidth: "860px" }}>
       <CardMenu
@@ -353,4 +359,14 @@ export const CardContextMenu = {
       />
     </div>
   ),
+};
+
+export const PaddedMenu = {
+  args: { padding: 12 },
+  render: ({ padding }) => <MenuTrigger label="Open padded menu" padding={padding}>
+    {({ close }) => <MenuSection label="Account">
+      <MenuItem icon="person" onClick={close}>Profile</MenuItem>
+      <MenuItem icon="settings" onClick={close}>Preferences</MenuItem>
+    </MenuSection>}
+  </MenuTrigger>,
 };

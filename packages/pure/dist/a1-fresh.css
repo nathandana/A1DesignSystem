@@ -906,7 +906,7 @@
   --component-magnetic-reordering-stiffness-default: 260;
   --component-magnetic-reordering-stiffness-firm: 360;
   --component-magnetic-reordering-stiffness-soft: 180;
-  --component-menu-border-width: 1px;
+  --component-menu-border-width: 0.125rem;
   --component-menu-item-disabled-opacity: 0.4;
   --component-menu-item-focus-ring-offset: -0.125rem;
   --component-menu-item-focus-ring-width: 0.1875rem;

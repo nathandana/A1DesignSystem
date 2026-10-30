@@ -14,6 +14,7 @@ import {
   IconButton,
   Link,
   PageNav,
+  PageTitle,
   Paragraph,
   Section,
   SelectField,
@@ -90,25 +91,21 @@ export function BacklogTicketPage({ onNavigate }) {
 
   if (!item) {
     return (
-      <Section padding="md" contentWidth="xl">
-        <Stack gap="md">
-          <Breadcrumb items={breadcrumb} />
-          <Heading as="h1" size="xl">{t('label.app.backlog.notFound', 'Ticket not found')}</Heading>
-          <Paragraph size="sm" color="muted">
-            {ticketNumber
-              ? `A1-${ticketNumber} ${t('label.app.backlog.notFoundDetail', "doesn't exist or hasn't loaded yet.")}`
-              : t('label.app.backlog.noTicketNumber', 'No ticket number found in the URL.')}
-          </Paragraph>
-          <ButtonContainer align="start">
-            <Button
-              variant="secondary" icon="arrow_back" as="a" href="/backlog"
-              onClick={(e) => { e.preventDefault(); onNavigate?.('backlog') }}
-            >
-              {t('label.app.backlog.backToBacklog', 'Back to backlog')}
-            </Button>
-          </ButtonContainer>
-        </Stack>
-      </Section>
+      <PageTitle
+        breadcrumb={breadcrumb}
+        title={t('label.app.backlog.notFound', 'Ticket not found')}
+        description={ticketNumber
+          ? `A1-${ticketNumber} ${t('label.app.backlog.notFoundDetail', "doesn't exist or hasn't loaded yet.")}`
+          : t('label.app.backlog.noTicketNumber', 'No ticket number found in the URL.')}
+        actions={(
+          <Button
+            variant="secondary" icon="arrow_back" as="a" href="/backlog"
+            onClick={(e) => { e.preventDefault(); onNavigate?.('backlog') }}
+          >
+            {t('label.app.backlog.backToBacklog', 'Back to backlog')}
+          </Button>
+        )}
+      />
     )
   }
 
@@ -177,21 +174,20 @@ export function BacklogTicketPage({ onNavigate }) {
   return (
     <>
       {/* ── Header ─────────────────────────────────────────────────────── */}
-      <Section padding="sm" contentWidth="xl" surface="panel" borderSize="sm" borderVariant="subtle" borderSides={['bottom']}>
-        <Stack gap="xs">
-          <Breadcrumb items={breadcrumb} />
-          <Stack direction="row" gap="xs" wrap>
+      {/* The ticket's own badge components fill the metadata row below the title. */}
+      <PageTitle
+        breadcrumb={breadcrumb}
+        title={`${ticketRef(item.number)} — ${item.title}`}
+        meta={(
+          <>
             <StatusBadge status={item.status} />
             <TypeBadge type={item.type} />
             {item.priority && <PriorityBadge priority={item.priority} />}
             {item.complexity && <ComplexityBadge complexity={item.complexity} full />}
             {item.scopeKind && item.scopeKind !== 'general' && <ScopeBadge scopeKind={item.scopeKind} scopeLabel={item.scopeLabel} />}
-          </Stack>
-          <Heading as="h1" size={{ xs: 'lg', md: 'xxl' }}>
-            {ticketRef(item.number)} — {item.title}
-          </Heading>
-        </Stack>
-      </Section>
+          </>
+        )}
+      />
 
       {/* ── Alert banners ──────────────────────────────────────────────── */}
       {(item.awaitingRequester || item.duplicateOf) && (

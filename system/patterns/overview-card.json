@@ -1,0 +1,253 @@
+{
+  "schemaVersion": "1.0.0",
+  "version": "1.0.0",
+  "kind": "pattern",
+  "status": "experimental",
+  "coverage": {
+    "react": true,
+    "native": false,
+    "pure": false,
+    "webComponents": false,
+    "figma": false
+  },
+  "compatibility": {
+    "unversioned": "1.0.0",
+    "pageSchemaVersions": [
+      "0.1.0",
+      "1.0.0",
+      "1.1.0"
+    ]
+  },
+  "migrations": [
+    {
+      "from": "unversioned",
+      "to": "1.0.0",
+      "operations": [
+        {
+          "op": "renameProp",
+          "from": "facts",
+          "to": "details"
+        },
+        {
+          "op": "adoptAreas"
+        }
+      ]
+    }
+  ],
+  "id": "overview-card",
+  "type": "OverviewCard",
+  "name": "Overview card",
+  "description": "A parent-sized summary card with details, open content and constrained actions.",
+  "propsSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "required": [
+      "title"
+    ],
+    "properties": {
+      "title": {
+        "type": "string"
+      },
+      "icon": {
+        "type": "string"
+      },
+      "titleAs": {
+        "enum": [
+          "h2",
+          "h3",
+          "h4"
+        ],
+        "default": "h3"
+      },
+      "status": {
+        "enum": [
+          "neutral",
+          "info",
+          "success",
+          "warn",
+          "error"
+        ]
+      },
+      "statusLabel": {
+        "type": "string"
+      },
+      "details": {
+        "type": "array",
+        "maxItems": 6,
+        "items": {
+          "type": "object",
+          "required": [
+            "label",
+            "value"
+          ],
+          "properties": {
+            "label": {
+              "type": "string"
+            },
+            "value": {
+              "type": [
+                "string",
+                "number"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "additionalProperties": true
+  },
+  "lockedProps": {
+    "as": "div",
+    "variant": "default",
+    "surface": "default",
+    "bare": false,
+    "statusPulse": false,
+    "iconDisplay": "default"
+  },
+  "areas": [
+    {
+      "id": "content",
+      "label": "Content",
+      "hint": "Between the details and the actions — a short paragraph, a progress bar or a chart.",
+      "placement": "after:details",
+      "kind": "open",
+      "destination": "children",
+      "layout": {
+        "columns": 1,
+        "gap": "sm"
+      }
+    },
+    {
+      "id": "actions",
+      "label": "Actions",
+      "hint": "The card actions, at the end of the card.",
+      "placement": "after:content",
+      "kind": "zone",
+      "destination": "actions",
+      "allow": [
+        "Button",
+        "Link",
+        "IconButton"
+      ],
+      "max": 2,
+      "count": "direct-items",
+      "ruleId": "overview-card-no-primary-action",
+      "rules": "Up to 2 small buttons, links or icon buttons. No primary button: cards repeat, and the page title holds the primary action.",
+      "policies": {
+        "fixedProps": {
+          "Button": {
+            "size": "sm"
+          },
+          "IconButton": {
+            "size": "sm"
+          }
+        },
+        "variants": {
+          "Button": {
+            "allow": [
+              "secondary",
+              "tertiary"
+            ],
+            "fallback": "secondary"
+          },
+          "IconButton": {
+            "allow": [
+              "secondary",
+              "tertiary"
+            ],
+            "fallback": "tertiary"
+          }
+        }
+      }
+    }
+  ],
+  "rules": [
+    {
+      "id": "overview-card-no-primary-action",
+      "severity": "error"
+    },
+    {
+      "id": "overview-card-locked-presentation",
+      "severity": "error"
+    },
+    {
+      "id": "overview-card-status-labelled",
+      "severity": "warning"
+    },
+    {
+      "id": "overview-card-short-details",
+      "severity": "error"
+    },
+    {
+      "id": "overview-card-parent-width",
+      "severity": "error"
+    }
+  ],
+  "starter": {
+    "props": {
+      "title": "Overview",
+      "icon": "account_circle",
+      "details": [
+        {
+          "label": "Status",
+          "value": "Active"
+        },
+        {
+          "label": "Owner",
+          "value": "Team name"
+        },
+        {
+          "label": "Updated",
+          "value": "Today"
+        }
+      ]
+    }
+  },
+  "examples": [
+    {
+      "id": "with-content",
+      "props": {
+        "title": "Account overview",
+        "details": [
+          {
+            "label": "Plan",
+            "value": "Enterprise"
+          }
+        ]
+      },
+      "areas": {
+        "content": [
+          {
+            "id": "summary",
+            "type": "Paragraph",
+            "content": {
+              "fallback": "Your account summary."
+            }
+          }
+        ],
+        "actions": [
+          {
+            "id": "billing",
+            "type": "Link",
+            "props": {
+              "href": "/billing"
+            },
+            "content": {
+              "fallback": "Billing history"
+            }
+          },
+          {
+            "id": "more",
+            "type": "IconButton",
+            "props": {
+              "icon": "more_horiz",
+              "label": "Account options",
+              "variant": "tertiary",
+              "size": "sm"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

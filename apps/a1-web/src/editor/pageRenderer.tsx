@@ -11,6 +11,7 @@
  * - Actions are NOT executed yet — see the TODO in `RenderNode`.
  */
 import {
+  VerificationDialog,
   Code,
   InlineEditable,
   Heading,
@@ -32,6 +33,9 @@ import {
 import { EditorSelectionBoundary } from "./EditorSelectionBoundary";
 import type { ComponentType as ReactComponentType } from "react";
 import { componentRegistry } from "./componentRegistry";
+import { applyZoneItemProps, patternAreaProp } from "./patternAreas";
+import { canonicalizePatternTree, getPatternManifest } from "../../../../packages/react/src/patterns/patternPolicies.js";
+import { validatePatterns } from "../../../../packages/react/src/patterns/patternValidation.js";
 import { resolveSrc as resolveImageSrc } from "../lib/imageLibrary";
 import { useImageLibraryVersion } from "./ImageLibraryContext";
 import { useDataSources } from "../data/DataSourcesContext.jsx";
@@ -58,6 +62,19 @@ import type {
   PageLayoutDefinition,
   PageRegion,
 } from "./pageTypes";
+
+// Components whose text lives in several named props rather than one text
+// child. In editor mode each listed string prop is wrapped in a seamless
+// InlineEditable so it can be edited in place (patterns: the Page title band).
+const INLINE_TEXT_PROPS_BY_TYPE: Record<string, { prop: string; multiline?: boolean }[]> = {
+  PageTitle: [{ prop: "eyebrow" }, { prop: "title" }, { prop: "description", multiline: true }],
+  OverviewCard: [{ prop: "title" }],
+};
+
+// A pattern's zones (see patternAreas.ts): a child `Slot` whose `props.area`
+// names a zone renders its items into the pattern prop the registry maps it to
+// instead of into the children. The Page title's Actions zone feeds its action
+// row; the open Content area stays in children.
 
 const CONTAINER_TYPES = new Set([
   "Section",
@@ -181,6 +198,8 @@ interface EditorModeContextValue {
   onDetachPattern: (nodeId: string) => void;
   onCreatePattern: (nodeId: string) => void;
   /** Edit the text of a child-item field (e.g. a DefinitionList item's label/value). */
+  /** A named text prop edited in place (see INLINE_TEXT_PROPS_BY_TYPE). */
+  onPropTextChange: (nodeId: string, prop: string, value: string) => void;
   onItemTextChange: (
     nodeId: string,
     index: number,
@@ -226,12 +245,18 @@ const EditorModeContext = createContext<EditorModeContextValue>({
   getNodeInfo: () => ({ isFirst: false, isLast: false, hasChildren: false }),
   onRequestAddChild: () => {},
   onItemTextChange: () => {},
+  onPropTextChange: () => {},
   activeItem: null,
   onItemSelect: () => {},
   onCatalogDrop: () => {},
   onDetachPattern: () => {},
   onCreatePattern: () => {},
 });
+
+/** Whether the nearest RenderPageDefinition is in editor mode (editor adapters use it). */
+export function useEditorMode(): boolean {
+  return useContext(EditorModeContext).enabled;
+}
 
 /**
  * Look a component up by name. Typed against `string` (not `ComponentType`) so
@@ -460,7 +485,7 @@ function inlineLinkNodes(
  * its red lock outlines while it is active.
  */
 function RenderNode({
-  node,
+  node: sourceNode,
   inPattern = false,
   patternActive = false,
 }: {
@@ -468,6 +493,8 @@ function RenderNode({
   inPattern?: boolean;
   patternActive?: boolean;
 }) {
+  const node = useMemo(() => getPatternManifest(sourceNode.type) ? canonicalizePatternTree(sourceNode) : sourceNode, [sourceNode]);
+  const patternResult = useMemo(() => getPatternManifest(sourceNode.type) || sourceNode.patternVersion ? validatePatterns(sourceNode) : null, [sourceNode]);
   // Hooks must run unconditionally and before any early return.
   const text = useResolvedContent(node.content);
   const labelKey =
@@ -501,6 +528,7 @@ function RenderNode({
     getNodeInfo,
     onRequestAddChild,
     onItemTextChange,
+    onPropTextChange,
     activeItem,
     onItemSelect,
     onCatalogDrop,
@@ -521,6 +549,12 @@ function RenderNode({
   const childInPattern = nodeInPattern;
   const childPatternActive = nodeInPattern ? thisActive : false;
 
+  if (patternResult && !patternResult.valid && !editorMode) {
+    return <Section role="alert" padding="sm" surface="panel">
+      <Heading as="h3" size="sm">Pattern needs attention</Heading>
+      {patternResult.diagnostics.filter(d => d.severity === 'error').map((d, index) => <Paragraph key={index} size="sm">{d.message} {d.recovery}</Paragraph>)}
+    </Section>;
+  }
   if (!Component) {
     return <UnsupportedComponent type={node.type} />;
   }
@@ -648,8 +682,29 @@ function RenderNode({
     textContent !== undefined
   )
     childList.push(textContent);
+  const areaElements: Record<string, ReactNode> = {};
   if (!VOID_CHILD_TYPES.has(node.type) && node.children?.length) {
-    node.children.forEach((child) =>
+    node.children.forEach((child) => {
+      const area = child.type === "Slot" ? (child.props?.area as string | undefined) : undefined;
+      const propName = patternAreaProp(node.type, area);
+      if (propName) {
+        // An authored empty area overrides legacy data props as well.
+        areaElements[propName] = undefined;
+        const items = child.children ?? [];
+        if (items.length) {
+          const fixed = applyZoneItemProps(node.type, area, items);
+          const ordered = fixed;
+          areaElements[propName] = ordered.map((item) => (
+            <RenderNode key={item.id} node={item} inPattern={childInPattern} patternActive={childPatternActive} />
+          ));
+        } else if (editorMode) {
+          // Empty: the slot's own placeholder is the drop target; previews show nothing.
+          areaElements[propName] = (
+            <RenderNode key={child.id} node={child} inPattern={childInPattern} patternActive={childPatternActive} />
+          );
+        }
+        return;
+      }
       childList.push(
         <RenderNode
           key={child.id}
@@ -657,14 +712,15 @@ function RenderNode({
           inPattern={childInPattern}
           patternActive={childPatternActive}
         />,
-      ),
-    );
+      );
+    });
   }
 
   const resolvedProps: Record<string, unknown> = {
     ...(node.props ?? {}),
     ...a11yProps(node.a11y),
   };
+  Object.assign(resolvedProps, areaElements);
   resolvedProps.className = mergeClassNames(
     resolvedProps.className,
     utilityClassesFor(node.type, node.utilities),
@@ -682,6 +738,25 @@ function RenderNode({
     const v = resolvedProps[k];
     if (typeof v === "string" && hasBinding(v))
       resolvedProps[k] = resolveBinding(v, datasetMap, rowContext);
+  }
+
+  // Named text props edit in place in the editor (a locked prop stays read-only;
+  // a data-bound value is shown resolved and edited from the Configure panel).
+  if (editorMode) {
+    for (const { prop, multiline } of INLINE_TEXT_PROPS_BY_TYPE[node.type] ?? []) {
+      const value = node.props?.[prop];
+      const propLocked = enforceLocks && !!node.lock?.props?.includes(prop);
+      if (typeof value !== "string" || propLocked || hasBinding(value)) continue;
+      resolvedProps[prop] = (
+        <InlineEditable
+          seamless
+          multiline={multiline}
+          value={value}
+          onChange={(v) => onPropTextChange(node.id, prop, v)}
+          aria-label={`Edit ${prop}`}
+        />
+      );
+    }
   }
 
   // Data-driven collections: fill an array prop (items/options) from a dataset.
@@ -942,6 +1017,8 @@ function RenderNode({
     }
   }
 
+  if (node.type === "OverflowMenu") resolvedProps.actions = overflowMenuActions(resolvedProps.actions as any[] ?? []);
+
   const componentEl = createElement(Component, resolvedProps, ...childList);
 
   if (!editorMode) return componentEl;
@@ -1057,6 +1134,7 @@ export function RenderPageDefinition({
   getNodeInfo,
   onRequestAddChild,
   onItemTextChange,
+  onPropTextChange,
   activeItem = null,
   onItemSelect,
   onCatalogDrop,
@@ -1107,6 +1185,7 @@ export function RenderPageDefinition({
     field: string,
     value: string,
   ) => void;
+  onPropTextChange?: (nodeId: string, prop: string, value: string) => void;
   activeItem?: { nodeId: string; index: number } | null;
   onItemSelect?: (nodeId: string, index: number) => void;
 }) {
@@ -1158,6 +1237,7 @@ export function RenderPageDefinition({
     getNodeInfo: getNodeInfo ?? noInfo,
     onRequestAddChild: onRequestAddChild ?? (() => {}),
     onItemTextChange: onItemTextChange ?? (() => {}),
+    onPropTextChange: onPropTextChange ?? (() => {}),
     activeItem,
     onItemSelect: onItemSelect ?? (() => {}),
     onCatalogDrop: onCatalogDrop ?? (() => {}),
@@ -1178,3 +1258,15 @@ export function RenderPageDefinition({
 
 /** Exported for the editor page to demonstrate the unsupported-type fallback. */
 export { RenderNode };
+
+
+/** Materialize nested verification patterns without interpreting executable JSON. */
+export function overflowMenuActions(actions: any[] = []) {
+  return actions.map(action => ({ ...action, ...(action.verification ? {
+    verification: createElement(VerificationDialog, {
+      ...action.verification.props,
+      ...a11yProps(action.verification.a11y),
+      children: (action.verification.children ?? []).map((node: ComponentNode) => createElement(RenderNode, { key: node.id, node })),
+    }),
+  } : {}) }));
+}

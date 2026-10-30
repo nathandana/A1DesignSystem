@@ -75,6 +75,9 @@ jobs:
       - name: Build and validate release packages
         run: |
           npm run build:tokens
+          npm run patterns:check
+          npm run build:mcp-index:check
+          npm run test:patterns
           npm run test:rsc
           npm run pack:check
           node --test scripts/publish-npm.test.mjs

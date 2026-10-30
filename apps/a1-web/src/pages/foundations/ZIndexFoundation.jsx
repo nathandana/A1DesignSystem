@@ -3,11 +3,11 @@ import {
   Heading,
   List,
   ListItem,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
-import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
@@ -87,9 +87,9 @@ const auditRows = [
 export function ZIndexFoundationPage({ onNavigate }) {
   return (
     <>
-      <PageTitleArea
-        headingId="zindex-heading"
-        breadcrumbItems={getFoundationBreadcrumbItems('Z-index', onNavigate)}
+      <PageTitle
+        titleId="zindex-heading"
+        breadcrumb={getFoundationBreadcrumbItems('Z-index', onNavigate)}
         title="Z-index &amp; layering"
         description="A1 stacks overlays with two distinct mechanisms — the browser top layer and a numeric z-index scale. Mixing them is the usual cause of “my menu is behind the dialog” bugs, so decide which layer an element belongs to before assigning any z-index."
       />

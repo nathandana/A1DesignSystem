@@ -247,7 +247,7 @@
   border: var(--component-menu-border-width) solid var(--semantic-color-border-subtle);
   border-radius: var(--base-radius-lg);
   background: var(--semantic-color-surface-panel);
-  box-shadow: var(--semantic-shadow-lg);
+  box-shadow: var(--semantic-shadow-xl);
 }
 
 .a1-top-header__flyout-menu[data-placement="start"] {

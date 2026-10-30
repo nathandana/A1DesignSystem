@@ -239,3 +239,11 @@ For shared Labs datasets, size presets and the consolidation audit:
 For the Oct. 12 release scope, verification and website publication:
 
 @packages/react/ai/release-preparation-2026-10-12.md
+
+For formal pattern contracts, editable areas, JSON defaults and MCP recommendations:
+
+[Formal patterns](packages/react/ai/pattern-contract-recommendations.md).
+
+[Generated formal pattern contracts](packages/react/ai/pattern-contracts.generated.md).
+
+[Overflow menu pattern](packages/react/ai/patterns-overflow-menu.md).

@@ -2,6 +2,7 @@ import {
   DataTable,
   DataTableFilters,
   Heading,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
@@ -12,7 +13,6 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { useState } from 'react'
 import tokens from '../../../../../build/json/tokens.json'
-import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
@@ -111,9 +111,9 @@ export function TypeScaleFoundationPage({ onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        headingId="type-scale-heading"
-        breadcrumbItems={getFoundationBreadcrumbItems('Type scale', onNavigate)}
+      <PageTitle
+        titleId="type-scale-heading"
+        breadcrumb={getFoundationBreadcrumbItems('Type scale', onNavigate)}
         title="Type scale"
         description="Body, heading, and display sizes — plus font weight and line-height tokens. Every typographic decision in A1 components is driven by a semantic token, never a hardcoded value."
       />

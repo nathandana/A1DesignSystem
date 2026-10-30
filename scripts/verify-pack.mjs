@@ -116,8 +116,15 @@ for (const m of dtsSrc.matchAll(/from\s*"(\.[^"]+)"/g)) {
 }
 
 // ── 7. RSC client-boundary directives ship intact ──────────────────────────
+// These platform-neutral modules intentionally run in Node/MCP and server components.
+// Their actual Node imports are exercised by test:patterns; UI modules still require a boundary.
+const serverPatternModules = new Set([
+  'src/patterns/navigation-tree/navigationTreeModel.js',
+  'src/patterns/contracts.generated.js', 'src/patterns/patternPolicies.js',
+  'src/patterns/patternValidation.js', 'src/patterns/patternMigrations.js',
+]);
 const clientBoundaryFiles = [...shipped].filter((file) =>
-  /^src\/components\/.*\.(js|jsx)$/.test(file) && !file.endsWith(".stories.jsx")
+  /^src\/(components|patterns)\/.*\.(js|jsx)$/.test(file) && !file.endsWith(".stories.jsx") && !serverPatternModules.has(file)
 );
 for (const file of clientBoundaryFiles) {
   const source = readFileSync(path.join(pkgDir, file), "utf8");

@@ -1,0 +1,56 @@
+import { createCatalog } from '../catalog/createCatalog.js'
+import {
+  COMPONENT_LAST_UPDATED,
+  COMPONENT_RELATED,
+  COMPONENT_SEARCH_KEYWORDS,
+  COMPONENT_STATUS,
+  LAST_UPDATED,
+  PACKAGE_COVERAGE,
+  componentCategories,
+  getComponentHistory,
+  ruleSourceFiles,
+} from './data.js'
+import { COMPONENT_ROUTE_SLUGS } from './utils.js'
+
+/** The component library as a catalogue: the data behind `/components`. */
+export const componentsCatalog = createCatalog({
+  kind: 'component',
+  rootId: 'components',
+  rootPath: '/components',
+  categoryPrefix: 'components-',
+  itemPrefix: 'component-',
+  categories: componentCategories.map((category) => ({
+    id: category.id,
+    title: category.title,
+    icon: category.icon,
+    body: category.body,
+    items: category.components,
+  })),
+  lastUpdated: LAST_UPDATED,
+  lastUpdatedById: COMPONENT_LAST_UPDATED,
+  status: COMPONENT_STATUS,
+  coverage: PACKAGE_COVERAGE,
+  related: COMPONENT_RELATED,
+  keywords: COMPONENT_SEARCH_KEYWORDS,
+  historyOf: getComponentHistory,
+  routeSlugs: COMPONENT_ROUTE_SLUGS,
+  sidebarViewKey: 'a1-components-sidebar-view',
+  rulesCount: ruleSourceFiles.length,
+  hasExamples: true,
+  labels: {
+    root: ['app.nav.components', 'Components'],
+    all: ['app.components.all', 'All components'],
+    search: ['app.nav.searchComponents', 'Search components'],
+    tree: ['app.components.tree', 'Component tree'],
+    listView: ['app.components.listView', 'Component list view'],
+    statusHeading: ['app.components.statusHeading', 'Component status'],
+    relatedHeading: ['app.components.relatedHeading', 'Related components'],
+    overviewTitle: ['app.components.inventoryTitle', 'Component inventory'],
+    overviewDescription: ['app.components.inventoryDescription', 'Full list of documented components, route targets, update dates, and package availability.'],
+    tableCaption: ['app.components.tableCaption', 'All A1 components'],
+    column: ['app.components.column', 'Component'],
+    countLabel: ['app.nav.components', 'Components'],
+    categoriesLabel: ['app.components.categoriesLabel', 'Categories'],
+    ruleFilesLabel: ['app.components.ruleFilesLabel', 'Rule files'],
+  },
+})

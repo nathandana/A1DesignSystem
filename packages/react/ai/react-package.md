@@ -26,6 +26,10 @@ src/components/{component-name}/
 └── ComponentName.stories.jsx Storybook stories covering every variant and state
 ```
 
+### Patterns
+
+Patterns are first-class compositions of components (A1-2720). They follow the same file structure under `src/patterns/{pattern-name}/` (`PatternName.jsx`, `.d.ts`, `.stories.jsx`) but **have no CSS file**: a pattern is built from component props only, so its visual values stay on the components it composes. Export patterns from the package root like components; they are also reachable at `./patterns/*`. Story titles use the `Patterns/` prefix. Patterns are **minimally configurable**: expose the content and a few layout props, and lock structure, surface, scale and heading level in the pattern (Page title locks its panel surface, title scale and h1, and enforces one primary action, rendered last).
+
 ### CSS rules
 
 - Import only `./component-name.css` from the component file — no cross-component CSS imports.

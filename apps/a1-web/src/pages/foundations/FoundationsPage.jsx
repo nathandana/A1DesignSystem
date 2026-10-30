@@ -2,12 +2,12 @@ import {
   Card,
   Grid,
   Heading,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
   useLabel,
 } from '@gtivr4/a1-design-system-react'
-import { PageTitleArea } from '../PageTitleArea.jsx'
 import { foundations } from './data.js'
 
 const sortedFoundations = [...foundations].sort((a, b) => a.title.localeCompare(b.title))
@@ -54,9 +54,9 @@ function FoundationCard({ foundation, onNavigate }) {
 export function Foundations({ onNavigate }) {
   return (
     <>
-      <PageTitleArea
-        headingId="foundations-heading"
-        breadcrumbItems={[
+      <PageTitle
+        titleId="foundations-heading"
+        breadcrumb={[
           { href: '/', label: 'Home', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
           { label: 'Foundations' },
         ]}

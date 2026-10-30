@@ -5,6 +5,7 @@ import {
   Grid,
   Heading,
   Link,
+  PageTitle,
   Paragraph,
   SearchField,
   Section,
@@ -12,7 +13,6 @@ import {
   useLabel,
 } from '@gtivr4/a1-design-system-react'
 import { BLOG_POSTS } from './blogPosts.js'
-import { PageTitleArea } from './PageTitleArea.jsx'
 
 function matchesPost(post, query) {
   const normalized = query.trim().toLowerCase()
@@ -73,8 +73,8 @@ export function Blog({ onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        breadcrumbItems={[
+      <PageTitle
+        breadcrumb={[
           { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
           { label: 'Blog' },
         ]}
@@ -88,7 +88,7 @@ export function Blog({ onNavigate }) {
           onChange={(event) => setQuery(event.target.value)}
           onClear={() => setQuery('')}
         />
-      </PageTitleArea>
+      </PageTitle>
 
       <Section padding="md" contentWidth="xl">
         <Stack direction="column" gap="lg">

@@ -994,7 +994,7 @@
   --component-magnetic-reordering-damping-high: 32;
   --component-menu-width: 16.25rem;
   --component-menu-viewport-offset: 1rem;
-  --component-menu-border-width: 1px;
+  --component-menu-border-width: 0.125rem;
   --component-menu-section-label-font-weight: 700;
   --component-menu-item-font-weight: 400;
   --component-menu-item-line-height: 1.5;

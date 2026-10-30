@@ -20,6 +20,7 @@ import { CONVERSION_MAP, getConvertedProps } from './conversionMap.ts'
 import { UtilityControls } from './UtilityControls.jsx'
 import { LabelLookupButton } from './LabelLookupDialog.jsx'
 import { ALL_CATALOG_ENTRIES } from './componentCatalog.ts'
+import { isPatternZone } from './patternAreas.ts'
 import { useT } from '../labels/useT.js'
 import {
   RESPONSIVE_VISIBILITY_BREAKPOINTS,
@@ -52,7 +53,7 @@ import { Controls as FigureControls } from '../pages/components/detail/figure.js
 
 // Actions
 import { Controls as LinkControls } from '../pages/components/detail/link.jsx'
-import { Controls as ButtonControls } from '../pages/components/detail/button.jsx'
+import { Controls as ButtonControls, menuActionsFromData } from '../pages/components/detail/button.jsx'
 import { Controls as IconButtonControls } from '../pages/components/detail/icon-button.jsx'
 import { Controls as SwitchControls } from '../pages/components/detail/switch.jsx'
 import { Controls as SegmentedControlControls } from '../pages/components/detail/segmented-control.jsx'
@@ -129,6 +130,11 @@ import { Controls as SideNavControls, getDefaultConfig as sideNavDefaults } from
 import { Controls as BottomSheetControls, getDefaultConfig as bottomSheetDefaults } from '../pages/components/detail/bottom-sheet.jsx'
 import { Controls as CanvasControls, getDefaultConfig as canvasDefaults } from '../pages/components/detail/canvas.jsx'
 import { Controls as StickyNoteControls, getDefaultConfig as stickyNoteDefaults } from '../pages/components/detail/sticky-note.jsx'
+import { Controls as VerificationDialogControls, configFromProps as verificationDialogConfigFromProps, propsFromConfig as verificationDialogPropsFromConfig } from '../pages/components/detail/verification-dialog.jsx'
+import { Controls as OverflowMenuControls, configFromProps as overflowMenuConfigFromProps, propsFromConfig as overflowMenuPropsFromConfig } from '../pages/components/detail/overflow-menu.jsx'
+import { Controls as NavigationTreeControls, configFromProps as navigationTreeConfigFromProps, propsFromConfig as navigationTreePropsFromConfig } from '../pages/components/detail/navigation-tree.jsx'
+import { Controls as OverviewCardControls, configFromProps as overviewCardConfigFromProps, propsFromConfig as overviewCardPropsFromConfig } from '../pages/components/detail/overview-card.jsx'
+import { Controls as PageTitleControls, configFromProps as pageTitleConfigFromProps, propsFromConfig as pageTitlePropsFromConfig } from '../pages/components/detail/page-title.jsx'
 
 const TEXT_LABEL_CONFIG_FIELD_BY_TYPE = {
   Heading: 'children',
@@ -431,6 +437,9 @@ export const propsToConfig = {
     fullWidth: props?.fullWidth ?? false,
     loading: props?.loading ?? false,
     disabled: props?.disabled ?? false,
+    // A split button: the Button runs its own action, the caret opens `menuActions`.
+    split: props?.split === true,
+    menuActions: menuActionsFromData(props?.menuActions),
   }),
 
   IconButton: (props) => ({
@@ -886,6 +895,11 @@ export const propsToConfig = {
 
   // Pattern authoring — a constrained blank area.
   Slot: (props) => ({
+    // Pattern-area identity (patternAreas.ts) rides along so editing a slot's
+    // layout never detaches it from its pattern.
+    area: props?.area,
+    zone: props?.zone === true,
+    rules: props?.rules ?? '',
     label: props?.label ?? '',
     allow: props?.allow ?? [],
     allowPatterns: props?.allowPatterns ?? [],
@@ -983,6 +997,14 @@ export const propsToConfig = {
     author: props?.author ?? '',
     content: content?.fallback ?? '',
   }),
+  // PageTitle (pattern) renders as the real component; its breadcrumb and
+  // metadata row travel as data props, its actions as nodes in the Actions zone.
+  PageTitle: (props) => pageTitleConfigFromProps(props ?? {}),
+  // OverviewCard (pattern): details and status are data props, actions are nodes in its zone.
+  VerificationDialog: (props) => verificationDialogConfigFromProps(props ?? {}),
+  OverflowMenu: (props) => overflowMenuConfigFromProps(props ?? {}),
+  NavigationTree: (props) => navigationTreeConfigFromProps(props ?? {}),
+  OverviewCard: (props) => overviewCardConfigFromProps(props ?? {}),
   Notification: (props) => ({ ...notificationDefaults(), ...(props ?? {}) }),
   BottomSheet: (props) => ({ ...bottomSheetDefaults(), ...(props ?? {}) }),
   Canvas: (props) => ({ ...canvasDefaults(), ...(props ?? {}) }),
@@ -1242,6 +1264,10 @@ export const configToNodeUpdate = {
       fullWidth: config.fullWidth || undefined,
       loading: config.loading || undefined,
       disabled: config.disabled || undefined,
+      split: config.split || undefined,
+      menuActions: config.split
+        ? (config.menuActions ?? []).filter((action) => action.label).map((action) => (action.icon ? { label: action.label, icon: action.icon } : { label: action.label }))
+        : undefined,
     },
     contentFallback: config.label,
   }),
@@ -1716,6 +1742,9 @@ export const configToNodeUpdate = {
   // Pattern authoring — a constrained blank area.
   Slot: (config) => ({
     props: {
+      area: config.area || undefined,
+      zone: config.zone === true ? true : undefined,
+      rules: config.rules || undefined,
       label: config.label || undefined,
       allow: config.allow?.length ? config.allow : undefined,
       allowPatterns: config.allowPatterns?.length ? config.allowPatterns : undefined,
@@ -1835,6 +1864,11 @@ export const configToNodeUpdate = {
     },
     contentFallback: config.content,
   }),
+  PageTitle: (config) => ({ props: pageTitlePropsFromConfig(config) }),
+  VerificationDialog: (config) => ({ props: verificationDialogPropsFromConfig(config) }),
+  OverflowMenu: (config) => ({ props: overflowMenuPropsFromConfig(config) }),
+  NavigationTree: (config) => ({ props: navigationTreePropsFromConfig(config) }),
+  OverviewCard: (config) => ({ props: overviewCardPropsFromConfig(config) }),
   Notification: (config) => ({ props: { ...config } }),
   BottomSheet: (config) => ({ props: { ...config } }),
   Canvas: (config) => ({ props: { ...config } }),
@@ -1938,6 +1972,10 @@ function SlotEditorControls({ config, setConfig }) {
   const allowPatterns = config.allowPatterns ?? []
   const patterns = getAllPatterns()
 
+  // A pattern zone's rules are set by the pattern: explain them instead of
+  // offering the blank-area controls.
+  if (config.zone) return <ZoneControls config={config} />
+
   return (
     <Stack gap="lg">
       <TextField
@@ -2004,6 +2042,24 @@ function SlotEditorControls({ config, setConfig }) {
           options={patterns.map((p) => ({ label: p.pattern.name, value: p.pattern.id }))}
         />
       )}
+    </Stack>
+  )
+}
+
+// A pattern zone (patternAreas.ts): a named area whose rules — what it accepts,
+// how many, where its items render — are fixed by the pattern. The zone stays
+// where it is; only its items are edited.
+function ZoneControls({ config }) {
+  return (
+    <Stack gap="sm">
+      <Stack direction="row" gap="xs" align="center">
+        <Icon name="rule" size="sm" color="muted" aria-hidden="true" />
+        <Paragraph size="sm">{config.label || 'Zone'} is a zone of its pattern.</Paragraph>
+      </Stack>
+      {config.rules && <Paragraph size="sm" color="muted">{config.rules}</Paragraph>}
+      <Paragraph size="xs" color="muted">
+        The pattern sets these rules; they can’t be changed here. Add items with Add inside from the zone’s Layers menu, and select an item to edit or remove it.
+      </Paragraph>
     </Stack>
   )
 }
@@ -2251,6 +2307,11 @@ const CONTROLS_BY_TYPE = {
   ContextMenu: ContextMenuControls,
   Snackbar: SnackbarControls,
   StickyNote: StickyNoteControls,
+  PageTitle: PageTitleControls,
+  NavigationTree: NavigationTreeControls,
+  OverviewCard: OverviewCardControls,
+  OverflowMenu: OverflowMenuControls,
+  VerificationDialog: VerificationDialogControls,
   Notification: NotificationControls,
   SideNav: SideNavControls,
   BottomSheet: BottomSheetControls,
@@ -2507,7 +2568,9 @@ export function EditorPropsPanel({
     : `/components/${node.type.toLowerCase()}`
   // Pattern instances (and locked pattern parts) can't be converted to another
   // component type — that would break the pattern link.
-  const suppressConvert = !!node.patternInstance || (lockEnforced && !!node.lock?.node)
+  // A pattern zone is fixed in place as well — wherever it is edited.
+  const zoneFixed = isPatternZone(node)
+  const suppressConvert = !!node.patternInstance || zoneFixed || (lockEnforced && !!node.lock?.node)
   const conversionTargets = suppressConvert ? [] : (CONVERSION_MAP[node.type] ?? [])
 
   const ConvertSection = conversionTargets.length > 0 && onConvertNode ? (
@@ -2546,7 +2609,7 @@ export function EditorPropsPanel({
       )}
       size="compact"
       inline
-      disabled={lockEnforced && !!node.lock?.node}
+      disabled={zoneFixed || (lockEnforced && !!node.lock?.node)}
       value={visibleBreakpoints(node.visibility)}
       onChange={(next) => onSetNodeVisibility?.(node.id, visibilityFromBreakpoints(next))}
       options={RESPONSIVE_VISIBILITY_BREAKPOINTS.map((breakpoint) => ({

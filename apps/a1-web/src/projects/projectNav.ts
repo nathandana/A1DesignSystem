@@ -104,6 +104,40 @@ export function buildProjectNav(pages: ProjectPage[], opts: ProjectNavOptions): 
   });
 }
 
+// ── Breadcrumb ──────────────────────────────────────────────────────────────────
+
+/** A Breadcrumb item derived from a project page (the current page has no link). */
+export interface ProjectBreadcrumbItem {
+  label: string;
+  href?: string;
+  onClick?: (e: MouseEvent) => void;
+}
+
+/**
+ * Build the breadcrumb trail for the active page from the page hierarchy: the
+ * project's home page (its first top-level page), the active page's ancestors,
+ * then the active page itself. A Page title pattern with `breadcrumb: true`
+ * takes this trail at render time (see `resolveAutoBreadcrumbs`).
+ */
+export function buildProjectBreadcrumb(pages: ProjectPage[], opts: ProjectNavOptions): ProjectBreadcrumbItem[] {
+  const active = opts.activePageId ? pages.find((p) => p.id === opts.activePageId) : null;
+  if (!active) return [];
+  const byId = new Map(pages.map((p) => [p.id, p]));
+  const chain: ProjectPage[] = [];
+  let cursor: ProjectPage | undefined = active;
+  while (cursor) {
+    chain.unshift(cursor);
+    cursor = cursor.parentId ? byId.get(cursor.parentId) : undefined;
+  }
+  const home = childrenOf(pages, null)[0];
+  if (home && chain[0]?.id !== home.id) chain.unshift(home);
+  return chain.map((page, index) => (
+    index === chain.length - 1
+      ? { label: page.title || 'Untitled' }
+      : { label: page.title || 'Untitled', ...linkProps(page, opts) }
+  ));
+}
+
 // ── Sidebar navigation (SideNav + TreeMenu) ─────────────────────────────────────
 
 /** A TreeMenu item derived from a project page. */

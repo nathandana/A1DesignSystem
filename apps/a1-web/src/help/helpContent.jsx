@@ -852,6 +852,17 @@ const RAW_HELP = [
     icon: 'dashboard_customize',
     articles: [
       {
+        id: 'pattern-library',
+        title: 'The Pattern library',
+        keywords: 'pattern library first class patterns page title composition catalogue configure add to project menu zone actions rules editable area',
+        body: (
+          <Stack gap="sm">
+            <P>The <strong>Patterns</strong> menu in the top header opens the <strong>Pattern library</strong>: ready-made compositions of A1 components, such as the <strong>Page title</strong> band and the <strong>Overview card</strong>, that behave like components. Browse them by category in the left column, see the live preview in the middle and change their properties in the <strong>Configure</strong> panel on the right — the same layout as Components, with Rules, Properties, Accessibility and History tabs.</P>
+            <P>To use one in a project, open the editor's <strong>Add</strong> tab and pick it from the <strong>Patterns</strong> group; it's added as one piece and configured from the Configure panel like any component. Patterns keep their structure fixed and open only a few things: the Page title, for example, lets you edit its title and description right on the canvas, builds its breadcrumb from the project's page hierarchy when you turn the breadcrumb on, has a <strong>Metadata</strong> zone directly below the title for up to five badges about the page — a status, a count — and an <strong>Actions</strong> zone — a named area with set rules: up to four buttons, split buttons, links, icon buttons, button groups, toolbars or segmented controls, with one primary always shown last. The zone stays where it is (it can't be deleted, moved or reconfigured); add to it with <strong>Add inside</strong> from its Layers menu, or by clicking its outline when it's empty, and the Add panel offers only what it accepts. Below it, the <strong>Content</strong> area takes any component. The Pattern library preview outlines these areas; use <strong>Editable areas</strong> in the display toolbar to hide them. (The <strong>Patterns</strong> entry under <strong>Editors</strong> is the older JSON pattern workspace described below.)</P>
+          </Stack>
+        ),
+      },
+      {
         id: 'what-is-pattern',
         title: 'What patterns are',
         keywords: 'pattern reusable composition template governed locked instance linked component group library vs copy pattern',

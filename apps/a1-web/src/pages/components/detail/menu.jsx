@@ -13,6 +13,7 @@ import {
 } from '@gtivr4/a1-design-system-react'
 import { IconSelect } from './IconSelect.jsx'
 import { Toggle } from './Toggle.jsx'
+import { Choice } from './configKit.jsx'
 
 export const bareDisplay = true
 
@@ -28,6 +29,7 @@ function esc(s) {
 
 export function getDefaultConfig() {
   return {
+    padding: 8,
     items: [
       { id: uid(), kind: 'item',    label: 'Edit',      icon: 'edit',         shortcut: '⌘E', destructive: false },
       { id: uid(), kind: 'item',    label: 'Duplicate', icon: 'content_copy', shortcut: '',   destructive: false },
@@ -61,11 +63,11 @@ function jsonMenuItem(item, index) {
 
 export function toJson(config) {
   const items = Array.isArray(config.items) ? config.items.map(jsonMenuItem) : []
-  return { node: { id: 'menu-1', type: jsonType, props: { items } } }
+  return { node: { id: 'menu-1', type: jsonType, props: { items, ...(config.padding && config.padding !== 8 ? { padding: config.padding } : {}) } } }
 }
 
 export function fromJson(node) {
-  const config = getDefaultConfig()
+  const config = { ...getDefaultConfig(), padding: node.props?.padding ?? 8 }
   const items = Array.isArray(node.props?.items) ? node.props.items : null
   if (items) config.items = items.filter((item) => item && typeof item === 'object').map(jsonMenuItem)
   return config
@@ -117,7 +119,7 @@ function renderItems(configItems, onClose) {
 
 // ── Snippet ───────────────────────────────────────────────────────────────────
 
-function buildSnippet(configItems, utilityClass = '') {
+function buildSnippet(configItems, utilityClass = '', padding = 8) {
   const lines = configItems.map((item) => {
     if (item.kind === 'divider') return `  <Divider />`
     if (item.kind === 'section') return `  <MenuSection label="${esc(item.label || 'Section')}">`
@@ -140,7 +142,7 @@ const anchorRef = useRef(null)
   </Button>
   <Menu
     open={open}
-    ${utilityClass ? `className="${esc(utilityClass)}"\n    ` : ''}onClose={() => setOpen(false)}
+    ${padding !== 8 ? `padding={${padding}}\n    ` : ''}${utilityClass ? `className="${esc(utilityClass)}"\n    ` : ''}onClose={() => setOpen(false)}
     anchorRef={anchorRef}
     aria-label="Actions"
   >
@@ -162,6 +164,7 @@ export function Preview({ config, utilityClass = '' }) {
       </Button>
       <Menu
         open={open}
+        padding={config.padding ?? 8}
         className={utilityClass || undefined}
         onClose={() => setOpen(false)}
         anchorRef={anchorRef}
@@ -270,6 +273,7 @@ export function Controls({ config, setConfig }) {
 
   return (
     <Stack gap="lg">
+      <Choice label="Padding" value={config.padding ?? 8} options={[8, 12, 16, 20, 24].map(value => ({ value, label: String(value) }))} onChange={padding => setConfig(current => ({ ...current, padding }))} helper="Panel padding in system spacing steps. Mobile keeps its minimum padding and safe area." />
       <Stack gap="xs">
         {items.map((item) => (
           <ItemEditor
@@ -306,5 +310,5 @@ export function Controls({ config, setConfig }) {
 // ── Snippet ───────────────────────────────────────────────────────────────────
 
 export function Snippet({ config, utilityClass = '' }) {
-  return <Code variant="block" copyCode wrapping>{buildSnippet(config.items ?? [], utilityClass)}</Code>
+  return <Code variant="block" copyCode wrapping>{buildSnippet(config.items ?? [], utilityClass, config.padding ?? 8)}</Code>
 }

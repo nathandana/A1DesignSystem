@@ -4,6 +4,7 @@
 
 - **Textarea: no pill corners** — `.a1-textarea` (in `a1-pure.css` and `a1-base.css`) caps its corner radius at `--component-field-textarea-max-border-radius`, so themes with pill-shaped fields keep a rounded rectangle for multi-line text.
 - **Light print output** (A1-2707) — the system dark-mode media queries are now screen-only, so pages print in light mode even when the reader's device prefers dark.
+- **Menu tokens** — shared Menu border is 2px and its shadow uses the xl semantic token. SideNav now reads its own border token so Menu changes do not affect its border.
 
 ## 0.3.0 — 2026-10-12
 

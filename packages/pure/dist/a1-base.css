@@ -1334,7 +1334,7 @@
 .a1-side-nav {
   inline-size: var(--component-menu-width);
   padding: var(--base-spacing-8);
-  border: var(--component-menu-border-width) solid var(--semantic-color-border-subtle);
+  border: var(--component-side-nav-border-width) solid var(--semantic-color-border-subtle);
   border-radius: var(--component-card-border-radius);
   background: var(--semantic-color-surface-panel);
   list-style: none;

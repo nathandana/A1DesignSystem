@@ -133,7 +133,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 | `Inset` | C | Uniform padding around content. | `space` (spacing number) |
 | `Spacer` | — | Fixed gap. | `size` (xs–xxl) |
 | `ButtonContainer` | C | Responsive row of action buttons. | `align` (start/center/end), `fillButtons` (bool) |
-| `Slot` | C | Constrained "blank area" (pattern authoring). | `label`, `allow` (type[]), `allowPatterns` (id[]), `min`, `max`, `columns`, `gap` |
+| `Slot` | C | Constrained "blank area" (pattern authoring) — or, with `zone: true`, a pattern **zone**: a named area whose rules are set by the pattern and fixed on the page (it can't be removed, moved or reconfigured; only its items change, within its rules). | `label`, `allow` (type[]), `allowPatterns` (id[]), `min`, `max`, `columns`, `gap`; a pattern's areas add `area` (the area id), `zone` (`true` for a zone) and `rules` (the zone's rule sentence) |
 | `Outlet` | C | Shared project-layout insertion point for page content. | `name` |
 | `Divider` | — | Visual separator. | `orientation`, `variant` (subtle/strong/accent), `lineStyle` (solid/dashed/dotted), `size`, `space` |
 | `Figure` | — | Image with optional caption. | `src` (req), `alt`, `caption`, `radius`, `size` (3xs–xxl), `align`, `aspectRatio` (**colon form**: `16:9`/`4:3`/`3:2`/`1:1`/`2:3`/`3:4`/`9:16`/`21:9`), `crop` |
@@ -153,7 +153,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 ### Actions & controls
 | type | C | role | key props |
 |------|:-:|------|-----------|
-| `Button` | — | Action. | `variant` (primary/secondary/tertiary/destructive/success), `size` (sm/md/lg), `icon`, `iconPosition` (start/end), `fullWidth` (bool), `loading` (bool), `disabled` (bool), `as` (button/a) + `href` |
+| `Button` | — | Action. | `variant` (primary/secondary/tertiary/destructive/success), `size` (sm/md/lg), `icon`, `iconPosition` (start/end), `fullWidth` (bool), `loading` (bool), `disabled` (bool), `as` (button/a) + `href`, `split` (bool — renders a SplitButton) + `menuActions` (`[{label,icon?}]`, the caret's menu; no `href`/`fullWidth` when split) |
 | `Link` | — | Navigation. text via `content`. | `href`, `external` (bool), `size` |
 | `IconButton` | — | Icon-only action. **needs `aria-label`.** | `icon` (req), `aria-label` (req), `variant`, `size` (sm/md/lg), `as`/`href` |
 | `Switch` | — | On/off toggle. | `label`, `checked` (bool), `size` |
@@ -187,6 +187,26 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 | `CircularProgress` | — | Ring progress. | `value`, `max`, `size`, `indeterminate`, `aria-label` |
 | `StepTracker` | — | Step position indicator. | `steps`, `current`, `align` |
 | `StickyNote` | — | Post-it style annotation (not primary content). Text via `content` (basic Markdown: **bold**, *italic*, [link](url), `- ` lists). | `title`, `author` (badge), `color` (yellow/orange/green/blue/pink/purple/grey), `width`/`height` (auto/xs/sm/md/lg/xl), `resizable` (bool), `placement` (inline/floating), `anchor` (top-start/top-end/bottom-start/bottom-end), `movable` (bool, floating only) |
+
+### Patterns (compositions)
+
+Formal patterns are defined by versioned `system/patterns/*.json` manifests.
+Use MCP `get_pattern` for props schema, locked props, ordered areas and an empty
+starter; use `validate_patterns` before handing off generated JSON. New nodes
+carry `patternVersion: "1.0.0"`. Keep area definitions but omit their `children`
+unless explicitly configured. Never copy sample actions into a starter. Zone
+rules come from the parent manifest, not editable Slot overrides. Preserve IDs,
+localization, behavior descriptors and accessibility metadata when editing.
+Unknown future versions must be retained for recovery. `migrate_pattern`
+proposes explicit legacy migrations without overwriting input. Overview Card
+has no prescribed width: its parent owns it.
+
+| type | C | role | key props |
+|------|:-:|------|-----------|
+| `PageTitle` | C | The top band of a page: breadcrumb, eyebrow, the h1, description, actions. One per page, first in the content. Surface, title scale and heading level are locked. Children are three `Slot` nodes, emitted exactly like this, in this order: the Metadata **zone** `{ "type": "Slot", "props": { "area": "meta", "zone": true, "label": "Metadata", "rules": "Up to 5 badges, shown small and subtle directly below the title.", "allow": ["MessageBadge"], "max": 5 }, "children": [ …MessageBadge nodes… ] }` (badges directly below the title), the Actions **zone** `{ "type": "Slot", "props": { "area": "actions", "zone": true, "label": "Actions", "rules": "Up to 4 buttons, split buttons, links, icon buttons, button groups, toolbars or segmented controls. One primary button, shown last.", "allow": ["Button", "Link", "IconButton", "ButtonContainer", "Toolbar", "SegmentedControl"], "max": 4 }, "children": [ …action nodes… ] }` (at most one primary Button — a Button with no `variant` is primary; it renders last; a split button is a Button with `split: true` and `menuActions`; a ButtonContainer group stays together; the editor derives zone rules and locks from the parent manifest) and the open area `{ "type": "Slot", "props": { "area": "content", "label": "Content", "columns": 1, "gap": "sm" } }` for anything below the actions. | `breadcrumb` (`true` = built from the project's page tree), `eyebrow`, `title`, `description`, `contentWidth` — metadata and actions are child nodes in their zones, not props |
+| `VerificationDialog` | C | Reusable verification dialog, also nested in OverflowMenu actions. | `title`, `message`, `confirmLabel`, `cancelLabel`; optional label-service keys `titleKey`, `messageKey`, `confirmLabelKey`, `cancelLabelKey` with text fallbacks; `destructive`, `disabled`, `open`; open Content Slot. React owns `onConfirm`/`onClose`. |
+| `OverflowMenu` | — | Contextual menu with a fixed more_vert IconButton. Any action can require a verification Dialog. | `label`, `size` (sm/md/lg), `disabled`, `actions: [{ id, label, icon?, href?, disabled?, destructive?, verification?: VerificationDialogNode }]`; unique IDs; empty when unconfigured. No child slots. `onAction` is React-only. |
+| `OverviewCard` | C | A summary card for one item in a set: icon block, heading, key details, a content area, optional labelled status, up to two actions. Surface, icon block, heading size and details layout are locked. Children are two `Slot` nodes, emitted exactly like this: the open area `{ "type": "Slot", "props": { "area": "content", "label": "Content", "columns": 1, "gap": "sm" } }` (between the details and the actions) and `{ "type": "Slot", "props": { "area": "actions", "zone": true, "label": "Actions", "rules": "Up to 2 small buttons, links or icon buttons. No primary button: cards repeat, and the page title holds the primary action.", "allow": ["Button", "Link", "IconButton"], "max": 2 }, "children": [ …Button / Link / IconButton nodes… ] }` (Buttons and IconButtons render small; a primary or unset variant becomes secondary). | `icon`, `title`, `titleAs` (`h2`/`h3`/`h4`, default `h3`), `status` + `statusLabel` (status only shows with its label), `details` (`[{label,value}]`) — content and actions are child nodes in their areas |
 
 ### Navigation & data
 | type | C | role | key props |
@@ -359,3 +379,14 @@ Review each authored block across themes, breakpoints and assistive technology.
 The component is currently React-only. Pure CSS cannot reproduce its document
 and script lifecycle; Native would need an explicit WebView contract. Neither
 package claims support. Figma translation is also outside this contract.
+
+### Formal pattern starters
+
+Keep the named Slot area definitions in PageTitle and OverviewCard JSON, but omit
+area `children` until the author explicitly configures content. Do not populate
+empty areas with example actions or badges. OverviewCard has no intrinsic fixed
+width; its parent layout allocates its width.
+
+### NavigationTree pattern
+
+`NavigationTree` (`patternVersion: "1.0.0"`) accepts recursive `items` data, not Slot children. Each item needs a globally unique `id` and visible `label`; optional fields are `icon`, `href`, `disabled`, `category`, `pinned`, `excludeFromAz`, `keywords`, `sortLabel` and `children`. `searchable` and `sortable` default to true. `defaultView` is `tree` or `az`; `defaultSelectedId` and `defaultSearch` seed interactive state. Accessible labels: `aria-label`, `searchLabel`, `sortLabel`, `listViewLabel`. Desktop collapse state is configurable; placement is always start and the collapse button is always in the footer; React hosts control mobile `open` with `onClose`. Starters have `items: []` and no editable component areas. The editor offers unrestricted nested category/item controls.

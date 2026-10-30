@@ -1,6 +1,7 @@
 "use client";
 
 import "./button.css";
+import { disabledControlProps } from "./disabledControlProps.js";
 import { CircularProgress } from "../circular-progress/CircularProgress.jsx";
 import { Icon } from "../icon/Icon.jsx";
 
@@ -60,7 +61,7 @@ export function Button({
       disabled={isButton ? isInert || undefined : undefined}
       aria-disabled={!isButton && isInert ? "true" : undefined}
       aria-busy={loading ? "true" : undefined}
-      {...props}
+      {...(isButton ? props : disabledControlProps(isInert, props))}
     >
       {loading ? spinnerEl : resolvedPosition === "start" && iconEl}
       {children}

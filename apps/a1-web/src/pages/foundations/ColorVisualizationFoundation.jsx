@@ -4,6 +4,7 @@ import {
   DataTable,
   Heading,
   MessageBadge,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
@@ -21,7 +22,6 @@ import { createPortal } from 'react-dom'
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import * as THREE from 'three'
 import tokens from '../../../../../build/json/tokens.json'
-import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 import './color-visualization.css'
 
@@ -663,9 +663,9 @@ export function ColorVisualizationFoundationPage({ onNavigate, theme, colorMode 
   return (
     <>
       {asideNode && createPortal(controls, asideNode)}
-      <PageTitleArea
-        headingId="color-visualization-heading"
-        breadcrumbItems={getFoundationBreadcrumbItems('Color visualization', onNavigate)}
+      <PageTitle
+        titleId="color-visualization-heading"
+        breadcrumb={getFoundationBreadcrumbItems('Color visualization', onNavigate)}
         title="Color visualization"
         description="Inspect A1 color ramps in OKLCH space. Height represents lightness, distance from the center represents chroma, and rotation represents hue."
       />

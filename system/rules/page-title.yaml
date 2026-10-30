@@ -1,0 +1,61 @@
+component: PageTitle
+rules:
+  - id: page-title-one-per-page
+    components:
+      - PageTitle
+    requirement: A page has one PageTitle at the top, and it carries the page's only h1.
+    do: Place the PageTitle first in the main content and give the sections that follow `aria-labelledby` pointing at its `titleId`.
+    dont: Add a second PageTitle, or put another h1 elsewhere on the page. Titled regions inside a page use a Heading at h2 or below.
+    applies_to:
+      - accessibility
+      - semantic-html
+
+  - id: page-title-locked-presentation
+    components:
+      - PageTitle
+    requirement: The band's surface, title scale, heading level and the position of its metadata row are fixed by the pattern; only its content and content width are configurable.
+    do: Pass the breadcrumb, eyebrow, title, metadata, description and actions, and match `contentWidth` to the sections that follow.
+    dont: Wrap or restyle the pattern to change its surface, heading size or level, or hand-build a title band from a Section, Heading and buttons.
+    applies_to:
+      - consistency
+      - layout
+
+  - id: page-title-one-primary-action-last
+    components:
+      - PageTitle
+    requirement: The page actions carry at most one primary action — a Button or SplitButton — and it is always the last action.
+    do: Make the page's main action the primary and set every other Button or SplitButton to secondary or tertiary — they are primary when no variant is given. PageTitle keeps the first primary, moves it to the end and makes any further primaries secondary. In a ButtonContainer group the primary moves to the group's end and the group is shown last.
+    dont: Rely on several primary actions, leave a second Button without a variant, or expect a primary action to appear first.
+    applies_to:
+      - usability
+      - interaction
+
+  - id: page-title-breadcrumb-current-page
+    components:
+      - PageTitle
+    requirement: When a breadcrumb is shown, its last item names the current page and matches the title.
+    do: End the trail with a plain item whose label is the page title.
+    dont: End the trail with a link, or with a label that differs from the title.
+    applies_to:
+      - accessibility
+      - content
+
+  - id: page-title-allowed-actions
+    components:
+      - PageTitle
+    requirement: The actions are page-level controls — Button, SplitButton, Link, IconButton, a ButtonContainer group, Toolbar or SegmentedControl — and there are at most four of them.
+    do: Group closely related buttons in a ButtonContainer, put a set of tools in a Toolbar, use a SegmentedControl for a view switch, and move secondary actions into a SplitButton's menu when there are more than four.
+    dont: Put fields, menus, badges or other content in the actions, or nest more containers inside a ButtonContainer group. Search fields, tabs and filters belong in the content area below the actions.
+    applies_to:
+      - consistency
+      - usability
+
+  - id: page-title-metadata-below-title
+    components:
+      - PageTitle
+    requirement: Status and other metadata about the page sit in the metadata row, which is always directly below the title.
+    do: Pass short badges — a status, a count, an owner — through `meta`, as badge data or composed badges. In a project, add them to the Metadata zone, which takes up to five badges and shows them small and subtle.
+    dont: Place badges beside or above the title, in the eyebrow, or in the content area, and don't use the metadata row for actions or long text.
+    applies_to:
+      - consistency
+      - content

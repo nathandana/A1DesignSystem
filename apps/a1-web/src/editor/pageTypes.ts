@@ -62,6 +62,12 @@ export type ComponentType =
   | "CircularProgress"
   | "StepTracker"
   | "StickyNote"
+  // Patterns (A1-2720)
+  | "VerificationDialog"
+  | "OverflowMenu"
+  | "NavigationTree"
+  | "OverviewCard"
+  | "PageTitle"
   | "TextField"
   | "SearchField"
   | "TextareaField"
@@ -240,6 +246,8 @@ export interface ActionMap {
  * `content` supplies primary text; `children` nests further nodes.
  */
 export interface ComponentNode {
+  /** Version of the formal system pattern; unversioned nodes use the manifest compatibility version. */
+  patternVersion?: string;
   /** Stable id — used as the React key and as a future editor selection handle. */
   id: string;
   /** A1 component name. Must exist in the component registry, or the renderer shows a fallback. */

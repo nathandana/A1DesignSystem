@@ -5,13 +5,13 @@ import {
   List,
   ListItem,
   MessageBadge,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import colorTokenAudit from '../../../../packages/react/ai/color-token-audit.md?raw'
 import { componentCategories } from './components/data.js'
-import { PageTitleArea } from './PageTitleArea.jsx'
 
 function parseTokenDefinitionCount(audit) {
   return audit.match(/\| Token definitions \|\s*(\d+)\s*\|/)?.[1] ?? '0'
@@ -214,9 +214,9 @@ export function Features({ onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        headingId="features-page-heading"
-        breadcrumbItems={[
+      <PageTitle
+        titleId="features-page-heading"
+        breadcrumb={[
           { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
           { label: 'Features' },
         ]}

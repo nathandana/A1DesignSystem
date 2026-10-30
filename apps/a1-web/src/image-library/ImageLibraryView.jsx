@@ -14,6 +14,7 @@ import {
   IconButton,
   MessageBadge,
   MessageEmptyState,
+  PageTitle,
   Paragraph,
   Section,
   SplitButton,
@@ -27,7 +28,6 @@ import {
   ToolbarDivider,
   ToolbarGroup,
 } from '@gtivr4/a1-design-system-react'
-import { PageTitleArea } from '../pages/PageTitleArea.jsx'
 import {
   addImage,
   deleteImage,
@@ -299,9 +299,9 @@ export function ImageLibraryView({ projects = [], onNavigateHome }) {
 
   return (
     <>
-      <PageTitleArea
-        headingId="image-library-heading"
-        breadcrumbItems={[
+      <PageTitle
+        titleId="image-library-heading"
+        breadcrumb={[
           { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
           { label: 'Image library' },
         ]}

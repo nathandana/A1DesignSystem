@@ -1,16 +1,14 @@
 import { useState, useCallback, useMemo, useRef, useEffect } from 'react'
 import {
   Banner,
-  Breadcrumb,
   Button,
   Card,
   ChoiceGroup,
   Cluster,
   Code,
   Dialog,
-  Heading,
-  MessageBadge,
   MessageEmptyState,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
@@ -22,13 +20,13 @@ import {
   TextField,
   SearchField,
   Autocomplete,
-  ButtonContainer,
 } from '@gtivr4/a1-design-system-react'
 import { DataGrid, SelectColumn, textEditor } from '@gtivr4/a1-design-system-react/components/data-grid/DataGrid.jsx'
 import { useT } from '../labels/useT.js'
 import { getLabels, saveLabels, subscribeLabels } from '../labels/labelStore.js'
 import { appendHistory, fetchHistory, updateHistoryLabel } from '../services/historyDb.js'
 import { EditorHistoryPanel } from '../editor/EditorHistoryPanel.jsx'
+import verificationJson from '../../../../system/labels/verification-dialog.json'
 import appJson       from '../../../../system/labels/app.json'
 import actionJson    from '../../../../system/labels/action.json'
 import backlogJson   from '../../../../system/labels/backlog.json'
@@ -80,6 +78,7 @@ function flattenSystemKeys(obj, prefix = '') {
 }
 
 const SYSTEM_KEYS = [
+  ...flattenSystemKeys(verificationJson.label),
   ...flattenSystemKeys(appJson.label),
   ...flattenSystemKeys(actionJson.label),
   ...flattenSystemKeys(backlogJson.label),
@@ -472,54 +471,40 @@ export function LabelEditor({ onNavigate }) {
 
   return (
     <>
-      <Section
-        padding="xs"
-        contentWidth="xl"
-        surface="panel"
-        borderSize="sm"
-        borderVariant="accent"
-        borderSides="bottom"
-      >
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={[
-              {
-                label: t('app.labelEditor.breadcrumbHome', 'Home'),
-                href: '/',
-                onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') },
-              },
-              { label: t('app.labelEditor.pageTitle', 'Label editor') },
-            ]}
-          />
-          <Stack direction="row" justify="between" align="start" gap="sm" wrap>
-            <Stack direction="column" gap="xs">
-              <Heading as="h1" id="label-editor-heading" size={{ xs: 'lg', md: 'xxl' }}>
-                {t('app.labelEditor.pageTitle', 'Label editor')}
-              </Heading>
-              <Paragraph size="sm" color="muted">
-                {t('app.labelEditor.pageDescription', 'Manage workspace labels and translations. Labels sync across your team and can be referenced in pages and components.')}
-              </Paragraph>
-            </Stack>
-            <MessageBadge status="info" subtle size="sm" icon="translate">
-              {data.items.length} {t('app.labelEditor.badgeWorkspace', 'workspace')} · {SYSTEM_KEYS.length} {t('app.labelEditor.badgeSystem', 'system')}
-            </MessageBadge>
-          </Stack>
-        </Stack>
-        <ButtonContainer>
-          <Button icon="add" onClick={() => setAddOpen(true)}>
-            {t('app.labelEditor.addLabel', 'Add label')}
-          </Button>
-          <Button
-            variant="secondary"
-            icon="translate"
-            onClick={handleTranslate}
-            loading={translating}
-            disabled={translating || (!hasSelected && !hasMissing)}
-          >
-            {translateLabel}
-          </Button>
-        </ButtonContainer>
-      </Section>
+      <PageTitle
+        titleId="label-editor-heading"
+        breadcrumb={[
+          {
+            label: t('app.labelEditor.breadcrumbHome', 'Home'),
+            href: '/',
+            onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') },
+          },
+          { label: t('app.labelEditor.pageTitle', 'Label editor') },
+        ]}
+        title={t('app.labelEditor.pageTitle', 'Label editor')}
+        meta={[{
+          label: `${data.items.length} ${t('app.labelEditor.badgeWorkspace', 'workspace')} · ${SYSTEM_KEYS.length} ${t('app.labelEditor.badgeSystem', 'system')}`,
+          status: 'info',
+          icon: 'translate',
+        }]}
+        description={t('app.labelEditor.pageDescription', 'Manage workspace labels and translations. Labels sync across your team and can be referenced in pages and components.')}
+        actions={(
+          <>
+            <Button icon="add" onClick={() => setAddOpen(true)}>
+              {t('app.labelEditor.addLabel', 'Add label')}
+            </Button>
+            <Button
+              variant="secondary"
+              icon="translate"
+              onClick={handleTranslate}
+              loading={translating}
+              disabled={translating || (!hasSelected && !hasMissing)}
+            >
+              {translateLabel}
+            </Button>
+          </>
+        )}
+      />
 
       <Section padding="sm" contentWidth="xl">
         <Stack direction="column" gap="md">

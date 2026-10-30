@@ -14,6 +14,7 @@ import {
   Link,
   MessageBadge,
   MessageEmptyState,
+  PageTitle,
   Paragraph,
   Section,
   SplitButton,
@@ -27,7 +28,6 @@ import { formatUsage, hasApiKey, setApiKey, AI_ENABLED } from '../lib/aiImages.t
 import { addImage, resolveSrc, toImageRef } from '../lib/imageLibrary.ts'
 import { allComponents } from './components/utils.js'
 import { useT } from '../labels/useT.js'
-import { PageTitleArea } from './PageTitleArea.jsx'
 
 const COMPONENT_OPTIONS = (() => {
   const set = new Set(['General', 'Typography', ...allComponents.map((c) => c.title)])
@@ -302,9 +302,9 @@ export function RuleEditor({ onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        headingId="rules-heading"
-        breadcrumbItems={[
+      <PageTitle
+        titleId="rules-heading"
+        breadcrumb={[
           { label: t('app.page.home', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
           { label: t('app.page.rules', 'Rules') },
         ]}
