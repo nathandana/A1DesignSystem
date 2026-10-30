@@ -1,0 +1,11 @@
+{
+  "semantic": {
+    "z": {
+      "sticky": { "$type": "number", "$value": 100, "$description": "Sticky chrome in the normal layer: TopHeader, PageLayout sticky regions." },
+      "pinned": { "$type": "number", "$value": 200, "$description": "Pinned app chrome and full-viewport app surfaces: SideNav overlay, BottomDrawer, PageNav, StickyActions, a full-screen canvas." },
+      "popover": { "$type": "number", "$value": 1000, "$description": "Normal-layer popovers: Menu, Autocomplete listbox, Select, ContextMenu, tooltips." },
+      "modal": { "$type": "number", "$value": 1100, "$description": "Modals that do not use the native top layer." },
+      "toast": { "$type": "number", "$value": 1200, "$description": "Snackbars and toasts, above non-top-layer modals." }
+    }
+  }
+}

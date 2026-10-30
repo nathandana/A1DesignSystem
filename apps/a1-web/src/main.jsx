@@ -1161,6 +1161,11 @@ function App() {
     refreshProjects()
   }
 
+  function handleSaveProjectCanvas(id, patch) {
+    projectStore.saveProjectCanvas(id, patch)
+    refreshProjects()
+  }
+
   function handleMoveProjectToEdge(id, edge) {
     projectStore.moveProjectToEdge(id, edge)
     refreshProjects()
@@ -1223,13 +1228,15 @@ function App() {
     refreshProjects()
   }
 
-  function handleDuplicateProjectPage(id) {
-    if (!activeProjectId) return
+  // `open: false` keeps the user where they are (e.g. the project canvas).
+  function handleDuplicateProjectPage(id, { open = true } = {}) {
+    if (!activeProjectId) return null
     const result = projectStore.duplicatePage(activeProjectId, id)
-    if (!result) return
+    if (!result) return null
     setProjectPages(result.pages)
-    handleOpenPage(result.page.id)
+    if (open) handleOpenPage(result.page.id)
     refreshProjects()
+    return result.page
   }
 
   function handleDeleteProjectPage(id) {
@@ -2426,6 +2433,11 @@ function App() {
               onDeleteProject={handleDeleteProject}
               onNavigateHome={() => navigate('home')}
               onBackToProjects={handleBackToProjects}
+              onSaveCanvas={handleSaveProjectCanvas}
+              onDuplicatePage={(id) => handleDuplicateProjectPage(id, { open: false })}
+              onDeletePage={handleDeleteProjectPage}
+              colorMode={colorMode}
+              resolvedColorScheme={resolvedColorScheme}
             />
           ) : (
             <EditorPage

@@ -165,6 +165,33 @@ const RAW_HELP = [
         ),
       },
       {
+        id: 'project-canvas',
+        title: 'Seeing every page on a canvas',
+        keywords: 'canvas infinite figma frames board overview pan zoom fit arrange drag device viewport connections links arrows background colour color sticky note notes post-it comment annotate',
+        body: (
+          <Stack gap="sm">
+            <P>A project opens on its <strong>Canvas</strong>: every page as a frame, the way a design tool shows them, full screen. Turn off <strong>Full screen</strong> in the canvas tools (or press Escape) to see the project header, where you can switch to <strong>List</strong> or <strong>Nodes</strong>. Your choice is remembered.</P>
+            <Bullets items={[
+              <><strong>Move around</strong> — drag the empty canvas to pan and scroll or pinch to zoom. The control in the bottom corner always shows zoom in, zoom out, Auto arrange and Full screen; its tools button opens the rest, including fit to screen.</>,
+              <><strong>Arrange</strong> — drag a frame to move it. Or Tab to a frame's title and use the arrow keys (hold Shift for bigger steps).</>,
+              <><strong>Auto arrange</strong> — in the canvas tools, lays the pages out as a sitemap: top-level pages in the first row, each page's children in a row below it, with rows top-aligned.</>,
+              <><strong>Breakpoint</strong> — choose XS, SM, MD, LG or XL in the canvas tools to render the selected frame at that width, or every frame when none is selected. Or right-click a frame and pick a breakpoint.</>,
+              <><strong>Open in new window</strong> — right-click a frame to open that page in the prototype in a new window.</>,
+              <><strong>Duplicate page</strong> — right-click a frame and choose Duplicate page. The copy appears at the end of the row, and the canvas moves to it.</>,
+              <><strong>Delete page</strong> — right-click a frame and choose Delete page, then confirm. Its subpages are deleted too.</>,
+              <><strong>Grid</strong> — shows or hides the dot grid behind the frames.</>,
+              <><strong>Viewport height</strong> — limits each frame to its breakpoint's standard screen height; scroll inside a frame to see the rest of the page (pinch or Ctrl-scroll still zooms).</>,
+              <><strong>Light, Dark or Auto</strong> — sets the color mode the pages render in. Auto follows the app.</>,
+              <><strong>Connections</strong> — show arrows for links between pages. Select a frame to highlight its own links.</>,
+              <><strong>Background</strong> — pick a surface, or <strong>Custom</strong> for any colour.</>,
+              <><strong>Edit page</strong> — double-click a frame, or use Edit page in the canvas tools or on the frame's right-click menu.</>,
+              <><strong>Sticky notes</strong> — choose Add sticky note in the canvas controls, or right-click the canvas and choose Add sticky note here. The canvas zooms in and the note is ready for typing; click away when you're done. Notes take Markdown — **bold**, *italic*, [links](https://…) and “- ” lists. Drag a note anywhere, double-click it to edit it again, and right-click it to change its colour, add an author in Note details…, or delete it. The Notes toggle in the canvas tools shows or hides them.</>,
+            ]} />
+            <P>The canvas layout is saved with the project. Frames are previews — edit a page in the editor to change it.</P>
+          </Stack>
+        ),
+      },
+      {
         id: 'project-isolation',
         title: 'Projects are isolated',
         keywords: 'isolation isolated separate scope links page link selector cross project',

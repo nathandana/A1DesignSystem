@@ -1,0 +1,218 @@
+{
+  "label": {
+    "stickyNote": {
+      "author": {
+        "$type": "string",
+        "$value": "Author",
+        "$description": "Visually hidden prefix announced before a sticky note's author badge.",
+        "locale": {
+          "es": "Autor",
+          "fr": "Auteur",
+          "de": "Autor",
+          "pt": "Autor",
+          "ja": "作成者",
+          "zh": "作者",
+          "ar": "الكاتب"
+        }
+      },
+      "note": {
+        "$type": "string",
+        "$value": "Sticky note",
+        "$description": "Accessible name of a sticky note that has no title.",
+        "locale": {
+          "es": "Nota adhesiva",
+          "fr": "Note adhésive",
+          "de": "Haftnotiz",
+          "pt": "Nota adesiva",
+          "ja": "付箋",
+          "zh": "便签",
+          "ar": "ملاحظة لاصقة"
+        }
+      },
+      "move": {
+        "$type": "string",
+        "$value": "Move note",
+        "$description": "Accessible name of a movable sticky note's move handle.",
+        "locale": {
+          "es": "Mover nota",
+          "fr": "Déplacer la note",
+          "de": "Notiz verschieben",
+          "pt": "Mover nota",
+          "ja": "付箋を移動",
+          "zh": "移动便签",
+          "ar": "نقل الملاحظة"
+        }
+      },
+      "moveHint": {
+        "$type": "string",
+        "$value": "Drag, or use the arrow keys. Hold Shift to move further.",
+        "$description": "Description of how to use a sticky note's move handle.",
+        "locale": {
+          "es": "Arrastra o usa las teclas de flecha. Mantén pulsada Mayús para moverla más.",
+          "fr": "Faites glisser ou utilisez les touches fléchées. Maintenez Maj pour la déplacer davantage.",
+          "de": "Ziehen oder die Pfeiltasten verwenden. Umschalttaste gedrückt halten, um weiter zu verschieben.",
+          "pt": "Arraste ou use as teclas de seta. Mantenha Shift pressionado para mover mais.",
+          "ja": "ドラッグするか、矢印キーを使用します。Shift キーを押しながら操作すると大きく移動します。",
+          "zh": "拖动或使用方向键。按住 Shift 键可移动更远。",
+          "ar": "اسحب أو استخدم مفاتيح الأسهم. اضغط مع الاستمرار على Shift للتحريك مسافة أكبر."
+        }
+      },
+      "colors": {
+        "yellow": {
+          "$type": "string",
+          "$value": "Yellow",
+          "$description": "Name of the yellow sticky note paper colour.",
+          "locale": {
+            "es": "Amarillo",
+            "fr": "Jaune",
+            "de": "Gelb",
+            "pt": "Amarelo",
+            "ja": "黄",
+            "zh": "黄色",
+            "ar": "أصفر"
+          }
+        },
+        "orange": {
+          "$type": "string",
+          "$value": "Orange",
+          "$description": "Name of the orange sticky note paper colour.",
+          "locale": {
+            "es": "Naranja",
+            "fr": "Orange",
+            "de": "Orange",
+            "pt": "Laranja",
+            "ja": "オレンジ",
+            "zh": "橙色",
+            "ar": "برتقالي"
+          }
+        },
+        "green": {
+          "$type": "string",
+          "$value": "Green",
+          "$description": "Name of the green sticky note paper colour.",
+          "locale": {
+            "es": "Verde",
+            "fr": "Vert",
+            "de": "Grün",
+            "pt": "Verde",
+            "ja": "緑",
+            "zh": "绿色",
+            "ar": "أخضر"
+          }
+        },
+        "blue": {
+          "$type": "string",
+          "$value": "Blue",
+          "$description": "Name of the blue sticky note paper colour.",
+          "locale": {
+            "es": "Azul",
+            "fr": "Bleu",
+            "de": "Blau",
+            "pt": "Azul",
+            "ja": "青",
+            "zh": "蓝色",
+            "ar": "أزرق"
+          }
+        },
+        "pink": {
+          "$type": "string",
+          "$value": "Pink",
+          "$description": "Name of the pink sticky note paper colour.",
+          "locale": {
+            "es": "Rosa",
+            "fr": "Rose",
+            "de": "Rosa",
+            "pt": "Rosa",
+            "ja": "ピンク",
+            "zh": "粉色",
+            "ar": "وردي"
+          }
+        },
+        "purple": {
+          "$type": "string",
+          "$value": "Purple",
+          "$description": "Name of the purple sticky note paper colour.",
+          "locale": {
+            "es": "Morado",
+            "fr": "Violet",
+            "de": "Lila",
+            "pt": "Roxo",
+            "ja": "紫",
+            "zh": "紫色",
+            "ar": "بنفسجي"
+          }
+        },
+        "grey": {
+          "$type": "string",
+          "$value": "Grey",
+          "$description": "Name of the grey sticky note paper colour.",
+          "locale": {
+            "es": "Gris",
+            "fr": "Gris",
+            "de": "Grau",
+            "pt": "Cinza",
+            "ja": "グレー",
+            "zh": "灰色",
+            "ar": "رمادي"
+          }
+        }
+      },
+      "titlePlaceholder": {
+        "$type": "string",
+        "$value": "Title",
+        "$description": "Placeholder in an empty sticky note title while it's being edited.",
+        "locale": {
+          "es": "Título",
+          "fr": "Titre",
+          "de": "Titel",
+          "pt": "Título",
+          "ja": "タイトル",
+          "zh": "标题",
+          "ar": "العنوان"
+        }
+      },
+      "contentPlaceholder": {
+        "$type": "string",
+        "$value": "Write a note",
+        "$description": "Placeholder in empty sticky note content while it's being edited.",
+        "locale": {
+          "es": "Escribe una nota",
+          "fr": "Écrivez une note",
+          "de": "Notiz schreiben",
+          "pt": "Escreva uma nota",
+          "ja": "メモを入力",
+          "zh": "写点什么",
+          "ar": "اكتب ملاحظة"
+        }
+      },
+      "titleField": {
+        "$type": "string",
+        "$value": "Note title",
+        "$description": "Accessible name of the sticky note title field while editing.",
+        "locale": {
+          "es": "Título de la nota",
+          "fr": "Titre de la note",
+          "de": "Notiztitel",
+          "pt": "Título da nota",
+          "ja": "付箋のタイトル",
+          "zh": "便签标题",
+          "ar": "عنوان الملاحظة"
+        }
+      },
+      "contentField": {
+        "$type": "string",
+        "$value": "Note content",
+        "$description": "Accessible name of the sticky note content field while editing. Accepts Markdown.",
+        "locale": {
+          "es": "Contenido de la nota",
+          "fr": "Contenu de la note",
+          "de": "Notizinhalt",
+          "pt": "Conteúdo da nota",
+          "ja": "付箋の内容",
+          "zh": "便签内容",
+          "ar": "محتوى الملاحظة"
+        }
+      }
+    }
+  }
+}

@@ -1,5 +1,9 @@
 import type { HTMLAttributes, ReactNode } from 'react'
 
+export type CanvasMenuEntry =
+  | { id: string; label?: string; icon?: string; variant?: string; disabled?: boolean; onClick?: () => void }
+  | { type: 'divider'; id: string }
+
 /** Shape options for a canvas node */
 export type CanvasNodeShape = 'circle' | 'square' | 'rectangle' | 'squircle'
 
@@ -179,6 +183,16 @@ export interface CanvasProps extends Omit<HTMLAttributes<HTMLDivElement>, 'aria-
    * the connect button on a node. Add the new edge in your state.
    */
   onAddEdge?: (fromId: string, toId: string) => void
+  /** Called when a Node or CanvasFrame is double-clicked (e.g. to open it). */
+  onNodeDoubleClick?: (id: string) => void
+  /**
+   * Bring this node into view and select it whenever the id changes (e.g. a
+   * frame just added). Nodes that fit are centred; taller ones show their top
+   * edge near the top of the canvas. Waits until the node is rendered.
+   */
+  focusNodeId?: string
+  /** Zoom level to use when bringing `focusNodeId` into view (e.g. `1` to read new content). Omit to keep the current zoom. */
+  focusZoom?: number
   /**
    * Returns custom context menu items for a right-clicked node.
    * Items use the `ContextMenuEntry` shape from the A1 ContextMenu component.
@@ -187,9 +201,10 @@ export interface CanvasProps extends Omit<HTMLAttributes<HTMLDivElement>, 'aria-
   nodeMenuItems?: (nodeId: string) => Array<{ id: string; label?: string; icon?: string; variant?: string; disabled?: boolean; onClick?: () => void } | { type: 'divider'; id: string } | { type: 'group'; id: string; label: string }>
   /**
    * Extra context menu items shown when right-clicking the canvas background
-   * (appended below the built-in zoom / fit / reset items).
+   * (appended below the built-in zoom / fit / reset items). Pass a function to
+   * build them from the right-clicked point in canvas space — e.g. "Add note here".
    */
-  canvasMenuItems?: Array<{ id: string; label?: string; icon?: string; variant?: string; disabled?: boolean; onClick?: () => void } | { type: 'divider'; id: string }>
+  canvasMenuItems?: CanvasMenuEntry[] | ((point: { x: number; y: number }) => CanvasMenuEntry[])
   /** Show the visual grid (default `true`) */
   showGrid?: boolean
   /**
@@ -203,9 +218,11 @@ export interface CanvasProps extends Omit<HTMLAttributes<HTMLDivElement>, 'aria-
    * - `"panel"` — standard panel surface.
    * - `"page"` — page background.
    * - `"raised"` — elevated surface.
+   * - Any other string is applied as a custom CSS colour (e.g. `"#F4F1EA"`) —
+   *   the same escape hatch as Section / Card `surface`; check contrast manually.
    * Pair with `inverse` for a dark/inverse canvas.
    */
-  background?: CanvasBackground
+  background?: CanvasBackground | (string & {})
   /**
    * Apply the inverse color scheme — dark surface with inverse text.
    * Mirrors the `inverse` prop on `Section`. Default `false`.
@@ -213,6 +230,23 @@ export interface CanvasProps extends Omit<HTMLAttributes<HTMLDivElement>, 'aria-
   inverse?: boolean
   /** Show the zoom controls overlay (default `true`) */
   showControls?: boolean
+  /**
+   * Make the controls overlay compact: zoom in/out, the zoom level and any
+   * `controlsActions` always show, and a toggle reveals fit, reset and
+   * `controlsContent`. Default `false`.
+   */
+  controlsExpandable?: boolean
+  /**
+   * Icon buttons that always show in the controls row, after the zoom controls
+   * (e.g. an auto-arrange action). `label` is the accessible name and tooltip;
+   * set `pressed` to make the button a toggle (`aria-pressed`).
+   */
+  controlsActions?: Array<{ id: string; icon: string; label: string; onClick?: (context: { center: { x: number; y: number } }) => void; disabled?: boolean; pressed?: boolean }>
+  /**
+   * Extra controls shown in the expanded controls overlay, above the zoom row
+   * (e.g. a Toolbar of view options). Only rendered when `controlsExpandable`.
+   */
+  controlsContent?: ReactNode
   /**
    * Default edge rendering shape for all edges (default `"straight"`).
    * Individual `<NodeConnector curved>` overrides this per connector.
@@ -308,6 +342,51 @@ export declare function Node(props: NodeProps): JSX.Element
  * ```
  */
 export declare function NodeConnector(props: NodeConnectorProps): null
+
+export interface CanvasFrameProps {
+  /** Unique id — used for selection, drag (`onNodeMove`) and `NodeConnector` from/to. */
+  id: string
+  /** Canvas-space x of the frame's top-left corner. Default `0`. */
+  x?: number
+  /** Canvas-space y of the frame's top-left corner. Default `0`. */
+  y?: number
+  /** Frame body width in canvas-space px. */
+  width: number
+  /** Frame body height in canvas-space px. Omit to size to the content (measured). */
+  height?: number
+  /**
+   * With `height`, let the body scroll content taller than the frame: the wheel
+   * and a single finger scroll it (pinch / Ctrl-wheel still zooms the canvas).
+   * Default `false` (content is clipped).
+   */
+  scrollable?: boolean
+  /**
+   * `"plain"` drops the frame chrome (border, background, visible title) for
+   * content with its own surface, such as a StickyNote. The title is still the
+   * keyboard handle and appears above the content while focused. Default `"default"`.
+   */
+  variant?: 'default' | 'plain'
+  /** Title shown above the frame; also its accessible name. */
+  label: string
+  /** Arbitrary content rendered in the frame body (e.g. a page preview). */
+  children?: ReactNode
+}
+
+/**
+ * A titled container for arbitrary content inside a `Canvas`, e.g. a rendered
+ * page. Positioned by its top-left corner. Takes part in selection, drag (when
+ * `draggableNodes` or edit mode), arrow-key nudging on the focused title,
+ * zoom-to-fit and `NodeConnector` routing (as a rectangle).
+ *
+ * ```jsx
+ * <Canvas draggableNodes onNodeMove={move}>
+ *   <CanvasFrame id="home" x={0} y={0} width={1280} label="Home"><HomePreview /></CanvasFrame>
+ *   <CanvasFrame id="about" x={1400} y={0} width={390} label="About"><AboutPreview /></CanvasFrame>
+ *   <NodeConnector id="home-about" from="home" to="about" />
+ * </Canvas>
+ * ```
+ */
+export declare function CanvasFrame(props: CanvasFrameProps): JSX.Element
 
 /** @deprecated Use `NodeConnector` instead. */
 export declare const CanvasEdge: typeof NodeConnector

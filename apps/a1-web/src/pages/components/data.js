@@ -15,10 +15,12 @@ import overlayRules from '../../../../../system/rules/overlay.yaml?raw'
 import chartRules from '../../../../../system/rules/chart.yaml?raw'
 import customBlockRules from '../../../../../system/rules/custom-block.yaml?raw'
 import avatarRules from '../../../../../system/rules/avatar.yaml?raw'
+import stickyNoteRules from '../../../../../system/rules/sticky-note.yaml?raw'
 import { GENERATED_COMPONENT_HISTORY } from './componentHistory.generated.js'
 
 export const LAST_UPDATED = '2026-06-17'
 export const COMPONENT_LAST_UPDATED = {
+  'sticky-note': '2026-10-27',
   'custom-block': '2026-09-24',
   avatar: '2026-09-10',
   grid: '2026-09-11',
@@ -140,6 +142,9 @@ export const COMPONENT_HISTORY = {
   ],
   'action-tile': [
     { date: '2026-07-02', type: 'release', ticket: 'A1-389', summary: 'ActionTiles shipped — layout / gap / iconLayout props with container-driven spacing; interactive tiles use the navigation Card blue border and drop nested interactive controls.' },
+  ],
+  'sticky-note': [
+    { date: '2026-10-27', type: 'release', ticket: 'A1-2718', summary: 'Sticky Note shipped — post-it style note with a title, author badge and content; seven theme-ramp paper colours with WCAG AA text, T-shirt or auto width and height, a resizable height, and inline or floating placement on the content z-layer.' },
   ],
   stat: [
     { date: '2026-06-30', type: 'release', ticket: 'A1-375', summary: 'Stat shipped — a single highlighted metric with a tokenized value, muted label, prefix / suffix, status badge and number / percent formatting; token-driven via component/stat.json.' },
@@ -291,6 +296,7 @@ export const componentCategories = [
       { id: 'status-bar', icon: 'linear_scale', title: 'Status Bar', body: 'Horizontal progress indicator for determinate and loading states.' },
       { id: 'circular-progress', icon: 'donut_large', title: 'Circular Progress', body: 'Circular ring progress indicator with static value display, inner content, and loading spinner.' },
       { id: 'step-tracker', icon: 'more_horiz', title: 'Step Tracker', body: 'Non-interactive step position indicator with pill and dot states, four alignment options.' },
+      { id: 'sticky-note', icon: 'sticky_note_2', title: 'Sticky Note', body: 'Post-it style note with a title, author badge and content, inline or floating over content.' },
     ],
   },
   {
@@ -413,6 +419,7 @@ export const COMPONENT_SEARCH_KEYWORDS = {
   'status-bar': ['progress bar', 'linear progress', 'loading bar'],
   'circular-progress': ['spinner', 'loader', 'progress ring', 'loading'],
   'step-tracker': ['steps', 'stepper', 'wizard progress'],
+  'sticky-note': ['post-it', 'note', 'annotation', 'comment', 'reminder', 'sticky'],
   section: ['region', 'content band', 'page section', 'container'],
   'section-separator': ['section divider', 'wave', 'organic separator', 'transition', 'surface separator'],
   card: ['tile', 'panel', 'surface', 'content card'],
@@ -504,6 +511,7 @@ export const PACKAGE_COVERAGE = {
   'status-bar':       ['React'],
   'circular-progress':['React', 'Pure'],
   'step-tracker':     ['React', 'Pure'],
+  'sticky-note':      ['React'],
   section:            ['React', 'Native', 'Pure', 'Figma'],
   'section-separator':['React'],
   card:               ['React', 'Native', 'Figma'],
@@ -598,6 +606,7 @@ export const COMPONENT_STATUS = {
   'status-bar':        'beta',
   'circular-progress': 'beta',
   'step-tracker':      'beta',
+  'sticky-note':       'experimental',
   section:             'beta',
   'section-separator': 'experimental',
   card:                'beta',
@@ -715,6 +724,7 @@ export const COMPONENT_RELATED = {
   tooltip:             ['icon-button', 'button', 'menu'],
   'circular-progress': ['status-bar', 'badge', 'icon'],
   'step-tracker':      ['tabs', 'status-bar', 'circular-progress'],
+  'sticky-note':       ['card', 'badge', 'tooltip'],
   'data-table':        ['definition-list', 'pagination', 'section'],
   'line-chart':        ['bar-chart', 'area-chart', 'composed-chart', 'stat'],
   'bar-chart':         ['line-chart', 'area-chart', 'composed-chart', 'data-table'],
@@ -756,4 +766,5 @@ export const ruleSourceFiles = [
   { file: 'system/rules/overlay.yaml', raw: overlayRules },
   { file: 'system/rules/chart.yaml', raw: chartRules },
   { file: 'system/rules/avatar.yaml', raw: avatarRules },
+  { file: 'system/rules/sticky-note.yaml', raw: stickyNoteRules },
 ]

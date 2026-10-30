@@ -440,6 +440,9 @@
   --component-calendar-heading-padding-block: 0.75rem;
   --component-calendar-heading-padding-block-compact: 0.5rem;
   --component-calendar-month-gap: 2rem;
+  --component-canvas-frame-border-width: 1px;
+  --component-canvas-frame-selected-ring-width: 0.1875rem;
+  --component-canvas-frame-title-gap: 0.5rem;
   --component-canvas-node-size: 5rem;
   --component-card-body-font-line-height: 1.5em;
   --component-card-body-font-size: 1rem;
@@ -743,6 +746,7 @@
   --component-field-shadow: none;
   --component-field-side-label-width: minmax(100px, 160px);
   --component-field-side-label-width-comfortable: minmax(120px, 200px);
+  --component-field-textarea-max-border-radius: 0.75rem;
   --component-field-textarea-padding-block: 0.625rem;
   --component-field-textarea-padding-block-comfortable: 0.875rem;
   --component-field-textarea-padding-block-compact: 0.375rem;
@@ -1308,6 +1312,29 @@
   --component-sticky-actions-padding-block: 1rem;
   --component-sticky-actions-padding-inline: 1rem;
   --component-sticky-actions-z-index: 150;
+  --component-sticky-note-border-radius: 0.25rem;
+  --component-sticky-note-color-blue: var(--base-color-info-200);
+  --component-sticky-note-color-green: var(--base-color-success-200);
+  --component-sticky-note-color-grey: var(--base-color-neutral-100);
+  --component-sticky-note-color-orange: var(--base-color-warn-200);
+  --component-sticky-note-color-pink: var(--base-color-error-200);
+  --component-sticky-note-color-purple: var(--base-color-accent-200);
+  --component-sticky-note-color-yellow: var(--base-color-highlighted-200);
+  --component-sticky-note-floating-offset: 1rem;
+  --component-sticky-note-foreground: var(--base-color-neutral-900);
+  --component-sticky-note-gap: 0.5rem;
+  --component-sticky-note-muted-foreground: var(--base-color-neutral-700);
+  --component-sticky-note-padding: 1rem;
+  --component-sticky-note-raised-surface: var(--base-color-neutral-0);
+  --component-sticky-note-shadow: var(--semantic-shadow-lg);
+  --component-sticky-note-size-lg: 20rem;
+  --component-sticky-note-size-md: 16rem;
+  --component-sticky-note-size-sm: 13rem;
+  --component-sticky-note-size-xl: 24rem;
+  --component-sticky-note-size-xs: 10rem;
+  --component-sticky-note-strip-height: 0.5rem;
+  --component-sticky-note-subtle-border: var(--base-color-neutral-200);
+  --component-sticky-note-z-index: 1;
   --component-switch-accessible-icon-size: 60%;
   --component-switch-comfortable-content-gap: 0.125rem;
   --component-switch-comfortable-gap: 0.25rem;
@@ -1579,6 +1606,11 @@
   --semantic-spacing-gap-sm: 0.75rem;
   --semantic-spacing-gap-xl: 2.5rem;
   --semantic-spacing-gap-xs: 0.5rem;
+  --semantic-z-modal: 1100;
+  --semantic-z-pinned: 200;
+  --semantic-z-popover: 1000;
+  --semantic-z-sticky: 100;
+  --semantic-z-toast: 1200;
 }
 
 @media screen and (prefers-color-scheme: dark) {

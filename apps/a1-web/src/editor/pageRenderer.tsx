@@ -618,7 +618,7 @@ function RenderNode({
       <InlineEditable
         seamless
         value={isHeading ? decodeEntities(text) : text}
-        multiline={node.type === "Paragraph"}
+        multiline={node.type === "Paragraph" || node.type === "StickyNote"}
         onChange={(v) => onContentChange(node.id, v)}
         aria-label="Edit text"
       />

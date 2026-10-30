@@ -61,6 +61,7 @@ export type ComponentType =
   | "StatusBar"
   | "CircularProgress"
   | "StepTracker"
+  | "StickyNote"
   | "TextField"
   | "SearchField"
   | "TextareaField"

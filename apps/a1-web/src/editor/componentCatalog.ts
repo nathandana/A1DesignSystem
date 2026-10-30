@@ -655,6 +655,17 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
         },
       },
       {
+        type: 'StickyNote',
+        label: 'Sticky note',
+        icon: 'sticky_note_2',
+        description: 'Post-it style note with a title, author and content',
+        defaultNode: {
+          type: 'StickyNote',
+          props: { title: 'Check the hero copy', author: 'Priya', color: 'yellow', width: 'md' },
+          content: { fallback: 'Swap the headline for the autumn campaign before Friday’s review.' },
+        },
+      },
+      {
         type: 'StatusBar',
         label: 'Status bar',
         icon: 'linear_scale',

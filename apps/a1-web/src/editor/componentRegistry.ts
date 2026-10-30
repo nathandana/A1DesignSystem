@@ -77,6 +77,7 @@ import {
   StatusBar,
   StepTracker,
   StickyActions,
+  StickyNote,
   SunburstChart,
   Switch,
   TextField,
@@ -173,6 +174,7 @@ export const componentRegistry: Record<ComponentType, ReactComponentType<any>> =
   ChoiceGroup,
   // Data
   Stat,
+  StickyNote,
   LineChart,
   BarChart,
   AreaChart,

@@ -1,0 +1,48 @@
+{
+  "label": {
+    "canvas": {
+      "showControls": {
+        "$type": "string",
+        "$value": "Show canvas controls",
+        "$description": "Accessible name of the collapsed Canvas control button that expands the zoom and canvas controls.",
+        "locale": {
+          "es": "Mostrar controles del lienzo",
+          "fr": "Afficher les commandes du canevas",
+          "de": "Canvas-Steuerelemente anzeigen",
+          "pt": "Mostrar controles da tela",
+          "ja": "キャンバスのコントロールを表示",
+          "zh": "显示画布控件",
+          "ar": "إظهار عناصر التحكم في اللوحة"
+        }
+      },
+      "hideControls": {
+        "$type": "string",
+        "$value": "Hide canvas controls",
+        "$description": "Accessible name of the Canvas control button that collapses the expanded controls.",
+        "locale": {
+          "es": "Ocultar controles del lienzo",
+          "fr": "Masquer les commandes du canevas",
+          "de": "Canvas-Steuerelemente ausblenden",
+          "pt": "Ocultar controles da tela",
+          "ja": "キャンバスのコントロールを非表示",
+          "zh": "隐藏画布控件",
+          "ar": "إخفاء عناصر التحكم في اللوحة"
+        }
+      },
+      "scrollFrame": {
+        "$type": "string",
+        "$value": "Scrollable frame content",
+        "$description": "Accessible name prefix of a scrollable Canvas frame body (followed by the frame's label), which is focusable so keyboard users can scroll it.",
+        "locale": {
+          "es": "Contenido desplazable del marco",
+          "fr": "Contenu défilant du cadre",
+          "de": "Scrollbarer Rahmeninhalt",
+          "pt": "Conteúdo rolável do quadro",
+          "ja": "スクロール可能なフレームの内容",
+          "zh": "可滚动的框架内容",
+          "ar": "محتوى الإطار القابل للتمرير"
+        }
+      }
+    }
+  }
+}

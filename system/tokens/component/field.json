@@ -53,7 +53,8 @@
       "textarea": {
         "paddingBlock":            { "$type": "dimension", "$value": "10px" },
         "paddingBlockComfortable": { "$type": "dimension", "$value": "14px" },
-        "paddingBlockCompact":     { "$type": "dimension", "$value": "{base.spacing.6}" }
+        "paddingBlockCompact":     { "$type": "dimension", "$value": "{base.spacing.6}" },
+        "maxBorderRadius":         { "$type": "dimension", "$value": "{base.radius.xl}", "$description": "Upper bound on a multi-line textarea's corner radius, so themes with pill-shaped fields (Kong) keep rounded rectangles for multi-line text." }
       },
 
       "creditCard": {

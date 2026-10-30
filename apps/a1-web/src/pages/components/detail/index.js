@@ -53,6 +53,7 @@ import * as snackbar from './snackbar.jsx'
 import * as emptyState from './empty-state.jsx'
 import * as statusBar from './status-bar.jsx'
 import * as stat from './stat.jsx'
+import * as stickyNote from './sticky-note.jsx'
 import * as circularProgress from './circular-progress.jsx'
 import * as stepTracker from './step-tracker.jsx'
 import * as definitionList from './definition-list.jsx'
@@ -139,6 +140,7 @@ const REGISTRY = {
   'empty-state': emptyState,
   'status-bar': statusBar,
   stat,
+  'sticky-note': stickyNote,
   'circular-progress': circularProgress,
   'step-tracker': stepTracker,
   'definition-list': definitionList,

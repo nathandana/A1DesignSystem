@@ -1279,6 +1279,55 @@ export const GENERATED_PROP_TABLES = {
   ],
   "canvas": [
     {
+      "title": "Canvas Frame",
+      "rows": [
+        {
+          "id": "id",
+          "name": "id",
+          "type": "string",
+          "description": "Unique id — used for selection, drag (`onNodeMove`) and `NodeConnector` from/to."
+        },
+        {
+          "id": "x",
+          "name": "x",
+          "type": "number",
+          "description": "Canvas-space x of the frame's top-left corner. Default `0`."
+        },
+        {
+          "id": "y",
+          "name": "y",
+          "type": "number",
+          "description": "Canvas-space y of the frame's top-left corner. Default `0`."
+        },
+        {
+          "id": "width",
+          "name": "width",
+          "type": "number",
+          "description": "Frame body width in canvas-space px."
+        },
+        {
+          "id": "height",
+          "name": "height",
+          "type": "number",
+          "description": "Frame body height in canvas-space px. Omit to size to the content (measured)."
+        },
+      {"id": "variant", "name": "variant", "type": "\"default\" | \"plain\"", "description": "`\"plain\"` drops the frame chrome (border, background, visible title) for content with its own surface, such as a StickyNote. The title stays the keyboard handle and appears above the content while focused. Default `\"default\"`."},
+      {"id": "scrollable", "name": "scrollable", "type": "boolean", "description": "With `height`, let the body scroll content taller than the frame: the wheel and a single finger scroll it (pinch / Ctrl-wheel still zooms the canvas). Default `false` (content is clipped)."},
+        {
+          "id": "label",
+          "name": "label",
+          "type": "string",
+          "description": "Title shown above the frame; also its accessible name."
+        },
+        {
+          "id": "children",
+          "name": "children",
+          "type": "ReactNode",
+          "description": "Arbitrary content rendered in the frame body (e.g. a page preview)."
+        }
+      ]
+    },
+    {
       "title": "Node Connector",
       "rows": [
         {
@@ -1385,8 +1434,8 @@ export const GENERATED_PROP_TABLES = {
         {
           "id": "canvasMenuItems",
           "name": "canvasMenuItems",
-          "type": "Array<{ id: string; label?: string; icon?: string; variant?: string; disabled?: boolean; onClick?: () => void } | { type: 'divider'; id: string }>",
-          "description": "Extra context menu items shown when right-clicking the canvas background (appended below the built-in zoom / fit / reset items)."
+          "type": "CanvasMenuEntry[] | ((point: { x: number; y: number }) => CanvasMenuEntry[])",
+          "description": "Extra context menu items shown when right-clicking the canvas background (appended below the built-in zoom / fit / reset items). Pass a function to build them from the right-clicked point in canvas space, e.g. \"Add note here\"."
         },
         {
           "id": "showGrid",
@@ -1397,8 +1446,8 @@ export const GENERATED_PROP_TABLES = {
         {
           "id": "background",
           "name": "background",
-          "type": "CanvasBackground",
-          "description": "Background surface token (default `\"panel\"`). - `\"panel\"` — standard panel surface. - `\"page\"` — page background. - `\"raised\"` — elevated surface. Pair with `inverse` for a dark/inverse canvas."
+          "type": "CanvasBackground | string",
+          "description": "Background surface token (default `\"panel\"`): `\"panel\"`, `\"page\"` or `\"raised\"`. Any other string is applied as a custom CSS colour (e.g. `\"#F4F1EA\"`) — check contrast manually. Pair with `inverse` for a dark/inverse canvas."
         },
         {
           "id": "inverse",
@@ -1412,6 +1461,12 @@ export const GENERATED_PROP_TABLES = {
           "type": "boolean",
           "description": "Show the zoom controls overlay (default `true`)"
         },
+        { "id": "controlsExpandable", "name": "controlsExpandable", "type": "boolean", "description": "Make the controls overlay compact: zoom in/out, the zoom level and any `controlsActions` always show, and a toggle reveals fit, reset and `controlsContent`. Default `false`." },
+        { "id": "controlsActions", "name": "controlsActions", "type": "Array<{ id, icon, label, onClick?, disabled?, pressed? }>", "description": "Icon buttons that always show in the controls row, after the zoom controls (e.g. an auto-arrange action). `label` is the accessible name and tooltip; set `pressed` to make one a toggle (`aria-pressed`)." },
+        { "id": "onNodeDoubleClick", "name": "onNodeDoubleClick", "type": "(id: string) => void", "description": "Called when a Node or CanvasFrame is double-clicked (e.g. to open it)." },
+        { "id": "focusZoom", "name": "focusZoom", "type": "number", "description": "Zoom level to use when bringing `focusNodeId` into view (e.g. `1` to read new content). Omit to keep the current zoom." },
+        { "id": "focusNodeId", "name": "focusNodeId", "type": "string", "description": "Bring this node into view and select it whenever the id changes (e.g. a frame just added). Nodes that fit are centred; taller ones show their top edge near the top. Waits until the node is rendered." },
+        { "id": "controlsContent", "name": "controlsContent", "type": "ReactNode", "description": "Extra controls shown in the expanded controls overlay, above the zoom row (e.g. a Toolbar of view options). Only rendered when `controlsExpandable`." },
         {
           "id": "edgeStyle",
           "name": "edgeStyle",
@@ -4855,6 +4910,32 @@ export const GENERATED_PROP_TABLES = {
           "type": "ReactNode",
           "description": "No description in the package type declaration."
         }
+      ]
+    }
+  ],
+  "sticky-note": [
+    {
+      "title": "Sticky Note",
+      "rows": [
+        { "id": "title", "name": "title", "type": "ReactNode", "description": "Note title, shown as a heading and used as the note's accessible name." },
+        { "id": "author", "name": "author", "type": "ReactNode", "description": "Author, shown as a badge (announced as \"Author: \u2026\")." },
+        { "id": "color", "name": "color", "type": "\"yellow\" | \"orange\" | \"green\" | \"blue\" | \"pink\" | \"purple\" | \"grey\"", "description": "Paper colour from the theme's colour ramps. Text on every colour meets WCAG AA, and paper stays light in dark mode. Default: \"yellow\"." },
+        { "id": "width", "name": "width", "type": "\"auto\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\"", "description": "Width: a T-shirt size, or \"auto\" to fit the container. Default: \"md\"." },
+        { "id": "height", "name": "height", "type": "\"auto\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\"", "description": "Height: a T-shirt size, or \"auto\" to fit the content. A fixed height scrolls its content (the note becomes focusable so it can be scrolled by keyboard). Default: \"auto\"." },
+        { "id": "resizable", "name": "resizable", "type": "boolean", "description": "Let the user resize the height, like a textarea. Default: false." },
+        { "id": "placement", "name": "placement", "type": "\"inline\" | \"floating\"", "description": "\"inline\" (default) sits in the flow. \"floating\" places the note over content at a corner (anchor) of its nearest positioned ancestor, on the content z-layer: above in-flow content, below sticky chrome and popovers." },
+        { "id": "anchor", "name": "anchor", "type": "\"top-start\" | \"top-end\" | \"bottom-start\" | \"bottom-end\"", "description": "Corner for placement=\"floating\". Default: \"top-end\"." },
+        { "id": "titleAs", "name": "titleAs", "type": "\"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\" | \"p\"", "description": "Heading level for the title. Default: \"h3\"." },
+        { "id": "movable", "name": "movable", "type": "boolean", "description": "Floating notes only: show a move handle so people can drag the note (pointer) or nudge it with the arrow keys (Shift for larger steps). The note stays inside its positioned parent; Escape during a drag returns it. Default: false." },
+        { "id": "position", "name": "position", "type": "StickyNotePosition", "description": "Controlled offset ({ x, y } px) from the anchor corner for a movable note." },
+        { "id": "defaultPosition", "name": "defaultPosition", "type": "StickyNotePosition", "description": "Initial offset for an uncontrolled movable note. Default: { x: 0, y: 0 }." },
+        { "id": "onMove", "name": "onMove", "type": "(position: StickyNotePosition) => void", "description": "Called with the new (clamped) offset whenever a movable note moves." },
+        { "id": "editing", "name": "editing", "type": "boolean", "description": "Edit the title and content in place: both become seamless text fields (the content as Markdown source) and the content field takes focus. Controlled \u2014 handle onTitleChange / onContentChange, and onEditingChange(false) when focus leaves the note or Escape is pressed. Default: false." },
+        { "id": "onTitleChange", "name": "onTitleChange", "type": "(title: string) => void", "description": "Called with the new title as it's typed while editing." },
+        { "id": "onContentChange", "name": "onContentChange", "type": "(content: string) => void", "description": "Called with the new Markdown content as it's typed while editing." },
+        { "id": "onEditingChange", "name": "onEditingChange", "type": "(editing: boolean) => void", "description": "Called with false when editing should end (focus left the note or Escape)." },
+        { "id": "markdown", "name": "markdown", "type": "boolean", "description": "Read string content as basic Markdown: **bold**, *italic*, ~~strikethrough~~, `code`, [links](url), bulleted and numbered lists, and paragraphs. Rendered as A1 Paragraph, List, Link and Code, never raw HTML; only http(s), mailto, tel and relative links are linked. Default: true." },
+        { "id": "children", "name": "children", "type": "ReactNode", "description": "Note content. A string is read as Markdown (see markdown); other nodes render as given." }
       ]
     }
   ],

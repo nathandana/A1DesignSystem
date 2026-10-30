@@ -6,7 +6,7 @@ export { Accordion } from "./components/accordion/Accordion";
 export { ContextMenu } from "./components/context-menu/ContextMenu";
 export { TreeMenu } from "./components/tree-menu/TreeMenu";
 export { Calendar } from "./components/calendar/Calendar";
-export { Canvas, Node, NodeConnector, CanvasEdge } from "./components/canvas/Canvas";
+export { Canvas, CanvasFrame, Node, NodeConnector, CanvasEdge } from "./components/canvas/Canvas";
 export { PageNav } from "./components/page-nav/PageNav";
 export { Blockquote } from "./components/blockquote/Blockquote";
 export { Breadcrumb } from "./components/breadcrumb/Breadcrumb";
@@ -14,6 +14,8 @@ export { Notification } from "./components/notification/Notification";
 export { Snackbar, SnackbarStack } from "./components/snackbar/Snackbar";
 export { StatusBar } from "./components/status-bar/StatusBar";
 export { Stat } from "./components/stat/Stat";
+export { StickyNote } from "./components/sticky-note/StickyNote";
+export type { StickyNoteProps, StickyNoteColor, StickyNoteSize, StickyNotePosition } from "./components/sticky-note/StickyNote";
 export { Avatar } from "./components/avatar/Avatar";
 export {
   AreaChart,

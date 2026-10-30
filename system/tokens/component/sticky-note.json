@@ -1,0 +1,116 @@
+{
+  "component": {
+    "stickyNote": {
+      "color": {
+        "yellow": {
+          "$type": "color",
+          "$value": "var(--base-color-highlighted-200)",
+          "$description": "Classic sticky-note paper. Runtime reference so theme ramp overrides apply."
+        },
+        "orange": {
+          "$type": "color",
+          "$value": "var(--base-color-warn-200)",
+          "$description": "Runtime reference so theme ramp overrides apply."
+        },
+        "green": {
+          "$type": "color",
+          "$value": "var(--base-color-success-200)",
+          "$description": "Runtime reference so theme ramp overrides apply."
+        },
+        "blue": {
+          "$type": "color",
+          "$value": "var(--base-color-info-200)",
+          "$description": "Runtime reference so theme ramp overrides apply."
+        },
+        "pink": {
+          "$type": "color",
+          "$value": "var(--base-color-error-200)",
+          "$description": "Runtime reference so theme ramp overrides apply."
+        },
+        "purple": {
+          "$type": "color",
+          "$value": "var(--base-color-accent-200)",
+          "$description": "Runtime reference so theme ramp overrides apply."
+        },
+        "grey": {
+          "$type": "color",
+          "$value": "var(--base-color-neutral-100)",
+          "$description": "Runtime reference so theme ramp overrides apply."
+        }
+      },
+      "foreground": {
+        "$type": "color",
+        "$value": "var(--base-color-neutral-900)",
+        "$description": "Text on every note colour — paper stays light in dark mode, so this does not flip."
+      },
+      "mutedForeground": {
+        "$type": "color",
+        "$value": "var(--base-color-neutral-700)",
+        "$description": "Secondary text on a note; one step darker than the page's muted text to keep AA on tinted paper."
+      },
+      "raisedSurface": {
+        "$type": "color",
+        "$value": "var(--base-color-neutral-0)",
+        "$description": "Surface for raised elements on a note, such as the author badge."
+      },
+      "subtleBorder": {
+        "$type": "color",
+        "$value": "var(--base-color-neutral-200)"
+      },
+      "padding": {
+        "$type": "dimension",
+        "$value": "{base.spacing.16}"
+      },
+      "gap": {
+        "$type": "dimension",
+        "$value": "{base.spacing.8}"
+      },
+      "borderRadius": {
+        "$type": "dimension",
+        "$value": "{base.radius.sm}"
+      },
+      "stripHeight": {
+        "$type": "dimension",
+        "$value": "{base.spacing.8}",
+        "$description": "The slightly darker adhesive strip along the top edge."
+      },
+      "floatingOffset": {
+        "$type": "dimension",
+        "$value": "{base.spacing.16}",
+        "$description": "Inset from the positioned parent's corner for placement=\"floating\"."
+      },
+      "size": {
+        "xs": {
+          "$type": "dimension",
+          "$value": "10rem"
+        },
+        "sm": {
+          "$type": "dimension",
+          "$value": "13rem"
+        },
+        "md": {
+          "$type": "dimension",
+          "$value": "16rem"
+        },
+        "lg": {
+          "$type": "dimension",
+          "$value": "20rem"
+        },
+        "xl": {
+          "$type": "dimension",
+          "$value": "24rem"
+        }
+      },
+      "zIndex": {
+        "$type": "number",
+        "$value": 1,
+        "$description": "Content layer: a floating note sits above in-flow content but below sticky chrome (semantic.z.sticky) and popovers."
+      },
+      "shadow": {
+        "$type": "shadow",
+        "$value": "var(--semantic-shadow-lg)",
+        "$description": "Note elevation: one step above cards so notes read as lifted off the page. Follows theme shadow overrides."
+      }
+    }
+  }
+}

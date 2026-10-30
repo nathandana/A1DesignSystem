@@ -2,6 +2,7 @@
 
 import React, { Children, createContext, useCallback, useContext, useEffect, useId, useRef, useState } from 'react'
 import { ContextMenu } from '../context-menu/ContextMenu.jsx'
+import { useLabel } from '../labels/Labels.jsx'
 import './canvas.css'
 
 // Node dimensions per t-shirt size (canvas-space pixels)
@@ -20,6 +21,12 @@ const ZOOM_STEP = 0.15
 const ZOOM_TRACKPAD_SENSITIVITY = 0.003  // trackpad fires pixel-mode events; scale down heavily
 const GRID_SPACING = 24
 const PAN_THRESHOLD = 4  // px moved before registering as a drag (not a click)
+const CANVAS_BACKGROUNDS = ['page', 'panel', 'raised']
+const FOCUS_PADDING = 48  // on-screen px kept around a node brought into view (focusNodeId)
+// Arrowhead size in stroke widths. With non-scaling strokes the marker follows the
+// on-screen stroke width, so arrowheads also keep a constant size at any zoom.
+const ARROW_MARKER_SIZE = 6
+const EDGE_LABEL_OFFSET = 6   // on-screen px between a connector and its label
 
 function getNodeDims(shape, size = 'md') {
   if (shape === 'rectangle') return NODE_RECT_SIZES[size] ?? NODE_RECT_SIZES.md
@@ -27,10 +34,18 @@ function getNodeDims(shape, size = 'md') {
   return { w: s, h: s }
 }
 
+// A node's canvas-space size: explicit for frames (CanvasFrame), else from shape + size.
+function nodeDims(node) {
+  return node.w && node.h ? { w: node.w, h: node.h } : getNodeDims(node.shape, node.size)
+}
+
+// Frame height before it has been measured (canvas-space px).
+const FRAME_FALLBACK_HEIGHT = 240
+
 // Compute the point on a node's boundary where an edge exits at an angle toward (targetX, targetY).
 // node.anchorSnap: 'cardinal' snaps to 4 directions (N/E/S/W); 'octagonal' snaps to 8 (adds NE/SE/SW/NW).
 function getBoundaryPoint(node, targetX, targetY) {
-  const { w, h } = getNodeDims(node.shape, node.size)
+  const { w, h } = nodeDims(node)
   const dx = targetX - node.x
   const dy = targetY - node.y
   const len = Math.hypot(dx, dy)
@@ -59,7 +74,7 @@ function getBoundaryPoint(node, targetX, targetY) {
 
 // Cardinal exit/entry point for elbow routing — exits from the nearest side face
 function getElbowBoundaryPoint(node, other) {
-  const { w, h } = getNodeDims(node.shape, node.size)
+  const { w, h } = nodeDims(node)
   const dx = other.x - node.x
   const dy = other.y - node.y
   if (Math.abs(dx) >= Math.abs(dy)) {
@@ -232,6 +247,11 @@ export function Node({ id, x, y, label, sublabel, title, shape = 'circle', color
       className={classes}
       style={style}
       onClick={() => inCanvas && ctx.onNodeSelect(id)}
+      onDoubleClick={(e) => {
+        if (!inCanvas) return
+        e.stopPropagation()
+        ctx.onNodeDoubleClick(id)
+      }}
       onMouseDown={(e) => {
         if (inCanvas) e.stopPropagation()
         if (isDraggable) ctx.onNodeDragStart(id, x, y, e.clientX, e.clientY)
@@ -280,6 +300,119 @@ export function Node({ id, x, y, label, sublabel, title, shape = 'circle', color
 }
 
 /**
+ * CanvasFrame — a titled, positioned container for arbitrary content on the
+ * Canvas (e.g. a rendered page). `x` / `y` are the frame's top-left corner in
+ * canvas space; `width` is required and `height` is optional (content height
+ * when omitted — the Canvas measures it). With a `height`, `scrollable` lets the
+ * body scroll content taller than the frame: the wheel (and a single finger)
+ * scrolls it, while pinch / Ctrl-wheel still zooms. Frames take part in selection, drag
+ * (by the title or body when `draggableNodes` / edit mode), keyboard nudging
+ * (arrow keys on the focused title), zoom-to-fit and NodeConnector routing.
+ */
+function isEditableTarget(target) {
+  return !!target?.closest?.('input, textarea, select, [contenteditable="true"], [contenteditable=""]')
+}
+
+export function CanvasFrame({ id, x = 0, y = 0, width, height, label, scrollable = false, variant = 'default', children }) {
+  const ctx = useContext(CanvasCtx)
+  const frameRef = useRef(null)
+  const bodyRef = useRef(null)
+  const isScrollable = scrollable && height != null
+  const scrollRegionLabel = useLabel('canvas.scrollFrame', 'Scrollable frame content')
+  const selected = !!ctx && ctx.selectedId === id
+  const draggable = !!ctx && (ctx.mode === 'edit' || !!ctx.draggableNodes)
+  const onFrameResize = ctx?.onFrameResize
+
+  // Report the rendered height so edges and fit-to-screen use the real frame size.
+  useEffect(() => {
+    const el = frameRef.current
+    if (!el || !onFrameResize) return undefined
+    const report = () => onFrameResize(id, el.offsetHeight)
+    report()
+    const ro = new ResizeObserver(report)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [id, onFrameResize])
+
+  const startDrag = (clientX, clientY) => {
+    if (draggable) ctx.onNodeDragStart(id, x, y, clientX, clientY)
+  }
+
+  const classes = [
+    'a1-canvas__frame',
+    variant === 'plain' && 'a1-canvas__frame--plain',
+    selected && 'a1-canvas__frame--selected',
+    draggable && 'a1-canvas__frame--draggable',
+  ].filter(Boolean).join(' ')
+
+  return (
+    <div
+      ref={frameRef}
+      role="group"
+      aria-label={label}
+      className={classes}
+      style={ctx ? { left: x, top: y, width } : { width }}
+      onMouseDown={(e) => {
+        if (!ctx) return
+        e.stopPropagation()
+        // Text fields and editable text inside a frame take the pointer (caret,
+        // selection) instead of dragging the frame.
+        if (isEditableTarget(e.target)) return
+        // Pressing a scrollable body's scrollbar scrolls; it doesn't drag the frame.
+        const body = bodyRef.current
+        if (isScrollable && e.target === body && e.nativeEvent.offsetX >= body.clientWidth) return
+        startDrag(e.clientX, e.clientY)
+      }}
+      onTouchStart={(e) => {
+        if (!ctx) return
+        e.stopPropagation()
+        if (isScrollable && bodyRef.current?.contains(e.target)) return
+        if (isEditableTarget(e.target)) return
+        if (e.touches.length === 1) startDrag(e.touches[0].clientX, e.touches[0].clientY)
+      }}
+      onClick={() => ctx?.onNodeSelect(id)}
+      onDoubleClick={(e) => {
+        if (!ctx) return
+        e.stopPropagation()
+        ctx.onNodeDoubleClick(id)
+      }}
+      onContextMenu={(e) => {
+        if (!ctx) return
+        e.preventDefault()
+        e.stopPropagation()
+        ctx.onNodeContextMenu(id, e.clientX, e.clientY)
+      }}
+    >
+      <button
+        type="button"
+        className="a1-canvas__frame-title"
+        aria-pressed={selected}
+        onClick={(e) => { e.stopPropagation(); ctx?.onNodeSelect(id) }}
+        onKeyDown={(e) => {
+          if (!draggable || !e.key.startsWith('Arrow')) return
+          e.preventDefault()
+          const step = (ctx.gridSpacing || GRID_SPACING) * (e.shiftKey ? 10 : 1)
+          const dx = e.key === 'ArrowLeft' ? -step : e.key === 'ArrowRight' ? step : 0
+          const dy = e.key === 'ArrowUp' ? -step : e.key === 'ArrowDown' ? step : 0
+          ctx.onNodeMove?.(id, x + dx, y + dy)
+        }}
+      >
+        {label}
+      </button>
+      <div
+        ref={bodyRef}
+        className={`a1-canvas__frame-body${isScrollable ? ' a1-canvas__frame-body--scrollable' : ''}`}
+        style={height ? { height } : undefined}
+        // A scrollable body is a focusable region so keyboard users can scroll it.
+        {...(isScrollable ? { tabIndex: 0, role: 'region', 'aria-label': `${scrollRegionLabel}: ${label}` } : {})}
+      >
+        {children}
+      </div>
+    </div>
+  )
+}
+
+/**
  * NodeConnector — descriptor component. Canvas reads its props to draw SVG connectors.
  * Returns null; actual rendering happens in the Canvas SVG layer.
  *
@@ -318,6 +451,9 @@ export function Canvas({
   background = 'panel',
   inverse = false,
   showControls = true,
+  controlsExpandable = false,
+  controlsContent,
+  controlsActions,
   edgeStyle = 'straight',
   snapToGrid = false,
   gridSpacing = 16,
@@ -332,6 +468,9 @@ export function Canvas({
   onEdgeSelect,
   onAddNode,
   onAddEdge,
+  onNodeDoubleClick,
+  focusNodeId,
+  focusZoom,
   'aria-label': ariaLabel = 'Canvas',
   className,
   ...rest
@@ -346,6 +485,13 @@ export function Canvas({
   zoomRef.current = zoom
 
   const [selectedId, setSelectedId] = useState(null)
+  const [controlsOpen, setControlsOpen] = useState(false)
+  const showControlsLabel = useLabel('canvas.showControls', 'Show canvas controls')
+  const hideControlsLabel = useLabel('canvas.hideControls', 'Hide canvas controls')
+  const [frameHeights, setFrameHeights] = useState({})  // CanvasFrame id → measured height
+  const onFrameResize = useCallback((id, h) => {
+    setFrameHeights((prev) => (prev[id] === h ? prev : { ...prev, [id]: h }))
+  }, [])
   const [selectedEdgeId, setSelectedEdgeId] = useState(null)
   const [connecting, setConnecting] = useState(null)  // fromId while drawing a connector
   const [mouseCvs, setMouseCvs] = useState({ x: 0, y: 0 })
@@ -360,6 +506,8 @@ export function Canvas({
   onAddNodeRef.current = onAddNode
   const onAddEdgeRef = useRef(onAddEdge)
   onAddEdgeRef.current = onAddEdge
+  const onNodeDoubleClickRef = useRef(onNodeDoubleClick)
+  onNodeDoubleClickRef.current = onNodeDoubleClick
   const connectingRef = useRef(connecting)
   connectingRef.current = connecting
   const modeRef = useRef(mode)
@@ -414,6 +562,13 @@ export function Canvas({
       }
       nodeElements.push(child)
     }
+    if (child.type === CanvasFrame) {
+      // Frames route edges as rectangles; nodeMap holds their centre + measured size.
+      const { id, x = 0, y = 0, width = 0, height } = child.props
+      const h = height ?? frameHeights[id] ?? FRAME_FALLBACK_HEIGHT
+      nodeMap[id] = { ...child.props, shape: 'rectangle', x: x + width / 2, y: y + h / 2, w: width, h }
+      nodeElements.push(child)
+    }
     if (child.type === NodeConnector) {
       edgeDataList.push(child.props)
     }
@@ -422,6 +577,29 @@ export function Canvas({
   // Stable ref so callbacks can read the latest nodeMap without stale closures
   const nodeMapRef = useRef(nodeMap)
   nodeMapRef.current = nodeMap
+
+  // focusNodeId: bring that node into view and select it — once per id, as soon
+  // as the node exists (a consumer may set it before the node renders). Nodes
+  // that fit are centred; taller ones show their top edge near the top.
+  // `focusZoom` also zooms to that level first (e.g. 1 to read a new note).
+  const focusedRef = useRef(null)
+  const focusReady = !!(focusNodeId && nodeMap[focusNodeId])
+  useEffect(() => {
+    if (!focusReady || focusedRef.current === focusNodeId || !containerRef.current) return
+    focusedRef.current = focusNodeId
+    const node = nodeMapRef.current[focusNodeId]
+    const { width, height } = containerRef.current.getBoundingClientRect()
+    const { w, h } = nodeDims(node)
+    const z = focusZoom ? Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, focusZoom)) : zoomRef.current
+    if (z !== zoomRef.current) setZoom(z)
+    const fitsVertically = h * z <= height - FOCUS_PADDING * 2
+    setPan({
+      x: width / 2 - node.x * z,
+      y: fitsVertically ? height / 2 - node.y * z : FOCUS_PADDING - (node.y - h / 2) * z,
+    })
+    setSelectedEdgeId(null)
+    setSelectedId(focusNodeId)
+  }, [focusNodeId, focusReady]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Pre-compute which edge IDs are in the transitive trace from the selected node.
   // traceConnections={true} enables this: selecting a node shows all transitively reachable connectors.
@@ -436,6 +614,9 @@ export function Canvas({
 
   // --- Wheel zoom toward cursor ---
   const onWheel = useCallback((e) => {
+    // A scrollable CanvasFrame keeps the wheel for its own content; pinch /
+    // Ctrl-wheel still zooms the canvas.
+    if (!e.ctrlKey && !e.metaKey && e.target.closest?.('.a1-canvas__frame-body--scrollable')) return
     e.preventDefault()
     const rect = containerRef.current.getBoundingClientRect()
     const mx = e.clientX - rect.left
@@ -456,6 +637,8 @@ export function Canvas({
 
   // --- Touch: single-finger pan, two-finger pinch zoom ---
   const onTouchStart = useCallback((e) => {
+    // One finger in a scrollable CanvasFrame scrolls its content natively.
+    if (e.touches.length === 1 && e.target.closest?.('.a1-canvas__frame-body--scrollable')) return
     if (e.touches.length === 1) {
       e.preventDefault()
       startPan(e.touches[0].clientX, e.touches[0].clientY)
@@ -609,6 +792,18 @@ export function Canvas({
   }, [])
   const closeCtxMenu = useCallback(() => setCtxMenu(m => ({ ...m, open: false })), [])
 
+  // A viewport (client) point in canvas space, and the canvas-space centre of
+  // the visible area — for consumers placing new content where the user is looking.
+  const screenToCanvas = (clientX, clientY) => {
+    const rect = containerRef.current?.getBoundingClientRect()
+    if (!rect) return { x: 0, y: 0 }
+    return { x: (clientX - rect.left - pan.x) / zoom, y: (clientY - rect.top - pan.y) / zoom }
+  }
+  const viewCenter = () => {
+    const rect = containerRef.current?.getBoundingClientRect()
+    return rect ? screenToCanvas(rect.left + rect.width / 2, rect.top + rect.height / 2) : { x: 0, y: 0 }
+  }
+
   // Zoom to fit all nodes
   const zoomToFit = useCallback(() => {
     const nodes = Object.values(nodeMapRef.current)
@@ -616,7 +811,7 @@ export function Canvas({
     const { width, height } = containerRef.current.getBoundingClientRect()
     let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity
     for (const n of nodes) {
-      const { w, h } = getNodeDims(n.shape, n.size)
+      const { w, h } = nodeDims(n)
       x0 = Math.min(x0, n.x - w / 2); y0 = Math.min(y0, n.y - h / 2)
       x1 = Math.max(x1, n.x + w / 2); y1 = Math.max(y1, n.y + h / 2)
     }
@@ -649,7 +844,11 @@ export function Canvas({
       }
       return items
     }
-    // Canvas background context menu
+    // Canvas background context menu. `canvasMenuItems` may be a function of
+    // the right-clicked point in canvas space (e.g. to add something there).
+    const extraItems = typeof canvasMenuItems === 'function'
+      ? canvasMenuItems(screenToCanvas(ctxMenu.x, ctxMenu.y))
+      : canvasMenuItems
     const items = [
       { id: 'zoom-in',  label: 'Zoom in',      icon: 'add',         onClick: () => setZoom(z => Math.min(ZOOM_MAX, z * (1 + ZOOM_STEP))) },
       { id: 'zoom-out', label: 'Zoom out',      icon: 'remove',      onClick: () => setZoom(z => Math.max(ZOOM_MIN, z * (1 - ZOOM_STEP))) },
@@ -657,16 +856,19 @@ export function Canvas({
       { id: 'fit',      label: 'Fit to screen', icon: 'fit_screen',  onClick: zoomToFit },
       { id: 'reset',    label: 'Reset zoom',    icon: 'zoom_in_map', onClick: () => { setZoom(1); setPan({ x: 0, y: 0 }) } },
     ]
-    if (canvasMenuItems?.length) {
+    if (extraItems?.length) {
       items.push({ type: 'divider', id: 'sep2' })
-      items.push(...canvasMenuItems)
+      items.push(...extraItems)
     }
     return items
   })()
 
+  // A background outside the named surfaces is a custom CSS colour (same escape
+  // hatch as Section / Card `surface`); verify contrast manually.
+  const isCustomBackground = !!background && !CANVAS_BACKGROUNDS.includes(background)
   const classes = [
     'a1-canvas',
-    `a1-canvas--${background}`,
+    isCustomBackground ? 'a1-canvas--custom' : `a1-canvas--${background}`,
     inverse && 'a1-canvas--inverse',
     connecting && 'a1-canvas--connecting',
     className,
@@ -683,11 +885,27 @@ export function Canvas({
     '--a1-canvas-grid-y': `${pan.y % gridPx}px`,
   }
   const hasNodes = Object.keys(nodeMap).length > 0
+  // Expandable controls: one toggle, always the panel's last child so it keeps
+  // focus. It ends the always-visible zoom row and reveals the rest.
+  const controlsToggle = (
+    <button
+      type="button"
+      className="a1-canvas__ctrl a1-canvas__controls-toggle"
+      aria-expanded={controlsOpen}
+      aria-controls={controlsOpen && controlsContent ? `${uid}-controls-extra` : undefined}
+      aria-label={controlsOpen ? hideControlsLabel : showControlsLabel}
+      onClick={() => setControlsOpen((open) => !open)}
+    >
+      <span className="a1-icon" aria-hidden="true">{controlsOpen ? 'close' : 'tune'}</span>
+    </button>
+  )
 
   return (
     <CanvasCtx.Provider value={{
-      mode, selectedId, connecting, draggableNodes,
-      onNodeSelect, onNodeDragStart, onNodeContextMenu,
+      mode, selectedId, connecting, draggableNodes, gridSpacing: resolvedGridSpacing,
+      onNodeSelect, onNodeDragStart, onNodeContextMenu, onFrameResize,
+      onNodeMove: (id, nx, ny) => onNodeMoveRef.current?.(id, nx, ny),
+      onNodeDoubleClick: (id) => onNodeDoubleClickRef.current?.(id),
       onStartConnect: setConnecting,
       onCancelConnect: () => setConnecting(null),
     }}>
@@ -708,6 +926,7 @@ export function Canvas({
         }}
         onContextMenu={(e) => { e.preventDefault(); setCtxMenu({ open: true, x: e.clientX, y: e.clientY, nodeId: null }) }}
         {...rest}
+        style={isCustomBackground ? { ...rest.style, '--a1-canvas-surface-custom': background } : rest.style}
       >
         {showGrid && (
           <div
@@ -721,7 +940,9 @@ export function Canvas({
         )}
 
         {/* Edge SVG layer — drawn in canvas-space coordinates */}
-        <svg className="a1-canvas__edges" aria-hidden="true">
+        {/* Connectors keep a constant on-screen size: strokes (and so arrowheads)
+            are non-scaling (CSS); labels divide by the zoom. */}
+        <svg className="a1-canvas__edges" aria-hidden="true" style={{ '--a1-canvas-zoom': zoom }}>
           <defs>
             {edgeDataList.flatMap(edge => {
               const fromNode = nodeMap[edge.from]
@@ -732,7 +953,7 @@ export function Canvas({
               if (dir === 'to' || dir === 'both') {
                 markers.push(
                   <marker key={`${uid}-${edge.id}-end`} id={`${uid}-${edge.id}-end`}
-                    viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"
+                    viewBox="0 0 10 10" refX="9" refY="5" markerWidth={ARROW_MARKER_SIZE} markerHeight={ARROW_MARKER_SIZE} orient="auto"
                   >
                     <path d="M 0 0 L 10 5 L 0 10 z" className="a1-canvas__arrow" />
                   </marker>
@@ -741,7 +962,7 @@ export function Canvas({
               if (dir === 'from' || dir === 'both') {
                 markers.push(
                   <marker key={`${uid}-${edge.id}-start`} id={`${uid}-${edge.id}-start`}
-                    viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"
+                    viewBox="0 0 10 10" refX="9" refY="5" markerWidth={ARROW_MARKER_SIZE} markerHeight={ARROW_MARKER_SIZE} orient="auto-start-reverse"
                   >
                     <path d="M 0 0 L 10 5 L 0 10 z" className="a1-canvas__arrow" />
                   </marker>
@@ -800,7 +1021,7 @@ export function Canvas({
                     markerStart={(dir === 'from' || dir === 'both') ? `url(#${uid}-${edge.id}-start)` : undefined}
                   />
                   {edge.label && (
-                    <text x={mx} y={my - 6} className="a1-canvas__edge-label" textAnchor="middle">
+                    <text x={mx} y={my - EDGE_LABEL_OFFSET / zoom} className="a1-canvas__edge-label" textAnchor="middle">
                       {edge.label}
                     </text>
                   )}
@@ -823,27 +1044,60 @@ export function Canvas({
         </svg>
 
         {/* Viewport — Node components position themselves absolutely inside this transform layer */}
-        <div className="a1-canvas__viewport" style={{ transform: vpTransform, transformOrigin: '0 0' }}>
+        {/* --a1-canvas-zoom lets frame chrome (titles, rings) counter-scale to a constant on-screen size. */}
+        <div className="a1-canvas__viewport" style={{ transform: vpTransform, transformOrigin: '0 0', '--a1-canvas-zoom': zoom }}>
           {nodeElements}
         </div>
 
         {showControls && (
-          <div className="a1-canvas__controls" onMouseDown={(e) => e.stopPropagation()}>
-            <button type="button" className="a1-canvas__ctrl" onClick={() => setZoom(z => Math.min(ZOOM_MAX, z * (1 + ZOOM_STEP)))} aria-label="Zoom in">
-              <span className="a1-icon" aria-hidden="true">add</span>
-            </button>
-            <span className="a1-canvas__zoom-pct" aria-live="polite" aria-atomic="true">{Math.round(zoom * 100)}%</span>
-            <button type="button" className="a1-canvas__ctrl" onClick={() => setZoom(z => Math.max(ZOOM_MIN, z * (1 - ZOOM_STEP)))} aria-label="Zoom out">
-              <span className="a1-icon" aria-hidden="true">remove</span>
-            </button>
-            {hasNodes && (
-              <button type="button" className="a1-canvas__ctrl" onClick={zoomToFit} aria-label="Zoom to fit all nodes">
-                <span className="a1-icon" aria-hidden="true">fit_screen</span>
-              </button>
+          <div
+            className={[
+              'a1-canvas__controls',
+              controlsExpandable && 'a1-canvas__controls--expandable',
+              controlsExpandable && controlsOpen && 'a1-canvas__controls--open',
+            ].filter(Boolean).join(' ')}
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            {/* Expandable controls (controlsExpandable): zoom in/out and any
+                controlsActions always show; the toggle reveals fit, reset and
+                controlsContent above the row. */}
+            {controlsExpandable && controlsOpen && controlsContent && (
+              <div id={`${uid}-controls-extra`} className="a1-canvas__controls-extra">{controlsContent}</div>
             )}
-            <button type="button" className="a1-canvas__ctrl" onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }) }} aria-label="Reset zoom and pan">
-              <span className="a1-icon" aria-hidden="true">zoom_in_map</span>
-            </button>
+            <div className="a1-canvas__controls-row">
+                <button type="button" className="a1-canvas__ctrl" onClick={() => setZoom(z => Math.min(ZOOM_MAX, z * (1 + ZOOM_STEP)))} aria-label="Zoom in">
+                  <span className="a1-icon" aria-hidden="true">add</span>
+                </button>
+                <span className="a1-canvas__zoom-pct" aria-live="polite" aria-atomic="true">{Math.round(zoom * 100)}%</span>
+                <button type="button" className="a1-canvas__ctrl" onClick={() => setZoom(z => Math.max(ZOOM_MIN, z * (1 - ZOOM_STEP)))} aria-label="Zoom out">
+                  <span className="a1-icon" aria-hidden="true">remove</span>
+                </button>
+                {hasNodes && (!controlsExpandable || controlsOpen) && (
+                  <button type="button" className="a1-canvas__ctrl" onClick={zoomToFit} aria-label="Zoom to fit all nodes">
+                    <span className="a1-icon" aria-hidden="true">fit_screen</span>
+                  </button>
+                )}
+                {(!controlsExpandable || controlsOpen) && (
+                  <button type="button" className="a1-canvas__ctrl" onClick={() => { setZoom(1); setPan({ x: 0, y: 0 }) }} aria-label="Reset zoom and pan">
+                    <span className="a1-icon" aria-hidden="true">zoom_in_map</span>
+                  </button>
+                )}
+                {controlsActions?.map((action) => (
+                  <button
+                    key={action.id}
+                    type="button"
+                    className={`a1-canvas__ctrl${action.pressed ? ' a1-canvas__ctrl--pressed' : ''}`}
+                    onClick={() => action.onClick?.({ center: viewCenter() })}
+                    disabled={action.disabled}
+                    aria-pressed={action.pressed === undefined ? undefined : action.pressed}
+                    aria-label={action.label}
+                    title={action.label}
+                  >
+                    <span className="a1-icon" aria-hidden="true">{action.icon}</span>
+                  </button>
+                ))}
+              </div>
+            {controlsExpandable && controlsToggle}
           </div>
         )}
 

@@ -128,6 +128,7 @@ import { Controls as NotificationControls, getDefaultConfig as notificationDefau
 import { Controls as SideNavControls, getDefaultConfig as sideNavDefaults } from '../pages/components/detail/side-nav.jsx'
 import { Controls as BottomSheetControls, getDefaultConfig as bottomSheetDefaults } from '../pages/components/detail/bottom-sheet.jsx'
 import { Controls as CanvasControls, getDefaultConfig as canvasDefaults } from '../pages/components/detail/canvas.jsx'
+import { Controls as StickyNoteControls, getDefaultConfig as stickyNoteDefaults } from '../pages/components/detail/sticky-note.jsx'
 
 const TEXT_LABEL_CONFIG_FIELD_BY_TYPE = {
   Heading: 'children',
@@ -973,6 +974,15 @@ export const propsToConfig = {
   Menu: (props) => ({ ...menuDefaults(), ...(props ?? {}) }),
   ContextMenu: (props) => ({ ...contextMenuDefaults(), ...(props ?? {}) }),
   Snackbar: (props) => ({ ...snackbarDefaults(), ...(props ?? {}) }),
+  // StickyNote renders as the real component; its text content travels as
+  // content.fallback, and an omitted title/author means none.
+  StickyNote: (props, content) => ({
+    ...stickyNoteDefaults(),
+    ...(props ?? {}),
+    title: props?.title ?? '',
+    author: props?.author ?? '',
+    content: content?.fallback ?? '',
+  }),
   Notification: (props) => ({ ...notificationDefaults(), ...(props ?? {}) }),
   BottomSheet: (props) => ({ ...bottomSheetDefaults(), ...(props ?? {}) }),
   Canvas: (props) => ({ ...canvasDefaults(), ...(props ?? {}) }),
@@ -1811,6 +1821,20 @@ export const configToNodeUpdate = {
   Menu: (config) => ({ props: { ...config } }),
   ContextMenu: (config) => ({ props: { ...config } }),
   Snackbar: (config) => ({ props: { ...config } }),
+  StickyNote: (config) => ({
+    props: {
+      title: config.title || undefined,
+      author: config.author || undefined,
+      color: config.color && config.color !== 'yellow' ? config.color : undefined,
+      width: config.width && config.width !== 'md' ? config.width : undefined,
+      height: config.height && config.height !== 'auto' ? config.height : undefined,
+      resizable: config.resizable || undefined,
+      placement: config.placement === 'floating' ? 'floating' : undefined,
+      anchor: config.placement === 'floating' && config.anchor && config.anchor !== 'top-end' ? config.anchor : undefined,
+      movable: config.placement === 'floating' && config.movable ? true : undefined,
+    },
+    contentFallback: config.content,
+  }),
   Notification: (config) => ({ props: { ...config } }),
   BottomSheet: (config) => ({ props: { ...config } }),
   Canvas: (config) => ({ props: { ...config } }),
@@ -2226,6 +2250,7 @@ const CONTROLS_BY_TYPE = {
   Menu: MenuControls,
   ContextMenu: ContextMenuControls,
   Snackbar: SnackbarControls,
+  StickyNote: StickyNoteControls,
   Notification: NotificationControls,
   SideNav: SideNavControls,
   BottomSheet: BottomSheetControls,

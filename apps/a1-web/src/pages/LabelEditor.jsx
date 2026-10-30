@@ -34,6 +34,8 @@ import actionJson    from '../../../../system/labels/action.json'
 import backlogJson   from '../../../../system/labels/backlog.json'
 import calendarJson  from '../../../../system/labels/calendar.json'
 import codeJson      from '../../../../system/labels/code.json'
+import canvasJson    from '../../../../system/labels/canvas.json'
+import stickyNoteJson from '../../../../system/labels/sticky-note.json'
 import fieldJson     from '../../../../system/labels/field.json'
 import statusBarJson from '../../../../system/labels/status-bar.json'
 
@@ -83,6 +85,8 @@ const SYSTEM_KEYS = [
   ...flattenSystemKeys(backlogJson.label),
   ...flattenSystemKeys(calendarJson.label),
   ...flattenSystemKeys(codeJson.label),
+  ...flattenSystemKeys(canvasJson.label),
+  ...flattenSystemKeys(stickyNoteJson.label),
   ...flattenSystemKeys(fieldJson.label),
   ...flattenSystemKeys(statusBarJson.label),
 ]
