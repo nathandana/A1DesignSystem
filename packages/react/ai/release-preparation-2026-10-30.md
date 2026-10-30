@@ -72,20 +72,30 @@ after deployment.
 
 ## Publication and follow-up
 
-No package, site, tag or GitHub release was published during preparation. The
-work remains uncommitted for review.
+Commit `24d374ce` was pushed to `release` and published to the hosted products
+on Oct. 30, 2026 at 10:29 a.m. Eastern:
 
-After approval:
+- A1 Web: https://a1design.app — deploy `6ae4a8585f1560007e5c34a6`
+- A1 Labs: https://labs.a1design.app — deploy `6ae4a8761b836911a1a85624`
+- A1 MCP: https://mcp.a1design.app/mcp — deploy `6ae4a9951c8cb817d8e428d9`
 
-1. Commit the reviewed release files and visual baselines on `release`.
-2. Publish through the trusted npm release workflow and confirm each prepared
-   version and tarball integrity on the public registry.
-3. Deploy A1 Web and Labs through their normal release workflows without
-   including local build directories.
-4. Smoke-test the release index, React notes, newsletter direct link and reload,
-   Projects, Editor, Card configurator and Labs gallery at desktop and mobile
-   widths.
-5. Run the deployed MCP pattern verification command and record the immutable
-   deployment IDs for rollback.
+The exact production-context drafts were smoke-tested before promotion. Live
+checks passed for the A1 Web home page, release index, newsletter, Card,
+Projects and Editor; the Labs gallery, release notes and three new experiment
+routes; and all five deployed MCP pattern contracts. The Formal pattern
+contracts GitHub workflow also passed.
+
+The trusted npm workflow passed the full macOS A1 Web gate and package
+validation, then npm rejected React 0.34.0 twice with 404/permission during OIDC
+publication. The public registry therefore remains on React 0.33.0 and React
+Native 0.1.1. Repair the `@gtivr4/a1-design-system-react` trusted-publisher
+relationship for `nathandana/A1DesignSystem` and `.github/workflows/publish.yml`,
+then rerun the failed publish job and verify the registry version and integrity.
+Do not bump or reuse 0.34.0 before confirming that npm did not accept it.
+
+No GitHub release or tag was created. Roll back by restoring the prior
+successful Netlify deploy for the affected site. The Oct. 12 A1 Web and Labs
+deploy IDs remain recorded in the previous release-preparation document; the
+previous MCP production deploy was `6ae2bd7bbd98ec7a4f7b3c59`.
 
 No custom release-only CSS was authored.
