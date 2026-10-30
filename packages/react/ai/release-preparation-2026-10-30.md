@@ -85,13 +85,13 @@ Projects and Editor; the Labs gallery, release notes and three new experiment
 routes; and all five deployed MCP pattern contracts. The Formal pattern
 contracts GitHub workflow also passed.
 
-The trusted npm workflow passed the full macOS A1 Web gate and package
-validation, then npm rejected React 0.34.0 twice with 404/permission during OIDC
-publication. The public registry therefore remains on React 0.33.0 and React
-Native 0.1.1. Repair the `@gtivr4/a1-design-system-react` trusted-publisher
-relationship for `nathandana/A1DesignSystem` and `.github/workflows/publish.yml`,
-then rerun the failed publish job and verify the registry version and integrity.
-Do not bump or reuse 0.34.0 before confirming that npm did not accept it.
+React 0.34.0 was published to npm and assigned the `latest` tag. The public
+registry reports shasum `7afbbf72d8c3d7e91f00ac1700604279cee53f4c` and
+integrity
+`sha512-nn1lmyK9HL1SzgzmWWclFxJoMbomcsDYKfMioEAZQOJkhS7lZK7EEh1RYN5Pz9/v2rkAeWq1uGUJc5LMBkCwng==`.
+React Native remains on 0.1.1. The publish workflow now leaves npm registry
+authentication to the trusted-publisher OIDC exchange instead of configuring a
+legacy `NODE_AUTH_TOKEN` placeholder through `actions/setup-node`.
 
 No GitHub release or tag was created. Roll back by restoring the prior
 successful Netlify deploy for the affected site. The Oct. 12 A1 Web and Labs
