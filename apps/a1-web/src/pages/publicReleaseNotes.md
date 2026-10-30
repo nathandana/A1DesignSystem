@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## 0.35.0 — 2026-10-30
+
+### Highlights
+
+- **A visual project canvas** — Projects now open on an infinite canvas with responsive page frames, pan and zoom, saved layouts, connectors, auto-arrange and full-screen review. Sticky Notes support Markdown, color, resizing and direct editing alongside pages.
+- **First-class reusable patterns** — The Pattern Library adds governed Page Title, Overview Card, Navigation Tree, Overflow Menu and Verification Dialog patterns with versioned contracts, validation, migration and editor zones.
+- **Faster project editing** — Components can be dragged directly on the page, moved from canvas and Layers context menus, and reordered with keyboard shortcuts. Text remains draggable until double-click editing begins.
+- **Organized projects and clearer Card actions** — Favorite, hide, tag and order projects. Project Cards use the shared top-right Card action zone for Favorite, Edit and More options, while Card configurators can opt into and edit the same action treatment.
+- **Print-ready pages and richer examples** — Pages print in light mode without editor chrome, and the editor includes Letter and A4 previews. The Dispatch sports-blog sample and Word finder demonstrate longer editorial and utility experiences built with A1.
+
+
 ## 0.34.0 — 2026-10-12
 
 ### Highlights

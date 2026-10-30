@@ -3,6 +3,7 @@ import { Card } from "./Card.jsx";
 import { Button } from "../button/Button.jsx";
 import { ButtonContainer } from "../button-container/ButtonContainer.jsx";
 import { Heading } from "../heading/Heading.jsx";
+import { IconButton } from "../icon-button/IconButton.jsx";
 import { Link } from "../link/Link.jsx";
 import { Paragraph } from "../paragraph/Paragraph.jsx";
 import { iconArgType } from "../../storybook/icon-controls.js";
@@ -125,6 +126,26 @@ const meta = {
 export default meta;
 
 export const Configurable = {};
+
+export const ActionZone = {
+  name: "Action zone",
+  parameters: { controls: { include: [] } },
+  render: () => (
+    <Card
+      style={{ maxWidth: 420 }}
+      actions={
+        <>
+          <IconButton icon="bookmark" label="Save card" size="sm" />
+          <IconButton icon="share" label="Share card" size="sm" />
+          <IconButton icon="more_horiz" label="More actions" size="sm" />
+        </>
+      }
+    >
+      <Heading as="h3" size="sm" style={{ marginBottom: "var(--base-spacing-8)" }}>Research summary</Heading>
+      <Paragraph color="muted">Actions stay grouped at the top-right while content flows around them.</Paragraph>
+    </Card>
+  ),
+};
 
 /* ── Default icon — responsive scaling ───────────────────────────────────── */
 

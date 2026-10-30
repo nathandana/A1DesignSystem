@@ -43,8 +43,11 @@ import { FrostedGlassExperiment } from './frosted-glass/FrostedGlassExperiment.j
 import { SwitchMorphExperiment } from './switch-morph/SwitchMorphExperiment.jsx'
 import { FocusAnimationsExperiment } from './focus-animations/FocusAnimationsExperiment.jsx'
 import { ButtonCompletionExperiment } from './button-completion/ButtonCompletionExperiment.jsx'
+import { TextSelectionExperiment } from './text-selection/TextSelectionExperiment.jsx'
 import { ImageGenerationExperiment } from './image-generation/ImageGenerationExperiment.jsx'
 import { PageLoadingExperiment } from './page-loading/PageLoadingExperiment.jsx'
+import { ButtonConfiguratorMenuExperiment } from './button-configurator-menu/ButtonConfiguratorMenuExperiment.jsx'
+import { TouchCardExperiment } from './touch-card/TouchCardExperiment.jsx'
 
 // Loaded on demand: it brings three.js and React Three Fiber, which should
 // not weigh down the canvas or other experiments.
@@ -120,6 +123,9 @@ const experimentPages = {
   'ai-image-generation': ImageGenerationExperiment,
   'page-loading': PageLoadingExperiment,
   'button-completion': ButtonCompletionExperiment,
+  'button-configurator-menu': ButtonConfiguratorMenuExperiment,
+  'text-selection': TextSelectionExperiment,
+  'touch-card': TouchCardExperiment,
 }
 
 export function ExperimentPage(props) {

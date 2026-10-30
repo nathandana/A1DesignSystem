@@ -124,6 +124,34 @@ choices in Settings. Both use the same theme choices and modes as a1-web. Prefer
 `a1-labs-color-mode`. The initial appearance and reset defaults are Default + Dark.
 Theme and mode changes redraw the animation without restarting it.
 
+## Button configurator menu
+
+[Button configurator menu](http://127.0.0.1:5187/experiments/button-configurator-menu)
+tests component-owned configuration. Choose the Menu, Toolbar or right-click Context menu variant from
+the standard configuration panel, then select the live A1 Button to open the
+anchored controls. Both close with Escape and apply changes directly to the
+component.
+
+## Text selection
+
+[Text selection](http://127.0.0.1:5187/experiments/text-selection) lets the user
+select realistic text in default and inverse sections using the browser default,
+six semantic CSS `::selection` variations, or subtle and obvious treatments
+from the highlighted color ramp. The same treatment applies to headings,
+paragraphs, links, lists, inline code and a TextareaField.
+
+## Touch card actions
+
+[Touch card actions](http://127.0.0.1:5187/experiments/touch-card) places three
+small IconButtons in a subtly bordered group at the top-right of a research summary card. Mouse and keyboard
+users activate Save, Share and Details directly. With touch input, the first tap
+enlarges the entire group to large A1 touch targets and the next tap performs the
+chosen action.
+Use Show enlarged controls in the right configuration panel to enlarge the
+controls to 44×44px on hover on a device without touch input;
+mouse actions still activate immediately and the controls return to compact size
+when the pointer leaves.
+
 ## About Labs and release notes
 
 The [About Labs page](http://127.0.0.1:5187/about) explains the playground, links

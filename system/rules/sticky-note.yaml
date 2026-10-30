@@ -14,7 +14,7 @@ rules:
     components:
       - StickyNote
     requirement: A floating sticky note stays on the content z-layer inside a positioned parent.
-    do: Place `placement="floating"` notes inside a container with `position: relative` (or another positioned layout) and choose a corner with `anchor`.
+    do: 'Place `placement="floating"` notes inside a container with `position: relative` (or another positioned layout) and choose a corner with `anchor`.'
     dont: Raise a sticky note above sticky chrome, menus, popovers, or dialogs with a custom z-index.
     applies_to:
       - layout

@@ -33,6 +33,7 @@ test('nested Add child and Remove controls operate only in their own open panels
   await page.getByRole('region', { name: 'Child', exact: true }).getByRole('button', { name: 'Remove', exact: true }).click()
   expect((await readJson(page)).props.items[0].children).toBeUndefined()
   await page.getByRole('region', { name: 'Parent', exact: true }).getByRole('button', { name: 'Remove', exact: true }).click()
+  await expect.poll(async () => (await readJson(page)).props.items).toEqual([])
   const empty = await readJson(page)
   expect(empty.props.items).toEqual([])
   await page.goto(`/components/tree-menu?json=${encodeURIComponent(JSON.stringify(empty))}`)

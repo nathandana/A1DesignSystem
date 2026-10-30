@@ -100,6 +100,16 @@ function serializeNode(rawNode: ComponentNode, indent: string): string {
     zoneProps.push(`actions={[\n${actions.join(',\n')}\n${indent}  ]}`);
     delete props.actions;
   }
+  if (node.type === 'Card' && Array.isArray(props.actions) && props.actions.length) {
+    const actions = props.actions.map((action, index) => {
+      const icon = typeof action?.icon === 'string' && action.icon ? action.icon : 'more_horiz';
+      const label = typeof action?.label === 'string' && action.label ? action.label : 'Action';
+      const href = typeof action?.href === 'string' && action.href ? ` href=${JSON.stringify(action.href)}` : '';
+      return `${indent}    <IconButton key=${JSON.stringify(action?.id ?? `card-action-${index}`)} icon=${JSON.stringify(icon)} label=${JSON.stringify(label)}${href} size="sm" />`;
+    });
+    zoneProps.push(`actions={(\n${indent}  <>\n${actions.join('\n')}\n${indent}  </>\n${indent})}`);
+    delete props.actions;
+  }
   const children: ComponentNode[] = [];
   for (const child of node.children ?? []) {
     if (child.type !== 'Slot') { children.push(child); continue; }

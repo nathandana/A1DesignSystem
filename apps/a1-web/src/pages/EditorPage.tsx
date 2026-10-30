@@ -697,7 +697,6 @@ export function EditorPage({
   resolvedColorScheme = 'light',
   projectPages = [],
   onNavigateToPage,
-  onBackToProjectOverview,
   composeWithAi = false,
   onAiComposeConsumed,
   pageLevel,
@@ -743,8 +742,6 @@ export function EditorPage({
   resolvedColorScheme?: string;
   projectPages?: ProjectPage[];
   onNavigateToPage?: (id: string) => void;
-  /** Return from an open project page to its project overview. */
-  onBackToProjectOverview?: () => void;
   composeWithAi?: boolean;
   onAiComposeConsumed?: () => void;
   pageLevel?: number;
@@ -763,7 +760,7 @@ export function EditorPage({
   addTarget?: AddTarget;
   onCancelAdd?: () => void;
   onRequestAdd?: (target: AddTarget) => void;
-  pendingAction?: { type: 'delete' | 'ungroup' | 'duplicate' | 'group-as-stack' | 'copy-pattern' | 'paste-pattern' | 'detach' | 'create-pattern'; nodeId: string; nodeIds?: string[] } | { type: 'rename'; nodeId: string; name: string } | null;
+  pendingAction?: { type: 'delete' | 'ungroup' | 'duplicate' | 'group-as-stack' | 'copy-pattern' | 'paste-pattern' | 'detach' | 'create-pattern' | 'move-up' | 'move-down'; nodeId: string; nodeIds?: string[] } | { type: 'rename'; nodeId: string; name: string } | null;
   onPendingActionDone?: () => void;
   pendingConvert?: { nodeId: string; newType: ComponentType; newProps: ComponentProps } | null;
   onPendingConvertDone?: () => void;
@@ -779,7 +776,6 @@ export function EditorPage({
   // enforce them), and hide page/project-only chrome.
   const isPattern = documentKind === 'pattern';
   const isLayout = documentKind === 'layout';
-  const canReturnToProjectOverview = documentKind === 'page' && !!projectId && !!onBackToProjectOverview;
   const openTicket = useOpenCreateTicket();
 
   // Use any legacy draft as the fallback so existing unsaved work is preserved.
@@ -1237,20 +1233,19 @@ export function EditorPage({
     onDefinitionChange?.(parsedDefinition.ok ? parsedDefinition.value : null);
   }, [parsedDefinition]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Process a node-move command issued by EditorSidebar's draggable tree.
-  useEffect(() => {
-    if (!pendingMove || !parsedDefinition.ok) return;
-    const { draggedId, targetId, position } = pendingMove;
+  function handleNodeMove({ draggedId, targetId, position }: { draggedId: string; targetId: string; position: 'before' | 'into' | 'after' }) {
+    if (!parsedDefinition.ok || draggedId === targetId) return;
     // The same governance as the other move/add paths: a locked element (or a
     // pattern zone) stays put, a locked container takes nothing, and a blank
     // area applies its rules to what moves into it.
-    if (getNodeLock(draggedId)?.node && !isPatternInstanceRoot(draggedId)) { notifyLocked(draggedId); onPendingMoveDone?.(); return; }
-    if (addIntoLocked(targetId, position)) { notifyLocked(targetId); onPendingMoveDone?.(); return; }
+    if (getNodeLock(draggedId)?.node && !isPatternInstanceRoot(draggedId)) { notifyLocked(draggedId); return; }
+    if (addIntoLocked(targetId, position)) { notifyLocked(targetId); return; }
     const dragged = getNode(draggedId);
+    if (dragged?.children && findNodeById(dragged.children, targetId)) return;
     const destination = governingSlot(targetId, position);
     if (dragged && destination) {
       const reject = slotRuleRejection(destination, { type: dragged.type }, draggedId);
-      if (reject) { setNotice(reject); onPendingMoveDone?.(); return; }
+      if (reject) { setNotice(reject); return; }
     }
     const regions = parsedDefinition.value.page.layout.regions;
 
@@ -1266,7 +1261,7 @@ export function EditorPage({
       }
     }
 
-    if (!draggedNode) { onPendingMoveDone?.(); return; }
+    if (!draggedNode) return;
 
     newRegions = newRegions.map((r) => {
       const updated = insertInNodes(r.nodes, draggedNode!, targetId, position);
@@ -1278,6 +1273,12 @@ export function EditorPage({
       page: { ...parsedDefinition.value.page, layout: { ...parsedDefinition.value.page.layout, regions: newRegions } },
     };
     history.commit(JSON.stringify(newDef, null, 2), `Moved ${draggedNode.type}`);
+  }
+
+  // Process a node-move command issued by EditorSidebar's draggable tree.
+  useEffect(() => {
+    if (!pendingMove) return;
+    handleNodeMove(pendingMove);
     onPendingMoveDone?.();
   }, [pendingMove]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -1285,6 +1286,8 @@ export function EditorPage({
   useEffect(() => {
     if (!pendingAction || !parsedDefinition.ok) return;
     if (pendingAction.type === 'delete') handleNodeDelete(pendingAction.nodeId);
+    else if (pendingAction.type === 'move-up') handleMoveUp(pendingAction.nodeId);
+    else if (pendingAction.type === 'move-down') handleMoveDown(pendingAction.nodeId);
     else if (pendingAction.type === 'ungroup') handleUngroup(pendingAction.nodeId);
     else if (pendingAction.type === 'duplicate') handleDuplicateNode(pendingAction.nodeId);
     else if (pendingAction.type === 'group-as-stack') handleGroupAsStack(pendingAction.nodeIds ?? pendingAction.nodeId);
@@ -2351,6 +2354,7 @@ export function EditorPage({
           getNodeInfo={getNodeInfoFn}
           onRequestAddChild={handleRequestAddChild}
           onCatalogDrop={(type, targetId, pos) => handleCatalogDrop(type, targetId, pos)}
+          onNodeMove={handleNodeMove}
           onDetachPattern={handleDetachPattern}
           onCreatePattern={handleCreatePatternFromNode}
         />
@@ -2403,13 +2407,6 @@ export function EditorPage({
               />
             )}
             <Toolbar aria-label="Editor" overflow overflowLabel="More tools">
-              {canReturnToProjectOverview && (
-                <ToolbarButton
-                  icon="arrow_back"
-                  label={t('app.editor.backToProjectOverview', 'Back to project overview')}
-                  onClick={onBackToProjectOverview}
-                />
-              )}
               <ToolbarGroup
                 aria-label="Editor view"
                 showLabels

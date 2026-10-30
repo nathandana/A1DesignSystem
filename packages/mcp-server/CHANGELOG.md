@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.2.0 — 2026-10-30
+
 - **Patterns in the index** (A1-2720) — the `## Patterns` section of `components.md` is indexed as a category, and the `.d.ts` walker also reads `packages/react/src/patterns/`, so `list_components` / `get_component` cover `Page Title` with its props. The page-type registry picks up `PageTitle` automatically.
 
 ## 0.1.2 — 2026-10-12

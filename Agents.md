@@ -214,6 +214,10 @@ For Labs chat messages, motion and simulated reply lifecycle:
 
 @packages/react/ai/labs-chat.md
 
+For compact card actions that enlarge before touch activation:
+
+@packages/react/ai/labs-touch-card.md
+
 For Labs automation and token studies:
 
 @packages/react/ai/labs-automation-builder.md
@@ -239,6 +243,10 @@ For shared Labs datasets, size presets and the consolidation audit:
 For the Oct. 12 release scope, verification and website publication:
 
 @packages/react/ai/release-preparation-2026-10-12.md
+
+For the Oct. 30 release scope, verification and publication follow-up:
+
+@packages/react/ai/release-preparation-2026-10-30.md
 
 For formal pattern contracts, editable areas, JSON defaults and MCP recommendations:
 

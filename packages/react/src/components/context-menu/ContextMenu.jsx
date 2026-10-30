@@ -25,9 +25,16 @@ export function ContextMenu({
   y = 0,
   items = [],
   onClose,
+  keepOpenForSubmenus = false,
   'aria-label': ariaLabel = 'Context menu',
 }) {
   const ref = useRef(null);
+  const hoverTimerRef = useRef(null);
+
+  function cancelHover() {
+    if (hoverTimerRef.current) window.clearTimeout(hoverTimerRef.current);
+    hoverTimerRef.current = null;
+  }
 
   useEffect(() => {
     if (!open) return;
@@ -38,7 +45,12 @@ export function ContextMenu({
     });
 
     function handleMouseDown(e) {
+      if (keepOpenForSubmenus && e.target.closest?.('.a1-context-menu')) return;
       if (ref.current && !ref.current.contains(e.target)) onClose?.();
+    }
+
+    function handleContextMenu(e) {
+      e.preventDefault();
     }
 
     function handleKeyDown(e) {
@@ -76,11 +88,14 @@ export function ContextMenu({
 
     document.addEventListener('mousedown', handleMouseDown);
     document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('contextmenu', handleContextMenu);
     return () => {
+      cancelHover();
       document.removeEventListener('mousedown', handleMouseDown);
       document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('contextmenu', handleContextMenu);
     };
-  }, [open, onClose]);
+  }, [keepOpenForSubmenus, open, onClose]);
 
   if (!open) return null;
 
@@ -112,6 +127,14 @@ export function ContextMenu({
           );
         }
 
+        if (entry.type === 'custom') {
+          return (
+            <div key={entry.id} className="a1-context-menu__custom" role="group" aria-label={entry.label}>
+              {entry.children}
+            </div>
+          );
+        }
+
         // Default: 'item'
         const isDestructive = entry.variant === 'destructive';
         const isActive = !!entry.active;
@@ -127,9 +150,18 @@ export function ContextMenu({
               isActive && 'a1-context-menu__item--active',
             ].filter(Boolean).join(' ')}
             disabled={entry.disabled}
-            onClick={() => {
-              entry.onClick?.();
-              onClose?.();
+            onMouseEnter={(event) => {
+              cancelHover();
+              if (!entry.disabled && entry.onHover) {
+                const item = event.currentTarget;
+                hoverTimerRef.current = window.setTimeout(() => entry.onHover(item), entry.hoverDelay ?? 200);
+              }
+            }}
+            onMouseLeave={cancelHover}
+            onClick={(event) => {
+              cancelHover();
+              entry.onClick?.(event.currentTarget);
+              if (!entry.keepOpen) onClose?.();
             }}
           >
             {entry.icon && (

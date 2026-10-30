@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.34.0 — 2026-10-30
+
+- **Card action zone** — the opt-in `actions` prop renders a small group of actions, primarily Icon Buttons, in a compact bordered container at the Card’s top-right. `actionsLabel` names the group for assistive technology. Cards have no action zone by default, and navigation cards ignore it because nested interactive controls are invalid.
+
 - **Sticky Note: edit in place** (A1-2718) — `editing` turns a note's title and content into in-place text fields (the content as Markdown source), with `onTitleChange`, `onContentChange` and `onEditingChange(false)` when focus leaves the note or Escape is pressed.
 
 - **Canvas: plain frames and placing new content** (A1-2718) — `CanvasFrame variant="plain"` drops the frame chrome for content with its own surface, such as a StickyNote, keeping a focus-only title as the keyboard handle. Frames no longer start a drag from inside text fields or editable text. `canvasMenuItems` can be a function of the right-clicked point, `controlsActions` receive the view centre, and `focusZoom` zooms while bringing `focusNodeId` into view.

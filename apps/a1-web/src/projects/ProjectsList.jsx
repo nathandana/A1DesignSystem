@@ -130,45 +130,58 @@ export function ProjectsList({
                 key={project.id}
                 icon={project.icon}
                 iconDisplay="default"
+                actionsLabel={project.name}
+                actions={(
+                  <>
+                    {onOrganizeProject && (
+                      <IconButton
+                        icon={project.favorite ? 'star' : 'star_outline'}
+                        label={project.favorite
+                          ? t('app.projects.removeFromFavorites', 'Remove from favorites')
+                          : t('app.projects.favorite', 'Favorite')}
+                        size="sm"
+                        aria-pressed={project.favorite}
+                        aria-describedby={`project-title-${project.id}`}
+                        onClick={() => onOrganizeProject(project.id, { favorite: !project.favorite })}
+                      />
+                    )}
+                    <IconButton
+                      as="a"
+                      href={`/editor?project=${project.id}`}
+                      icon="edit"
+                      label={t('app.projects.edit', 'Edit')}
+                      size="sm"
+                      aria-describedby={`project-title-${project.id}`}
+                      onClick={(e) => {
+                        if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
+                          e.preventDefault()
+                          onOpenProject(project.id)
+                        }
+                      }}
+                    />
+                    {onOrganizeProject && (
+                      <IconButton
+                        icon="more_vert"
+                        label={t('app.projects.moreOptions', 'More options')}
+                        size="sm"
+                        aria-describedby={`project-title-${project.id}`}
+                        aria-haspopup="dialog"
+                        aria-expanded={moreMenuId === project.id}
+                        onClick={(e) => {
+                          moreAnchorRef.current = e.currentTarget
+                          setMoreMenuId(project.id)
+                        }}
+                      />
+                    )}
+                  </>
+                )}
                 onContextMenu={(e) => {
                   e.preventDefault()
                   setCtxMenu({ id: project.id, x: e.clientX, y: e.clientY })
                 }}
               >
                 <Stack direction="column" gap="sm">
-                  <Stack direction="row" gap="xs" align="start" justify="between">
-                    <Heading id={`project-title-${project.id}`} as={grouped ? 'h3' : 'h2'} size="sm">{project.name}</Heading>
-                    {/* Card actions (A1-2712): the card itself isn't a link, so it can
-                        hold controls. aria-describedby ties each to its project. */}
-                    <Stack direction="row" gap="xs">
-                      <IconButton
-                        as="a"
-                        href={`/editor?project=${project.id}`}
-                        icon="edit"
-                        label={t('app.projects.edit', 'Edit')}
-                        aria-describedby={`project-title-${project.id}`}
-                        onClick={(e) => {
-                          if (e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey) {
-                            e.preventDefault()
-                            onOpenProject(project.id)
-                          }
-                        }}
-                      />
-                      {onOrganizeProject && (
-                        <IconButton
-                          icon="more_vert"
-                          label={t('app.projects.moreOptions', 'More options')}
-                          aria-describedby={`project-title-${project.id}`}
-                          aria-haspopup="dialog"
-                          aria-expanded={moreMenuId === project.id}
-                          onClick={(e) => {
-                            moreAnchorRef.current = e.currentTarget
-                            setMoreMenuId(project.id)
-                          }}
-                        />
-                      )}
-                    </Stack>
-                  </Stack>
+                  <Heading id={`project-title-${project.id}`} as={grouped ? 'h3' : 'h2'} size="sm">{project.name}</Heading>
                   {project.description && (
                     <Paragraph size="sm" color="muted">{project.description}</Paragraph>
                   )}

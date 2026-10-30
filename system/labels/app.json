@@ -6854,6 +6854,20 @@
         }
       },
       "editor": {
+        "projectOverview": {
+          "$type": "string",
+          "$value": "Project",
+          "$description": "Persistent editor sidebar item that opens and identifies the active project overview.",
+          "locale": {
+            "es": "Proyecto",
+            "fr": "Projet",
+            "de": "Projekt",
+            "pt": "Projeto",
+            "ja": "プロジェクト",
+            "zh": "项目",
+            "ar": "المشروع"
+          }
+        },
         "backToProjectOverview": {
           "$type": "string",
           "$value": "Back to project overview",

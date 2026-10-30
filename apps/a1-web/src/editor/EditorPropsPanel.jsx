@@ -312,6 +312,8 @@ export const propsToConfig = {
     status: props?.status ?? '',
     statusLabel: props?.statusLabel ?? 'In progress',
     statusPulse: props?.statusPulse ?? false,
+    actionsLabel: props?.actionsLabel ?? 'Card actions',
+    actions: Array.isArray(props?.actions) ? props.actions : [],
   }),
 
   Bleed: (props) => ({
@@ -1123,6 +1125,8 @@ export const configToNodeUpdate = {
         status: !accent && config.status ? config.status : undefined,
         statusLabel: !accent && config.status && config.statusLabel ? config.statusLabel : undefined,
         statusPulse: !accent && config.status && config.statusPulse ? true : undefined,
+        actionsLabel: config.actions?.length && config.actionsLabel !== 'Card actions' ? config.actionsLabel : undefined,
+        actions: config.variant !== 'navigation' && config.actions?.length ? config.actions : undefined,
       },
     }
   },

@@ -419,6 +419,24 @@ body {
   outline-offset: 3px;
 }
 
+/* A text node stays a drag/select surface after one click. Avoid the component
+   selection ring, which otherwise makes that click look like it entered text
+   editing; double-click/F2 still reveals InlineEditable's own focus ring. */
+[data-editor-selected='true'][data-editor-text='true'] {
+  outline-color: transparent !important;
+}
+
+/* Native canvas dragging reuses the editor's governed move model. The source
+   fades while the existing before/inside/after indicators identify its target. */
+[data-editor-draggable='true'] {
+  cursor: grab;
+}
+
+[data-editor-dragging='true'] {
+  cursor: grabbing;
+  opacity: var(--component-reordering-placeholder-opacity);
+}
+
 /* Catalog drag-and-drop: before/after/into position indicators on canvas nodes.
    Imperative DOM sets data-drop-position during dragover; CSS renders the visual.
    box-shadow is used so layout is never affected. */

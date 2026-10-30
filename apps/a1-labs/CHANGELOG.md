@@ -2,6 +2,54 @@
 
 ## Unreleased
 
+## 0.77.2 — Oct. 30, 2026
+
+- **Standard configuration placement** — keeps the Touch card configuration panel on the right at desktop sizes, consistent with every other Labs experiment. Small screens continue to use the configuration bottom sheet.
+
+## 0.77.1 — Oct. 30, 2026
+
+- **Smoother card-action zoom** — eases button size, group spacing, padding, surface and shadow over the A1 normal motion duration when touch or hover enlarges the controls. Reduced motion changes the state immediately.
+
+## 0.77.0 — Oct. 30, 2026
+
+- **Touch-card preview control** — adds a configuration-panel switch that enlarges the action group to 44×44px controls on hover on devices without touch input. Mouse activation remains immediate, the controls return to compact size when the pointer leaves and card content does not reflow.
+
+## 0.76.6 — Oct. 30, 2026
+
+- **Stable touch enlargement** — enlarges the Touch card IconButtons to exactly 44×44px in an overlay anchored to a fixed compact-size slot, so the card's heading, body and overall height do not reflow when touch actions expand.
+
+## 0.76.5 — Oct. 30, 2026
+
+- **Concentric action-group radius** — adjusts the Touch card action group to a 4px radius, derived from the 12px Card radius minus its new 8px edge inset.
+
+## 0.76.4 — Oct. 30, 2026
+
+- **Card action placement** — moves the Touch card action group to 8px from the Card's top and right edges while keeping it in the normal layout flow.
+
+## 0.76.3 — Oct. 30, 2026
+
+- **Larger Touch card corners** — increases the experiment Card radius one A1 step, from `lg` to `xl`, and derives the nested action-group radius from that new value minus Card padding.
+
+## 0.76.2 — Oct. 30, 2026
+
+- **Concentric card corners** — derives the Touch card action-group radius from the outer Card radius minus its padding, clamped at zero, so the nested control follows the card's corner geometry.
+
+## 0.76.1 — Oct. 30, 2026
+
+- **Grouped card actions** — adds a subtle border around the Touch card action group so the three compact IconButtons read as one related control set.
+
+## 0.76.0 — Oct. 30, 2026
+
+- **Touch card actions** — adds a realistic research card with small Save, Share and Details IconButtons in its top-right corner. Mouse and keyboard activation remain immediate; on touch input, the first tap enlarges the complete action group to A1's large touch targets and the next tap performs the action.
+
+## 0.75.0 — Oct. 29, 2026
+
+- **Text selection** — select realistic headings, paragraphs, links, lists, inline code and TextareaField content in default and inverse sections. Default preserves the browser treatment; six semantic CSS `::selection` variants cover action and status colors, while two more compare subtle and obvious steps from the dedicated highlighted color ramp. No selection-management JavaScript is used.
+
+## 0.74.0 — Oct. 29, 2026
+
+- **Button configurator menu** — a live A1 Button opens its configuration in an anchored overlay when selected. Choose a full Menu offset beside the component, using the main A1 configurator's Toolbar controls for Variant, Size, Icon position and State; a viewport-sized compact overlay Toolbar that preserves useful direct tools before narrow-screen overflow; an Extended toolbar with direct icon variants and minus/plus size stepping; a pointer-anchored right-click ContextMenu with flush native-style cascading submenus; or a Consolidated context menu with inline icon groups for Size and Icon position. Context treatments suppress the browser menu while open and retain subtle inline On/Off states, persistent right-click access, and forced inline label editing. An optional shared inline-label treatment replaces the Menu and Toolbar label fields with double-click editing on the component. Every treatment preserves editor state without a reset action.
+
 ## 0.73.2 — Oct. 12, 2026
 
 - **Publishing setup** — dedicated Netlify configuration and explicit preview/production deployment commands for `labs.a1design.app`. Builds run Labs tests and regenerate shared tokens; direct experiment URLs use the existing SPA fallback. Hashed assets use immutable caching.

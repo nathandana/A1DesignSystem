@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { ContextMenu, Paragraph, TreeMenu } from '@gtivr4/a1-design-system-react'
 import { CONVERSION_MAP, getConvertedProps } from './conversionMap.ts'
 import { contentLayerLabel } from './contentText.js'
+import { ALT } from './shortcuts.ts'
 import { useT } from '../labels/useT.js'
 
 // ── Node → tree item conversion ───────────────────────────────────────────────
@@ -229,11 +230,31 @@ export function ComponentTreePanel({
     return null
   }
 
+  function siblingInfo(id) {
+    function findInList(nodes) {
+      for (let index = 0; index < nodes.length; index += 1) {
+        if (nodes[index].id === id) {
+          return { isFirst: index === 0, isLast: index === nodes.length - 1 }
+        }
+        const nested = nodes[index].children?.length ? findInList(nodes[index].children) : null
+        if (nested) return nested
+      }
+      return null
+    }
+    if (!definition) return { isFirst: true, isLast: true }
+    for (const region of definition.page.layout.regions) {
+      const found = findInList(region.nodes)
+      if (found) return found
+    }
+    return { isFirst: true, isLast: true }
+  }
+
   function buildTreeContextMenuItems(id) {
     const node = findNode(id)
     const nodeType = node?.type ?? null
     const isContainer = CONTAINER_TYPES.has(nodeType)
     const hasChildren = !!(node?.children?.length)
+    const position = siblingInfo(id)
     const items = []
 
     // A pattern zone is fixed by its pattern: the only thing to do with it is
@@ -292,6 +313,30 @@ export function ComponentTreePanel({
       label: 'Add below',
       icon: 'add_box',
       onClick: () => onRequestAdd?.({ targetId: id, position: 'after' }),
+    })
+
+    items.push({ type: 'divider', id: 'div-move' })
+    items.push({
+      id: 'move-up',
+      label: 'Move up',
+      icon: 'arrow_upward',
+      shortcut: `${ALT}↑`,
+      disabled: position.isFirst,
+      onClick: () => {
+        setTreeCtxMenu(null)
+        onNodeAction?.({ type: 'move-up', nodeId: id })
+      },
+    })
+    items.push({
+      id: 'move-down',
+      label: 'Move down',
+      icon: 'arrow_downward',
+      shortcut: `${ALT}↓`,
+      disabled: position.isLast,
+      onClick: () => {
+        setTreeCtxMenu(null)
+        onNodeAction?.({ type: 'move-down', nodeId: id })
+      },
     })
 
     if (isContainer && hasChildren) {

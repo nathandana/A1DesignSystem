@@ -1396,6 +1396,8 @@ const COMPONENT_PROPS = {
     { id: 'status',      name: 'status',      type: '"neutral" | "info" | "success" | "warn" | "error"', description: 'Coloured status frame with matching border and inline-start stripe. Ignored when surface="accent". Pair with statusLabel so meaning isn’t colour-only. Default: none.' },
     { id: 'statusLabel', name: 'statusLabel', type: 'ReactNode',    description: 'Badge label at the top of the content, tinted to match status. Only renders when status is set.' },
     { id: 'statusPulse', name: 'statusPulse', type: 'boolean',      description: 'Subtly pulses the status stripe to signal in-progress work. Respects prefers-reduced-motion. Default: false.' },
+    { id: 'actions',     name: 'actions',     type: 'ReactNode',    description: 'Compact action group at the top-right, primarily for small Icon Buttons. Ignored by navigation cards.' },
+    { id: 'actionsLabel', name: 'actionsLabel', type: 'string',    description: 'Accessible name for the action group. Default: "Card actions".' },
     { id: 'children',    name: 'children',    type: 'ReactNode',    description: 'Card content.' },
   ],
   stack: [
@@ -3225,10 +3227,10 @@ function ComponentConfigureSurface({
       ) : (
         <Section
           align={displayConfig.align}
-          padding={component.id === 'button' || component.id === 'split-button' ? 'sm' : 'none'}
+          padding={component.id === 'button' || component.id === 'split-button' || component.id === 'card' ? 'sm' : 'none'}
           inverse={displayConfig.inverse}
           gap="lg"
-          borderSize={displayConfig.borderSize}
+          borderSize={component.id === 'card' ? undefined : displayConfig.borderSize}
           borderStyle={displayConfig.borderStyle}
           borderVariant={displayConfig.borderVariant}
           radius={displayConfig.radius}

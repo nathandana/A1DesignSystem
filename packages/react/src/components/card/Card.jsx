@@ -76,12 +76,15 @@ export function Card({
   status,
   statusLabel,
   statusPulse = false,
+  actions,
+  actionsLabel = "Card actions",
   className = "",
   style,
   children,
   ...props
 }) {
   const isNavigation = variant === "navigation";
+  const resolvedActions = isNavigation ? null : actions;
   const Component = as ?? (isNavigation ? (href ? "a" : "button") : "div");
   // A recognized token resolves to itself; any other truthy value is treated
   // as a raw CSS color (e.g. a custom hex) — mirrors the heroColor escape hatch.
@@ -107,6 +110,7 @@ export function Card({
     resolvedStatus && "a1-card--has-status",
     resolvedStatus && `a1-card--status-${resolvedStatus}`,
     resolvedStatus && statusPulse && "a1-card--status-pulse",
+    resolvedActions && "a1-card--has-actions",
     className,
   ]
     .filter(Boolean)
@@ -128,6 +132,15 @@ export function Card({
   const mergedStyle = isCustomSurface
     ? { "--a1-card-surface-custom": surface, ...style }
     : style;
+  const actionZone = resolvedActions ? (
+    <div
+      className={`a1-card__actions${resolvedDisplay === "default" ? " a1-card__actions--corner" : ""}`}
+      role="group"
+      aria-label={actionsLabel}
+    >
+      {resolvedActions}
+    </div>
+  ) : null;
 
   return (
     <Component className={classes} href={href} style={mergedStyle} {...interactiveProps} {...props}>
@@ -159,7 +172,9 @@ export function Card({
             <Icon name={icon} />
           </span>
         )}
+        {resolvedDisplay === "default" && actionZone}
         <div className="a1-card__content">
+          {resolvedDisplay !== "default" && actionZone}
           {hasStatusBadge && (
             <span className="a1-card__status-badge">
               <MessageBadge status={resolvedStatus} size="sm">{statusLabel}</MessageBadge>

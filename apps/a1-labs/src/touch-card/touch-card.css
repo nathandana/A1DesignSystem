@@ -1,0 +1,59 @@
+.a1-touch-card {
+  --a1-touch-card-radius: var(--base-radius-xl);
+  border-radius: var(--a1-touch-card-radius);
+}
+
+.a1-touch-card .a1-card__content {
+  min-width: 0;
+}
+
+.a1-touch-card__actions-slot {
+  position: relative;
+  flex: none;
+  width: calc(3 * var(--component-button-small-height) + 2 * var(--base-spacing-4) + 2 * var(--component-card-border-width));
+  height: calc(var(--component-button-small-height) + 2 * var(--component-card-border-width));
+  margin-block-start: calc(-1 * var(--base-spacing-8) - var(--component-card-border-width));
+  margin-inline-end: calc(-1 * var(--base-spacing-8) - var(--component-card-border-width));
+}
+
+.a1-touch-card__actions {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  display: flex;
+  gap: var(--base-spacing-4);
+  border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: max(0px, calc(var(--a1-touch-card-radius) - var(--base-spacing-8)));
+  transition:
+    gap var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard),
+    padding var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard),
+    background-color var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard),
+    box-shadow var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard);
+}
+
+.a1-touch-card__actions .a1-icon-button {
+  width: var(--a1-icon-button-size);
+  transition:
+    width var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard),
+    height var(--semantic-motion-duration-normal) var(--semantic-motion-easing-standard);
+}
+
+.a1-touch-card__actions[data-touch-ready],
+.a1-touch-card__actions[data-hover-enlarge]:hover {
+  gap: var(--base-spacing-8);
+  padding: var(--base-spacing-8);
+  background: var(--semantic-color-surface-raised);
+  box-shadow: var(--semantic-shadow-md);
+}
+
+.a1-touch-card__actions[data-touch-ready] .a1-icon-button,
+.a1-touch-card__actions[data-hover-enlarge]:hover .a1-icon-button {
+  --a1-icon-button-size: calc(var(--base-spacing-40) + var(--base-spacing-4));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .a1-touch-card__actions,
+  .a1-touch-card__actions .a1-icon-button {
+    transition: none;
+  }
+}

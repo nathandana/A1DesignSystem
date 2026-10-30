@@ -1,5 +1,48 @@
 export const BLOG_POSTS = [
   {
+    id: 'release-035-project-canvas-and-patterns',
+    slug: 'a1-035-project-canvas-and-patterns',
+    title: 'A1 0.35.0 brings projects onto the canvas',
+    kicker: 'Release newsletter',
+    date: 'Oct. 30, 2026',
+    version: '0.35.0',
+    image: '/help/editor-canvas.png',
+    imageAlt: 'The A1 editor canvas with its project navigation and component configuration panels.',
+    description: 'A visual project canvas, reusable pattern contracts, direct manipulation and clearer project organization.',
+    keywords: ['release', '0.35.0', 'canvas', 'patterns', 'projects', 'drag and drop', 'sticky notes', 'print'],
+    subtitle: 'Arrange whole projects visually, reuse governed patterns and edit page structure more directly.',
+    sections: [
+      {
+        title: 'Projects become a visual workspace',
+        body: [
+          'Projects now open on an infinite canvas where every page appears as a responsive frame. Pan, zoom, fit and auto-arrange the sitemap; switch breakpoints, inspect connections and save the layout for the next session.',
+          'Sticky Notes sit beside page frames for working context. They support Markdown, colors, resizing and direct editing without becoming part of the published page.',
+        ],
+      },
+      {
+        title: 'Patterns become portable contracts',
+        body: [
+          'Page Title, Overview Card, Navigation Tree, Overflow Menu and Verification Dialog are now first-class patterns. Each carries explicit areas, action rules and a versioned contract that the editor, React package and MCP index share.',
+          'Validation and migrations keep imported pattern content predictable while still allowing supported text, metadata and action changes per instance.',
+        ],
+      },
+      {
+        title: 'Direct editing with clearer intent',
+        body: [
+          'Components can be dragged on the page or reordered from the Layers tree, with the same placement indicators, pattern rules, history and undo behavior. Context menus and keyboard shortcuts expose equivalent move commands.',
+          'Text remains a drag surface on a single click and enters inline editing on a double-click. Containers select as containers, so selection and editing no longer compete for the same gesture.',
+        ],
+      },
+      {
+        title: 'Projects and output stay organized',
+        body: [
+          'Favorite, hide, tag and manually order projects. Project Cards group Favorite, Edit and More options in the shared Card action zone, and the same opt-in action treatment is available from Card configurators.',
+          'Print preview shows Letter and A4 output before opening the browser dialog. Published pages print completely in light mode without editor controls, while the new Dispatch sports blog and Word finder provide richer examples to build from.',
+        ],
+      },
+    ],
+  },
+  {
     "id": "release-034-labs-and-component-refinements",
     "slug": "a1-034-labs-and-component-refinements",
     "title": "A1 0.34.0 opens Labs",

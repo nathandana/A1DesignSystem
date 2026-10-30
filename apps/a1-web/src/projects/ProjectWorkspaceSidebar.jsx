@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import { Button, Heading, IconButton, SegmentedControl, SideNav, SplitButton, Stack } from '@gtivr4/a1-design-system-react'
+import { Button, Divider, Heading, IconButton, SegmentedControl, SideNav, SplitButton, Stack, TreeMenu } from '@gtivr4/a1-design-system-react'
 import { AI_ENABLED } from '../lib/aiImages.ts'
 import { ProjectPagesPanel } from './ProjectPagesPanel.jsx'
 import { ComponentTreePanel } from '../editor/EditorSidebar.jsx'
+import { useT } from '../labels/useT.js'
 
 /**
  * The editor sidebar while inside a project: a SideNav whose body switches
@@ -13,6 +14,7 @@ import { ComponentTreePanel } from '../editor/EditorSidebar.jsx'
 export function ProjectWorkspaceSidebar({
   project,
   onBackToProjects,
+  onBackToProject,
   open,
   onClose,
   // Pages tab
@@ -36,6 +38,7 @@ export function ProjectWorkspaceSidebar({
   onNodeAction,
   onConvertNode,
 }) {
+  const t = useT()
   const [tab, setTab] = useState('pages')
 
   // Opening a page jumps to Layers (to edit its components); returning to the
@@ -106,15 +109,32 @@ export function ProjectWorkspaceSidebar({
   return (
     <SideNav header={header} footer={footer} collapseButtonPlacement="footer" open={open} onClose={onClose}>
       {tab === 'pages' ? (
-        <ProjectPagesPanel
-          pages={pages}
-          activePageId={activePageId}
-          onSelectPage={onSelectPage}
-          onAddPage={onAddPage}
-          onDuplicatePage={onDuplicatePage}
-          onDeletePage={onDeletePage}
-          onMovePage={onMovePage}
-        />
+        <Stack gap="sm">
+          {onBackToProject && (
+            <>
+              <TreeMenu
+                items={[{
+                  id: 'project',
+                  label: t('app.editor.projectOverview', 'Project'),
+                  icon: 'home',
+                }]}
+                selectedId={hasOpenPage ? undefined : 'project'}
+                onSelect={onBackToProject}
+                aria-label={t('app.editor.projectOverview', 'Project')}
+              />
+              <Divider space="xs" />
+            </>
+          )}
+          <ProjectPagesPanel
+            pages={pages}
+            activePageId={activePageId}
+            onSelectPage={onSelectPage}
+            onAddPage={onAddPage}
+            onDuplicatePage={onDuplicatePage}
+            onDeletePage={onDeletePage}
+            onMovePage={onMovePage}
+          />
+        </Stack>
       ) : (
         <ComponentTreePanel
           definition={hasOpenPage ? definition : null}

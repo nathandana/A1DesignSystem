@@ -1,5 +1,114 @@
 # A1 Design System — Component Maintenance Log
 
+## 2026-10-30 — Card action zone
+
+Card now accepts `actions` and `actionsLabel`, rendering non-navigation actions
+as a labelled, bordered group inset from the top-right corner. The geometry
+promotes the Labs touch-card control group while intentionally omitting its
+touch/hover enlargement. Its radius follows the Card radius minus the 8px inset,
+with the small radius token as a floor so the default Card retains a smooth
+inner corner. The shared Card configurator keeps the area off by default and
+edits up to three Icon Button labels, icons and optional destinations. The same
+structured configuration is used by component, project and pattern editors.
+
+## 2026-10-30 — Labs touch-card configuration placement
+
+The Touch card configuration now uses the standard right-side Labs panel on
+desktop and the shared bottom sheet on small screens. The temporary start-side
+placement override was removed from the shared experiment shell.
+
+## 2026-10-30 — Labs touch-card zoom transition
+
+Touch-card actions now ease their button size, group spacing, padding, surface
+and shadow using A1's normal motion duration and standard easing. The overlay
+still prevents content reflow, and reduced motion applies the state instantly.
+
+## 2026-10-30 — Labs touch-card preview control
+
+The Touch card experiment adds a standard configuration-panel switch that
+shows the 44×44px enlarged action state on hover on devices
+without touch input. Mouse and keyboard actions remain immediate, the controls
+return to compact size when hover leaves and card content does not reflow.
+No shared component API changed.
+
+## 2026-10-30 — Labs touch card stable enlargement
+
+The Touch card now expands its touch actions in an overlay anchored to a fixed
+compact-size slot. Expanded IconButtons are exactly 44×44px, derived from the
+40px and 4px spacing tokens, while the Card height, heading and body positions
+remain unchanged. Shared IconButton sizing and Card APIs are unchanged.
+
+## 2026-10-30 — Labs touch card inner radius
+
+The Touch card action-group radius now resolves to 4px: the experiment Card's
+12px radius minus the group's 8px edge inset. This restores concentric corner
+geometry after moving the group closer to the Card edge.
+
+## 2026-10-30 — Labs touch card action placement
+
+The Touch card action group now sits 8px from the Card's top and right edges.
+Token-backed negative margins offset the Card's 16px content padding and 1px border while
+keeping the controls in normal flow. Shared component APIs are unchanged.
+
+## 2026-10-30 — Labs touch card radius
+
+The Touch card experiment increases its outer radius one A1 step from `lg` to
+`xl`. Its nested action-group radius continues to derive from the experiment
+Card radius minus Card padding, clamped at zero. The shared Card default is
+unchanged.
+
+## 2026-10-30 — Labs touch card concentric corners
+
+The Touch card action-group radius now resolves from Card radius minus Card
+padding, clamped at zero. This keeps the nested control's corner geometry tied
+to the outer Card without adding a new token or changing shared APIs.
+
+## 2026-10-30 — Labs touch card action grouping
+
+The Touch card experiment now places its three compact IconButtons inside one
+subtly bordered group. The refinement uses existing Card border-width and
+semantic subtle-border tokens; shared component APIs are unchanged.
+
+## 2026-10-30 — Labs touch card actions
+
+Labs adds a realistic A1 Card with three small IconButtons aligned in its
+top-right corner. Mouse and keyboard activate Save, Share and Details directly.
+For actual touch pointers, the first tap enlarges the whole group to large A1
+touch targets and announces the change; the next tap performs the selected
+action. The experiment is local to Labs and does not change the shared Card or
+IconButton API.
+
+## 2026-10-29 — Context menu submenus
+
+ContextMenu items can opt out of automatic close while opening a submenu, and
+the parent can remain open during interaction with a second ContextMenu. Items
+can also run `onHover` after an optional `hoverDelay` (200 ms by default) for
+cascading menus while retaining click activation. Default single-menu dismissal
+is unchanged. Both item callbacks receive the triggering button so consumers can
+place a submenu directly against its row. Labs uses the opt-in API for cascading
+Button property menus. A `custom` entry can host an accessible inline control
+group, used by Labs to consolidate ToolbarGroup radio controls inside a context
+menu while keeping the menu's outside-click and keyboard handling.
+While any ContextMenu is open it cancels the native `contextmenu` event at the
+document level, so a second right-click cannot layer the browser menu over the
+A1 editing surface.
+
+## 2026-10-29 — Project canvas drag and drop (A1-2728)
+
+Project editor components are directly draggable on the canvas. Native drag
+events reuse the existing governed move path, before/inside/after indicators,
+history and undo. Locked pattern content stays fixed; blank-area rules still
+govern destinations. The source uses the existing reordering opacity token.
+Layers-tree drag/drop and boundary-aware Move up/Move down context-menu actions
+use the same handlers and advertise the existing Alt+arrow shortcuts.
+Seamless InlineEditable now has opt-in double-click activation, with Enter and
+F2 as keyboard equivalents, so text can remain a selection and drag surface.
+Its cursor inherits from that surface until editing begins, then changes to the
+text caret. Single-clicked editable text suppresses the component selection
+outline until editing begins, avoiding a false editable-state affordance;
+container selections keep their normal outline.
+No label, token or page-definition contract changed.
+
 ## 2026-10-28 — Button preview-frame padding
 
 Button and Split Button configurator frames use `Section padding="sm"` to provide matching space around their examples. This is preview spacing; exported component code is unchanged. Other previews retain their existing padding. No CSS added.

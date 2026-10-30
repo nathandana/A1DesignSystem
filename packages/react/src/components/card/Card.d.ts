@@ -71,6 +71,10 @@ export interface CardProps extends React.HTMLAttributes<HTMLElement> {
    * Default: false.
    */
   statusPulse?: boolean;
+  /** Actions shown in a compact bordered group at the card's top-right. Primarily intended for small IconButtons. Ignored by navigation cards, which cannot contain nested controls. */
+  actions?: React.ReactNode;
+  /** Accessible name for the action group. Default: "Card actions" */
+  actionsLabel?: string;
   children?: React.ReactNode;
 }
 

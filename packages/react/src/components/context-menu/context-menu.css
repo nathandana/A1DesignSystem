@@ -21,6 +21,10 @@
   user-select: none;
 }
 
+.a1-context-menu__custom {
+  padding: var(--base-spacing-4) var(--base-spacing-8);
+}
+
 .a1-context-menu__divider {
   margin-block: var(--base-spacing-4);
   border: none;

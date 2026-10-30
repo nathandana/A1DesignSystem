@@ -1,0 +1,37 @@
+.a1-button-configurator-menu {
+  position: relative;
+}
+
+.a1-button-configurator-menu__trigger {
+  display: inline-flex;
+  max-inline-size: 100%;
+}
+
+.a1-button-configurator-menu__trigger--full-width {
+  inline-size: 100%;
+}
+
+.a1-button-configurator-menu__toolbar {
+  position: absolute;
+  z-index: var(--component-toolbar-z-index, 5);
+  inset-block-start: calc(100% + var(--base-spacing-8));
+  inset-inline-start: 50%;
+  inline-size: max-content;
+  max-inline-size: calc(100vw - var(--base-spacing-32));
+  transform: translateX(-50%);
+}
+
+.a1-button-configurator-menu__toolbar--extended {
+  max-inline-size: calc(100vw - var(--base-spacing-32));
+}
+
+.a1-button-configurator-menu__label {
+  inline-size: var(--base-width-xs);
+}
+
+.a1-button-configurator-menu__flyout-anchor {
+  position: fixed;
+  inline-size: var(--base-spacing-1);
+  block-size: var(--base-spacing-1);
+  pointer-events: none;
+}

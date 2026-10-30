@@ -2284,6 +2284,7 @@ function App() {
                 onClose={() => setSidebarOpen(false)}
                 project={activeProject}
                 onBackToProjects={handleBackToProjects}
+                onBackToProject={handleBackToProjectOverview}
                 pages={projectPages}
                 activePageId={openPageId}
                 hasOpenPage={!!openPageId}
@@ -2554,7 +2555,6 @@ function App() {
               resolvedColorScheme={resolvedColorScheme}
               projectPages={projectPages}
               onNavigateToPage={handleOpenPage}
-              onBackToProjectOverview={handleBackToProjectOverview}
               composeWithAi={openPageId === aiComposePageId}
               onAiComposeConsumed={() => setAiComposePageId(null)}
               pageLevel={projectStore.getPageLevel(projectPages, openPageId)}

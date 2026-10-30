@@ -16,6 +16,7 @@ import {
   InlineEditable,
   Heading,
   HeadingMark,
+  IconButton,
   Link,
   Paragraph,
   Section,
@@ -195,6 +196,11 @@ interface EditorModeContextValue {
     targetNodeId: string,
     position: "before" | "into" | "after",
   ) => void;
+  onNodeMove: (move: {
+    draggedId: string;
+    targetId: string;
+    position: "before" | "into" | "after";
+  }) => void;
   onDetachPattern: (nodeId: string) => void;
   onCreatePattern: (nodeId: string) => void;
   /** Edit the text of a child-item field (e.g. a DefinitionList item's label/value). */
@@ -249,6 +255,7 @@ const EditorModeContext = createContext<EditorModeContextValue>({
   activeItem: null,
   onItemSelect: () => {},
   onCatalogDrop: () => {},
+  onNodeMove: () => {},
   onDetachPattern: () => {},
   onCreatePattern: () => {},
 });
@@ -532,6 +539,7 @@ function RenderNode({
     activeItem,
     onItemSelect,
     onCatalogDrop,
+    onNodeMove,
     onDetachPattern,
     onCreatePattern,
   } = editorCtx;
@@ -651,6 +659,7 @@ function RenderNode({
     textContent = (
       <InlineEditable
         seamless
+        editOnDoubleClick
         value={isHeading ? decodeEntities(text) : text}
         multiline={node.type === "Paragraph" || node.type === "StickyNote"}
         onChange={(v) => onContentChange(node.id, v)}
@@ -729,6 +738,25 @@ function RenderNode({
   delete resolvedProps.labelKey;
   if (labelKey) resolvedProps.label = resolvedLabel;
 
+  // Card actions are stored as editor-friendly data so the Card configurator
+  // can turn the zone on/off and edit each action without structural mutations.
+  // The shared Card still receives its public ReactNode `actions` API.
+  if (node.type === "Card" && Array.isArray(resolvedProps.actions)) {
+    resolvedProps.actions = resolvedProps.actions.map((action, index) => {
+      if (!action || typeof action !== "object") return null;
+      const item = action as { id?: string; icon?: string; label?: string; href?: string };
+      return (
+        <IconButton
+          key={item.id ?? `card-action-${index}`}
+          icon={item.icon || "more_horiz"}
+          label={item.label || "Action"}
+          href={item.href || undefined}
+          size="sm"
+        />
+      );
+    });
+  }
+
   // Resolve data bindings in string props: `{{ dataset.column }}` → the cell value
   // (whole-token bindings keep their raw type, e.g. a number prop stays a number).
   for (const k of Object.keys(resolvedProps)) {
@@ -750,6 +778,7 @@ function RenderNode({
       resolvedProps[prop] = (
         <InlineEditable
           seamless
+          editOnDoubleClick
           multiline={multiline}
           value={value}
           onChange={(v) => onPropTextChange(node.id, prop, v)}
@@ -836,6 +865,7 @@ function RenderNode({
         i,
         <InlineEditable
           seamless
+          editOnDoubleClick
           value={itemText(item.label)}
           onChange={(val) => onItemTextChange(node.id, i, "label", val)}
           aria-label="Edit label"
@@ -845,6 +875,7 @@ function RenderNode({
         i,
         <InlineEditable
           seamless
+          editOnDoubleClick
           value={itemText(item.value ?? item.children)}
           onChange={(val) => onItemTextChange(node.id, i, "value", val)}
           aria-label="Edit value"
@@ -864,6 +895,7 @@ function RenderNode({
       editorMode && !contentLocked ? (
         <InlineEditable
           seamless
+          editOnDoubleClick
           value={raw}
           onChange={(v) => onContentChange(node.id, v)}
           aria-label="Edit legend"
@@ -1024,6 +1056,13 @@ function RenderNode({
   if (!editorMode) return componentEl;
 
   const isContainer = CONTAINER_TYPES.has(node.type);
+  const hasInlineEditableText = (!contentLocked && !textBound && text !== undefined)
+    || (INLINE_TEXT_PROPS_BY_TYPE[node.type] ?? []).some(({ prop }) => {
+      const value = node.props?.[prop];
+      return typeof value === "string"
+        && !(enforceLocks && !!node.lock?.props?.includes(prop))
+        && !hasBinding(value);
+    });
 
   // Clicking a Slot on a page opens the Add panel targeted at the slot (so it
   // offers only the components/patterns the slot accepts) instead of selecting
@@ -1033,6 +1072,9 @@ function RenderNode({
   const handleSelect = slotAddMode
     ? () => onRequestAddChild(node.id)
     : onNodeSelect;
+  const isLocked =
+    (lockedNodeIds.has(node.id) || !!node.lock?.node) &&
+    (nodeInPattern ? thisActive : true);
 
   // In editor mode, wrap the component in EditorSelectionBoundary which:
   // - injects data-editor-node / data-editor-type attrs via cloneElement (no DOM wrapper)
@@ -1044,10 +1086,8 @@ function RenderNode({
       nodeId={node.id}
       nodeType={node.type}
       isSelected={node.id === selectedNodeId}
-      isLocked={
-        (lockedNodeIds.has(node.id) || !!node.lock?.node) &&
-        (nodeInPattern ? thisActive : true)
-      }
+      hasInlineEditableText={hasInlineEditableText}
+      isLocked={isLocked}
       patternOutline={isPatternRoot && !thisActive}
       patternInstance={node.patternInstance}
       selectedId={selectedNodeId}
@@ -1065,6 +1105,8 @@ function RenderNode({
       getNodeProps={getNodeProps}
       getNodeInfo={getNodeInfo}
       isContainer={isContainer}
+      canDrag={!isLocked || isPatternRoot}
+      onNodeMove={onNodeMove}
       onCatalogDrop={(catalogType, position) =>
         onCatalogDrop(catalogType, node.id, position)
       }
@@ -1138,6 +1180,7 @@ export function RenderPageDefinition({
   activeItem = null,
   onItemSelect,
   onCatalogDrop,
+  onNodeMove,
   onDetachPattern,
   onCreatePattern,
 }: {
@@ -1177,6 +1220,11 @@ export function RenderPageDefinition({
     targetNodeId: string,
     position: "before" | "into" | "after",
   ) => void;
+  onNodeMove?: (move: {
+    draggedId: string;
+    targetId: string;
+    position: "before" | "into" | "after";
+  }) => void;
   onDetachPattern?: (nodeId: string) => void;
   onCreatePattern?: (nodeId: string) => void;
   onItemTextChange?: (
@@ -1241,6 +1289,7 @@ export function RenderPageDefinition({
     activeItem,
     onItemSelect: onItemSelect ?? (() => {}),
     onCatalogDrop: onCatalogDrop ?? (() => {}),
+    onNodeMove: onNodeMove ?? (() => {}),
     onDetachPattern: onDetachPattern ?? (() => {}),
     onCreatePattern: onCreatePattern ?? (() => {}),
   };

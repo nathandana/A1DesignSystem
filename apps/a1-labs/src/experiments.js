@@ -606,6 +606,27 @@ export const allExperiments = [
     description: 'Eight tab treatments: A1 default, folders, bold selection, pills, outlines, raised surfaces, top rails and bookmarks.',
     preview: '/previews/tabs.png', previewAlt: 'Folder-shaped tabs behind a continuously bordered project overview sheet, with Files, Activity, Team and Settings alongside.',
   },
+  {
+    id: 'button-configurator-menu', addedIn: '0.74.0', category: 'interaction', types: ['design-tool'],
+    tags: ['button', 'configuration', 'configurator', 'menu', 'overlay', 'properties', 'inspector', 'edit in place'],
+    title: 'Button configurator menu', href: '/experiments/button-configurator-menu', icon: 'tune',
+    description: 'Configure a live A1 Button in an anchored menu opened directly from the component instead of a persistent side panel.',
+    preview: '/previews/button-configurator-menu.png', previewAlt: 'A Save changes button with an anchored configuration menu showing its variant, size and state controls.',
+  },
+  {
+    id: 'text-selection', addedIn: '0.75.0', category: 'interaction', types: ['design-tool', 'page-layout'],
+    tags: ['selection', 'css selection', 'selected text', 'text emphasis', 'theme color', 'textarea', 'annotation'],
+    title: 'Text selection', href: '/experiments/text-selection', icon: 'ink_highlighter',
+    description: 'Select realistic text on default and inverse surfaces using the browser default, six semantic treatments or two steps from the highlighted color ramp.',
+    preview: '/previews/text-selection.png', previewAlt: 'A product release article and inverse service notice with selected text recolored using A1 theme colors.',
+  },
+  {
+    id: 'touch-card', addedIn: '0.76.0', category: 'interaction', types: ['microinteraction', 'page-layout'],
+    tags: ['card', 'icon buttons', 'touch targets', 'touchscreen', 'coarse pointer', 'zoom', 'mobile actions'],
+    title: 'Touch card actions', href: '/experiments/touch-card', icon: 'touch_app',
+    description: 'Three compact card actions enlarge as a group before the first touch, then respond on the next tap.',
+    preview: '/previews/touch-card.png', previewAlt: 'A research summary card with save, share and more icon buttons in its top-right corner.',
+  },
 ]
 
 /** Experiments shown in the gallery, sidebar and search. */

@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+## 0.34.0 — 2026-10-30
+
+### Highlights
+
+- **Canvas frames and Sticky Notes** — Canvas can host responsive page frames alongside draggable, resizable Markdown notes, with stable zoom controls, connectors and expandable tools.
+- **Reusable pattern contracts** — Page Title, Overview Card, Navigation Tree, Overflow Menu and Verification Dialog ship as governed React patterns with validation, migration and structured action policies.
+- **Card action zones** — Cards can opt into a compact, labelled top-right action group. Default-icon Cards align actions opposite the icon; hero and iconless Cards retain content-level placement.
+- **More deliberate editing interactions** — InlineEditable supports double-click activation, Context Menu supports persistent cascading submenus and structured inline controls, and disabled actions consistently suppress navigation.
+- **Reliable output and controls** — Print styles produce complete light pages, textareas avoid pill-shaped corners, badges truncate safely and menus use stronger shared surface tokens.
+
+
 ## 0.33.0 — 2026-10-12
 
 ### Highlights

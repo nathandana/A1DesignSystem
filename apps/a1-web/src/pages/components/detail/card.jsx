@@ -1,10 +1,15 @@
 import { useState } from 'react'
 import {
+  Accordion,
+  Button,
   Card,
   Code,
+  Divider,
   Heading,
+  IconButton,
   Paragraph,
   Stack,
+  Switch,
   TextField,
   Toolbar,
   ToolbarDivider,
@@ -58,6 +63,16 @@ const ICON_DISPLAY_OPTIONS = ['none', 'default', 'hero']
 const HERO_COLOR_OPTIONS = ['action', 'neutral', 'info', 'success', 'warn', 'error']
 const HERO_SEPARATOR_SHAPES = ['wave', 'swell', 'curve', 'slope', 'peak', 'valley', 'ribbon']
 const NONE_ICON = 'block'
+const MAX_ACTIONS = 3
+
+function defaultAction(index = 0) {
+  return {
+    id: `card-action-${Date.now()}-${index}`,
+    icon: index ? 'more_horiz' : 'bookmark',
+    label: index ? 'More actions' : 'Save card',
+    href: '',
+  }
+}
 
 function optionLabel(value) {
   return value.charAt(0).toUpperCase() + value.slice(1)
@@ -112,9 +127,18 @@ function buildCardSnippet(config, utilityClass = '') {
     config.surface === 'default' ? propString('status', config.status, '') : null,
     config.surface === 'default' && config.status ? propString('statusLabel', config.statusLabel, '') : null,
     config.surface === 'default' && config.status ? propBoolean('statusPulse', config.statusPulse, false) : null,
+    config.actions?.length ? propString('actionsLabel', config.actionsLabel, 'Card actions') : null,
   ].filter(Boolean).join(' ')
 
-  return `<Card${props ? ` ${props}` : ''}>
+  const actions = config.variant === 'navigation' || !config.actions?.length ? '' : `
+  actions={
+    <>
+${config.actions.map((action) => `      <IconButton icon="${action.icon || 'more_horiz'}" label="${String(action.label || 'Action').replaceAll('"', '&quot;')}"${action.href ? ` href="${String(action.href).replaceAll('"', '&quot;')}"` : ''} size="sm" />`).join('\n')}
+    </>
+  }`
+
+  return `<Card${props ? ` ${props}` : ''}${actions}
+>
   <Heading as="h3" size="sm">${escapeJsxText(config.title || 'Card title')}</Heading>
   <Paragraph size="sm" color="muted">
     ${escapeJsxText(config.body || 'Supporting card content.')}
@@ -142,11 +166,14 @@ export function getDefaultConfig() {
     status: '',
     statusLabel: 'In progress',
     statusPulse: false,
+    actionsLabel: 'Card actions',
+    actions: [],
   }
 }
 
 export function Preview({ config, utilityClass = '' }) {
   const icon = config.iconDisplay === 'none' ? undefined : config.icon
+  const actions = config.variant === 'navigation' ? [] : (config.actions ?? [])
 
   return (
     <Card
@@ -167,6 +194,14 @@ export function Preview({ config, utilityClass = '' }) {
       status={config.surface === 'default' ? config.status || undefined : undefined}
       statusLabel={config.surface === 'default' && config.status && config.statusLabel ? config.statusLabel : undefined}
       statusPulse={config.surface === 'default' ? config.statusPulse : false}
+      actionsLabel={config.actionsLabel || 'Card actions'}
+      actions={actions.length ? (
+        <>
+          {actions.map((action) => (
+            <IconButton key={action.id} icon={action.icon || 'more_horiz'} label={action.label || 'Action'} href={action.href || undefined} size="sm" />
+          ))}
+        </>
+      ) : undefined}
     >
       <Stack gap="xs">
         <Heading as="h3" size="sm">{config.title || 'Card title'}</Heading>
@@ -180,6 +215,9 @@ export function Preview({ config, utilityClass = '' }) {
 
 export function Controls({ config, setConfig, pages }) {
   const [customColorOpen, setCustomColorOpen] = useState(false)
+  const actions = config.actions ?? []
+  const setActions = (next) => setConfig((current) => ({ ...current, actions: next }))
+  const updateAction = (id, patch) => setActions(actions.map((action) => action.id === id ? { ...action, ...patch } : action))
 
   return (
     <Stack gap="lg">
@@ -254,6 +292,71 @@ export function Controls({ config, setConfig, pages }) {
           value={config.href}
           onChange={(href) => setConfig((current) => ({ ...current, href }))}
         />
+      )}
+      {config.variant !== 'navigation' && (
+        <Accordion
+          label="Action zone"
+          subtext={actions.length ? `${actions.length} ${actions.length === 1 ? 'action' : 'actions'}` : 'Off'}
+          size="sm"
+          divider
+        >
+          <Stack gap="md">
+          <Switch
+            label="Show action zone"
+            checked={actions.length > 0}
+            onChange={(checked) => setActions(checked ? [defaultAction()] : [])}
+          />
+          {actions.length > 0 && (
+            <Stack gap="md">
+              <TextField
+                label="Action group label"
+                size="compact"
+                value={config.actionsLabel || 'Card actions'}
+                onChange={(event) => setConfig((current) => ({ ...current, actionsLabel: event.target.value }))}
+              />
+              {actions.map((action, index) => (
+                <Stack key={action.id} gap="sm">
+                  {index > 0 && <Divider space="none" />}
+                  <Stack direction="row" gap="xs" align="end">
+                    <Stack grow>
+                      <TextField
+                        label={`Action ${index + 1} label`}
+                        size="compact"
+                        value={action.label}
+                        onChange={(event) => updateAction(action.id, { label: event.target.value })}
+                      />
+                    </Stack>
+                    <IconButton
+                      icon="delete"
+                      label={`Remove action ${index + 1}`}
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => setActions(actions.filter((item) => item.id !== action.id))}
+                    />
+                  </Stack>
+                  <IconSelect label={`Action ${index + 1} icon`} value={action.icon} onChange={(icon) => updateAction(action.id, { icon })} />
+                  <TextField
+                    label={`Action ${index + 1} link`}
+                    hint="Optional destination URL."
+                    size="compact"
+                    value={action.href || ''}
+                    onChange={(event) => updateAction(action.id, { href: event.target.value })}
+                  />
+                </Stack>
+              ))}
+              <Button
+                variant="secondary"
+                size="sm"
+                icon="add"
+                disabled={actions.length >= MAX_ACTIONS}
+                onClick={() => setActions([...actions, defaultAction(actions.length)])}
+              >
+                Add action
+              </Button>
+            </Stack>
+          )}
+          </Stack>
+        </Accordion>
       )}
       <Choice prop="iconDisplay"
         label="Icon display"

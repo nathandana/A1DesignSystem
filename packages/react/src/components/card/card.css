@@ -98,6 +98,30 @@ button.a1-card--navigation {
   min-width: 0;
 }
 
+.a1-card--has-actions .a1-card__content {
+  display: flow-root;
+}
+
+/* Compact card actions share the touch-card study's inset and concentric
+   corner geometry, without its touch enlargement behaviour. Floating keeps
+   surrounding content out of the action area without imposing a header API. */
+.a1-card__actions {
+  float: inline-end;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--base-spacing-4);
+  margin-block-start: calc(-1 * var(--base-spacing-8) - var(--component-card-border-width));
+  margin-inline-end: calc(-1 * var(--base-spacing-8) - var(--component-card-border-width));
+  margin-block-end: var(--base-spacing-8);
+  margin-inline-start: var(--base-spacing-8);
+  padding: var(--base-spacing-4);
+  border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: max(
+    var(--base-radius-sm),
+    calc(var(--component-card-border-radius) - var(--base-spacing-8))
+  );
+}
+
 /* ─── Status frame + badge ──────────────────────────────────────────────────
    A coloured full-card border and inline-start stripe that signal status, with
    an optional MessageBadge. The stripe is a clipped ::before pseudo-element so
@@ -320,6 +344,30 @@ html.a1-reduce-motion .a1-card--status-pulse::before {
   flex-direction: column;
 }
 
+.a1-card--has-icon.a1-card--has-actions .a1-card__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.a1-card--has-icon.a1-card--has-actions .a1-card__icon {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.a1-card--has-icon.a1-card--has-actions .a1-card__actions--corner {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: start;
+  float: none;
+  block-size: fit-content;
+  margin-inline-start: var(--base-spacing-8);
+}
+
+.a1-card--has-icon.a1-card--has-actions .a1-card__content {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
 .a1-card__icon {
   --a1-card-icon-box: var(--base-spacing-40);
   --a1-card-icon-size: var(--component-card-icon-size);
@@ -375,6 +423,19 @@ html.a1-reduce-motion .a1-card--status-pulse::before {
 
   .a1-card--has-icon .a1-card__content {
     flex: 1 1 auto;
+  }
+
+  .a1-card--has-icon.a1-card--has-actions > .a1-card__layout {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .a1-card--has-icon.a1-card--has-actions .a1-card__content {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .a1-card--has-icon.a1-card--has-actions .a1-card__actions--corner {
+    grid-column: 3;
   }
 }
 
