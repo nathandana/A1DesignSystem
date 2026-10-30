@@ -607,6 +607,8 @@ Capture its card with `npm run capture:previews --workspace=a1-labs -- http://12
 
 ## Segmented control transitions
 
+The example defaults to Large (`lg`), the largest supported A1 size. Small and Medium remain available in configuration.
+
 Open `/experiments/segmented-motion` for the A1 segmented control with eight
 ways for its selected background to move: Default (as it ships), Fade, Slide,
 Spring, Stretch (the leading edge goes first), Grow, Wipe and Morph (it shrinks
@@ -1065,3 +1067,11 @@ Use `capture:previews` with `--mobile-tables-only`, `--fit-only` or
 `--segmented-only` to refresh these cards. Captures isolate the device or
 component from Labs navigation and configuration in a 16:9 export. Segmented
 controls use a settled selection so the static preview stays clear.
+
+## Hover state and selected
+
+[Hover state and selected](http://127.0.0.1:5187/experiments/toolbar-group) compares Current state, No hover state, Distinct hover state, Hover when off, Distinct hover when off and Pause after click on the real A1 ToolbarToggle, CheckboxGroup and ToolbarGroup. The second example is a labeled group of five notification preferences, with Email notifications and Activity summaries initially checked. Hover changes the row, never the checkmark. Bold starts selected; alignment starts at Left. Treatment and label changes preserve selection. Configuration includes Show toolbar labels and Disabled. Checkbox labels remain visible. Independent toggles remain reversible; selected single-choice items stay unchanged except in Pause after click, which swaps the resting state colors on hover: off items get the selected surface, and selected items become transparent. After a click changes selection, the new resting appearance remains until the pointer leaves the item; hover returns on re-entry.
+
+The reusable `HoverToolbar` accepts `treatment` (`current`, `none`, `distinct`, `off-only`, `distinct-off-only`, `match-active`) plus A1 Toolbar props and children. See the [hover study contract](../../packages/react/ai/labs-toolbar-group.md) for scope and validation. Refresh its gallery image with `npm run capture:previews --workspace=a1-labs -- http://127.0.0.1:5187 --toolbar-group-only`.
+
+`HoverCheckboxGroup` accepts the same treatment plus controlled A1 CheckboxGroup props (`value`, `onChange`, `options` and standard field props). Both wrappers share the click-pause hook; checkbox label clicks count as activation, and the pause lasts until the pointer leaves the whole row.

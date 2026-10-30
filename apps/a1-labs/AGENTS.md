@@ -91,3 +91,5 @@ For tab styling, current-tab feedback and neutral folder selection:
 [Tabs](../../packages/react/ai/labs-tabs.md).
 
 [Publishing Labs](../../packages/react/ai/labs-publishing.md) — separate Netlify project, build configuration, domain and release workflow.
+
+[Hover state and selected](../../packages/react/ai/labs-toolbar-group.md).

@@ -1,5 +1,9 @@
 # A1 Design System — Component Maintenance Log
 
+## 2026-10-30 — Labs Hover state and selected
+
+Labs 0.78.1 adds `/experiments/toolbar-group`, comparing six scoped hover treatments on real A1 toolbar toggles, single-selection groups and a five-option CheckboxGroup. Pause after click preserves the newly committed state until pointer exit. Native selection, focus and disabled behavior remain unchanged; shared A1 components and tokens are reused. See [Hover state and selected](labs-toolbar-group.md).
+
 ## 2026-10-30 — Card action zone
 
 Card now accepts `actions` and `actionsLabel`, rendering non-navigation actions

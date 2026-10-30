@@ -1,3 +1,4 @@
+import { ToolbarGroupExperiment } from './toolbar-group/ToolbarGroupExperiment.jsx'
 import { TabsExperiment } from './tabs/TabsExperiment.jsx'
 import { PaginationTypesExperiment } from './pagination-types/PaginationTypesExperiment.jsx'
 import { DataTablesExperiment } from './data-tables/DataTablesExperiment.jsx'
@@ -70,6 +71,7 @@ const DataGridExperiment = lazy(() => import('./data-grid/DataGridExperiment.jsx
 const TokenHierarchyExperiment = lazy(() => import('./token-hierarchy/TokenHierarchyExperiment.jsx').then(module => ({ default: module.TokenHierarchyExperiment })))
 
 const experimentPages = {
+  'toolbar-group': ToolbarGroupExperiment,
   tabs: TabsExperiment,
   'pagination-types': PaginationTypesExperiment,
   'data-tables': DataTablesExperiment,

@@ -255,3 +255,5 @@ For formal pattern contracts, editable areas, JSON defaults and MCP recommendati
 [Generated formal pattern contracts](packages/react/ai/pattern-contracts.generated.md).
 
 [Overflow menu pattern](packages/react/ai/patterns-overflow-menu.md).
+
+[Hover state and selected](packages/react/ai/labs-toolbar-group.md).

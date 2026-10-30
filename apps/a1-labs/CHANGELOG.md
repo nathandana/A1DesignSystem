@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 0.78.1 — Oct. 30, 2026
+
+- **Shorter hover treatment label** — renames Hover matches selection (pause after click) to Pause after click. Behavior is unchanged.
+
+## 0.78.0 — Oct. 30, 2026
+
+- **Hover state and selected** — adds toolbar toggles, single-selection groups and a five-option CheckboxGroup for comparing six hover treatments. Pause after click keeps the newly committed state visible until the pointer leaves. Existing A1 controls retain native selection, focus and disabled behavior; the experiment stays scoped to `/experiments/toolbar-group`.
+
 ## 0.77.2 — Oct. 30, 2026
 
 - **Standard configuration placement** — keeps the Touch card configuration panel on the right at desktop sizes, consistent with every other Labs experiment. Small screens continue to use the configuration bottom sheet.

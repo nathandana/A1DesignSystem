@@ -627,6 +627,13 @@ export const allExperiments = [
     description: 'Three compact card actions enlarge as a group before the first touch, then respond on the next tap.',
     preview: '/previews/touch-card.png', previewAlt: 'A research summary card with save, share and more icon buttons in its top-right corner.',
   },
+  {
+    id: 'toolbar-group', addedIn: '0.78.0', category: 'interaction', types: ['microinteraction', 'design-tool'],
+    tags: ['toolbar', 'toolbar group', 'toggle', 'hover', 'selected state', 'checkbox', 'checked', 'formatting', 'alignment'],
+    title: 'Hover state and selected', href: '/experiments/toolbar-group', icon: 'touch_app',
+    description: 'Compare six hover treatments on toolbar toggles, checkboxes and single-selection groups, including feedback that pauses after a click.',
+    preview: '/previews/toolbar-group.png', previewAlt: 'Formatting toggles and five notification checkboxes with both selected and unselected items.',
+  },
 ]
 
 /** Experiments shown in the gallery, sidebar and search. */

@@ -4,7 +4,7 @@ import { chromium } from '@playwright/test'
 
 // Run against the Labs dev server so the capture can use the actual renderer.
 const origin = process.argv[2] ?? 'http://127.0.0.1:5187'
-const builderOnly = { '--touch-card-only': 'touch-card', '--text-selection-only': 'text-selection', '--button-configurator-only': 'button-configurator-menu', '--code-highlighting-only': 'code-highlighting', '--tabs-only': 'tabs', '--avatars-only': 'avatars', '--pagination-types-only': 'pagination-types', '--data-tables-only': 'data-tables', '--automation-only': 'automation-builder', '--token-styling-only': 'token-styling', '--token-hierarchy-only': 'token-hierarchy' }[process.argv[3]]
+const builderOnly = { '--toolbar-group-only': 'toolbar-group', '--touch-card-only': 'touch-card', '--text-selection-only': 'text-selection', '--button-configurator-only': 'button-configurator-menu', '--code-highlighting-only': 'code-highlighting', '--tabs-only': 'tabs', '--avatars-only': 'avatars', '--pagination-types-only': 'pagination-types', '--data-tables-only': 'data-tables', '--automation-only': 'automation-builder', '--token-styling-only': 'token-styling', '--token-hierarchy-only': 'token-hierarchy' }[process.argv[3]]
 const chatOnly = process.argv[3] === '--chat-only'
 const trackerOnly = process.argv[3] === '--step-tracker-only'
 const stepsOnly = process.argv[3] === '--steps-only'
