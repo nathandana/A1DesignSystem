@@ -26,7 +26,14 @@ const meta = {
   title: "Patterns/Page title",
   component: PageTitle,
   tags: ["autodocs"],
-  parameters: { layout: "fullscreen" },
+  parameters: {
+    layout: "fullscreen",
+    docs: {
+      description: {
+        component: "PageTitle must sit flush with the top and side edges of its page or containing surface, with no outer margins or inset spacing. Do not wrap the title band in a padded Section or add a parent gap before it. Keep the pattern’s internal padding; apply body spacing to a separate sibling Section below it. The contentWidth prop constrains the inner content, never the full-width title surface.",
+      },
+    },
+  },
   args: {
     breadcrumb: BREADCRUMB,
     title: "Page title",
@@ -170,7 +177,7 @@ export const WithContentBelow = {
   ),
 };
 
-// The band is full-width; the sections after it line up with its content width.
+// No padded wrapper or outer margin: only the sibling body Section owns page spacing.
 export const OnAPage = {
   render: (args) => (
     <>
@@ -178,7 +185,7 @@ export const OnAPage = {
       <Section padding="sm" contentWidth="xl" aria-labelledby="page-heading">
         <Stack direction="column" gap="sm">
           <Paragraph>
-            Sections after the title share its content width, so the page reads as one column.
+            The title band meets the page edges without outer margins. This separate body section owns its padding and shares the title’s content width.
           </Paragraph>
         </Stack>
       </Section>

@@ -103,6 +103,9 @@ function renderAction(action, index) {
  * Breadcrumb, Heading, Paragraph, MessageBadge and ButtonContainer with props
  * only, and keeps its presentation locked — panel surface, fixed title scale,
  * h1, metadata below the title — so every page top is the same. Only the content and the content width are configurable.
+ * Place the band flush with its page/container edges: no outer margins, padded
+ * ancestor or preceding gap. Keep internal padding; put body padding in a
+ * separate sibling Section. contentWidth constrains only the inner content.
  */
 export function PageTitle({
   breadcrumb,

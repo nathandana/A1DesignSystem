@@ -46,7 +46,7 @@ Props schema and examples: [overview-card.json](../../../system/patterns/overvie
 
 Type: `PageTitle` · Version: `1.0.0` · Status: experimental.
 
-The standard page heading band with metadata, actions and open content.
+The standard page heading band with metadata, actions and open content. PageTitle must sit flush with the top and side edges of its page or containing surface, with no outer margins or inset spacing. Do not wrap the title band in a padded Section or add a parent gap before it. Keep the pattern’s internal padding; apply body spacing to a separate sibling Section below it. The contentWidth prop constrains the inner content, never the full-width title surface.
 
 | Area | Kind | Destination | Rules |
 | --- | --- | --- | --- |

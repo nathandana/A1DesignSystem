@@ -1,5 +1,11 @@
 # A1 Design System — Component Maintenance Log
 
+## 2026-10-31 — Page title placement
+
+PageTitle must sit flush with the top and side edges of its page or containing surface, with no outer margins or inset spacing. Do not wrap the title band in a padded Section or add a parent gap before it. Keep the pattern’s internal padding; apply body spacing to a separate sibling Section below it. The contentWidth prop constrains the inner content, never the full-width title surface.
+
+The rule is documented in the pattern manifest, React API docs, registry, Storybook page example and configurator guidance. SCE uses a shared page composition with its title outside the padded body section. No shared API, CSS or tokens changed.
+
 ## 2026-10-30 — Labs Hover state and selected
 
 Labs 0.78.1 adds `/experiments/toolbar-group`, comparing six scoped hover treatments on real A1 toolbar toggles, single-selection groups and a five-option CheckboxGroup. Pause after click preserves the newly committed state until pointer exit. Native selection, focus and disabled behavior remain unchanged; shared A1 components and tokens are reused. See [Hover state and selected](labs-toolbar-group.md).

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Page title placement** — documented the flush placement rule: no outer margins, padded parent or gap before the title band; keep internal padding and put body spacing in a separate section below.
+
 ## 0.35.0 — 2026-10-30
 
 - **Card action zone** — Card previews and editor Cards can opt into a compact top-right action area. It is off by default; the shared Card configurator in the component page, project editor and pattern editor can enable it and configure up to three Icon Button labels, icons and optional destinations.

@@ -771,7 +771,7 @@ export const patternManifests = [
     "id": "page-title",
     "type": "PageTitle",
     "name": "Page title",
-    "description": "The standard page heading band with metadata, actions and open content.",
+    "description": "The standard page heading band with metadata, actions and open content. PageTitle must sit flush with the top and side edges of its page or containing surface, with no outer margins or inset spacing. Do not wrap the title band in a padded Section or add a parent gap before it. Keep the pattern’s internal padding; apply body spacing to a separate sibling Section below it. The contentWidth prop constrains the inner content, never the full-width title surface.",
     "propsSchema": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "type": "object",

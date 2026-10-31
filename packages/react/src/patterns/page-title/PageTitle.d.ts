@@ -41,6 +41,9 @@ export interface PageTitleBadge {
  * scale (lg on xs, xxl from md), an h1 heading and the metadata row directly
  * below it — so every page top matches; only the content and the content width
  * are configurable.
+ * Place flush with the top and side edges of the page/container, without outer
+ * margins, a padded ancestor or a preceding gap. Keep internal padding and
+ * place body spacing in a separate sibling Section below the band.
  */
 export interface PageTitleProps extends Omit<React.HTMLAttributes<HTMLElement>, "title"> {
   /**
