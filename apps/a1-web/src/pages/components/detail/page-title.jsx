@@ -300,7 +300,7 @@ export function Controls({ config, setConfig, pages }) {
         values={CONTENT_WIDTH_VALUES}
         value={config.contentWidth}
         onChange={(contentWidth) => set({ contentWidth })}
-        helper="Section content width. Match the sections that follow so the page reads as one column. The surface, title size and heading level are fixed by the pattern."
+        helper="Inner content width. The title band must meet its page or container edges with no outer margins, padded wrapper or gap above it. Keep its internal padding and put body spacing in a separate section below. Match that section’s content width."
       />
 
       <Toggle

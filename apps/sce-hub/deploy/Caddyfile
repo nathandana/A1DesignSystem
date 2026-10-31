@@ -1,0 +1,5 @@
+sce.a1design.app {
+  encode zstd gzip
+  reverse_proxy workspace:5191
+  header Strict-Transport-Security "max-age=31536000"
+}

@@ -29,6 +29,8 @@ The parent owns Overview Card width. Constrain its Grid or Section; the pattern
 has no fixed or maximum width. Page title's content width aligns its page band
 with sibling sections and is a separate concern.
 
+PageTitle must sit flush with the top and side edges of its page or containing surface, with no outer margins or inset spacing. Do not wrap the title band in a padded Section or add a parent gap before it. Keep the pattern’s internal padding; apply body spacing to a separate sibling Section below it. The contentWidth prop constrains the inner content, never the full-width title surface.
+
 Formal patterns ship with the system. Saved project patterns are authored
 compositions with instance links and overrides. They share component-node
 vocabulary, but do not share a release lifecycle.

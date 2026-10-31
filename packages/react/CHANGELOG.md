@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.34.1 — 2026-10-31
+
+- **Page title placement** — documented the flush placement rule: no outer margins, padded parent or gap before the title band; keep internal padding and put body spacing in a separate section below.
+
 ## 0.34.0 — 2026-10-30
 
 - **Card action zone** — the opt-in `actions` prop renders a small group of actions, primarily Icon Buttons, in a compact bordered container at the Card’s top-right. `actionsLabel` names the group for assistive technology. Cards have no action zone by default, and navigation cards ignore it because nested interactive controls are invalid.
