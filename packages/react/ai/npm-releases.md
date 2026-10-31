@@ -54,6 +54,7 @@ credentials into GitHub secrets. See [npm's trusted publishing documentation](ht
 
 ## Recovery
 
+- **Configurator assertions:** exported JSON follows React state updates. Poll for the expected edited value after a mutation; parsing valid JSON alone does not establish that it reflects the latest action. The Tree Menu removal checks use this approach after the Oct. 31 release run exposed a timing race. Keep the expected data and visual/accessibility thresholds unchanged.
 - **Failed checks:** fix the actual failure, then rerun the workflow. Do not
   bypass the release gate or automatically accept visual baselines.
 - **Authentication failure:** inspect the package's trusted publisher, repository,

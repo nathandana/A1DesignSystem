@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Tree Menu release checks** — wait for exported JSON to reflect edits before asserting nested removal, avoiding a timing race on CI runners.
+
 - **Page title placement** — documented the flush placement rule: no outer margins, padded parent or gap before the title band; keep internal padding and put body spacing in a separate section below.
 
 ## 0.35.0 — 2026-10-30
