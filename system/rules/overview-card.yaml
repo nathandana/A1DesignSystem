@@ -1,0 +1,48 @@
+component: OverviewCard
+rules:
+  - id: overview-card-locked-presentation
+    components:
+      - OverviewCard
+    requirement: The card surface, icon block, heading size and details layout are fixed by the pattern; only the icon glyph, heading text and level, status, details, content and actions are configurable.
+    do: Use OverviewCard for every summary card in a set so they read the same, and pick the heading level that fits the page outline.
+    dont: Wrap or restyle the card, change its surface or icon treatment, or hand-build a summary card from Card, Heading and DefinitionList.
+    applies_to:
+      - consistency
+      - layout
+
+  - id: overview-card-no-primary-action
+    components:
+      - OverviewCard
+    requirement: Card actions are small secondary or tertiary Buttons, Links or small IconButtons — never a primary button — and there are at most two.
+    do: Put the card's main action first as a secondary button and a lighter follow-up as a tertiary button, a link or an icon button with an accessible name, such as a More options menu. The page's primary action belongs in the page title.
+    dont: Give each card a primary button; when cards repeat in a grid, a primary in every card competes for attention.
+    applies_to:
+      - usability
+      - consistency
+
+  - id: overview-card-status-labelled
+    components:
+      - OverviewCard
+    requirement: A status is always shown with its label, so it is never colour-only.
+    do: Set `statusLabel` with `status`; the card shows the stripe and a matching badge.
+    dont: Rely on the stripe colour alone to carry the status.
+    applies_to:
+      - accessibility
+
+  - id: overview-card-short-details
+    components:
+      - OverviewCard
+    requirement: Details are short label–value pairs that summarise the item; anything richer goes in the content area.
+    do: Keep labels to a word or two and values to a short phrase; link to a detail page for more.
+    dont: Put long text, lists or controls in a detail value — use the content area between the details and the actions for a short paragraph, a progress bar or a chart.
+    applies_to:
+      - content
+
+  - id: overview-card-parent-width
+    components:
+      - OverviewCard
+    requirement: The parent layout defines the card's width; the pattern adds no fixed or maximum width.
+    do: Place the card in a Grid, Section or another layout that allocates its space.
+    dont: Add a width prop or a built-in column wrapper to the pattern.
+    applies_to:
+      - layout

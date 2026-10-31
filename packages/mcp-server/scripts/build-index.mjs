@@ -13,6 +13,8 @@ import { parseRules } from './lib/parse-rules.mjs';
 import { parseComponentsMd, parseComponentExports, matchComponentExports } from './lib/parse-components.mjs';
 import { parsePageTypes } from './lib/parse-page-types.mjs';
 import { parseDocs } from './lib/docs.mjs';
+import { patternManifests, createPatternNode } from '../../react/src/patterns/patternPolicies.js';
+import { validatePatterns, formatPatternDiagnostics } from '../../react/src/patterns/patternValidation.js';
 
 function buildComponents() {
   const { categories, components: coverageComponents } = parseComponentsMd();
@@ -64,8 +66,22 @@ function main() {
   const { componentTypes } = parsePageTypes();
   const docs = parseDocs();
 
+  const patterns = patternManifests.map(manifest => ({
+    ...manifest,
+    starter: createPatternNode(manifest.type),
+    examples: manifest.examples.map(example => createPatternNode(manifest.type, { ...example, id: `${manifest.id}-${example.id}` })),
+  }));
+  for (const pattern of patterns) {
+    if (!componentTypes.includes(pattern.type)) throw new Error(`Unregistered pattern ${pattern.type}`);
+    for (const rule of pattern.rules) if (!rules.some(r => r.id === rule.id)) throw new Error(`Unknown rule ${rule.id}`);
+    for (const example of [pattern.starter, ...pattern.examples]) {
+      const result = validatePatterns(example);
+      if (!result.valid) throw new Error(formatPatternDiagnostics(result.diagnostics));
+    }
+  }
   const index = {
-    schemaVersion: '0.1.0',
+    schemaVersion: '0.2.0',
+    patterns,
     generatedAt: new Date().toISOString(),
     categories,
     components,
@@ -78,6 +94,12 @@ function main() {
   };
 
   const outPath = `${MCP_SERVER_ROOT}/index.json`;
+  if (process.argv.includes('--check')) {
+    const current = JSON.parse(fs.readFileSync(outPath, 'utf8'));
+    if (JSON.stringify({ ...current, generatedAt: null }) !== JSON.stringify({ ...index, generatedAt: null })) throw new Error('Stale MCP index. Run npm run build:mcp-index.');
+    console.log('MCP index is current.');
+    return;
+  }
   fs.writeFileSync(outPath, JSON.stringify(index));
 
   const sizeKb = (fs.statSync(outPath).size / 1024).toFixed(1);

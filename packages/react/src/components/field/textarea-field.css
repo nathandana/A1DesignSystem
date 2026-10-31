@@ -27,7 +27,10 @@
   color: var(--semantic-color-text-default);
   background: var(--a1-field-background);
   border: var(--component-field-border-width) solid var(--a1-field-border-color);
-  border-radius: var(--a1-field-border-radius);
+  /* Multi-line text can't sit inside a pill: themes with pill fields (Kong)
+     cap at the textarea maximum so text and the resize grip stay clear of the
+     corners. Smaller theme radii pass through unchanged. */
+  border-radius: min(var(--a1-field-border-radius), var(--component-field-textarea-max-border-radius));
   box-shadow: var(--component-field-shadow);
   transition:
     border-color var(--semantic-motion-duration-fast),

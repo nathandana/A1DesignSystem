@@ -1,6 +1,7 @@
 "use client";
 
 import "./icon-button.css";
+import { disabledControlProps } from "../button/disabledControlProps.js";
 import { Icon } from "../icon/Icon.jsx";
 
 const variants = ["tertiary", "secondary", "destructive", "success"];
@@ -37,8 +38,7 @@ export function IconButton({
       aria-label={label}
       disabled={isButton ? disabled : undefined}
       aria-disabled={!isButton && disabled ? "true" : undefined}
-      onClick={onClick}
-      {...props}
+      {...(isButton ? { ...props, onClick } : disabledControlProps(disabled, { ...props, onClick }))}
     >
       <Icon name={icon} />
     </Component>

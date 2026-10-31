@@ -35,16 +35,19 @@ function exportEnvelope() {
   })
 }
 
-/** Restore from an envelope (or a legacy projects-only plain-text export). */
+/** Restore from an envelope (or a legacy projects-only plain-text export).
+ *  Returns true when a local bundled sample was kept because the shared copy
+ *  doesn't have it yet — the caller then pushes it up so it lives in Supabase. */
 function importEnvelope(text) {
-  if (!text || !text.trim()) return
+  if (!text || !text.trim()) return false
   let bundle = null
   try {
     const parsed = JSON.parse(text)
     if (parsed && parsed.__a1bundle) bundle = parsed
   } catch { /* not JSON — a legacy plain-text projects export */ }
   if (bundle) {
-    if (typeof bundle.projects === 'string') importAllText(bundle.projects, { replaceProjects: true })
+    let keptSamples = []
+    if (typeof bundle.projects === 'string') keptSamples = importAllText(bundle.projects, { replaceProjects: true }).keptSamples
     importUserPatterns(bundle.patterns)
     importThemes(bundle.themes)
     // Priority guides — additive/optional; an older bundle without `guides`
@@ -53,9 +56,9 @@ function importEnvelope(text) {
     // Legacy: labels lived in the shared_state bundle before the dedicated
     // workspace_labels table. Import once so the new label store can upsert them.
     if (bundle.labels) importLabels(bundle.labels)
-  } else {
-    importAllText(text, { replaceProjects: true }) // legacy: projects-only
+    return keptSamples.length > 0
   }
+  return importAllText(text, { replaceProjects: true }).keptSamples.length > 0 // legacy: projects-only
 }
 
 let currentUserId = null
@@ -82,7 +85,9 @@ function hydrateFromRemote(text) {
   lastSyncedData = text
   suspendPush = true
   suspendStorageNotify(true)
-  try { importEnvelope(text) } finally { suspendStorageNotify(false); suspendPush = false }
+  let keptSamples = false
+  try { keptSamples = importEnvelope(text) } finally { suspendStorageNotify(false); suspendPush = false }
+  if (keptSamples) schedulePush()
   onHydratedCb?.()
   for (const fn of remoteHydrateListeners) { try { fn() } catch { /* ignore */ } }
 }
@@ -97,7 +102,9 @@ export async function startCloudSync(userId, { onHydrated } = {}) {
       lastSyncedData = remote
       suspendPush = true
       suspendStorageNotify(true)
-      try { importEnvelope(remote) } finally { suspendStorageNotify(false); suspendPush = false }
+      let keptSamples = false
+      try { keptSamples = importEnvelope(remote) } finally { suspendStorageNotify(false); suspendPush = false }
+      if (keptSamples) schedulePush()
       onHydrated?.()
     } else {
       // Shared bundle is empty — seed it from whatever is local.

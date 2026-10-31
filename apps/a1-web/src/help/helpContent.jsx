@@ -136,7 +136,7 @@ const RAW_HELP = [
           <Stack gap="sm">
             <P>Each project is a card showing its icon, description, page count, and last-updated date.</P>
             <Bullets items={[
-              <><strong>Open</strong> — click the card's Open button (or right-click → Open).</>,
+              <><strong>Open</strong> — choose the card's <strong>Edit</strong> button (or right-click → Open).</>,
               <><strong>Rename / Duplicate / Delete</strong> — right-click a card for the options menu. Delete asks for confirmation and removes the project and its pages.</>,
             ]} />
             <Shot
@@ -145,6 +145,49 @@ const RAW_HELP = [
               caption="Each project is a card on the Projects list — right-click one for rename, duplicate, or delete."
             />
             <P>The <Link href="/editor?project=proj-ember-oak" onClick={(e) => e.preventDefault()}>Ember &amp; Oak</Link> sample project is bundled as a complete worked example — explore it to see the features in context.</P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'organize-projects',
+        title: 'Favoriting, hiding, tagging & ordering projects',
+        keywords: 'organize favorite favourite star pin hide hidden show tag tags filter order reorder move up down sort menu',
+        body: (
+          <Stack gap="sm">
+            <P>Each project card has an <strong>Edit</strong> button (<Icon name="edit" size="sm" />) that opens the project, and a <strong>More options</strong> button (<Icon name="more_vert" size="sm" />) for organizing it. Changes save as you make them.</P>
+            <Bullets items={[
+              <><strong>Favorite</strong> — favorites come first, under their own heading on the Projects list and in the <strong>Editors → Projects</strong> menu.</>,
+              <><strong>Move to top, Move up 1, Move down 1, Move to bottom</strong> — set the order projects appear in, within favorites or within the rest.</>,
+              <><strong>Add tags</strong> — type to add a tag, or pick one you've used before. Tags show on each card, and the <strong>Filter by tag</strong> chips narrow the list to one tag.</>,
+            ]} />
+            <P>To hide a project, right-click its card and choose <strong>Hide</strong>. A hidden project stays active but is left out of the Projects menu and list; turn on <strong>Show hidden</strong> to see hidden projects again. To remove a project, archive it instead. Your organization syncs with the rest of your projects when you're signed in.</P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'project-canvas',
+        title: 'Seeing every page on a canvas',
+        keywords: 'canvas infinite figma frames board overview pan zoom fit arrange drag device viewport connections links arrows background colour color sticky note notes post-it comment annotate',
+        body: (
+          <Stack gap="sm">
+            <P>A project opens on its <strong>Canvas</strong>: every page as a frame, the way a design tool shows them, full screen. Turn off <strong>Full screen</strong> in the canvas tools (or press Escape) to see the project header, where you can switch to <strong>List</strong> or <strong>Nodes</strong>. Your choice is remembered.</P>
+            <Bullets items={[
+              <><strong>Move around</strong> — drag the empty canvas to pan and scroll or pinch to zoom. The control in the bottom corner always shows zoom in, zoom out, Auto arrange and Full screen; its tools button opens the rest, including fit to screen.</>,
+              <><strong>Arrange</strong> — drag a frame to move it. Or Tab to a frame's title and use the arrow keys (hold Shift for bigger steps).</>,
+              <><strong>Auto arrange</strong> — in the canvas tools, lays the pages out as a sitemap: top-level pages in the first row, each page's children in a row below it, with rows top-aligned.</>,
+              <><strong>Breakpoint</strong> — choose XS, SM, MD, LG or XL in the canvas tools to render the selected frame at that width, or every frame when none is selected. Or right-click a frame and pick a breakpoint.</>,
+              <><strong>Open in new window</strong> — right-click a frame to open that page in the prototype in a new window.</>,
+              <><strong>Duplicate page</strong> — right-click a frame and choose Duplicate page. The copy appears at the end of the row, and the canvas moves to it.</>,
+              <><strong>Delete page</strong> — right-click a frame and choose Delete page, then confirm. Its subpages are deleted too.</>,
+              <><strong>Grid</strong> — shows or hides the dot grid behind the frames.</>,
+              <><strong>Viewport height</strong> — limits each frame to its breakpoint's standard screen height; scroll inside a frame to see the rest of the page (pinch or Ctrl-scroll still zooms).</>,
+              <><strong>Light, Dark or Auto</strong> — sets the color mode the pages render in. Auto follows the app.</>,
+              <><strong>Connections</strong> — show arrows for links between pages. Select a frame to highlight its own links.</>,
+              <><strong>Background</strong> — pick a surface, or <strong>Custom</strong> for any colour.</>,
+              <><strong>Edit page</strong> — double-click a frame, or use Edit page in the canvas tools or on the frame's right-click menu.</>,
+              <><strong>Sticky notes</strong> — choose Add sticky note in the canvas controls, or right-click the canvas and choose Add sticky note here. The canvas zooms in and the note is ready for typing; click away when you're done. Notes take Markdown — **bold**, *italic*, [links](https://…) and “- ” lists. Drag a note anywhere, double-click it to edit it again, and right-click it to change its colour, add an author in Note details…, or delete it. The Notes toggle in the canvas tools shows or hides them.</>,
+            ]} />
+            <P>The canvas layout is saved with the project. Frames are previews — edit a page in the editor to change it.</P>
           </Stack>
         ),
       },
@@ -809,6 +852,17 @@ const RAW_HELP = [
     icon: 'dashboard_customize',
     articles: [
       {
+        id: 'pattern-library',
+        title: 'The Pattern library',
+        keywords: 'pattern library first class patterns page title composition catalogue configure add to project menu zone actions rules editable area',
+        body: (
+          <Stack gap="sm">
+            <P>The <strong>Patterns</strong> menu in the top header opens the <strong>Pattern library</strong>: ready-made compositions of A1 components, such as the <strong>Page title</strong> band and the <strong>Overview card</strong>, that behave like components. Browse them by category in the left column, see the live preview in the middle and change their properties in the <strong>Configure</strong> panel on the right — the same layout as Components, with Rules, Properties, Accessibility and History tabs.</P>
+            <P>To use one in a project, open the editor's <strong>Add</strong> tab and pick it from the <strong>Patterns</strong> group; it's added as one piece and configured from the Configure panel like any component. Patterns keep their structure fixed and open only a few things: the Page title, for example, lets you edit its title and description right on the canvas, builds its breadcrumb from the project's page hierarchy when you turn the breadcrumb on, has a <strong>Metadata</strong> zone directly below the title for up to five badges about the page — a status, a count — and an <strong>Actions</strong> zone — a named area with set rules: up to four buttons, split buttons, links, icon buttons, button groups, toolbars or segmented controls, with one primary always shown last. The zone stays where it is (it can't be deleted, moved or reconfigured); add to it with <strong>Add inside</strong> from its Layers menu, or by clicking its outline when it's empty, and the Add panel offers only what it accepts. Below it, the <strong>Content</strong> area takes any component. The Pattern library preview outlines these areas; use <strong>Editable areas</strong> in the display toolbar to hide them. (The <strong>Patterns</strong> entry under <strong>Editors</strong> is the older JSON pattern workspace described below.)</P>
+          </Stack>
+        ),
+      },
+      {
         id: 'what-is-pattern',
         title: 'What patterns are',
         keywords: 'pattern reusable composition template governed locked instance linked component group library vs copy pattern',
@@ -1415,6 +1469,17 @@ const RAW_HELP = [
           <Stack gap="sm">
             <P>Launch the prototype (the <Icon name="open_in_new" size="sm" /> action) to open the project in a new tab with no editor chrome — the generated navigation and in-page links work like a real multi-page site, and the address bar holds a shareable link to the current screen.</P>
             <P>While the prototype is open, edits you make in the editor live-sync to the screen on display.</P>
+          </Stack>
+        ),
+      },
+      {
+        id: 'print-preview',
+        title: 'Print preview',
+        keywords: 'print preview printer paper pdf save as pdf page break dark mode',
+        body: (
+          <Stack gap="sm">
+            <P>Choose <strong>Print preview</strong> (the <Icon name="print" size="sm" /> action) to see the page as it will print, right in the editor: the <strong>Preview</strong> view switches to a sheet of paper with the print stylesheet applied. Use the responsive preview menu to switch between <strong>Print (Letter)</strong> and <strong>Print (A4)</strong>, or back to a screen size.</P>
+            <P>Pages always print in light mode. Navigation and other screen-only controls are left out, long pages flow across sheets, and external links print their address. The preview shows one continuous sheet — your browser decides exactly where pages break, and its print settings (such as background graphics) still apply.</P>
           </Stack>
         ),
       },

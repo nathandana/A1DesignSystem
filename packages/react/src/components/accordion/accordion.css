@@ -86,7 +86,7 @@
   transition: transform var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
 }
 
-.a1-accordion--open .a1-accordion__chevron {
+.a1-accordion--open > .a1-accordion__trigger > .a1-accordion__chevron {
   /* Rotate to 0deg (pointing down ↓) when expanded */
   transform: rotate(0deg);
 }
@@ -117,7 +117,7 @@
   text-overflow: ellipsis;
 }
 
-.a1-accordion--open .a1-accordion__subtext {
+.a1-accordion--open > .a1-accordion__trigger > .a1-accordion__text > .a1-accordion__subtext {
   display: none;
 }
 
@@ -129,7 +129,7 @@
   transition: grid-template-rows var(--semantic-motion-duration-fast) var(--semantic-motion-easing-standard);
 }
 
-.a1-accordion--open .a1-accordion__body {
+.a1-accordion--open > .a1-accordion__body {
   grid-template-rows: 1fr;
 }
 

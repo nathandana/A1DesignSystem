@@ -1,0 +1,132 @@
+{
+  "schemaVersion": "1.0.0",
+  "version": "1.0.0",
+  "kind": "pattern",
+  "status": "experimental",
+  "id": "verification-dialog",
+  "type": "VerificationDialog",
+  "name": "Verification dialog",
+  "description": "Verify an action with a consequence message, optional content, Cancel and Confirm.",
+  "coverage": {
+    "react": true,
+    "native": false,
+    "pure": false,
+    "webComponents": false,
+    "figma": false
+  },
+  "compatibility": {
+    "unversioned": "1.0.0",
+    "pageSchemaVersions": [
+      "0.1.0",
+      "1.0.0",
+      "1.1.0"
+    ]
+  },
+  "migrations": [],
+  "propsSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "required": [
+      "title",
+      "message"
+    ],
+    "properties": {
+      "title": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "message": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "confirmLabel": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "cancelLabel": {
+        "type": "string",
+        "pattern": "\\S"
+      },
+      "destructive": {
+        "type": "boolean"
+      },
+      "disabled": {
+        "type": "boolean"
+      },
+      "open": {
+        "type": "boolean"
+      },
+      "onConfirm": false,
+      "onClose": false,
+      "titleKey": {
+        "type": "string",
+        "pattern": "\\S",
+        "description": "Optional label-service key. The corresponding text prop is the fallback."
+      },
+      "messageKey": {
+        "type": "string",
+        "pattern": "\\S",
+        "description": "Optional label-service key. The corresponding text prop is the fallback."
+      },
+      "confirmLabelKey": {
+        "type": "string",
+        "pattern": "\\S",
+        "description": "Optional label-service key. The corresponding text prop is the fallback."
+      },
+      "cancelLabelKey": {
+        "type": "string",
+        "pattern": "\\S",
+        "description": "Optional label-service key. The corresponding text prop is the fallback."
+      }
+    },
+    "additionalProperties": true
+  },
+  "lockedProps": {
+    "size": "sm"
+  },
+  "areas": [
+    {
+      "id": "content",
+      "label": "Content",
+      "hint": "Optional supporting details between the message and the actions.",
+      "kind": "open",
+      "destination": "children",
+      "placement": "after:message",
+      "layout": {
+        "columns": 1,
+        "gap": "sm"
+      }
+    }
+  ],
+  "rules": [
+    {
+      "id": "verification-dialog-confirmation",
+      "severity": "error"
+    },
+    {
+      "id": "verification-dialog-focus",
+      "severity": "error"
+    }
+  ],
+  "starter": {
+    "props": {
+      "title": "Confirm action?",
+      "message": "Review this action before continuing."
+    }
+  },
+  "examples": [
+    {
+      "id": "delete-item",
+      "props": {
+        "title": "Delete item?",
+        "message": "This will delete the selected item.",
+        "confirmLabel": "Delete",
+        "destructive": true,
+        "titleKey": "verificationDialog.deleteTitle",
+        "messageKey": "verificationDialog.deleteMessage",
+        "confirmLabelKey": "verificationDialog.delete"
+      },
+      "areas": {}
+    }
+  ]
+}

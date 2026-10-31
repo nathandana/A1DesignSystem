@@ -27,3 +27,9 @@
   /* The device page scrolls inside the iframe. */
   transform-origin: top left;
 }
+
+/* Print preview (A1-2707): a sheet of paper rather than a device bezel. */
+.a1-web-responsive-preview__viewport--paper {
+  border: var(--component-card-border-width) solid var(--semantic-color-border-subtle);
+  border-radius: 0;
+}

@@ -13,13 +13,38 @@
   gap: var(--base-spacing-8);
 }
 
-.a1-button-container__inner > .a1-button {
+.a1-button-container__inner > .a1-button,
+.a1-button-container__inner > .a1-split-button {
   width: 100%;
 }
 
-/* Links sit inline alongside buttons; vertically centered in row layout */
+/* A ButtonContainer nested as a button group joins its parent's row: its
+   buttons flow, wrap and stack with the others, in order, and their container
+   queries answer to the parent. On its own a container is always full width,
+   so a nested one would otherwise take a row of its own. */
+.a1-button-container__inner > .a1-button-container,
+.a1-button-container__inner > .a1-button-container > .a1-button-container__inner {
+  display: contents;
+  container-type: normal;
+}
+
+/* An IconButton keeps its natural square size when the container stacks
+   (rule icon-button-natural-width) instead of stretching like a Button. */
+.a1-button-container__inner > .a1-icon-button {
+  align-self: var(--a1-button-container-item-align, flex-start);
+}
+
+/* Natural-width actions follow the requested alignment when stacked. */
 .a1-button-container__inner > .a1-link {
-  align-self: center;
+  align-self: var(--a1-button-container-item-align, flex-start);
+}
+
+.a1-button-container--center {
+  --a1-button-container-item-align: center;
+}
+
+.a1-button-container--end {
+  --a1-button-container-item-align: flex-end;
 }
 
 @container a1-button-container (min-width: 480px) {
@@ -29,8 +54,14 @@
     align-items: center;
   }
 
-  .a1-button-container__inner > .a1-button {
+  .a1-button-container__inner > .a1-button,
+  .a1-button-container__inner > .a1-split-button {
     width: auto;
+  }
+
+  .a1-button-container__inner > .a1-link,
+  .a1-button-container__inner > .a1-icon-button {
+    align-self: center;
   }
 
   .a1-button-container--start .a1-button-container__inner {
@@ -73,4 +104,5 @@
 
 .a1-button-container--fill-buttons .a1-button-container__inner > .a1-icon-button {
   flex: 0 0 auto;
+  align-self: center;
 }

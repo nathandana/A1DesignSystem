@@ -33,6 +33,22 @@ body {
   overflow: hidden;
 }
 
+/* A1-2707 — the app shell scrolls inside a viewport-height layout; on paper the
+   document must grow so every page prints (PageLayout releases its own panels). */
+@media print {
+  html,
+  body,
+  #root {
+    block-size: auto;
+    overflow: visible;
+  }
+
+  /* a1-web's aside is always a configurator or filter rail: controls, not content. */
+  .a1-web-page-layout .a1-page-layout__aside {
+    display: none;
+  }
+}
+
 /* The Figma-driven Playground is a clean renderer, intentionally outside the
    normal PageLayout, navigation, and workspace controls. */
 .a1-web-live-playground {
@@ -403,6 +419,24 @@ body {
   outline-offset: 3px;
 }
 
+/* A text node stays a drag/select surface after one click. Avoid the component
+   selection ring, which otherwise makes that click look like it entered text
+   editing; double-click/F2 still reveals InlineEditable's own focus ring. */
+[data-editor-selected='true'][data-editor-text='true'] {
+  outline-color: transparent !important;
+}
+
+/* Native canvas dragging reuses the editor's governed move model. The source
+   fades while the existing before/inside/after indicators identify its target. */
+[data-editor-draggable='true'] {
+  cursor: grab;
+}
+
+[data-editor-dragging='true'] {
+  cursor: grabbing;
+  opacity: var(--component-reordering-placeholder-opacity);
+}
+
 /* Catalog drag-and-drop: before/after/into position indicators on canvas nodes.
    Imperative DOM sets data-drop-position during dragover; CSS renders the visual.
    box-shadow is used so layout is never affected. */
@@ -626,6 +660,8 @@ html.a1-theme-dark.a1-theme-kong .a1-top-header .a1-web-logo svg {
 /* Preview frame for components that own their full height (e.g. SideNav).
    SideNav is height:100%, so the preview needs a bounded, scrollable box. */
 .a1-web-side-nav-preview {
+  /* Keep fixed mobile scrims inside the bounded component example. */
+  contain: layout paint;
   display: flex;
   block-size: 28rem;
   max-block-size: 70vh;
@@ -716,6 +752,7 @@ html.a1-theme-dark.a1-theme-kong .a1-top-header .a1-web-logo svg {
   margin-inline: auto;
 }
 
+.a1-web-components-tree .a1-side-nav__footer,
 .a1-web-components-tree .a1-side-nav__close-btn,
 .a1-web-components-tree .a1-side-nav__collapse-btn {
   display: none;
@@ -723,7 +760,7 @@ html.a1-theme-dark.a1-theme-kong .a1-top-header .a1-web-logo svg {
 
 
 .a1-web-component-preview {
-  padding: var(--base-spacing-24);
+  padding: 0;
   border: var(--component-card-border-width) dashed var(--semantic-color-border-default);
   border-radius: var(--base-radius-lg);
   background: var(--semantic-color-surface-panel);
@@ -2039,4 +2076,35 @@ span.a1-web-sem-pick { display: inline-block; }
   inline-size: 100%;
   aspect-ratio: 16 / 9;
   background: var(--semantic-color-surface-inverse);
+}
+
+/* A1-2700 — project canvas view. Full bleed below the project header: its
+   height is measured to the bottom of the window (inline style); its tools live
+   in the Canvas's expandable controls. Page previews are inert iframes — the
+   canvas handles interaction. */
+.a1-web-project-canvas {
+  position: relative;
+  min-block-size: calc(var(--base-spacing-192) * 2);
+  overflow: hidden;
+}
+
+/* Full screen: the canvas covers the viewport above the app chrome (portaled to
+   <body>; the app root is inert meanwhile). Menus still open above it. */
+.a1-web-project-canvas--fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: var(--semantic-z-pinned);
+  block-size: 100dvh;
+}
+
+.a1-web-page-preview-frame {
+  display: block;
+  border: 0;
+  pointer-events: none;
+}
+
+/* Sticky Note configurator: a floating note positions in its nearest positioned
+   ancestor (the component's contract), so the preview stage supplies one. */
+.a1-web-sticky-note-stage {
+  position: relative;
 }

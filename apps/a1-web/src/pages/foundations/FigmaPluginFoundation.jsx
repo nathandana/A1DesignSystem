@@ -8,11 +8,11 @@ import {
   List,
   ListItem,
   MessageBadge,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
-import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 const FIGMA_LIBRARY_URL = 'https://www.figma.com/design/zFjqo3SwHbkXwtCOoQCVMA/A1-Design-System'
@@ -55,9 +55,9 @@ const boundaryItems = [
 export function FigmaPluginFoundationPage({ onNavigate }) {
   return (
     <>
-      <PageTitleArea
-        headingId="figma-plugin-heading"
-        breadcrumbItems={getFoundationBreadcrumbItems('A1:Figma plugin', onNavigate)}
+      <PageTitle
+        titleId="figma-plugin-heading"
+        breadcrumb={getFoundationBreadcrumbItems('A1:Figma plugin', onNavigate)}
         title="A1:Figma plugin"
         description="A practical bridge for building with A1 assets, checking design-system compatibility, and exchanging structured pages, patterns, and component data between Figma and the local A1 workspace."
       >
@@ -71,7 +71,7 @@ export function FigmaPluginFoundationPage({ onNavigate }) {
         >
           Open the Figma library
         </Button></ButtonContainer>
-      </PageTitleArea>
+      </PageTitle>
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="figma-plugin-modes-heading">
         <Stack gap="lg">

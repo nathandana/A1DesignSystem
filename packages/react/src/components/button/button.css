@@ -210,3 +210,14 @@
   font-size: var(--a1-button-icon-size, var(--component-button-icon-size));
   --a1-icon-opsz: var(--a1-button-icon-opsz, var(--component-button-icon-optical-size));
 }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Keep this background on paper: browsers drop backgrounds by default,
+   which would leave white text on white or erase meaning carried by colour. */
+
+@media print {
+  .a1-button {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

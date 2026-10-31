@@ -14,14 +14,21 @@ import fieldJson     from "../system/labels/field.json";
 import statusBarJson from "../system/labels/status-bar.json";
 import treeMenuJson  from "../system/labels/tree-menu.json";
 
+import navigationTreeJson from "../system/labels/navigation-tree.json";
+import verificationDialogJson from "../system/labels/verification-dialog.json";
+import overflowMenuJson from "../system/labels/overflow-menu.json";
+
 const allLabels = {
   label: {
     ...actionJson.label,
+    ...overflowMenuJson.label,
+    ...verificationDialogJson.label,
     ...calendarJson.label,
     ...codeJson.label,
     ...fieldJson.label,
     ...statusBarJson.label,
     ...treeMenuJson.label,
+    ...navigationTreeJson.label,
   },
 };
 

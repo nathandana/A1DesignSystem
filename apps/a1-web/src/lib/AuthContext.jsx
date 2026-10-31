@@ -6,6 +6,18 @@ import { supabase, supabaseConfigured } from './supabase.js'
 // the app behaves exactly as the local-only build.
 const AuthContext = createContext(null)
 
+/** How long sign-out waits for the Auth service before signing out locally. */
+const SIGN_OUT_TIMEOUT_MS = 5000
+
+/** Remove supabase-js's persisted session (`sb-<project>-auth-token` and its code verifier). */
+function clearStoredSession() {
+  try {
+    for (const key of Object.keys(localStorage)) {
+      if (/^sb-.+-auth-token(-code-verifier)?$/.test(key)) localStorage.removeItem(key)
+    }
+  } catch { /* storage unavailable — nothing persisted to clear */ }
+}
+
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -41,8 +53,18 @@ export function AuthProvider({ children }) {
     return error
   }
 
+  // Signing out must always work on this device. supabase-js keeps the local
+  // session when its server revoke fails and waits indefinitely when the Auth
+  // service hangs, so fall back to clearing the stored session ourselves.
   async function signOut() {
-    await supabase.auth.signOut()
+    const result = await Promise.race([
+      supabase.auth.signOut().catch((error) => ({ error })),
+      new Promise((resolve) => { setTimeout(() => resolve({ error: new Error('Sign-out timed out') }), SIGN_OUT_TIMEOUT_MS) }),
+    ])
+    if (result?.error) {
+      clearStoredSession()
+      setUser(null)
+    }
   }
 
   async function resetPassword(email) {

@@ -14,7 +14,7 @@ export interface EditorExample {
 }
 
 export const BLANK_PAGE: PageDefinition = {
-  schemaVersion: '1.0.0',
+  schemaVersion: '1.1.0',
   page: {
     id: 'blank',
     name: 'Untitled',
@@ -34,7 +34,7 @@ export const BLANK_PAGE: PageDefinition = {
  */
 export function makeBlankPage(id: string, name = 'Untitled'): PageDefinition {
   return {
-    schemaVersion: '1.0.0',
+    schemaVersion: '1.1.0',
     page: {
       id,
       name,

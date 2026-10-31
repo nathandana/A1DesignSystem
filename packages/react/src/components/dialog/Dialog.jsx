@@ -39,6 +39,7 @@ export function Dialog({
   status,
   icon,
   size = "md",
+  initialFocusId,
   children,
   className = "",
   ...props
@@ -50,14 +51,18 @@ export function Dialog({
     const el = ref.current;
     if (!el) return;
     if (open) {
-      triggerRef.current = document.activeElement;
-      if (!el.open) el.showModal();
+      if (!el.open) {
+        triggerRef.current = document.activeElement;
+        el.showModal();
+      }
+      const initialFocus = initialFocusId ? el.ownerDocument.getElementById(initialFocusId) : null;
+      if (initialFocus && el.contains(initialFocus)) initialFocus.focus();
     } else if (el.open) {
       el.close();
       triggerRef.current?.focus();
       triggerRef.current = null;
     }
-  }, [open]);
+  }, [open, initialFocusId]);
 
   useEffect(() => {
     const el = ref.current;

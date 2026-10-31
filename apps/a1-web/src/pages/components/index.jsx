@@ -1,7 +1,6 @@
 import { useT } from '../../labels/useT.js'
 import { componentCategories } from './data.js'
 import {
-  allComponents,
   componentCategoryPageIds,
   componentExamples,
   componentPageIds,
@@ -9,15 +8,15 @@ import {
   componentRouteSlug,
   componentIdFromRouteSlug,
   getComponentExampleBySlug,
-  getComponentEntry,
 } from './utils.js'
+import { componentsCatalog } from './catalog.js'
 import { ComponentDocsShell } from './ComponentDocsShell.jsx'
-import { ComponentCategoryPage } from './ComponentCategoryPage.jsx'
+import { CatalogCategoryPage } from './ComponentCategoryPage.jsx'
 import { ComponentDetailPage } from './ComponentDetailPage.jsx'
-import { ComponentsOverviewPage } from './ComponentsOverviewPage.jsx'
-import { ComponentsSidebar } from './ComponentsSidebar.jsx'
+import { CatalogOverviewPage } from './ComponentsOverviewPage.jsx'
+import { CatalogSidebar } from './ComponentsSidebar.jsx'
 
-export { componentCategories }
+export { componentCategories, componentsCatalog }
 export {
   componentCategoryPageIds,
   componentPageIds,
@@ -27,21 +26,26 @@ export {
   getComponentExampleBySlug,
 }
 
-export function Components({ activePage = 'components', onNavigate, projectId = null, detailTab = 'configure', setDetailTab }) {
+/**
+ * The pages of one catalogue (components or patterns): the overview, a
+ * category page or an item's detail page, chosen by the active route id.
+ */
+export function CatalogPages({ catalog, activePage, onNavigate, projectId = null, detailTab = 'configure', setDetailTab }) {
   const t = useT()
-  const { category, component } = getComponentEntry(activePage)
-  const currentComponent = component
-    ? allComponents.find((item) => item.id === component.id) ?? component
+  const { category, item } = catalog.getEntry(activePage)
+  const currentItem = item
+    ? catalog.all.find((candidate) => candidate.id === item.id) ?? item
     : null
 
   return (
     <>
-      {currentComponent ? (
+      {currentItem ? (
         <ComponentDetailPage
+          catalog={catalog}
           component={{
-            ...currentComponent,
-            title: currentComponent.titleKey ? t(currentComponent.titleKey, currentComponent.title) : currentComponent.title,
-            body: currentComponent.bodyKey ? t(currentComponent.bodyKey, currentComponent.body) : currentComponent.body,
+            ...currentItem,
+            title: currentItem.titleKey ? t(currentItem.titleKey, currentItem.title) : currentItem.title,
+            body: currentItem.bodyKey ? t(currentItem.bodyKey, currentItem.body) : currentItem.body,
           }}
           category={category}
           onNavigate={onNavigate}
@@ -52,9 +56,9 @@ export function Components({ activePage = 'components', onNavigate, projectId = 
       ) : (
         <ComponentDocsShell>
           {category ? (
-            <ComponentCategoryPage category={category} onNavigate={onNavigate} />
+            <CatalogCategoryPage catalog={catalog} category={category} onNavigate={onNavigate} />
           ) : (
-            <ComponentsOverviewPage onNavigate={onNavigate} />
+            <CatalogOverviewPage catalog={catalog} onNavigate={onNavigate} />
           )}
         </ComponentDocsShell>
       )}
@@ -62,9 +66,14 @@ export function Components({ activePage = 'components', onNavigate, projectId = 
   )
 }
 
-export function getComponentsSidebar({ activePage, detailTab, onNavigate, onSelectDetailTab, search, setSearch }) {
+export function Components(props) {
+  return <CatalogPages catalog={componentsCatalog} {...props} />
+}
+
+export function getCatalogSidebar({ catalog, activePage, detailTab, onNavigate, onSelectDetailTab, search, setSearch }) {
   return (
-    <ComponentsSidebar
+    <CatalogSidebar
+      catalog={catalog}
       activePage={activePage}
       detailTab={detailTab}
       onNavigate={onNavigate}
@@ -75,17 +84,25 @@ export function getComponentsSidebar({ activePage, detailTab, onNavigate, onSele
   )
 }
 
-/* Mount point for the component configuration panel, rendered into the
-   PageLayout aside slot. Only present on a component detail page's Configure
-   tab. ComponentDetailPage portals the controls into this element. */
-export function getComponentsAside({ activePage, detailTab }) {
+export function getComponentsSidebar(props) {
+  return getCatalogSidebar({ catalog: componentsCatalog, ...props })
+}
+
+/* Mount point for the configuration panel, rendered into the PageLayout aside
+   slot. Only present on an item's detail page on its Configure tab (or a
+   configurable example). ComponentDetailPage portals the controls into it. */
+export function getCatalogAside({ catalog, activePage, detailTab }) {
   const showsConfigurator = detailTab === 'configure' || detailTab?.startsWith('example:')
   const exampleId = detailTab?.startsWith('example:') ? detailTab.slice('example:'.length) : null
-  const componentId = activePage?.startsWith('component-') ? activePage.slice('component-'.length) : null
-  const example = exampleId && componentId
-    ? (componentExamples[componentId] ?? []).find((item) => item.id === exampleId)
+  const itemId = catalog.itemIdFromPage(activePage)
+  const example = catalog.hasExamples && exampleId && itemId
+    ? (componentExamples[itemId] ?? []).find((candidate) => candidate.id === exampleId)
     : null
   if (example?.configurable === false) return null
-  if (!componentPageIds.includes(activePage) || !showsConfigurator) return null
+  if (!catalog.isItemPage(activePage) || !showsConfigurator) return null
   return <div id="a1-web-config-aside-slot" className="a1-web-config-aside" />
+}
+
+export function getComponentsAside(props) {
+  return getCatalogAside({ catalog: componentsCatalog, ...props })
 }

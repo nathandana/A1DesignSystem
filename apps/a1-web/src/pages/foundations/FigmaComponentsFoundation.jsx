@@ -5,12 +5,12 @@ import {
   Heading,
   MessageBadge,
   MessageEmptyState,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { allComponents } from '../components/utils.js'
-import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 const FIGMA_LIBRARY_URL = 'https://www.figma.com/design/zFjqo3SwHbkXwtCOoQCVMA/A1-Design-System'
@@ -20,14 +20,14 @@ const figmaCategories = new Set(figmaComponents.map((component) => component.cat
 export function FigmaComponentsFoundationPage({ onNavigate }) {
   return (
     <>
-      <PageTitleArea
-        headingId="figma-components-heading"
-        breadcrumbItems={getFoundationBreadcrumbItems('Figma components', onNavigate)}
+      <PageTitle
+        titleId="figma-components-heading"
+        breadcrumb={getFoundationBreadcrumbItems('Figma components', onNavigate)}
         title="Figma components"
         description="A dedicated home for embedded views from the published A1 Figma library, organized around the same component inventory used by a1-web."
       >
         <MessageBadge status="info">{figmaComponents.length} components across {figmaCategories.size} categories</MessageBadge>
-      </PageTitleArea>
+      </PageTitle>
 
       <Section padding="sm" contentWidth="xl" aria-label="Figma component embeds">
         <Card>

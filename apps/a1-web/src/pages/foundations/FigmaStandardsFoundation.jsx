@@ -3,19 +3,19 @@ import {
   Heading,
   List,
   ListItem,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
-import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 export function FigmaStandardsFoundationPage({ onNavigate }) {
   return (
     <>
-      <PageTitleArea
-        headingId="figma-standards-heading"
-        breadcrumbItems={getFoundationBreadcrumbItems('Figma standards', onNavigate)}
+      <PageTitle
+        titleId="figma-standards-heading"
+        breadcrumb={getFoundationBreadcrumbItems('Figma standards', onNavigate)}
         title="Building resilient Figma components"
         description="Best practices for creating Figma components that people can use confidently and automated systems can reliably translate into code."
       />

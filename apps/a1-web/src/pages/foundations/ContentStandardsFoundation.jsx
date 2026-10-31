@@ -4,13 +4,13 @@ import {
   Link,
   List,
   ListItem,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
   useLabel,
 } from '@gtivr4/a1-design-system-react'
 import contentStandardsMarkdown from '../../../../../packages/react/guidelines/content-standards.md?raw'
-import { PageTitleArea } from '../PageTitleArea.jsx'
 import { parseContentStandards } from './contentStandardsParser.js'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
@@ -73,9 +73,9 @@ export function ContentStandardsFoundationPage({ onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        headingId="content-standards-heading"
-        breadcrumbItems={getFoundationBreadcrumbItems(title, onNavigate)}
+      <PageTitle
+        titleId="content-standards-heading"
+        breadcrumb={getFoundationBreadcrumbItems(title, onNavigate)}
         title={title}
         description={description}
       />

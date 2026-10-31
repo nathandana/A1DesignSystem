@@ -66,7 +66,11 @@ export function roleMeetsMinimum(role, minimumRole) {
 }
 
 export function minimumRoleForPage(pageId) {
-  if (pageId?.startsWith('foundation-') || pageId?.startsWith('components-') || pageId?.startsWith('component-')) {
+  // Component, pattern and foundation documentation is public.
+  if (
+    pageId?.startsWith('foundation-') || pageId?.startsWith('components-') || pageId?.startsWith('component-')
+    || pageId?.startsWith('patterns-') || pageId?.startsWith('pattern-')
+  ) {
     return USER_ROLES.GUEST
   }
   return PAGE_ACCESS[pageId] ?? USER_ROLES.ADMIN

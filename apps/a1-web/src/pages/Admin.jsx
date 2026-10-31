@@ -10,6 +10,7 @@ import {
   Dialog,
   Heading,
   MessageBadge,
+  PageTitle,
   Paragraph,
   Section,
   SelectField,
@@ -28,7 +29,6 @@ import {
 import { UserDeleteDialog, UserProfileDialog } from '../admin/UserProfileDialogs.jsx'
 import { useAuth } from '../lib/AuthContext.jsx'
 import { useT } from '../labels/useT.js'
-import { PageTitleArea } from './PageTitleArea.jsx'
 
 const ROLE_STATUS = {
   user: 'neutral',
@@ -378,10 +378,10 @@ export function Admin({ onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
+      <PageTitle
         contentWidth="lg"
-        headingId="admin-heading"
-        breadcrumbItems={[
+        titleId="admin-heading"
+        breadcrumb={[
           {
             label: t('app.page.home', 'Home'),
             href: '/',

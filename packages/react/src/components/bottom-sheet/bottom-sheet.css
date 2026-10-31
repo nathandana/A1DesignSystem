@@ -122,3 +122,13 @@
     display: none;
   }
 }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Screen-only chrome: hidden when printed. */
+
+@media print {
+  .a1-bottom-sheet,
+  .a1-bottom-sheet__spacer {
+    display: none;
+  }
+}

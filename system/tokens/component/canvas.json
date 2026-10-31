@@ -2,7 +2,27 @@
   "component": {
     "canvas": {
       "node": {
-        "size": { "$type": "dimension", "$value": "80px" }
+        "size": {
+          "$type": "dimension",
+          "$value": "80px"
+        }
+      },
+      "frame": {
+        "titleGap": {
+          "$type": "dimension",
+          "$value": "{base.spacing.8}",
+          "$description": "Space between a CanvasFrame's title and its body."
+        },
+        "borderWidth": {
+          "$type": "dimension",
+          "$value": "{component.card.borderWidth}",
+          "$description": "Hairline border around a CanvasFrame body."
+        },
+        "selectedRingWidth": {
+          "$type": "dimension",
+          "$value": "{component.button.focusRingWidth}",
+          "$description": "Width of the action-colour ring around a selected CanvasFrame body."
+        }
       }
     }
   }

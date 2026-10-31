@@ -110,7 +110,7 @@ function themeCss(theme) {
 ${declarations(themeVars)}
 }
 
-@media (prefers-color-scheme: dark) {
+@media screen and (prefers-color-scheme: dark) {
   :root:not(.a1-theme-light) {
     color-scheme: dark;
 ${declarations(darkVars, LIGHT_MODE_VARIABLES)}
@@ -1165,6 +1165,8 @@ function componentCss() {
 .a1-textarea {
   min-block-size: var(--component-field-comfortable-height);
   padding-block: var(--component-field-textarea-padding-block);
+  /* Multi-line text can't sit inside a pill-shaped field (Kong): cap the radius. */
+  border-radius: min(var(--component-field-default-border-radius), var(--component-field-textarea-max-border-radius));
 }
 
 .a1-field:hover,
@@ -1464,7 +1466,7 @@ function componentCss() {
 .a1-side-nav {
   inline-size: var(--component-menu-width);
   padding: var(--base-spacing-8);
-  border: var(--component-menu-border-width) solid var(--semantic-color-border-subtle);
+  border: var(--component-side-nav-border-width) solid var(--semantic-color-border-subtle);
   border-radius: var(--component-card-border-radius);
   background: var(--semantic-color-surface-panel);
   list-style: none;
@@ -1560,7 +1562,7 @@ html.a1-theme-dark .a1-tooltip {
   --a1-tooltip-foreground: var(--semantic-color-text-inverse);
 }
 
-@media (prefers-color-scheme: dark) {
+@media screen and (prefers-color-scheme: dark) {
   html:not(.a1-theme-light):not(.a1-theme-dark) .a1-tooltip {
     --a1-tooltip-background: var(--semantic-color-surface-inverse);
     --a1-tooltip-border-color: var(--semantic-color-surface-inverse);

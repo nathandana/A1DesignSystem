@@ -4,12 +4,12 @@ import {
   Card,
   Heading,
   MessageBadge,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { useT } from '../labels/useT.js'
-import { PageTitleArea } from '../pages/PageTitleArea.jsx'
 import { useAccess } from './AccessContext.jsx'
 import { USER_ROLES } from './accessPolicy.js'
 
@@ -54,10 +54,10 @@ export function PageAccessBoundary({ page, onNavigate, children }) {
 
   return (
     <>
-      <PageTitleArea
+      <PageTitle
         contentWidth="md"
-        headingId="access-required-heading"
-        breadcrumbItems={[
+        titleId="access-required-heading"
+        breadcrumb={[
           {
             label: t('app.page.home', 'Home'),
             href: '/',

@@ -1,5 +1,6 @@
 import {
   Heading,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
@@ -9,7 +10,6 @@ import {
   Tabs,
 } from '@gtivr4/a1-design-system-react'
 import { useState } from 'react'
-import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
@@ -132,9 +132,9 @@ export function BreakpointsFoundationPage({ onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        headingId="responsive-heading"
-        breadcrumbItems={getFoundationBreadcrumbItems('Responsive', onNavigate)}
+      <PageTitle
+        titleId="responsive-heading"
+        breadcrumb={getFoundationBreadcrumbItems('Responsive', onNavigate)}
         title="Responsive"
         description="A1 uses two breakpoint systems. Viewport breakpoints (media queries) control page-level layout. Container query breakpoints control how individual components adapt to their own rendered width. Both use the same T-shirt-size labels — xs through xl — at values appropriate to each context."
       />

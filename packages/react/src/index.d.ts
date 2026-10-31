@@ -6,7 +6,7 @@ export { Accordion } from "./components/accordion/Accordion";
 export { ContextMenu } from "./components/context-menu/ContextMenu";
 export { TreeMenu } from "./components/tree-menu/TreeMenu";
 export { Calendar } from "./components/calendar/Calendar";
-export { Canvas, Node, NodeConnector, CanvasEdge } from "./components/canvas/Canvas";
+export { Canvas, CanvasFrame, Node, NodeConnector, CanvasEdge } from "./components/canvas/Canvas";
 export { PageNav } from "./components/page-nav/PageNav";
 export { Blockquote } from "./components/blockquote/Blockquote";
 export { Breadcrumb } from "./components/breadcrumb/Breadcrumb";
@@ -14,6 +14,12 @@ export { Notification } from "./components/notification/Notification";
 export { Snackbar, SnackbarStack } from "./components/snackbar/Snackbar";
 export { StatusBar } from "./components/status-bar/StatusBar";
 export { Stat } from "./components/stat/Stat";
+export { StickyNote } from "./components/sticky-note/StickyNote";
+export type { StickyNoteProps, StickyNoteColor, StickyNoteSize, StickyNotePosition } from "./components/sticky-note/StickyNote";
+export { OverviewCard, normalizeOverviewCardActions } from "./patterns/overview-card/OverviewCard";
+export type { OverviewCardProps, OverviewCardDetail, OverviewCardAction } from "./patterns/overview-card/OverviewCard";
+export { PageTitle, normalizePageTitleActions } from "./patterns/page-title/PageTitle";
+export type { PageTitleProps, PageTitleAction, PageTitleBadge } from "./patterns/page-title/PageTitle";
 export { Avatar } from "./components/avatar/Avatar";
 export {
   AreaChart,
@@ -108,3 +114,12 @@ export { StickyActions } from "./components/sticky-actions/StickyActions";
 
 export { CustomBlock } from "./components/custom-block/CustomBlock";
 export type { CustomBlockProps } from "./components/custom-block/CustomBlock";
+
+export { OverflowMenu } from "./patterns/overflow-menu/OverflowMenu";
+export type { OverflowMenuProps, OverflowMenuAction, OverflowMenuVerification } from "./patterns/overflow-menu/OverflowMenu";
+
+export { NavigationTree } from "./patterns/navigation-tree/NavigationTree";
+export type { NavigationTreeProps, NavigationTreeItem } from "./patterns/navigation-tree/NavigationTree";
+
+export { VerificationDialog } from "./patterns/verification-dialog/VerificationDialog";
+export type { VerificationDialogProps } from "./patterns/verification-dialog/VerificationDialog";

@@ -4,7 +4,13 @@ This file is the entry point for all agents and AI assistants working in this re
 
 **Related files in this directory:**
 
+- `packages/react/ai/sce-workspace.md` — private SCE project hub, source coverage, review workflows, persistence, access, verification and deployment.
+
 - `packages/react/ai/labs-toolbar-group.md` — Labs Hover state and selected: toolbar, checkbox and single-selection hover treatments, reusable API and validation.
+- `packages/react/ai/patterns-overflow-menu.md` — OverflowMenu action collection, nested VerificationDialog pattern, editor integration and tests.
+
+- `packages/react/ai/pattern-contract-recommendations.md` — formal pattern implementation, manifests, open areas, constrained zones, validation, migrations and deployment checks.
+- `packages/react/ai/pattern-contracts.generated.md` — generated reference for system-owned pattern contracts; regenerate with `npm run build:patterns`.
 - `packages/react/ai/npm-releases.md` — automatic npm releases, trusted publishing, version verification and failure recovery. Read before preparing or publishing releases.
 - `packages/react/ai/labs-code-highlighting.md` — Labs code syntax highlighting: tokenizer, `HighlightedCode`/`LiveHighlightEditor` API, palettes and contrast derivation, line spacing, and the A1 Code wrapping/indent/scroll changes it relies on.
 - `packages/react/ai/labs-avatars.md` — Labs avatars: `LabAvatar`/`LabAvatarGroup` API (content, sizes, radii, colour, borders, status, Break the frame, generated pattern), tokens and accessibility.

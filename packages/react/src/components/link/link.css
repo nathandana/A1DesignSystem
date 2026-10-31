@@ -77,3 +77,13 @@
   font-size: 1em;
   flex-shrink: 0;
 }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Paper cannot be clicked: print the destination after external links. */
+
+@media print {
+  .a1-link[href^="http"]::after {
+    content: " (" attr(href) ")";
+    overflow-wrap: anywhere;
+  }
+}

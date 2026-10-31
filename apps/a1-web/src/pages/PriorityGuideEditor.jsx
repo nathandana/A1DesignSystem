@@ -10,6 +10,7 @@ import {
   InlineEditable,
   MessageBadge,
   MessageEmptyState,
+  PageTitle,
   Paragraph,
   Section,
   SelectField,
@@ -36,7 +37,6 @@ import {
   loadProjects,
   resolvePageJson,
 } from '../projects/projectStore.ts'
-import { PageTitleArea } from './PageTitleArea.jsx'
 import '../priorityGuide/priority-guide-editor.css'
 
 const ITEM_COMPONENT_OPTIONS = [
@@ -612,8 +612,8 @@ export function PriorityGuideEditor({ onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        breadcrumbItems={breadcrumbItems}
+      <PageTitle
+        breadcrumb={breadcrumbItems}
         title="Priority guides"
         description="Align on the problem, audience, goals, and priority-ranked content for a page — then convert it into an A1 page or a wireframe."
       />

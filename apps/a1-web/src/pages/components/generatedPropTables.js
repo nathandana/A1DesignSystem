@@ -2,6 +2,169 @@
 // Update by regenerating this file when package prop declarations change.
 
 export const GENERATED_PROP_TABLES = {
+  "navigation-tree": [
+  {
+    "title": "NavigationTree",
+    "rows": [
+      {
+        "id": "items",
+        "name": "items",
+        "type": "NavigationTreeItem[]",
+        "description": "Any number of nested categories and items with globally unique IDs."
+      },
+      {
+        "id": "selectedId",
+        "name": "selectedId",
+        "type": "string | null",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "defaultSelectedId",
+        "name": "defaultSelectedId",
+        "type": "string | null",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "onSelect",
+        "name": "onSelect",
+        "type": "(id: string, event?: React.SyntheticEvent) => void",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "searchable",
+        "name": "searchable",
+        "type": "boolean",
+        "description": "Show search. Default: true."
+      },
+      {
+        "id": "sortable",
+        "name": "sortable",
+        "type": "boolean",
+        "description": "Show the A\u2013Z toggle. Default: true."
+      },
+      {
+        "id": "search",
+        "name": "search",
+        "type": "string",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "defaultSearch",
+        "name": "defaultSearch",
+        "type": "string",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "onSearchChange",
+        "name": "onSearchChange",
+        "type": "(search: string) => void",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "view",
+        "name": "view",
+        "type": "'tree' | 'az'",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "defaultView",
+        "name": "defaultView",
+        "type": "'tree' | 'az'",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "onViewChange",
+        "name": "onViewChange",
+        "type": "(view: 'tree' | 'az') => void",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "expandedIds",
+        "name": "expandedIds",
+        "type": "string[]",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "defaultExpandedIds",
+        "name": "defaultExpandedIds",
+        "type": "string[]",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "onExpandedChange",
+        "name": "onExpandedChange",
+        "type": "(ids: string[]) => void",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "scoreItem",
+        "name": "scoreItem",
+        "type": "(item: NavigationTreeItem, query: string) => number",
+        "description": "Optional custom search ranking; positive values match."
+      },
+      {
+        "id": "searchLabel",
+        "name": "searchLabel",
+        "type": "string",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "sortLabel",
+        "name": "sortLabel",
+        "type": "string",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "listViewLabel",
+        "name": "listViewLabel",
+        "type": "string",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "searchFieldProps",
+        "name": "searchFieldProps",
+        "type": "Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'value' | 'onChange' | 'aria-label'>",
+        "description": "See the NavigationTree TypeScript contract."
+      },
+      {
+        "id": "aria-label",
+        "name": "aria-label",
+        "type": "string",
+        "description": "Accessible navigation and tree name."
+      },
+      {
+        "id": "open",
+        "name": "open",
+        "type": "boolean",
+        "description": "Mobile overlay visibility; pair with onClose."
+      },
+      {
+        "id": "onClose",
+        "name": "onClose",
+        "type": "() => void",
+        "description": "Close the mobile overlay after Escape, scrim or close button."
+      },
+      {
+        "id": "collapsed",
+        "name": "collapsed",
+        "type": "boolean",
+        "description": "Controlled desktop icon navigation."
+      },
+      {
+        "id": "defaultCollapsed",
+        "name": "defaultCollapsed",
+        "type": "boolean",
+        "description": "Initial desktop collapsed state. Default: false."
+      },
+      {
+        "id": "onCollapsedChange",
+        "name": "onCollapsedChange",
+        "type": "(collapsed: boolean) => void",
+        "description": "Desktop collapse callback."
+      }
+    ]
+  }
+],
   "avatar": [
     {
       "title": "Avatar",
@@ -1089,6 +1252,79 @@ export const GENERATED_PROP_TABLES = {
       ]
     }
   ],
+  "split-button": [
+  {
+    "title": "SplitButton",
+    "rows": [
+      {
+        "id": "children",
+        "name": "children",
+        "type": "ReactNode",
+        "description": "Main button label."
+      },
+      {
+        "id": "variant",
+        "name": "variant",
+        "type": "primary | secondary | tertiary | destructive | success",
+        "description": "Shared visual style for both targets. Defaults to primary."
+      },
+      {
+        "id": "size",
+        "name": "size",
+        "type": "sm | md | lg",
+        "description": "Resizes the main button and caret together. Defaults to md."
+      },
+      {
+        "id": "icon",
+        "name": "icon",
+        "type": "string",
+        "description": "Optional icon inside the main button."
+      },
+      {
+        "id": "iconPosition",
+        "name": "iconPosition",
+        "type": "start | end",
+        "description": "Main button icon position."
+      },
+      {
+        "id": "loading",
+        "name": "loading",
+        "type": "boolean",
+        "description": "Shows a spinner and disables both targets."
+      },
+      {
+        "id": "disabled",
+        "name": "disabled",
+        "type": "boolean",
+        "description": "Disables both targets."
+      },
+      {
+        "id": "actions",
+        "name": "actions",
+        "type": "SplitButtonAction[]",
+        "description": "Secondary actions with id, label, optional icon, disabled state and onClick callback."
+      },
+      {
+        "id": "menuLabel",
+        "name": "menuLabel",
+        "type": "string",
+        "description": "Accessible menu name. Defaults to More actions."
+      },
+      {
+        "id": "toggleLabel",
+        "name": "toggleLabel",
+        "type": "string",
+        "description": "Accessible caret name. Defaults to More actions."
+      },
+      {
+        "id": "onClick",
+        "name": "onClick",
+        "type": "(event) => void",
+        "description": "Main action callback."
+      }
+    ]
+  }
+],
   "button": [
     {
       "title": "Button",
@@ -1279,6 +1515,55 @@ export const GENERATED_PROP_TABLES = {
   ],
   "canvas": [
     {
+      "title": "Canvas Frame",
+      "rows": [
+        {
+          "id": "id",
+          "name": "id",
+          "type": "string",
+          "description": "Unique id — used for selection, drag (`onNodeMove`) and `NodeConnector` from/to."
+        },
+        {
+          "id": "x",
+          "name": "x",
+          "type": "number",
+          "description": "Canvas-space x of the frame's top-left corner. Default `0`."
+        },
+        {
+          "id": "y",
+          "name": "y",
+          "type": "number",
+          "description": "Canvas-space y of the frame's top-left corner. Default `0`."
+        },
+        {
+          "id": "width",
+          "name": "width",
+          "type": "number",
+          "description": "Frame body width in canvas-space px."
+        },
+        {
+          "id": "height",
+          "name": "height",
+          "type": "number",
+          "description": "Frame body height in canvas-space px. Omit to size to the content (measured)."
+        },
+      {"id": "variant", "name": "variant", "type": "\"default\" | \"plain\"", "description": "`\"plain\"` drops the frame chrome (border, background, visible title) for content with its own surface, such as a StickyNote. The title stays the keyboard handle and appears above the content while focused. Default `\"default\"`."},
+      {"id": "scrollable", "name": "scrollable", "type": "boolean", "description": "With `height`, let the body scroll content taller than the frame: the wheel and a single finger scroll it (pinch / Ctrl-wheel still zooms the canvas). Default `false` (content is clipped)."},
+        {
+          "id": "label",
+          "name": "label",
+          "type": "string",
+          "description": "Title shown above the frame; also its accessible name."
+        },
+        {
+          "id": "children",
+          "name": "children",
+          "type": "ReactNode",
+          "description": "Arbitrary content rendered in the frame body (e.g. a page preview)."
+        }
+      ]
+    },
+    {
       "title": "Node Connector",
       "rows": [
         {
@@ -1385,8 +1670,8 @@ export const GENERATED_PROP_TABLES = {
         {
           "id": "canvasMenuItems",
           "name": "canvasMenuItems",
-          "type": "Array<{ id: string; label?: string; icon?: string; variant?: string; disabled?: boolean; onClick?: () => void } | { type: 'divider'; id: string }>",
-          "description": "Extra context menu items shown when right-clicking the canvas background (appended below the built-in zoom / fit / reset items)."
+          "type": "CanvasMenuEntry[] | ((point: { x: number; y: number }) => CanvasMenuEntry[])",
+          "description": "Extra context menu items shown when right-clicking the canvas background (appended below the built-in zoom / fit / reset items). Pass a function to build them from the right-clicked point in canvas space, e.g. \"Add note here\"."
         },
         {
           "id": "showGrid",
@@ -1397,8 +1682,8 @@ export const GENERATED_PROP_TABLES = {
         {
           "id": "background",
           "name": "background",
-          "type": "CanvasBackground",
-          "description": "Background surface token (default `\"panel\"`). - `\"panel\"` — standard panel surface. - `\"page\"` — page background. - `\"raised\"` — elevated surface. Pair with `inverse` for a dark/inverse canvas."
+          "type": "CanvasBackground | string",
+          "description": "Background surface token (default `\"panel\"`): `\"panel\"`, `\"page\"` or `\"raised\"`. Any other string is applied as a custom CSS colour (e.g. `\"#F4F1EA\"`) — check contrast manually. Pair with `inverse` for a dark/inverse canvas."
         },
         {
           "id": "inverse",
@@ -1412,6 +1697,12 @@ export const GENERATED_PROP_TABLES = {
           "type": "boolean",
           "description": "Show the zoom controls overlay (default `true`)"
         },
+        { "id": "controlsExpandable", "name": "controlsExpandable", "type": "boolean", "description": "Make the controls overlay compact: zoom in/out, the zoom level and any `controlsActions` always show, and a toggle reveals fit, reset and `controlsContent`. Default `false`." },
+        { "id": "controlsActions", "name": "controlsActions", "type": "Array<{ id, icon, label, onClick?, disabled?, pressed? }>", "description": "Icon buttons that always show in the controls row, after the zoom controls (e.g. an auto-arrange action). `label` is the accessible name and tooltip; set `pressed` to make one a toggle (`aria-pressed`)." },
+        { "id": "onNodeDoubleClick", "name": "onNodeDoubleClick", "type": "(id: string) => void", "description": "Called when a Node or CanvasFrame is double-clicked (e.g. to open it)." },
+        { "id": "focusZoom", "name": "focusZoom", "type": "number", "description": "Zoom level to use when bringing `focusNodeId` into view (e.g. `1` to read new content). Omit to keep the current zoom." },
+        { "id": "focusNodeId", "name": "focusNodeId", "type": "string", "description": "Bring this node into view and select it whenever the id changes (e.g. a frame just added). Nodes that fit are centred; taller ones show their top edge near the top. Waits until the node is rendered." },
+        { "id": "controlsContent", "name": "controlsContent", "type": "ReactNode", "description": "Extra controls shown in the expanded controls overlay, above the zoom row (e.g. a Toolbar of view options). Only rendered when `controlsExpandable`." },
         {
           "id": "edgeStyle",
           "name": "edgeStyle",
@@ -2623,6 +2914,7 @@ export const GENERATED_PROP_TABLES = {
     {
       "title": "Dialog",
       "rows": [
+        { "id": "initialFocusId", "name": "initialFocusId", "type": "string", "description": "ID of a descendant to focus after the dialog opens, such as Cancel in a verification dialog." },
         {
           "id": "open",
           "name": "open",
@@ -3425,6 +3717,7 @@ export const GENERATED_PROP_TABLES = {
     {
       "title": "Menu",
       "rows": [
+        { "id": "padding", "name": "padding", "type": "8 | 12 | 16 | 20 | 24", "description": "Panel padding in spacing-token steps. Defaults to 8; mobile keeps minimum spacing and safe-area padding." },
         {
           "id": "open",
           "name": "open",
@@ -3885,6 +4178,61 @@ export const GENERATED_PROP_TABLES = {
           "type": "\"sm\" | \"md\" | \"lg\"",
           "description": "Size of the pagination buttons. Default: \"md\""
         }
+      ]
+    }
+  ],
+  "page-title": [
+    {
+      "title": "Page Title",
+      "rows": [
+        { "id": "breadcrumb", "name": "breadcrumb", "type": "BreadcrumbItem[]", "description": "Breadcrumb trail above the title; the last item is the current page. Omit to show none." },
+        { "id": "backLabel", "name": "backLabel", "type": "string", "description": "Label for the breadcrumb's back link in narrow containers. Default: \"Back\"." },
+        { "id": "eyebrow", "name": "eyebrow", "type": "ReactNode", "description": "Short category label above the title (the A1 eyebrow composition)." },
+        { "id": "title", "name": "title", "type": "ReactNode", "description": "The page title, rendered as the page's h1." },
+        { "id": "titleId", "name": "titleId", "type": "string", "description": "id on the heading, for aria-labelledby on the sections that follow." },
+        { "id": "description", "name": "description", "type": "ReactNode", "description": "Short supporting text under the title." },
+        { "id": "meta", "name": "meta", "type": "ReactNode | { label, status?, icon? } | { label, status?, icon? }[]", "description": "The metadata row, always directly below the title: badge data (rendered as small subtle badges) or composed badges. Replaces accessory." },
+        { "id": "actions", "name": "actions", "type": "ReactNode | { id?, kind?, label, variant?, icon?, href?, onClick?, disabled? }[]", "description": "Page actions: composed Button, SplitButton, Link, IconButton, ButtonContainer group, Toolbar or SegmentedControl, or a list of action descriptors (button, link or icon button). At most one primary (a Button or SplitButton, primary by default) and it renders last; a ButtonContainer group stays together with its primary at its end. They sit in a ButtonContainer, so they stack full-width on narrow containers." },
+        { "id": "contentWidth", "name": "contentWidth", "type": "\"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\"", "description": "Section content width \u2014 match the sections that follow. Default: \"xl\"." },
+        { "id": "children", "name": "children", "type": "ReactNode", "description": "Extra content below the actions, such as a search field or tab strip." }
+      ]
+    }
+  ],
+  "verification-dialog": [{ "title": "VerificationDialog", "rows": [
+    {"id": "titleKey", "name": "titleKey", "type": "string", "description": "Optional label-service key; corresponding text is the fallback."},
+    {"id": "messageKey", "name": "messageKey", "type": "string", "description": "Optional label-service key; corresponding text is the fallback."},
+    {"id": "confirmLabelKey", "name": "confirmLabelKey", "type": "string", "description": "Optional label-service key; corresponding text is the fallback."},
+    {"id": "cancelLabelKey", "name": "cancelLabelKey", "type": "string", "description": "Optional label-service key; corresponding text is the fallback."},
+    { "id": "title", "name": "title", "type": "string", "description": "Required accessible dialog title." },
+    { "id": "message", "name": "message", "type": "string", "description": "Required explanation of the action's consequence." },
+    { "id": "open", "name": "open", "type": "boolean", "description": "Controlled visibility; defaults to false." },
+    { "id": "confirmLabel", "name": "confirmLabel", "type": "string", "description": "Confirmation verb; defaults to localized Confirm." },
+    { "id": "cancelLabel", "name": "cancelLabel", "type": "string", "description": "Defaults to localized Cancel." },
+    { "id": "destructive", "name": "destructive", "type": "boolean", "description": "Use a destructive confirmation button." },
+    { "id": "disabled", "name": "disabled", "type": "boolean", "description": "Disable confirmation while allowing cancellation." },
+    { "id": "onConfirm", "name": "onConfirm", "type": "() => void", "description": "Invoked only by confirmation, once per open session. React only." },
+    { "id": "onClose", "name": "onClose", "type": "() => void", "description": "Cancellation, Escape, close or backdrop dismissal. React only." },
+    { "id": "children", "name": "children", "type": "ReactNode", "description": "Optional open supporting-content area." }
+  ] }],
+  "overflow-menu": [{ "title": "OverflowMenu", "rows": [
+    { "id": "label", "name": "label", "type": "string", "description": "Accessible trigger/menu label. Defaults to More actions." },
+    { "id": "size", "name": "size", "type": "sm | md | lg", "description": "Icon-button size. Default: md." },
+    { "id": "disabled", "name": "disabled", "type": "boolean", "description": "Disables the trigger and action activation." },
+    { "id": "actions", "name": "actions", "type": "OverflowMenuAction[]", "description": "Ordered actions with unique id, label, optional icon, href, disabled, destructive and a nested VerificationDialog element. Empty by default." },
+    { "id": "onAction", "name": "onAction", "type": "(action: OverflowMenuAction) => void", "description": "Runs once after activation or confirmation, never on dismissal. React only." }
+  ] }],
+  "overview-card": [
+    {
+      "title": "Overview Card",
+      "rows": [
+        { "id": "icon", "name": "icon", "type": "string", "description": "Material Symbols icon in the card's icon block. Default: \"account_circle\". The block itself is fixed." },
+        { "id": "title", "name": "title", "type": "ReactNode", "description": "The card heading (md, fixed)." },
+        { "id": "titleAs", "name": "titleAs", "type": "\"h2\" | \"h3\" | \"h4\"", "description": "Heading level to fit the page outline. Default: \"h3\"." },
+        { "id": "status", "name": "status", "type": "\"neutral\" | \"info\" | \"success\" | \"warn\" | \"error\"", "description": "Status stripe tone; shown only with statusLabel, so status is never colour-only." },
+        { "id": "statusLabel", "name": "statusLabel", "type": "ReactNode", "description": "Status badge text; turns the status on." },
+        { "id": "details", "name": "details", "type": "{ label, value }[]", "description": "Key details, as a row definition list with fixed-width labels." },
+        { "id": "actions", "name": "actions", "type": "ReactNode | { id?, kind?, label, variant?, icon?, iconPosition?, href?, onClick?, disabled? }[]", "description": "Up to two actions: small secondary or tertiary Buttons, Links or small IconButtons (kind \"icon-button\", label = accessible name). A primary or unset button variant becomes secondary." },
+        { "id": "children", "name": "children", "type": "ReactNode", "description": "The content area, between the details and the actions \u2014 a short paragraph, a progress bar or a chart." }
       ]
     }
   ],
@@ -4855,6 +5203,32 @@ export const GENERATED_PROP_TABLES = {
           "type": "ReactNode",
           "description": "No description in the package type declaration."
         }
+      ]
+    }
+  ],
+  "sticky-note": [
+    {
+      "title": "Sticky Note",
+      "rows": [
+        { "id": "title", "name": "title", "type": "ReactNode", "description": "Note title, shown as a heading and used as the note's accessible name." },
+        { "id": "author", "name": "author", "type": "ReactNode", "description": "Author, shown as a badge (announced as \"Author: \u2026\")." },
+        { "id": "color", "name": "color", "type": "\"yellow\" | \"orange\" | \"green\" | \"blue\" | \"pink\" | \"purple\" | \"grey\"", "description": "Paper colour from the theme's colour ramps. Text on every colour meets WCAG AA, and paper stays light in dark mode. Default: \"yellow\"." },
+        { "id": "width", "name": "width", "type": "\"auto\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\"", "description": "Width: a T-shirt size, or \"auto\" to fit the container. Default: \"md\"." },
+        { "id": "height", "name": "height", "type": "\"auto\" | \"xs\" | \"sm\" | \"md\" | \"lg\" | \"xl\"", "description": "Height: a T-shirt size, or \"auto\" to fit the content. A fixed height scrolls its content (the note becomes focusable so it can be scrolled by keyboard). Default: \"auto\"." },
+        { "id": "resizable", "name": "resizable", "type": "boolean", "description": "Let the user resize the height, like a textarea. Default: false." },
+        { "id": "placement", "name": "placement", "type": "\"inline\" | \"floating\"", "description": "\"inline\" (default) sits in the flow. \"floating\" places the note over content at a corner (anchor) of its nearest positioned ancestor, on the content z-layer: above in-flow content, below sticky chrome and popovers." },
+        { "id": "anchor", "name": "anchor", "type": "\"top-start\" | \"top-end\" | \"bottom-start\" | \"bottom-end\"", "description": "Corner for placement=\"floating\". Default: \"top-end\"." },
+        { "id": "titleAs", "name": "titleAs", "type": "\"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\" | \"p\"", "description": "Heading level for the title. Default: \"h3\"." },
+        { "id": "movable", "name": "movable", "type": "boolean", "description": "Floating notes only: show a move handle so people can drag the note (pointer) or nudge it with the arrow keys (Shift for larger steps). The note stays inside its positioned parent; Escape during a drag returns it. Default: false." },
+        { "id": "position", "name": "position", "type": "StickyNotePosition", "description": "Controlled offset ({ x, y } px) from the anchor corner for a movable note." },
+        { "id": "defaultPosition", "name": "defaultPosition", "type": "StickyNotePosition", "description": "Initial offset for an uncontrolled movable note. Default: { x: 0, y: 0 }." },
+        { "id": "onMove", "name": "onMove", "type": "(position: StickyNotePosition) => void", "description": "Called with the new (clamped) offset whenever a movable note moves." },
+        { "id": "editing", "name": "editing", "type": "boolean", "description": "Edit the title and content in place: both become seamless text fields (the content as Markdown source) and the content field takes focus. Controlled \u2014 handle onTitleChange / onContentChange, and onEditingChange(false) when focus leaves the note or Escape is pressed. Default: false." },
+        { "id": "onTitleChange", "name": "onTitleChange", "type": "(title: string) => void", "description": "Called with the new title as it's typed while editing." },
+        { "id": "onContentChange", "name": "onContentChange", "type": "(content: string) => void", "description": "Called with the new Markdown content as it's typed while editing." },
+        { "id": "onEditingChange", "name": "onEditingChange", "type": "(editing: boolean) => void", "description": "Called with false when editing should end (focus left the note or Escape)." },
+        { "id": "markdown", "name": "markdown", "type": "boolean", "description": "Read string content as basic Markdown: **bold**, *italic*, ~~strikethrough~~, `code`, [links](url), bulleted and numbered lists, and paragraphs. Rendered as A1 Paragraph, List, Link and Code, never raw HTML; only http(s), mailto, tel and relative links are linked. Default: true." },
+        { "id": "children", "name": "children", "type": "ReactNode", "description": "Note content. A string is read as Markdown (see markdown); other nodes render as given." }
       ]
     }
   ],

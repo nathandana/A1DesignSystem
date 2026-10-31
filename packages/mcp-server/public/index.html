@@ -18,13 +18,15 @@
   <p>
     A remote <a href="https://modelcontextprotocol.io/">Model Context Protocol</a> server exposing the
     <a href="https://github.com/nathandana/A1DesignSystem">A1 Design System</a>'s component registry,
-    design tokens, design rules, and page-definition contract to AI coding agents.
+    governed patterns, design tokens, design rules, and page-definition contract to AI coding agents.
   </p>
   <p>Endpoint: <code>POST /mcp</code> (MCP Streamable HTTP, stateless — one JSON-RPC request per response).</p>
   <p>Connect a local MCP client, e.g. with the Claude Code CLI:</p>
   <pre>claude mcp add --transport http a1-design https://mcp.a1design.app/mcp</pre>
-  <p>Tools: <code>list_components</code>, <code>get_component</code>, <code>search_tokens</code>,
+  <p>Pattern tools: <code>get_pattern</code>, <code>validate_patterns</code>, <code>migrate_pattern</code>.</p>
+  <p>JSON authoring: <code>get_json_model</code>.</p>
+  <p>Other tools: <code>list_components</code>, <code>get_component</code>, <code>search_tokens</code>,
     <code>get_token</code>, <code>list_themes</code>, <code>list_rules</code>, <code>list_page_types</code>.</p>
-  <p>Resources: <code>a1://docs/agent-brief</code>, <code>a1://docs/page-definition-standard</code>.</p>
+  <p>Resources: <code>a1://docs/pattern-contracts</code>, <code>a1://docs/agent-brief</code>, <code>a1://docs/page-definition-standard</code>.</p>
 </body>
 </html>

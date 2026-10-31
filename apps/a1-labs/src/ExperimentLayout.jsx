@@ -101,7 +101,7 @@ export function ExperimentLayout({ experiment, onOpenSettings, configuration, ch
           )}
         </SideNav>
       }
-      aside={isSmDown ? undefined : (
+      aside={isSmDown || !configuration ? undefined : (
         <div className="a1-labs-configuration">{configuration}</div>
       )}
     >
@@ -117,7 +117,7 @@ export function ExperimentLayout({ experiment, onOpenSettings, configuration, ch
         </Stack> : <Heading as="h1" className="a1-sr-only">{experiment.title}</Heading>}
         {children}
       </Section>
-      {isSmDown && (
+      {isSmDown && configuration && (
         <BottomSheet title="Configure" detents={[0.55, 0.95]} defaultDetent={0}>
           {configuration}
         </BottomSheet>

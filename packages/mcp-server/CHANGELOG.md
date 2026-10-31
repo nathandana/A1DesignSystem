@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **JSON authoring model** (A1-2731) — added `get_json_model` for a copy-ready page definition or project bundle, paired with a structural JSON Schema whose component type enum comes from the current editor registry. Component props and governed pattern rules continue through the existing specialized MCP tools. MCP initialization now negotiates ChatGPT-supported protocol versions, and tool discovery advertises draft-07 schemas with read-only annotations.
+
+- **Pattern tools on the MCP homepage** (A1-2729) — the landing page now identifies `get_pattern`, `validate_patterns`, `migrate_pattern` and the pattern-contract resource so agents can discover the pattern APIs without first reading the repository documentation.
+
+## 0.2.0 — 2026-10-30
+
+- **Patterns in the index** (A1-2720) — the `## Patterns` section of `components.md` is indexed as a category, and the `.d.ts` walker also reads `packages/react/src/patterns/`, so `list_components` / `get_component` cover `Page Title` with its props. The page-type registry picks up `PageTitle` automatically.
+
 ## 0.1.2 — 2026-10-12
 
 - **Reported server version** — MCP initialization now reads the package version instead of reporting the original hardcoded 0.1.0.

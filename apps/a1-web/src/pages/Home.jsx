@@ -5,7 +5,6 @@ import {
   Grid,
   Heading,
   Inset,
-  Link,
   MessageBadge,
   Paragraph,
   Section,
@@ -15,6 +14,7 @@ import { useAccess } from '../access/AccessContext.jsx'
 import { useT } from '../labels/useT.js'
 import colorTokenAudit from '../../../../packages/react/ai/color-token-audit.md?raw'
 import { componentCategories as registryCategories } from './components/data.js'
+import { patternCategories } from './patterns/data.js'
 
 function parseTokenDefinitionCount(audit) {
   return audit.match(/\| Token definitions \|\s*(\d+)\s*\|/)?.[1] ?? '0'
@@ -23,6 +23,7 @@ function parseTokenDefinitionCount(audit) {
 const componentCount = registryCategories.reduce((count, category) => count + category.components.length, 0)
 const categoryCount = registryCategories.length
 const tokenCount = parseTokenDefinitionCount(colorTokenAudit)
+const patternCount = patternCategories.reduce((count, category) => count + category.patterns.length, 0)
 
 const HOME_CATEGORY_LABEL_KEYS = {
   layout: 'app.home.catLayout',
@@ -43,7 +44,7 @@ export function Home({ onNavigate }) {
 
   const stats = [
     { value: String(componentCount), label: t('app.home.statComponents', 'Components') },
-    { value: '4', label: t('app.home.statPlatforms', 'Packages') },
+    { value: String(patternCount), label: t('app.home.statPatterns', 'Patterns') },
     { value: '9', label: t('app.home.statThemes', 'Themes') },
     { value: tokenCount, label: t('app.home.statTokens', 'Tokens') },
   ]
@@ -89,10 +90,10 @@ export function Home({ onNavigate }) {
     },
     {
       id: 'patterns',
-      page: 'patterns',
+      page: 'pattern-library',
       icon: 'dashboard_customize',
       title: t('app.home.toolPatternsTitle', 'Patterns'),
-      body: t('app.home.toolPatternsBody', 'Commonly defined patterns that can be shared within or across projects.'),
+      body: t('app.home.toolPatternsBody', 'Governed compositions ready to inspect, edit, and reuse across projects.'),
     },
     {
       id: 'image-library',
@@ -271,22 +272,6 @@ export function Home({ onNavigate }) {
               </Inset>
             ))}
           </Grid>
-          {canAccessPage('dashboard') ? (
-            <Stack align="center">
-              <Link
-                href="#"
-                icon="link"
-                size="lg"
-                weight="semibold"
-                onClick={(event) => {
-                  event.preventDefault()
-                  onNavigate('dashboard')
-                }}
-              >
-                {t('app.home.dashboardLink', 'System dashboard')}
-              </Link>
-            </Stack>
-          ) : null}
         </Stack>
       </Section>
 

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import {
-  Breadcrumb,
   Card,
   Code,
   Grid,
@@ -8,6 +7,7 @@ import {
   List,
   ListItem,
   MessageBadge,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
@@ -322,29 +322,15 @@ export function GetStarted({ onNavigate }) {
 
   return (
     <>
-      <Section
-        padding="xs"
-        contentWidth="xl"
-        surface="panel"
-        borderSize="sm"
-        borderVariant="accent"
-        borderSides="bottom"
-      >
-        <Stack direction="column" gap="xs">
-          <Breadcrumb
-            items={[
-              { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
-              { label: 'Setup guides' },
-            ]}
-          />
-          <Heading as="h1" id="get-started-heading" size={{ xs: 'lg', md: 'xxl' }}>
-            Setup guides
-          </Heading>
-          <Paragraph size="sm" color="muted">
-            Add A1 from GitHub, run the local docs site, or use the package tabs for implementation-specific setup.
-          </Paragraph>
-        </Stack>
-      </Section>
+      <PageTitle
+        titleId="get-started-heading"
+        breadcrumb={[
+          { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
+          { label: 'Setup guides' },
+        ]}
+        title="Setup guides"
+        description="Add A1 from GitHub, run the local docs site, or use the package tabs for implementation-specific setup."
+      />
 
       <Section padding="sm" contentWidth="xl" aria-labelledby="repo-setup-heading">
         <Grid columns={{ xs: 1, md: 2 }} gap="md">

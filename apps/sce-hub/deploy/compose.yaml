@@ -1,0 +1,31 @@
+services:
+  workspace:
+    build:
+      context: ../../..
+      dockerfile: apps/sce-hub/deploy/Dockerfile
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 5191
+      SCE_DATA_DIR: /data
+      SCE_ORIGIN: https://sce.a1design.app
+      SCE_PUBLIC_DEMO: "false"
+    volumes:
+      - sce-data:/data
+    restart: unless-stopped
+  proxy:
+    image: caddy:2
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - workspace
+    restart: unless-stopped
+volumes:
+  sce-data:
+  caddy-data:
+  caddy-config:

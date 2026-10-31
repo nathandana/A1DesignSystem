@@ -16,6 +16,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
 import manifest from '../../package.json' with { type: 'json' };
+import { validatePatterns } from '../../../react/src/patterns/patternValidation.js';
+import { migratePatternNode } from '../../../react/src/patterns/patternMigrations.js';
+import { getJsonModel } from './json-model.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const INDEX_PATH = path.resolve(HERE, '../../index.json');
@@ -23,6 +26,7 @@ const INDEX_PATH = path.resolve(HERE, '../../index.json');
 const SERVER_NAME = 'a1-design-system';
 const SERVER_VERSION = manifest.version;
 const PROTOCOL_VERSION = '2025-06-18';
+const SUPPORTED_PROTOCOL_VERSIONS = new Set([PROTOCOL_VERSION, '2025-03-26', '2024-11-05']);
 
 let cachedIndex = null;
 function loadIndex() {
@@ -37,16 +41,48 @@ function loadIndex() {
 function findComponent(index, name) {
   const target = String(name).trim().toLowerCase();
   return (
-    index.components.find((c) => c.name.toLowerCase() === target) ??
+    index.components.find((c) => c.name.toLowerCase() === target || c.exports.some(e => e.exportedName.toLowerCase() === target)) ??
     index.components.find((c) => c.name.toLowerCase().startsWith(target))
   );
 }
 
 const TOOLS = [
   {
+    name: 'get_json_model',
+    description: 'Get a copy-ready A1 page or project JSON starter plus a structural JSON Schema generated from the current registered component types.',
+    input: z.object({
+      format: z.enum(['page', 'project']).optional().default('page')
+        .describe('Return a single page definition or an importable multi-page project bundle'),
+    }),
+    handler(args, index) { return getJsonModel(args.format, index.pageTypes); },
+  },
+  {
+    name: 'migrate_pattern',
+    description: 'Propose an explicit supported migration of one formal pattern node. Returns the migrated node and diagnostics; does not save or modify the input. Unknown versions and ambiguous renames retain the original node.',
+    input: z.object({ node: z.looseObject({}) }),
+    handler(args) { return migratePatternNode(args.node); },
+  },
+  {
+    name: 'get_pattern',
+    description: 'Get a versioned formal A1 pattern contract, props schema, ordered editable areas, policies, empty starter and populated examples.',
+    input: z.object({ name: z.string().describe('Pattern type or slug, e.g. OverviewCard or overview-card') }),
+    handler(args, index) {
+      const name = args.name.toLowerCase();
+      const pattern = index.patterns?.find(p => [p.id, p.type, p.name].some(value => value.toLowerCase() === name));
+      if (!pattern) throw new ToolError(`Unknown formal pattern "${args.name}".`);
+      return pattern;
+    },
+  },
+  {
+    name: 'validate_patterns',
+    description: 'Validate formal patterns in a component node, page definition or project bundle. Returns non-destructive diagnostics with node IDs, JSON paths, rule IDs, severity and recovery guidance. Does not execute actions or validate the entire page schema.',
+    input: z.object({ definition: z.unknown().describe('Parsed JSON node, page or project bundle') }),
+    handler(args) { return validatePatterns(args.definition); },
+  },
+  {
     name: 'list_components',
     description:
-      "List A1 Design System components with their per-package coverage (React/Native/Pure/Web Components/Figma). Filter by category (e.g. 'Actions & Controls') or by which package must be implemented.",
+      "List A1 Design System components with their per-package coverage (React/Native/Pure/Web Components/Figma). Filter by category (e.g. 'Actions & Controls') or by which package must be implemented. Patterns — compositions of components such as Page Title — are listed under the 'Patterns' category.",
     input: z.object({
       category: z.string().optional().describe('Exact category heading, e.g. "Layout & Display"'),
       package: z.enum(['react', 'native', 'pure', 'webComponents', 'figma']).optional()
@@ -56,6 +92,7 @@ const TOOLS = [
       const categoryById = new Map(index.categories.map((c) => [c.id, c.heading]));
       let results = index.components.map((c) => ({
         name: c.name,
+        kind: index.patterns?.some(p => c.exports.some(e => e.exportedName === p.type)) ? 'pattern' : 'component',
         category: categoryById.get(c.categoryId) ?? null,
         coverage: c.coverage,
       }));
@@ -87,6 +124,7 @@ const TOOLS = [
       const category = index.categories.find((c) => c.id === component.categoryId);
       return {
         name: component.name,
+        pattern: index.patterns?.find(p => component.exports.some(e => e.exportedName === p.type)) ?? null,
         category: category?.heading ?? null,
         coverage: component.coverage,
         exports: component.exports,
@@ -211,7 +249,8 @@ function toolsListResult() {
     tools: TOOLS.map((t) => ({
       name: t.name,
       description: t.description,
-      inputSchema: z.toJSONSchema(t.input),
+      inputSchema: z.toJSONSchema(t.input, { target: 'draft-7' }),
+      annotations: { readOnlyHint: true, destructiveHint: false },
     })),
   };
 }
@@ -231,7 +270,9 @@ function handleMethod(method, params, index) {
   switch (method) {
     case 'initialize':
       return {
-        protocolVersion: PROTOCOL_VERSION,
+        protocolVersion: SUPPORTED_PROTOCOL_VERSIONS.has(params?.protocolVersion)
+          ? params.protocolVersion
+          : PROTOCOL_VERSION,
         capabilities: { tools: {}, resources: {} },
         serverInfo: { name: SERVER_NAME, version: SERVER_VERSION },
       };

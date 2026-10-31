@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Banner, Button, ButtonContainer, DataTable, Dialog, IconButton, Menu, MenuItem, MenuSection, MessageEmptyState, Paragraph, Stack, TextField } from '@gtivr4/a1-design-system-react'
 import { getLabels, hydrateLabels, saveLabels, subscribeLabels } from '../labels/labelStore.js'
+import verificationJson from '../../../../system/labels/verification-dialog.json'
 import appJson from '../../../../system/labels/app.json'
 import actionJson from '../../../../system/labels/action.json'
 import backlogJson from '../../../../system/labels/backlog.json'
 import calendarJson from '../../../../system/labels/calendar.json'
 import codeJson from '../../../../system/labels/code.json'
+import canvasJson from '../../../../system/labels/canvas.json'
+import stickyNoteJson from '../../../../system/labels/sticky-note.json'
 import fieldJson from '../../../../system/labels/field.json'
 import overlayJson from '../../../../system/labels/overlay.json'
 import statusBarJson from '../../../../system/labels/status-bar.json'
@@ -33,11 +36,14 @@ function flattenSystemLabels(obj, prefix = '') {
 }
 
 const SYSTEM_LABEL_OPTIONS = [
+  ...flattenSystemLabels(verificationJson.label.verificationDialog, 'verificationDialog'),
   ...flattenSystemLabels(appJson.label.app, 'app'),
   ...flattenSystemLabels(actionJson.label.action, 'action'),
   ...flattenSystemLabels(backlogJson.label.backlog, 'backlog'),
   ...flattenSystemLabels(calendarJson.label.calendar, 'calendar'),
   ...flattenSystemLabels(codeJson.label.code, 'code'),
+  ...flattenSystemLabels(canvasJson.label.canvas, 'canvas'),
+  ...flattenSystemLabels(stickyNoteJson.label.stickyNote, 'stickyNote'),
   ...flattenSystemLabels(fieldJson.label.field, 'field'),
   ...flattenSystemLabels(overlayJson.label.overlay, 'overlay'),
   ...flattenSystemLabels(statusBarJson.label.statusBar, 'statusBar'),

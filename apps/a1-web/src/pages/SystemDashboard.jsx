@@ -7,6 +7,7 @@ import {
   GridItem,
   Heading,
   MessageBadge,
+  PageTitle,
   Paragraph,
   PieChart,
   RadarChart,
@@ -24,6 +25,8 @@ import actionLabels from '../../../../system/labels/action.json'
 import backlogLabels from '../../../../system/labels/backlog.json'
 import calendarLabels from '../../../../system/labels/calendar.json'
 import codeLabels from '../../../../system/labels/code.json'
+import canvasLabels from '../../../../system/labels/canvas.json'
+import stickyNoteLabels from '../../../../system/labels/sticky-note.json'
 import fieldLabels from '../../../../system/labels/field.json'
 import statusBarLabels from '../../../../system/labels/status-bar.json'
 import treeMenuLabels from '../../../../system/labels/tree-menu.json'
@@ -44,7 +47,6 @@ import {
   PACKAGE_COVERAGE,
   componentCategories,
 } from './components/data.js'
-import { PageTitleArea } from './PageTitleArea.jsx'
 
 const TONES = ['accent', 'info', 'success', 'warn', 'error']
 const SYSTEM_SIGNALS = [
@@ -82,6 +84,8 @@ const SYSTEM_LABEL_SOURCES = [
   { name: 'Action', data: actionLabels },
   { name: 'Backlog', data: backlogLabels },
   { name: 'Calendar', data: calendarLabels },
+  { name: 'Canvas', data: canvasLabels },
+  { name: 'Sticky note', data: stickyNoteLabels },
   { name: 'Code', data: codeLabels },
   { name: 'Field', data: fieldLabels },
   { name: 'Status bar', data: statusBarLabels },
@@ -530,14 +534,14 @@ export function SystemDashboard({ onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        breadcrumbItems={[
+      <PageTitle
+        breadcrumb={[
           { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
           { label: 'Dashboard' },
         ]}
         title="System dashboard"
         description="A live operating view of A1: backlog health, component coverage, token volume, system flow, rules, and labels. Switch each card to inspect a different lens, then jump into the source area for details."
-        headingId="dashboard-heading"
+        titleId="dashboard-heading"
       />
       <Section padding="sm" contentWidth="xxl" aria-labelledby="dashboard-heading">
         <Grid columns={{ xs: 1, lg: 4 }} gap="md" alignItems="stretch">

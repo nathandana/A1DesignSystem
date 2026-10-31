@@ -21,7 +21,8 @@ import ts from 'typescript';
 import { repoPath } from './paths.mjs';
 
 const COMPONENTS_MD = 'packages/react/ai/components.md';
-const COMPONENTS_SRC_DIR = 'packages/react/src/components';
+// Components and patterns (compositions, A1-2720) both ship .d.ts files.
+const COMPONENTS_SRC_DIRS = ['packages/react/src/components', 'packages/react/src/patterns'];
 
 // ── components.md: sections + tables ────────────────────────────────────────
 
@@ -279,9 +280,9 @@ function parseDtsFile(filePath) {
 }
 
 export function parseComponentExports() {
-  const componentsDir = repoPath(COMPONENTS_SRC_DIR);
   const exportsList = [];
-  for (const file of walkDtsFiles(componentsDir)) {
+  const files = COMPONENTS_SRC_DIRS.map((dir) => repoPath(dir)).filter((dir) => fs.existsSync(dir)).flatMap((dir) => walkDtsFiles(dir));
+  for (const file of files) {
     try {
       exportsList.push(...parseDtsFile(file));
     } catch {

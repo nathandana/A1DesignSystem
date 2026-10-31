@@ -1,0 +1,62 @@
+{
+  "label": {
+    "navigationTree": {
+      "label": {
+        "$type": "string",
+        "$value": "Navigation",
+        "$description": "Default navigation and tree accessible name.",
+        "locale": {
+          "es": "Navegación",
+          "fr": "Navigation",
+          "de": "Navigation",
+          "pt": "Navegação",
+          "ja": "ナビゲーション",
+          "zh": "导航",
+          "ar": "التنقل"
+        }
+      },
+      "search": {
+        "$type": "string",
+        "$value": "Search navigation",
+        "$description": "Accessible name for the optional navigation search field.",
+        "locale": {
+          "es": "Buscar en la navegación",
+          "fr": "Rechercher dans la navigation",
+          "de": "Navigation durchsuchen",
+          "pt": "Pesquisar na navegação",
+          "ja": "ナビゲーションを検索",
+          "zh": "搜索导航",
+          "ar": "البحث في التنقل"
+        }
+      },
+      "sort": {
+        "$type": "string",
+        "$value": "A-Z",
+        "$description": "Toggle alphabetical navigation instead of categorized navigation.",
+        "locale": {
+          "es": "A-Z",
+          "fr": "A-Z",
+          "de": "A-Z",
+          "pt": "A-Z",
+          "ja": "A-Z",
+          "zh": "A-Z",
+          "ar": "A-Z"
+        }
+      },
+      "listView": {
+        "$type": "string",
+        "$value": "List view",
+        "$description": "Accessible name of the navigation sorting toolbar.",
+        "locale": {
+          "es": "Vista de lista",
+          "fr": "Vue en liste",
+          "de": "Listenansicht",
+          "pt": "Vista de lista",
+          "ja": "リスト表示",
+          "zh": "列表视图",
+          "ar": "عرض القائمة"
+        }
+      }
+    }
+  }
+}

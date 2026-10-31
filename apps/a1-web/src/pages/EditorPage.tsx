@@ -12,6 +12,7 @@
 import { createPortal } from 'react-dom';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
+  Banner,
   Button,
   Code,
   IconButton,
@@ -32,8 +33,8 @@ import {
   TreeMenu,
 } from '@gtivr4/a1-design-system-react';
 import { RenderPageDefinition } from '../editor/pageRenderer';
-import { ResponsivePreviewFrame, VIEWPORT_PRESETS, viewportSize } from './components/detail/ResponsivePreviewFrame.jsx';
-import { buildProjectNav, buildProjectTree, type ProjectNavItem } from '../projects/projectNav';
+import { PRINT_PRESETS, ResponsivePreviewFrame, VIEWPORT_PRESETS, viewportSize } from './components/detail/ResponsivePreviewFrame.jsx';
+import { buildProjectNav, buildProjectTree, type ProjectNavItem, buildProjectBreadcrumb } from '../projects/projectNav';
 import type { ProjectPage } from '../projects/projectStore';
 import { EditorAsidePanel } from '../editor/EditorAsidePanel.jsx';
 import { propsToConfig, configToNodeUpdate } from '../editor/EditorPropsPanel.jsx';
@@ -55,6 +56,9 @@ import { EDITOR_PREVIEW_SESSION_KEY, EDITOR_PREVIEW_PAGES_MAP_KEY, EDITOR_PREVIE
 import { readStored, writeStored } from '../editor/storage';
 import type { CatalogEntry } from '../editor/componentCatalog';
 import { COMPONENT_CATALOG, createNodeFromEntry } from '../editor/componentCatalog';
+import { effectiveLock, isPatternZone, zoneLabel, zoneLock } from '../editor/patternAreas';
+import { canonicalizePatternTree } from '../../../../packages/react/src/patterns/patternPolicies.js';
+import { validatePatterns, validatePatternEdit, formatPatternDiagnostics } from '../../../../packages/react/src/patterns/patternValidation.js';
 import { definitionToJsx } from '../editor/definitionToJsx';
 import { instantiatePattern } from '../patterns/instantiatePattern.js';
 import { getAllPatterns, loadPattern, newPatternId, patternAvailableToProject, registerPattern, savePattern } from '../patterns/patternStore.js';
@@ -79,7 +83,7 @@ import { onRemoteHydrate } from '../projects/cloudSync.js';
 import { appendHistory, fetchHistory, updateHistoryLabel } from '../services/historyDb';
 import { PagePresence } from '../editor/PagePresence.jsx';
 import { collectFigmaFigureAssets, importFigmaBridgeImages, toImageRef } from '../lib/imageLibrary';
-import { combinePageIntoLayout, definitionContainsNodeType, splitLayoutAtOutlet } from '../projects/projectLayout';
+import { combinePageIntoLayout, definitionContainsNodeType, splitLayoutAtOutlet, resolveAutoBreadcrumbs } from '../projects/projectLayout';
 import { reconcilePageInstances } from '../patterns/patternSync.js';
 import { cleanUtilities } from '../editor/utilityRegistry';
 import { ProjectThemeScope } from '../lib/ProjectThemeScope.jsx';
@@ -693,7 +697,6 @@ export function EditorPage({
   resolvedColorScheme = 'light',
   projectPages = [],
   onNavigateToPage,
-  onBackToProjectOverview,
   composeWithAi = false,
   onAiComposeConsumed,
   pageLevel,
@@ -739,8 +742,6 @@ export function EditorPage({
   resolvedColorScheme?: string;
   projectPages?: ProjectPage[];
   onNavigateToPage?: (id: string) => void;
-  /** Return from an open project page to its project overview. */
-  onBackToProjectOverview?: () => void;
   composeWithAi?: boolean;
   onAiComposeConsumed?: () => void;
   pageLevel?: number;
@@ -759,7 +760,7 @@ export function EditorPage({
   addTarget?: AddTarget;
   onCancelAdd?: () => void;
   onRequestAdd?: (target: AddTarget) => void;
-  pendingAction?: { type: 'delete' | 'ungroup' | 'duplicate' | 'group-as-stack' | 'copy-pattern' | 'paste-pattern' | 'detach' | 'create-pattern'; nodeId: string; nodeIds?: string[] } | { type: 'rename'; nodeId: string; name: string } | null;
+  pendingAction?: { type: 'delete' | 'ungroup' | 'duplicate' | 'group-as-stack' | 'copy-pattern' | 'paste-pattern' | 'detach' | 'create-pattern' | 'move-up' | 'move-down'; nodeId: string; nodeIds?: string[] } | { type: 'rename'; nodeId: string; name: string } | null;
   onPendingActionDone?: () => void;
   pendingConvert?: { nodeId: string; newType: ComponentType; newProps: ComponentProps } | null;
   onPendingConvertDone?: () => void;
@@ -775,7 +776,6 @@ export function EditorPage({
   // enforce them), and hide page/project-only chrome.
   const isPattern = documentKind === 'pattern';
   const isLayout = documentKind === 'layout';
-  const canReturnToProjectOverview = documentKind === 'page' && !!projectId && !!onBackToProjectOverview;
   const openTicket = useOpenCreateTicket();
 
   // Use any legacy draft as the fallback so existing unsaved work is preserved.
@@ -818,6 +818,13 @@ export function EditorPage({
         appendHistory({ entityType: historyEntityType, entityId: historyEntityId as string, label, snapshot: json }).then(refreshHistory);
       }
     },
+    (json, previous) => {
+      try {
+        const result = validatePatternEdit(JSON.parse(previous), JSON.parse(json));
+        if (!result.valid) setNotice(formatPatternDiagnostics(result.diagnostics.filter(d => d.severity === 'error')));
+        return result.valid;
+      } catch { return false; } // Keep an incomplete JSON draft without committing it.
+    },
   );
 
   // Map the cloud log into the History panel's entry shape (pages + patterns).
@@ -842,6 +849,8 @@ export function EditorPage({
   const [codeFormat, setCodeFormat] = useState<'json' | 'react'>('json');
   // Responsive preview device for the Preview view ('fit' = no simulation).
   const [previewViewport, setPreviewViewport] = useState('fit');
+  // A paper preset previews the page with the print stylesheet applied (A1-2707).
+  const printPreview = viewportSize(previewViewport)?.media === 'print';
   const [asideNode, setAsideNode] = useState<Element | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [screenReaderReportOpen, setScreenReaderReportOpen] = useState(false);
@@ -1199,10 +1208,18 @@ export function EditorPage({
 
   const parsedDefinition = useMemo<ParseResult>(() => {
     try {
-      return { ok: true, value: JSON.parse(previewJson ?? history.workingJson) as PageDefinition };
+      const source = JSON.parse(previewJson ?? history.workingJson);
+      const validation = validatePatterns(source);
+      if (!validation.valid) return { ok: false, error: formatPatternDiagnostics(validation.diagnostics.filter(d => d.severity === 'error')) };
+      return { ok: true, value: canonicalizePatternTree(source) as PageDefinition };
     } catch (e) {
       return { ok: false, error: e instanceof Error ? e.message : 'Invalid JSON' };
     }
+  }, [previewJson, history.workingJson]);
+
+  const patternDiagnostics = useMemo(() => {
+    try { return validatePatterns(JSON.parse(previewJson ?? history.workingJson)).diagnostics; }
+    catch { return []; }
   }, [previewJson, history.workingJson]);
 
   // Read-only React (JSX) rendition of the current definition.
@@ -1216,10 +1233,20 @@ export function EditorPage({
     onDefinitionChange?.(parsedDefinition.ok ? parsedDefinition.value : null);
   }, [parsedDefinition]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Process a node-move command issued by EditorSidebar's draggable tree.
-  useEffect(() => {
-    if (!pendingMove || !parsedDefinition.ok) return;
-    const { draggedId, targetId, position } = pendingMove;
+  function handleNodeMove({ draggedId, targetId, position }: { draggedId: string; targetId: string; position: 'before' | 'into' | 'after' }) {
+    if (!parsedDefinition.ok || draggedId === targetId) return;
+    // The same governance as the other move/add paths: a locked element (or a
+    // pattern zone) stays put, a locked container takes nothing, and a blank
+    // area applies its rules to what moves into it.
+    if (getNodeLock(draggedId)?.node && !isPatternInstanceRoot(draggedId)) { notifyLocked(draggedId); return; }
+    if (addIntoLocked(targetId, position)) { notifyLocked(targetId); return; }
+    const dragged = getNode(draggedId);
+    if (dragged?.children && findNodeById(dragged.children, targetId)) return;
+    const destination = governingSlot(targetId, position);
+    if (dragged && destination) {
+      const reject = slotRuleRejection(destination, { type: dragged.type }, draggedId);
+      if (reject) { setNotice(reject); return; }
+    }
     const regions = parsedDefinition.value.page.layout.regions;
 
     let draggedNode: ComponentNode | null = null;
@@ -1234,7 +1261,7 @@ export function EditorPage({
       }
     }
 
-    if (!draggedNode) { onPendingMoveDone?.(); return; }
+    if (!draggedNode) return;
 
     newRegions = newRegions.map((r) => {
       const updated = insertInNodes(r.nodes, draggedNode!, targetId, position);
@@ -1246,6 +1273,12 @@ export function EditorPage({
       page: { ...parsedDefinition.value.page, layout: { ...parsedDefinition.value.page.layout, regions: newRegions } },
     };
     history.commit(JSON.stringify(newDef, null, 2), `Moved ${draggedNode.type}`);
+  }
+
+  // Process a node-move command issued by EditorSidebar's draggable tree.
+  useEffect(() => {
+    if (!pendingMove) return;
+    handleNodeMove(pendingMove);
     onPendingMoveDone?.();
   }, [pendingMove]); // eslint-disable-line react-hooks/exhaustive-deps
 
@@ -1253,6 +1286,8 @@ export function EditorPage({
   useEffect(() => {
     if (!pendingAction || !parsedDefinition.ok) return;
     if (pendingAction.type === 'delete') handleNodeDelete(pendingAction.nodeId);
+    else if (pendingAction.type === 'move-up') handleMoveUp(pendingAction.nodeId);
+    else if (pendingAction.type === 'move-down') handleMoveDown(pendingAction.nodeId);
     else if (pendingAction.type === 'ungroup') handleUngroup(pendingAction.nodeId);
     else if (pendingAction.type === 'duplicate') handleDuplicateNode(pendingAction.nodeId);
     else if (pendingAction.type === 'group-as-stack') handleGroupAsStack(pendingAction.nodeIds ?? pendingAction.nodeId);
@@ -1295,18 +1330,21 @@ export function EditorPage({
   // enforces these: a locked node can't be deleted/moved/restructured, locked
   // props are read-only (reverted on change), and locked text isn't editable.
   function getNodeLock(nodeId: string): { node?: boolean; props?: string[]; content?: boolean } | undefined {
-    // Locks are only *enforced* on a page. In the pattern editor the author is
-    // defining the locks, so every property (incl. a slot's allow-lists) stays
-    // freely editable.
-    if (!parsedDefinition.ok || isPattern) return undefined;
-    for (const region of parsedDefinition.value.page.layout.regions) {
-      const found = findNodeById(region.nodes, nodeId);
-      if (found) return found.lock;
-    }
-    return undefined;
+    const found = getNode(nodeId);
+    if (!found) return undefined;
+    // Pattern-authoring locks are only *enforced* on a page: in the pattern
+    // editor the author is defining them, so every property (incl. a slot's
+    // allow-lists) stays freely editable. A pattern zone's lock is set by the
+    // system pattern itself, so it holds everywhere.
+    return isPattern ? zoneLock(found) : effectiveLock(found);
   }
 
-  function notifyLocked() {
+  function notifyLocked(nodeId?: string) {
+    const node = nodeId ? getNode(nodeId) : undefined;
+    if (node && isPatternZone(node)) {
+      setNotice(`The ${zoneLabel(node)} zone is part of its pattern — add or remove its items instead.`);
+      return;
+    }
     setNotice('Locked by its pattern — unlock it in the pattern editor to change it');
   }
 
@@ -1321,31 +1359,73 @@ export function EditorPage({
 
   // When adding INTO a Slot, enforce its allow-list. Returns a rejection message
   // to show, or null when the add is allowed (or the target isn't a slot).
+  function getParentNode(nodeId: string): ComponentNode | null {
+    if (!parsedDefinition.ok) return null;
+    for (const region of parsedDefinition.value.page.layout.regions) {
+      const parent = findParentInList(region.nodes, nodeId);
+      if (parent) return parent;
+    }
+    return null;
+  }
+
+  // Adding "after" (or dropping before/after) a blank area means adding into
+  // it: the area is the destination, never a sibling of it.
+  function resolveAddTarget<P extends string>(
+    target: { targetId: string | null; position: P } | null | undefined,
+  ): { targetId: string | null; position: P | 'into' } {
+    if (!target) return { targetId: null, position: 'into' };
+    if (target.targetId && target.position !== 'into' && getNode(target.targetId)?.type === 'Slot') {
+      return { targetId: target.targetId, position: 'into' };
+    }
+    return target;
+  }
+
+  // A structural lock on a container blocks adding into it — except a Slot: a
+  // locked blank area (a pattern zone) keeps taking items; its own rules decide.
+  function addIntoLocked(targetId: string | null | undefined, position: string | undefined): boolean {
+    if (position !== 'into' || !targetId) return false;
+    const target = getNode(targetId);
+    return !!target && target.type !== 'Slot' && !!getNodeLock(targetId)?.node;
+  }
+
+  // The blank area that governs an insertion: the target itself when adding
+  // into it, otherwise the target's parent (adding beside an item in an area).
+  function governingSlot(targetId: string | null | undefined, position: string | undefined): ComponentNode | null {
+    if (!targetId) return null;
+    const container = position === 'into' ? getNode(targetId) : getParentNode(targetId);
+    return container && container.type === 'Slot' ? container : null;
+  }
+
   function slotRejection(
     targetId: string | null | undefined,
     position: string | undefined,
     item: { type?: string; patternId?: string },
   ): string | null {
-    if (position !== 'into' || !targetId) return null;
-    const target = getNode(targetId);
-    if (!target || target.type !== 'Slot') return null;
-    // Item count: a full slot rejects everything (even otherwise-allowed items).
-    const max = target.props?.max as number | undefined;
-    const count = target.children?.length ?? 0;
-    if (max != null && count >= max) return `This blank area is full (max ${max}).`;
-    const allow = (target.props?.allow as string[] | undefined) ?? [];
-    const allowPatterns = (target.props?.allowPatterns as string[] | undefined) ?? [];
-    if (!allow.length && !allowPatterns.length) return null; // open slot — accepts anything
+    const slot = governingSlot(targetId, position);
+    return slot ? slotRuleRejection(slot, item) : null;
+  }
+
+  // Why a blank area refuses an item: it is full, or the item is not on its
+  // accept-lists. `excludeId` discounts an item already in the area (a reorder).
+  function slotRuleRejection(slot: ComponentNode, item: { type?: string; patternId?: string }, excludeId?: string): string | null {
+    const name = isPatternZone(slot) ? `The ${zoneLabel(slot)} zone` : 'This blank area';
+    // Item count: a full area rejects everything (even otherwise-allowed items).
+    const max = slot.props?.max as number | undefined;
+    const count = (slot.children ?? []).filter((child) => child.id !== excludeId).length;
+    if (max != null && count >= max) return `${name} is full (max ${max}).`;
+    const allow = (slot.props?.allow as string[] | undefined) ?? [];
+    const allowPatterns = (slot.props?.allowPatterns as string[] | undefined) ?? [];
+    if (!allow.length && !allowPatterns.length) return null; // open area — accepts anything
     if (item.patternId) {
       if (allowPatterns.includes(item.patternId)) return null;
-      return 'This blank area doesn’t accept that pattern.';
+      return `${name} doesn’t accept that pattern.`;
     }
     if (item.type && allow.includes(item.type)) return null;
     const accepts = [
       ...allow,
       ...allowPatterns.map((id) => getAllPatterns().find((p) => p.pattern.id === id)?.pattern.name ?? id),
     ];
-    return `This blank area only accepts: ${accepts.join(', ')}.`;
+    return `${name} only accepts: ${accepts.join(', ')}.`;
   }
 
   // The root of a pattern instance. Even when locked, the page author may remove
@@ -1457,6 +1537,22 @@ export function EditorPage({
     commitDebounced(newJson, `Edited ${getNodeType(nodeId)} item`);
   }
 
+  // A named text prop edited in place on the canvas (e.g. a Page title's title).
+  function handlePropTextChange(nodeId: string, prop: string, value: string) {
+    if (!parsedDefinition.ok) return;
+    const lock = getNodeLock(nodeId);
+    if (lock?.props?.includes(prop)) return;
+    const patchNode = (node: ComponentNode): ComponentNode => {
+      if (node.id === nodeId) return { ...node, props: { ...node.props, [prop]: value } };
+      if (node.children) return { ...node, children: node.children.map(patchNode) };
+      return node;
+    };
+    const patched = patchRegions(parsedDefinition.value, patchNode);
+    const newJson = JSON.stringify(patched, null, 2);
+    history.setWorking(newJson);
+    commitDebounced(newJson, `Edited ${getNodeType(nodeId)} ${prop}`);
+  }
+
   // Clicking a child item on the canvas selects its node and marks the item so
   // the configurator opens the matching tab and the canvas outlines it.
   function handleItemSelect(nodeId: string, index: number) {
@@ -1507,7 +1603,7 @@ export function EditorPage({
 
   function handleNodeDelete(nodeId: string) {
     if (!parsedDefinition.ok) return;
-    if (getNodeLock(nodeId)?.node && !isPatternInstanceRoot(nodeId)) { notifyLocked(); return; }
+    if (getNodeLock(nodeId)?.node && !isPatternInstanceRoot(nodeId)) { notifyLocked(nodeId); return; }
     // A slot with a minimum item count won't drop below it.
     const parent = parsedDefinition.value.page.layout.regions
       .map((r) => findParentInList(r.nodes, nodeId))
@@ -1533,7 +1629,7 @@ export function EditorPage({
 
   function handleMoveUp(nodeId: string) {
     if (!parsedDefinition.ok) return;
-    if (getNodeLock(nodeId)?.node && !isPatternInstanceRoot(nodeId)) { notifyLocked(); return; }
+    if (getNodeLock(nodeId)?.node && !isPatternInstanceRoot(nodeId)) { notifyLocked(nodeId); return; }
     const regions = parsedDefinition.value.page.layout.regions;
     const newRegions = regions.map((r) => {
       const updated = moveNodeInListDirection(r.nodes, nodeId, 'up');
@@ -1546,7 +1642,7 @@ export function EditorPage({
 
   function handleMoveDown(nodeId: string) {
     if (!parsedDefinition.ok) return;
-    if (getNodeLock(nodeId)?.node && !isPatternInstanceRoot(nodeId)) { notifyLocked(); return; }
+    if (getNodeLock(nodeId)?.node && !isPatternInstanceRoot(nodeId)) { notifyLocked(nodeId); return; }
     const regions = parsedDefinition.value.page.layout.regions;
     const newRegions = regions.map((r) => {
       const updated = moveNodeInListDirection(r.nodes, nodeId, 'down');
@@ -1559,7 +1655,7 @@ export function EditorPage({
 
   function handleUngroup(nodeId: string) {
     if (!parsedDefinition.ok) return;
-    if (getNodeLock(nodeId)?.node) { notifyLocked(); return; }
+    if (getNodeLock(nodeId)?.node) { notifyLocked(nodeId); return; }
     const regions = parsedDefinition.value.page.layout.regions;
     const newRegions = regions.map((r) => {
       const updated = ungroupNodeFromList(r.nodes, nodeId);
@@ -1573,7 +1669,7 @@ export function EditorPage({
 
   function handleConvertNode(nodeId: string, newType: ComponentType, newProps: ComponentProps) {
     if (!parsedDefinition.ok) return;
-    if (getNodeLock(nodeId)?.node || isPatternInstanceRoot(nodeId)) { notifyLocked(); return; }
+    if (getNodeLock(nodeId)?.node || isPatternInstanceRoot(nodeId)) { notifyLocked(nodeId); return; }
     const fromType = getNodeType(nodeId);
     const newDef = convertDefinitionNode(parsedDefinition.value, nodeId, newType, newProps);
     history.commit(JSON.stringify(newDef, null, 2), `Converted ${fromType} to ${newType}`);
@@ -1581,6 +1677,8 @@ export function EditorPage({
 
   function handleDuplicateNode(nodeId: string) {
     if (!parsedDefinition.ok) return;
+    // A pattern zone exists once per pattern.
+    if (isPatternZone(getNode(nodeId))) { notifyLocked(nodeId); return; }
     const newDef = duplicateDefinitionNode(parsedDefinition.value, nodeId);
     history.commit(JSON.stringify(newDef, null, 2), `Duplicated ${getNodeType(nodeId)}`);
   }
@@ -1691,14 +1789,14 @@ export function EditorPage({
 
   function handleSetNodeUtilities(nodeId: string, utilities: ComponentNode['utilities'] | null) {
     if (!parsedDefinition.ok) return;
-    if (getNodeLock(nodeId)?.node) { notifyLocked(); return; }
+    if (getNodeLock(nodeId)?.node) { notifyLocked(nodeId); return; }
     const newDef = patchRegions(parsedDefinition.value, (node) => setNodeUtilitiesInNode(node, nodeId, utilities));
     history.commit(JSON.stringify(newDef, null, 2), utilities ? `Updated ${getNodeType(nodeId)} utilities` : `Cleared ${getNodeType(nodeId)} utilities`);
   }
 
   function handleSetNodeVisibility(nodeId: string, visibility: ComponentNode['visibility'] | null) {
     if (!parsedDefinition.ok) return;
-    if (getNodeLock(nodeId)?.node) { notifyLocked(); return; }
+    if (getNodeLock(nodeId)?.node) { notifyLocked(nodeId); return; }
     const newDef = patchRegions(parsedDefinition.value, (node) => setNodeVisibilityInNode(node, nodeId, visibility));
     history.commit(JSON.stringify(newDef, null, 2), visibility ? `Updated ${getNodeType(nodeId)} breakpoint visibility` : `Reset ${getNodeType(nodeId)} breakpoint visibility`);
   }
@@ -1706,7 +1804,8 @@ export function EditorPage({
   function handleGroupAsStack(nodeId: string | string[]) {
     if (!parsedDefinition.ok) return;
     const nodeIds = Array.isArray(nodeId) ? nodeId : [nodeId];
-    if (nodeIds.some((id) => getNodeLock(id)?.node && !isPatternInstanceRoot(id))) { notifyLocked(); return; }
+    const lockedId = nodeIds.find((id) => getNodeLock(id)?.node && !isPatternInstanceRoot(id));
+    if (lockedId) { notifyLocked(lockedId); return; }
     const nodeType = getNodeType(nodeIds[0]);
     if (nodeIds.length > 1) {
       const ids = new Set(nodeIds);
@@ -1788,16 +1887,17 @@ export function EditorPage({
   // Insert a catalog component at the current addTarget position.
   function handleAddNode(entry: CatalogEntry) {
     if (!parsedDefinition.ok) return;
-    if (addTarget?.position === 'into' && addTarget.targetId && getNodeLock(addTarget.targetId)?.node) {
-      notifyLocked(); onCancelAdd?.(); return;
+    const target = resolveAddTarget(addTarget);
+    if (addIntoLocked(target.targetId, target.position)) {
+      notifyLocked(target.targetId ?? undefined); onCancelAdd?.(); return;
     }
-    const slotReject = slotRejection(addTarget?.targetId, addTarget?.position, { type: entry.type });
+    const slotReject = slotRejection(target.targetId, target.position, { type: entry.type });
     if (slotReject) { setNotice(slotReject); return; }
     const newNode = createNodeFromEntry(entry);
     const regions = parsedDefinition.value.page.layout.regions;
 
     let newRegions;
-    if (!addTarget || addTarget.targetId === null) {
+    if (target.targetId === null) {
       // No target — append to the end of the first region.
       newRegions = [
         { ...regions[0], nodes: [...regions[0].nodes, newNode] },
@@ -1805,7 +1905,7 @@ export function EditorPage({
       ];
     } else {
       newRegions = regions.map((r) => {
-        const updated = insertInNodes(r.nodes, newNode, addTarget.targetId!, addTarget.position);
+        const updated = insertInNodes(r.nodes, newNode, target.targetId!, target.position);
         return updated !== r.nodes ? { ...r, nodes: updated } : r;
       });
     }
@@ -1825,20 +1925,21 @@ export function EditorPage({
   // Insert a pattern (resolved to fresh, editable page nodes) at the addTarget.
   function handleAddPattern(patternId: string) {
     if (!parsedDefinition.ok) return;
-    if (addTarget?.position === 'into' && addTarget.targetId && getNodeLock(addTarget.targetId)?.node) {
-      notifyLocked(); onCancelAdd?.(); return;
+    const target = resolveAddTarget(addTarget);
+    if (addIntoLocked(target.targetId, target.position)) {
+      notifyLocked(target.targetId ?? undefined); onCancelAdd?.(); return;
     }
-    const slotReject = slotRejection(addTarget?.targetId, addTarget?.position, { patternId });
+    const slotReject = slotRejection(target.targetId, target.position, { patternId });
     if (slotReject) { setNotice(slotReject); return; }
     const newNode = instantiatePattern(patternId);
     if (!newNode) return;
     const regions = parsedDefinition.value.page.layout.regions;
     let newRegions;
-    if (!addTarget || addTarget.targetId === null) {
+    if (target.targetId === null) {
       newRegions = [{ ...regions[0], nodes: [...regions[0].nodes, newNode] }, ...regions.slice(1)];
     } else {
       newRegions = regions.map((r) => {
-        const updated = insertInNodes(r.nodes, newNode, addTarget.targetId!, addTarget.position);
+        const updated = insertInNodes(r.nodes, newNode, target.targetId!, target.position);
         return updated !== r.nodes ? { ...r, nodes: updated } : r;
       });
     }
@@ -1853,9 +1954,10 @@ export function EditorPage({
   }
 
   // Insert a catalog component dropped onto a canvas node at the given position.
-  function handleCatalogDrop(catalogType: string, targetNodeId: string | null, position: 'before' | 'into' | 'after') {
+  function handleCatalogDrop(catalogType: string, dropTargetId: string | null, dropPosition: 'before' | 'into' | 'after') {
     if (!parsedDefinition.ok) return;
-    if (position === 'into' && targetNodeId && getNodeLock(targetNodeId)?.node) { notifyLocked(); return; }
+    const { targetId: targetNodeId, position } = resolveAddTarget({ targetId: dropTargetId, position: dropPosition });
+    if (addIntoLocked(targetNodeId, position)) { notifyLocked(targetNodeId ?? undefined); return; }
     const isPatternDrop = catalogType.startsWith('pattern:');
     const isFigureImage = catalogType.startsWith('figure-image:');
     const slotReject = slotRejection(targetNodeId, position, isPatternDrop
@@ -2045,6 +2147,20 @@ export function EditorPage({
       })
     : [];
   const projectHomeHref = projectId ? `/editor?project=${encodeURIComponent(projectId)}` : '/editor';
+  // The breadcrumb trail for this page, filled into Page title patterns that
+  // ask for it (`breadcrumb: true`) in the edit canvas and the preview.
+  const projectBreadcrumb = projectPages.length && documentKind === 'page'
+    ? buildProjectBreadcrumb(projectPages, {
+        activePageId: exampleId,
+        onNavigate: (id) => onNavigateToPage?.(id),
+        hrefFor: (id) =>
+          `/editor${projectId ? `?project=${encodeURIComponent(projectId)}&doc=${encodeURIComponent(id)}` : `?doc=${encodeURIComponent(id)}`}`,
+      })
+    : null;
+  const resolvedDefinition = useMemo(
+    () => (parsedDefinition.ok ? resolveAutoBreadcrumbs(parsedDefinition.value, projectBreadcrumb) : null),
+    [parsedDefinition, projectBreadcrumb], // eslint-disable-line react-hooks/exhaustive-deps
+  );
 
   // Sidebar navigation is project chrome for content pages only. It deliberately
   // replaces generated and shared header chrome so this canvas matches the
@@ -2091,9 +2207,10 @@ export function EditorPage({
           navItems: projectNavItems,
           logoFallback: projectName ?? '',
           logoHref: projectHomeHref,
+          breadcrumb: projectBreadcrumb,
         })
       : null),
-    [useSidebarNav, sharedLayoutDef, parsedDefinition, projectNavItems, projectName, projectHomeHref],
+    [useSidebarNav, sharedLayoutDef, parsedDefinition, projectNavItems, projectName, projectHomeHref], // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   // Only patterns available to the active project (unrestricted, or scoped to it).
@@ -2113,14 +2230,17 @@ export function EditorPage({
     : null;
   const labelLookupNode = labelLookupNodeId ? getNode(labelLookupNodeId) : null;
 
-  // When the Add target is a Slot, tell the Add panel what it accepts so it only
-  // offers the allowed components / patterns (and signals when it's full).
+  // When a blank area governs the Add target — the target itself, or the parent
+  // of the item being added beside — tell the Add panel what it accepts so it
+  // only offers the allowed components / patterns (and signals when it's full).
+  // A pattern zone also passes its name and rule sentence.
   let slotFilter = null as
     | null
-    | { allow: string[]; allowPatterns: string[]; open: boolean; full: boolean; max?: number };
-  if (addTarget?.position === 'into' && addTarget.targetId) {
-    const target = getNode(addTarget.targetId);
-    if (target && target.type === 'Slot') {
+    | { allow: string[]; allowPatterns: string[]; open: boolean; full: boolean; max?: number; label?: string; zone?: boolean; rules?: string };
+  if (addTarget?.targetId) {
+    const resolved = resolveAddTarget(addTarget);
+    const target = governingSlot(resolved.targetId, resolved.position);
+    if (target) {
       const allow = (target.props?.allow as string[] | undefined) ?? [];
       const allowPatterns = (target.props?.allowPatterns as string[] | undefined) ?? [];
       const max = target.props?.max as number | undefined;
@@ -2131,6 +2251,9 @@ export function EditorPage({
         open: !allow.length && !allowPatterns.length,
         full: max != null && count >= max,
         max,
+        label: typeof target.props?.label === 'string' ? target.props.label : undefined,
+        zone: isPatternZone(target),
+        rules: typeof target.props?.rules === 'string' ? target.props.rules : undefined,
       };
     }
   }
@@ -2207,13 +2330,14 @@ export function EditorPage({
     <>
       <div ref={canvasContainerRef}>
         <RenderPageDefinition
-          definition={parsedDefinition.value}
+          definition={resolvedDefinition ?? parsedDefinition.value}
           enforceLocks={!isPattern}
           activePatternRootId={activePatternRootId}
           selectedNodeId={selectedNodeId}
           onNodeSelect={onSelectNode}
           onContentChange={handleContentChange}
           onItemTextChange={handleItemTextChange}
+          onPropTextChange={handlePropTextChange}
           activeItem={activeItem}
           onItemSelect={handleItemSelect}
           onNodeDelete={handleNodeDelete}
@@ -2230,6 +2354,7 @@ export function EditorPage({
           getNodeInfo={getNodeInfoFn}
           onRequestAddChild={handleRequestAddChild}
           onCatalogDrop={(type, targetId, pos) => handleCatalogDrop(type, targetId, pos)}
+          onNodeMove={handleNodeMove}
           onDetachPattern={handleDetachPattern}
           onCreatePattern={handleCreatePatternFromNode}
         />
@@ -2282,13 +2407,6 @@ export function EditorPage({
               />
             )}
             <Toolbar aria-label="Editor" overflow overflowLabel="More tools">
-              {canReturnToProjectOverview && (
-                <ToolbarButton
-                  icon="arrow_back"
-                  label={t('app.editor.backToProjectOverview', 'Back to project overview')}
-                  onClick={onBackToProjectOverview}
-                />
-              )}
               <ToolbarGroup
                 aria-label="Editor view"
                 showLabels
@@ -2320,11 +2438,12 @@ export function EditorPage({
                 <ToolbarDivider />
                 <ToolbarMenu
                   aria-label="Responsive preview"
-                  label={VIEWPORT_PRESETS.find((p) => p.value === previewViewport)?.label ?? 'Fit'}
+                  label={[...VIEWPORT_PRESETS, ...PRINT_PRESETS].find((p) => p.value === previewViewport)?.label ?? 'Fit'}
                   value={previewViewport}
                   onChange={(v) => setPreviewViewport(v as string)}
-                  items={VIEWPORT_PRESETS}
+                  items={[...VIEWPORT_PRESETS, ...PRINT_PRESETS]}
                 />
+
               </>
             )}
             <ToolbarDivider />
@@ -2385,6 +2504,17 @@ export function EditorPage({
                 onClick={handleExpandPreview}
               />
             )}
+            {!isPattern && !isLayout && (
+              <ToolbarButton
+                icon="print"
+                label={t('app.editor.printPreviewAction', 'Print preview')}
+                disabled={!parsedDefinition.ok}
+                onClick={() => {
+                  handleViewChange('preview');
+                  if (!printPreview) setPreviewViewport('print-letter');
+                }}
+              />
+            )}
             {bridgeFeaturesEnabled && !isPattern && !isLayout && projectId && (
               <ToolbarButton
                 icon={figmaLinkId ? 'sync' : 'add_link'}
@@ -2442,12 +2572,12 @@ export function EditorPage({
             <ResponsivePreviewFrame {...(viewportSize(previewViewport) ?? {})}>
               <ProjectThemeScope
                 theme={isPattern ? undefined : projectTheme}
-                colorMode={colorMode}
-                resolvedColorScheme={resolvedColorScheme}
+                colorMode={printPreview ? 'light' : colorMode}
+                resolvedColorScheme={printPreview ? 'light' : resolvedColorScheme}
               >
                 {useSidebarNav && projectSidebar ? (
                   <PageLayout viewportHeight sidebar={projectSidebar}>
-                    <RenderPageDefinition definition={parsedDefinition.value} onNavigate={(id) => onNavigateToPage?.(id)} />
+                    <RenderPageDefinition definition={resolvedDefinition ?? parsedDefinition.value} onNavigate={(id) => onNavigateToPage?.(id)} />
                   </PageLayout>
                 ) : composedPreviewDef
                   ? (
@@ -2456,12 +2586,19 @@ export function EditorPage({
                       <RenderPageDefinition definition={composedPreviewDef} onNavigate={(id) => onNavigateToPage?.(id)} />
                     </>
                   )
-                  : <>{generatedHeader}<RenderPageDefinition definition={parsedDefinition.value} /></>}
+                  : <>{generatedHeader}<RenderPageDefinition definition={resolvedDefinition ?? parsedDefinition.value} /></>}
               </ProjectThemeScope>
             </ResponsivePreviewFrame>
           ) : parseError
         )}
 
+        {patternDiagnostics.length > 0 && (
+          <Banner status={patternDiagnostics.some(d => d.severity === 'error') ? 'error' : 'warn'} title="Pattern validation">
+            <Stack gap="xs">{patternDiagnostics.map((diagnostic, index) => (
+              <Paragraph key={index} size="sm">{diagnostic.nodeId}: {diagnostic.message} {diagnostic.recovery}</Paragraph>
+            ))}</Stack>
+          </Banner>
+        )}
         {view === 'json' && (
           <Stack direction="column" gap="sm">
             {codeFormat === 'json' ? (

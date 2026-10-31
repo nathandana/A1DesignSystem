@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { userEvent, within, waitFor } from "storybook/test";
 import { Dialog } from "./Dialog.jsx";
 import { Button } from "../button/Button.jsx";
@@ -352,5 +352,20 @@ export const StatusCustomIcon = {
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button", { name: /open dialog/i }));
     await waitFor(() => within(document.body).getByRole("dialog"));
+  },
+};
+
+
+export const InitialFocus = {
+  render: () => {
+    const [open, setOpen] = useState(false);
+    const cancelId = useId();
+    return <>
+      <Button onClick={() => setOpen(true)}>Verify action</Button>
+      <Dialog open={open} onClose={() => setOpen(false)} title="Continue?" aria-label="Continue?" initialFocusId={cancelId}
+        footer={<><Button id={cancelId} variant="secondary" onClick={() => setOpen(false)}>Cancel</Button><Button onClick={() => setOpen(false)}>Continue</Button></>}>
+        <Paragraph>Cancel receives initial focus.</Paragraph>
+      </Dialog>
+    </>;
   },
 };

@@ -1,0 +1,10 @@
+data/
+dist/
+test-results/
+.env
+.env.*
+!.env.example
+.DS_Store
+**/.DS_Store
+src/pdf/
+.netlify/

@@ -8,6 +8,12 @@ import { repoPath } from './paths.mjs';
 
 const DOC_SOURCES = [
   {
+    uri: 'a1://docs/pattern-contracts',
+    title: 'A1 formal pattern contracts',
+    description: 'Generated formal pattern areas and rules; structured manifests are available through get_pattern.',
+    file: 'packages/react/ai/pattern-contracts.generated.md',
+  },
+  {
     uri: 'a1://docs/agent-brief',
     title: 'A1 Agent Brief',
     description:
