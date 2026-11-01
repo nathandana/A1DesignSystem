@@ -97,7 +97,7 @@ html.a1-theme-dark .a1-tooltip {
   --a1-tooltip-foreground: var(--semantic-color-text-inverse);
 }
 
-@media (prefers-color-scheme: dark) {
+@media screen and (prefers-color-scheme: dark) {
   html:not(.a1-theme-light):not(.a1-theme-dark) .a1-tooltip {
     --a1-tooltip-background: var(--semantic-color-surface-inverse);
     --a1-tooltip-border-color: var(--semantic-color-surface-inverse);
@@ -108,5 +108,14 @@ html.a1-theme-dark .a1-tooltip {
 @media (prefers-reduced-motion: reduce) {
   .a1-tooltip {
     transition: none;
+  }
+}
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Screen-only chrome: hidden when printed. */
+
+@media print {
+  .a1-tooltip {
+    display: none;
   }
 }

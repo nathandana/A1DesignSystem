@@ -247,7 +247,7 @@
   border: var(--component-menu-border-width) solid var(--semantic-color-border-subtle);
   border-radius: var(--base-radius-lg);
   background: var(--semantic-color-surface-panel);
-  box-shadow: var(--semantic-shadow-lg);
+  box-shadow: var(--semantic-shadow-xl);
 }
 
 .a1-top-header__flyout-menu[data-placement="start"] {
@@ -431,6 +431,22 @@
   }
 
   .a1-top-header--nav-icon-above .a1-top-header__nav-list::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Keep the logo so the printout names the product; drop navigation and
+   actions, and let the bar sit in flow instead of repeating. */
+
+@media print {
+  .a1-top-header {
+    position: static;
+  }
+
+  .a1-top-header__nav,
+  .a1-top-header__end,
+  .a1-top-header__hamburger {
     display: none;
   }
 }

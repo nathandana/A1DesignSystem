@@ -20,6 +20,32 @@
 [functions]
   node_bundler = "esbuild"
 
+# The preview toolbar uses auth; rendered content stays in an opaque-origin iframe.
+[[redirects]]
+  from = "/preview/*"
+  to = "/preview.html"
+  status = 200
+
+[[headers]]
+  for = "/preview/*"
+  [headers.values]
+    Referrer-Policy = "no-referrer"
+    Cache-Control = "no-store"
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/json-preview.html"
+  [headers.values]
+    Content-Security-Policy = "sandbox allow-scripts; base-uri 'none'; object-src 'none'; frame-ancestors 'self'"
+    Referrer-Policy = "no-referrer"
+    Cache-Control = "no-store"
+    X-Robots-Tag = "noindex, nofollow"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+
 # SPA catch-all. Netlify serves functions at /.netlify/functions/* and static
 # files before applying this rewrite, so it does not shadow them — no explicit
 # function pass-through rule is needed (and one without a `to` is invalid).

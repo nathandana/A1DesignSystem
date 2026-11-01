@@ -1,0 +1,36 @@
+name: SCE workspace
+
+on:
+  push:
+    branches: [main, release]
+    paths:
+      - apps/sce-hub/**
+      - packages/react/**
+      - system/**
+      - package-lock.json
+      - .github/workflows/sce-hub.yml
+  pull_request:
+    paths:
+      - apps/sce-hub/**
+      - packages/react/**
+      - system/**
+      - package-lock.json
+      - .github/workflows/sce-hub.yml
+
+permissions:
+  contents: read
+
+jobs:
+  workspace:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build --workspace=sce-hub
+      - run: npm test --workspace=sce-hub
+      - run: npx playwright install --with-deps chromium
+      - run: npx playwright test --config apps/sce-hub/playwright.config.mjs

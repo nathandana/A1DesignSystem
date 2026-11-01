@@ -18,7 +18,13 @@ export interface ContextMenuItemEntry {
   /** Prevents interaction. */
   disabled?: boolean;
   /** Called when the item is clicked. The menu closes automatically after. */
-  onClick?: () => void;
+  onClick?: (item: HTMLButtonElement) => void;
+  /** Called after the pointer rests on the item for `hoverDelay` milliseconds. */
+  onHover?: (item: HTMLButtonElement) => void;
+  /** Delay before `onHover` runs. Default: 200 */
+  hoverDelay?: number;
+  /** Keep the current context menu open after this item is selected, for example while opening a submenu. */
+  keepOpen?: boolean;
 }
 
 export interface ContextMenuDividerEntry {
@@ -33,10 +39,20 @@ export interface ContextMenuGroupEntry {
   label: string;
 }
 
+export interface ContextMenuCustomEntry {
+  type: 'custom';
+  id: string;
+  /** Accessible name for the custom control group. */
+  label: string;
+  /** Interactive controls rendered inline in the menu. */
+  children: React.ReactNode;
+}
+
 export type ContextMenuEntry =
   | ContextMenuItemEntry
   | ContextMenuDividerEntry
-  | ContextMenuGroupEntry;
+  | ContextMenuGroupEntry
+  | ContextMenuCustomEntry;
 
 export interface ContextMenuProps {
   /** Controls visibility. Default: false */
@@ -45,10 +61,12 @@ export interface ContextMenuProps {
   x?: number;
   /** Vertical position in viewport pixels (typically event.clientY). */
   y?: number;
-  /** Menu entries — items, dividers, and group headings. */
+  /** Menu entries — items, dividers, group headings, and custom control groups. */
   items?: ContextMenuEntry[];
   /** Called when the menu should close (outside click or Escape key). */
   onClose?: () => void;
+  /** Keep this menu open while the user interacts with another ContextMenu used as its submenu. Default: false */
+  keepOpenForSubmenus?: boolean;
   /** Accessible name for the menu. Default: "Context menu" */
   'aria-label'?: string;
 }

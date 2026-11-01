@@ -20,7 +20,10 @@ import { dirname, resolve } from 'node:path'
 const HERE = dirname(fileURLToPath(import.meta.url))
 const ROOT = resolve(HERE, '..')
 const LOG_PATH = resolve(ROOT, 'packages/react/ai/components-maintenance.md')
-const DATA_PATH = resolve(ROOT, 'apps/a1-web/src/pages/components/data.js')
+const DATA_PATHS = [
+  resolve(ROOT, 'apps/a1-web/src/pages/components/data.js'),
+  resolve(ROOT, 'apps/a1-web/src/pages/patterns/data.js'),
+]
 const OUT_PATH = resolve(ROOT, 'apps/a1-web/src/pages/components/componentHistory.generated.js')
 
 const MAX_ENTRIES_PER_COMPONENT = 12
@@ -83,7 +86,7 @@ function escapeRegExp(text) {
 // entries are `{ id: 'x', icon: 'y', title: 'Z', ... }` (id, icon, title order);
 // category entries use id, title, icon order and so don't match this pattern.
 function readComponentPhrases() {
-  const src = readFileSync(DATA_PATH, 'utf8')
+  const src = DATA_PATHS.map((path) => readFileSync(path, 'utf8')).join('\n')
   const re = /id:\s*'([a-z0-9-]+)',\s*icon:\s*'[^']*',\s*title:\s*'([^']+)'/g
   const phrases = {}
   let match

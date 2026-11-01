@@ -8,12 +8,12 @@ import {
   Grid,
   Heading,
   MessageEmptyState,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { createTheme, deleteTheme, duplicateTheme, listThemes, subscribeThemes } from '../lib/themeStore.ts'
-import { PageTitleArea } from './PageTitleArea.jsx'
 
 const CHIP_RAMPS = ['accent', 'info', 'success', 'warn', 'error']
 
@@ -32,9 +32,9 @@ export function ThemesList({ onOpenTheme, onNavigateHome }) {
 
   return (
     <>
-      <PageTitleArea
-        headingId="themes-heading"
-        breadcrumbItems={[
+      <PageTitle
+        titleId="themes-heading"
+        breadcrumb={[
           { label: t('app.theme.breadcrumbHome', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
           { label: t('app.page.theme', 'Theme') },
         ]}

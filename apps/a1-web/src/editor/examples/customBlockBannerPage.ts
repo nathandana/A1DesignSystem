@@ -175,7 +175,7 @@ body {
           },
           {
             id: 'catalyst-intro', type: 'Section',
-            props: { padding: { xs: 'md', md: 'xl' }, contentWidth: 'lg', gap: 'lg' },
+            props: { padding: { xs: 'md', md: 'lg' }, contentWidth: 'lg', gap: 'lg' },
             a11y: { labelledBy: 'catalyst-intro-title' },
             children: [
               { id: 'catalyst-intro-copy', type: 'Stack', props: { gap: 'sm' }, children: [
@@ -200,7 +200,7 @@ body {
           },
           {
             id: 'catalyst-cta', type: 'Section',
-            props: { padding: { xs: 'md', md: 'xl' }, surface: 'panel', contentWidth: 'md', gap: 'md' },
+            props: { padding: { xs: 'md', md: 'lg' }, surface: 'panel', contentWidth: 'md', gap: 'md' },
             a11y: { labelledBy: 'catalyst-cta-title' },
             children: [
               { id: 'catalyst-cta-title', type: 'Heading', props: { as: 'h2', id: 'catalyst-cta-title', size: 'lg' }, content: { fallback: 'See what Catalyst can do' } },

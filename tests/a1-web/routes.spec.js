@@ -1,6 +1,10 @@
 import { BLOG_POSTS } from "../../apps/a1-web/src/pages/blogPosts.js"
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
+import { fileURLToPath } from 'node:url'
+
+const FIGURE_DEMO_URL = 'https://images.unsplash.com/photo-1504674900247-0877df9cc836*'
+const FIGURE_DEMO_FIXTURE = fileURLToPath(new URL('./fixtures/figure-demo.jpg', import.meta.url))
 
 const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']
 const BLOCKING_IMPACTS = new Set(['critical', 'serious'])
@@ -153,11 +157,22 @@ test('every release route loads, matches its visual baseline and clears the acce
       runtimeErrors.length = 0
 
       try {
+        if (route.path === '/components/figure') {
+          // Freeze the existing demo photo instead of racing an external CDN.
+          await page.route(FIGURE_DEMO_URL, (request) => request.fulfill({
+            path: FIGURE_DEMO_FIXTURE, contentType: 'image/jpeg',
+          }))
+        }
         const response = await page.goto(route.path, { waitUntil: 'domcontentloaded' })
         expect(response, `${route.path} did not return a document response`).not.toBeNull()
         expect(response.status(), `${route.path} returned HTTP ${response.status()}`).toBeLessThan(400)
 
         await waitForStablePage(page)
+        if (route.path === '/components/figure') {
+          const image = page.locator('main img.a1-figure__img').first()
+          await expect(image).toBeVisible()
+          await image.evaluate((element) => element.decode())
+        }
         if (route.path === '/foundations/color-visualization') {
           // The lazy Three.js scene renders after the page shell and fonts.
           // Its selected token label appears only when the scene is mounted.
@@ -193,6 +208,8 @@ test('every release route loads, matches its visual baseline and clears the acce
         ).toEqual([])
       } catch (error) {
         failures.push(`${route.path}: ${error.message.split('\n')[0]}`)
+      } finally {
+        if (route.path === '/components/figure') await page.unroute(FIGURE_DEMO_URL)
       }
     })
   }

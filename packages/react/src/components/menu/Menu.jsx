@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import "./menu.css";
+import { resolveSpacing } from "../structure-utils.js";
 import { Divider } from "../divider/Divider.jsx";
 import { Icon } from "../icon/Icon.jsx";
 import { IconButton } from "../icon-button/IconButton.jsx";
@@ -44,6 +45,7 @@ export function Menu({
   "aria-label": ariaLabel,
   trapFocus = true,
   modalOnMobile = true,
+  padding = 8,
   className = "",
   children,
 }) {
@@ -234,6 +236,7 @@ export function Menu({
     <dialog
       ref={ref}
       className={["a1-menu", className].filter(Boolean).join(" ")}
+      style={{ "--a1-menu-padding": resolveSpacing([8, 12, 16, 20, 24].includes(padding) ? padding : 8) }}
       aria-label={ariaLabel}
       tabIndex={-1}
     >

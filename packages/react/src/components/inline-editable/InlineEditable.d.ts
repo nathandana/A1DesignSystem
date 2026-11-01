@@ -12,6 +12,8 @@ export interface InlineEditableProps
   disabled?: boolean;
   /** Edit the text in place via `contentEditable` instead of a boxed field. The element inherits all typography (font, size, colour, line-height, alignment, wrapping) from the surrounding component, so editing never resizes or restyles the text — ideal for making any heading, paragraph, label, or button text live-editable. Only a focus ring is added. Default: false */
   seamless?: boolean;
+  /** Keep seamless text read-only until it is double-clicked. Enter or F2 provides the equivalent keyboard action. Default: false */
+  editOnDoubleClick?: boolean;
   /** Text shown in the display state when there is no value and no `children`. */
   placeholder?: string;
   /** Class applied to the wrapper in the display state. */

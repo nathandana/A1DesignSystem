@@ -3,6 +3,8 @@ import * as React from "react";
 export interface DialogProps extends React.DialogHTMLAttributes<HTMLDialogElement> {
   /** Whether the dialog is visible. Default: false */
   open?: boolean;
+  /** ID of an element inside the dialog to focus after opening, e.g. Cancel in a confirmation. */
+  initialFocusId?: string;
   /** Called when the user closes the dialog (Escape, close button, or backdrop click). Omit to hide the close button. */
   onClose?: () => void;
   /** Dialog title shown in the header */

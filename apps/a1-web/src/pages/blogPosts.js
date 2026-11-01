@@ -1,5 +1,101 @@
 export const BLOG_POSTS = [
   {
+  "id": "release-036-design-with-agents",
+  "slug": "a1-036-design-with-agents",
+  "title": "A1 0.36.0 connects agents to working interfaces",
+  "kicker": "Release newsletter",
+  "date": "Nov. 1, 2026",
+  "version": "0.36.0",
+  "image": "/blog/design-with-a1.png",
+  "imageAlt": "The Design with A1 guide with React installation and a copyable agent prompt.",
+  "description": "React setup, shared JSON validation, temporary previews and a maintained design guide bring agents closer to usable A1 interfaces.",
+  "keywords": [
+    "release",
+    "0.36.0",
+    "agents",
+    "MCP",
+    "React",
+    "JSON",
+    "validation",
+    "preview",
+    "design.md"
+  ],
+  "subtitle": "Build with React, or bring validated JSON directly into A1.",
+  "sections": [
+    {
+      "title": "Give the agent the system",
+      "body": [
+        "Design with A1 brings React installation, agent setup and copyable prompts into one guide. Codex, Claude Code, Cursor and Gemini CLI can use A1’s MCP server to retrieve the specific contracts they need.",
+        "The downloadable design.md pairs current A1 tokens with guidance on hierarchy, layout, components and accessibility. It is generated from the system sources and available through MCP, so agents share the same design context."
+      ]
+    },
+    {
+      "title": "From JSON to a working preview",
+      "body": [
+        "Agents can generate an A1 page or project, validate its structure and component props, repair precise errors and request a temporary preview. Preview links expire after 24 hours.",
+        "Signed-in users can import a preview as a new project. Generated content stays isolated from the account interface, and imports recheck validity and preserve internal page links. Contract validation supports the workflow; layout and accessibility still need review."
+      ]
+    },
+    {
+      "title": "Control the presentation of controls",
+      "body": [
+        "The configurator presentation editor generates controls from the component’s property contract. Adjust labels, help, grouping, ordering and supported control presentations, then save or reload versioned JSON overrides.",
+        "The presentation layer cannot redefine the component’s allowed values or types. Changes and unsupported properties are reported explicitly."
+      ]
+    },
+    {
+      "title": "A clearer start on every screen",
+      "body": [
+        "Home now highlights patterns alongside the system’s other tools. Project overviews initially use List view at xs and sm; larger screens keep Canvas as the default. Resizing the browser does not change your chosen view.",
+        "React 0.34.1 includes the npm setup guidance and page-title placement rule. MCP 0.4.0 adds validation, previews and the expanded agent documentation."
+      ]
+    }
+  ]
+},
+  {
+    id: 'release-035-project-canvas-and-patterns',
+    slug: 'a1-035-project-canvas-and-patterns',
+    title: 'A1 0.35.0 brings projects onto the canvas',
+    kicker: 'Release newsletter',
+    date: 'Oct. 30, 2026',
+    version: '0.35.0',
+    image: '/help/editor-canvas.png',
+    imageAlt: 'The A1 editor canvas with its project navigation and component configuration panels.',
+    description: 'A visual project canvas, reusable pattern contracts, direct manipulation and clearer project organization.',
+    keywords: ['release', '0.35.0', 'canvas', 'patterns', 'projects', 'drag and drop', 'sticky notes', 'print'],
+    subtitle: 'Arrange whole projects visually, reuse governed patterns and edit page structure more directly.',
+    sections: [
+      {
+        title: 'Projects become a visual workspace',
+        body: [
+          'Projects now open on an infinite canvas where every page appears as a responsive frame. Pan, zoom, fit and auto-arrange the sitemap; switch breakpoints, inspect connections and save the layout for the next session.',
+          'Sticky Notes sit beside page frames for working context. They support Markdown, colors, resizing and direct editing without becoming part of the published page.',
+        ],
+      },
+      {
+        title: 'Patterns become portable contracts',
+        body: [
+          'Page Title, Overview Card, Navigation Tree, Overflow Menu and Verification Dialog are now first-class patterns. Each carries explicit areas, action rules and a versioned contract that the editor, React package and MCP index share.',
+          'Validation and migrations keep imported pattern content predictable while still allowing supported text, metadata and action changes per instance.',
+        ],
+      },
+      {
+        title: 'Direct editing with clearer intent',
+        body: [
+          'Components can be dragged on the page or reordered from the Layers tree, with the same placement indicators, pattern rules, history and undo behavior. Context menus and keyboard shortcuts expose equivalent move commands.',
+          'Text remains a drag surface on a single click and enters inline editing on a double-click. Containers select as containers, so selection and editing no longer compete for the same gesture.',
+        ],
+      },
+      {
+        title: 'Projects and output stay organized',
+        body: [
+          'Favorite, hide, tag and manually order projects. Project Cards group Favorite, Edit and More options in the shared Card action zone, and the same opt-in action treatment is available from Card configurators.',
+          'Print preview shows Letter and A4 output before opening the browser dialog. Published pages print completely in light mode without editor controls, while the new Dispatch sports blog and Word finder provide richer examples to build from.',
+        ],
+      },
+    ],
+  },
+  {
     "id": "release-034-labs-and-component-refinements",
     "slug": "a1-034-labs-and-component-refinements",
     "title": "A1 0.34.0 opens Labs",

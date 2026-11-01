@@ -1,0 +1,3 @@
+/* Standalone document reset: the app shell's fixed-height scrolling model does
+   not apply here. All content layout and visual values come from A1 components. */
+body { margin: 0; }

@@ -1,6 +1,11 @@
 import { useState } from 'react'
-import { Canvas, CanvasEdge, Node } from './Canvas.jsx'
+import { Canvas, CanvasEdge, CanvasFrame, Node } from './Canvas.jsx'
 import { Snackbar } from '../snackbar/Snackbar.jsx'
+import { Heading } from '../heading/Heading.jsx'
+import { Paragraph } from '../paragraph/Paragraph.jsx'
+import { Inset } from '../inset/Inset.jsx'
+import { Toolbar, ToolbarToggle } from '../toolbar/Toolbar.jsx'
+import { StickyNote } from '../sticky-note/StickyNote.jsx'
 
 export default {
   title: 'Components/Canvas',
@@ -8,8 +13,9 @@ export default {
   parameters: { layout: 'fullscreen' },
   argTypes: {
     background: {
-      control: 'inline-radio',
-      options: ['page', 'panel', 'raised'],
+      control: 'select',
+      options: ['page', 'panel', 'raised', '#E8EEF4'],
+      description: 'Surface token (page / panel / raised) or any custom CSS colour',
     },
     inverse: { control: 'boolean' },
     mode: {
@@ -23,6 +29,7 @@ export default {
     },
     gridSpacing: { control: { type: 'number', min: 1, max: 64, step: 1 } },
     showControls: { control: 'boolean' },
+    controlsExpandable: { control: 'boolean', description: 'Collapse the controls to one compact toggle that expands on click' },
     defaultZoom: { control: { type: 'number', min: 0.1, max: 4, step: 0.1 } },
   },
 }
@@ -303,4 +310,133 @@ export const Inverse = {
     </div>
   ),
   parameters: { docs: { description: { story: 'Canvas with `inverse` — dark surface with inverse text, mirroring Section\'s inverse prop.' } } },
+}
+
+// A custom CSS colour background — the escape hatch shared with Section / Card
+// `surface`. Check contrast against the grid and content manually.
+export const CustomBackground = {
+  render: () => (
+    <div style={{ width: '100%', height: '400px' }}>
+      <Canvas background="#E8EEF4" defaultPan={{ x: 60, y: 40 }} aria-label="Canvas with a custom background">
+        <Node id="tokens" x={300} y={160} label="Design Tokens" color="neutral" />
+        <Node id="react"  x={160} y={340} label="React"         color="info" />
+        <Node id="pure"   x={440} y={340} label="HTML / CSS"    color="success" />
+        <CanvasEdge id="e1" from="tokens" to="react" direction="to" />
+        <CanvasEdge id="e2" from="tokens" to="pure"  direction="to" />
+      </Canvas>
+    </div>
+  ),
+}
+
+// CanvasFrame — titled containers for arbitrary content, positioned by their
+// top-left corner. Drag a frame (or focus its title and use the arrow keys) to
+// move it; connectors route between frames like nodes.
+function FrameContent({ title, lines }) {
+  return (
+    <Inset space={24}>
+      <Heading as="h2" size="md">{title}</Heading>
+      {Array.from({ length: lines }, (_, i) => <Paragraph key={i}>Sample content line {i + 1}.</Paragraph>)}
+    </Inset>
+  )
+}
+
+export const Frames = {
+  render: function FramesStory() {
+    const [pos, setPos] = useState({ home: { x: 0, y: 0 }, about: { x: 560, y: 80 }, contact: { x: 960, y: 0 } })
+    const move = (id, x, y) => setPos((p) => ({ ...p, [id]: { x, y } }))
+    return (
+      <div style={{ width: '100%', height: '520px' }}>
+        <Canvas draggableNodes onNodeMove={move} defaultZoom={0.6} defaultPan={{ x: 40, y: 40 }} edgeStyle="curved" aria-label="Page frames">
+          <CanvasFrame id="home" {...pos.home} width={480} label="Home · LG"><FrameContent title="Home" lines={6} /></CanvasFrame>
+          <CanvasFrame id="about" {...pos.about} width={320} label="About · XS"><FrameContent title="About" lines={10} /></CanvasFrame>
+          <CanvasFrame id="contact" {...pos.contact} width={320} height={240} scrollable label="Contact · scrolls"><FrameContent title="Contact" lines={12} /></CanvasFrame>
+          <CanvasEdge id="home-about" from="home" to="about" direction="to" />
+          <CanvasEdge id="about-contact" from="about" to="contact" direction="to" />
+        </Canvas>
+      </div>
+    )
+  },
+}
+
+// Expandable controls — zoom in/out and `controlsActions` always show; the toggle
+// reveals fit, reset and any `controlsContent` (here, a view-options toolbar).
+export const ExpandableControls = {
+  render: function ExpandableControlsStory() {
+    const [grid, setGrid] = useState(true)
+    return (
+      <div style={{ width: '100%', height: '400px' }}>
+        <Canvas
+          showGrid={grid}
+          controlsExpandable
+          controlsActions={[{ id: 'grid', icon: 'grid_4x4', label: 'Toggle grid', onClick: () => setGrid((g) => !g) }]}
+          controlsContent={(
+            <Toolbar aria-label="View options">
+              <ToolbarToggle icon="grid_4x4" label="Grid" pressed={grid} onChange={setGrid} />
+            </Toolbar>
+          )}
+          defaultPan={{ x: 60, y: 40 }}
+          aria-label="Canvas with expandable controls"
+        >
+          <Node id="tokens" x={300} y={160} label="Design Tokens" />
+          <Node id="react"  x={160} y={340} label="React" color="info" />
+          <CanvasEdge id="e1" from="tokens" to="react" direction="to" />
+        </Canvas>
+      </div>
+    )
+  },
+}
+
+// Sticky notes — `variant="plain"` frames carry content with its own surface.
+// Add a note from the controls or "Add sticky note here" on the canvas menu: it
+// lands in view, `focusZoom` zooms to it and it opens for editing in place.
+export const StickyNotes = {
+  render: function StickyNotesStory() {
+    const [notes, setNotes] = useState([
+      { id: 'n1', x: 0, y: 0, title: 'Kickoff', content: 'Agree the **launch date** with marketing.', color: 'yellow' },
+      { id: 'n2', x: 320, y: 60, title: 'Copy', content: '- Hero headline\n- Pricing FAQ', color: 'blue' },
+    ])
+    const [editingId, setEditingId] = useState(null)
+    const [focus, setFocus] = useState(null)
+    const update = (id, patch) => setNotes((list) => list.map((n) => (n.id === id ? { ...n, ...patch } : n)))
+    const add = (point) => {
+      const id = `n${Date.now()}`
+      setNotes((list) => [...list, { id, x: point.x - 128, y: point.y - 80, title: '', content: '', color: 'pink' }])
+      setFocus({ id })
+      setEditingId(id)
+    }
+    return (
+      <div style={{ width: '100%', height: '480px' }}>
+        <Canvas
+          draggableNodes
+          onNodeMove={(id, x, y) => update(id, { x, y })}
+          onNodeDoubleClick={setEditingId}
+          focusNodeId={focus?.id}
+          focusZoom={1}
+          defaultZoom={0.8}
+          defaultPan={{ x: 60, y: 60 }}
+          controlsExpandable
+          controlsActions={[{ id: 'add', icon: 'note_add', label: 'Add sticky note', onClick: ({ center }) => add(center) }]}
+          canvasMenuItems={(point) => [{ id: 'add', label: 'Add sticky note here', icon: 'note_add', onClick: () => add(point) }]}
+          aria-label="Sticky notes"
+        >
+          {notes.map((note) => (
+            <CanvasFrame key={note.id} id={note.id} variant="plain" x={note.x} y={note.y} width={256} label={note.title || 'Sticky note'}>
+              <StickyNote
+                title={note.title || undefined}
+                color={note.color}
+                width="auto"
+                titleAs="p"
+                editing={editingId === note.id}
+                onTitleChange={(title) => update(note.id, { title })}
+                onContentChange={(content) => update(note.id, { content })}
+                onEditingChange={(next) => { if (!next) setEditingId(null) }}
+              >
+                {note.content}
+              </StickyNote>
+            </CanvasFrame>
+          ))}
+        </Canvas>
+      </div>
+    )
+  },
 }

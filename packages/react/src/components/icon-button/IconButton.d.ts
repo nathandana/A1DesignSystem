@@ -17,6 +17,7 @@ export interface IconButtonProps extends React.ButtonHTMLAttributes<HTMLButtonEl
   size?: "sm" | "md" | "lg";
   /** Link target when rendered with `as="a"`. */
   href?: string;
+  /** Disabled links have no href, leave the tab order and suppress pointer/keyboard activation. */
   disabled?: boolean;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }

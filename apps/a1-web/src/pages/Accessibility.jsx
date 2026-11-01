@@ -6,6 +6,7 @@ import {
   Heading,
   Icon,
   MessageBadge,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
@@ -14,7 +15,6 @@ import {
 import reportData from '../../../../reports/a11y.json'
 import componentReportData from './componentA11ySummary.generated.json'
 import { useT } from '../labels/useT.js'
-import { PageTitleArea } from './PageTitleArea.jsx'
 
 const CODE_STYLE = {
   fontFamily: 'var(--component-inline-font-family-mono, monospace)',
@@ -200,16 +200,16 @@ export function Accessibility({ onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        headingId="a11y-heading"
-        breadcrumbItems={[
+      <PageTitle
+        titleId="a11y-heading"
+        breadcrumb={[
           { label: t('app.page.home', 'Home'), href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
           { label: t('app.accessibility.pageTitle', 'Accessibility report') },
         ]}
         title={t('app.accessibility.pageTitle', 'Accessibility report')}
         description={t('app.accessibility.pageDescription', 'Automated WCAG 2.0 / 2.1 / 2.2 Level A & AA checks run against every Storybook story in the default theme using axe-core via the Storybook test runner.')}
       >
-      </PageTitleArea>
+      </PageTitle>
 
       {/* ── Summary stats ── */}
       <Section padding="sm" contentWidth="xl" surface="raised" aria-label={t('app.accessibility.reportSummaryLabel', 'Report summary')} gap="sm">

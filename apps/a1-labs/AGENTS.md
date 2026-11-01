@@ -48,6 +48,12 @@ For the Three.js switch experiment and its accessible fallbacks:
 
 [Button interactions](../../packages/react/ai/labs-button-motion.md).
 
+[Button configurator menu](../../packages/react/ai/labs-button-configurator-menu.md).
+
+[Text selection](../../packages/react/ai/labs-text-selection.md).
+
+[Touch card actions](../../packages/react/ai/labs-touch-card.md).
+
 For the eight step presentations and their shared progress-tab behavior:
 
 [Steps](../../packages/react/ai/labs-steps.md).

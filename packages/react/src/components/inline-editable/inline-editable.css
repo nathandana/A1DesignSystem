@@ -72,6 +72,12 @@
   outline-offset: 2px;
 }
 
+/* Double-click activation leaves the surrounding canvas in control until the
+   text is actually editable, so draggable parents keep their grab cursor. */
+.a1-inline-editable--seamless.a1-inline-editable--read-only {
+  cursor: inherit;
+}
+
 /* Multiline keeps authored line breaks */
 .a1-inline-editable--multiline {
   white-space: pre-wrap;

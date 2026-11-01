@@ -19,6 +19,7 @@ export const GENERATED_COMPONENT_HISTORY = {
     {"date":"2026-09-10","type":"code","summary":"Avatar component (A1-2055)","ticket":"A1-2055"},
   ],
   "badge": [
+    {"date":"2026-10-26","type":"code","summary":"Badge overflow","ticket":"A1-2704"},
     {"date":"2026-09-09","type":"code","summary":"A1:Figma Badge and Card icon imports"},
     {"date":"2026-09-08","type":"code","summary":"A1:Figma Badge import"},
     {"date":"2026-07-14","type":"code","summary":"Figma Badge Material icons and Grid bridge"},
@@ -53,6 +54,7 @@ export const GENERATED_COMPONENT_HISTORY = {
     {"date":"2026-06-09","type":"code","summary":"Calendar"},
   ],
   "canvas": [
+    {"date":"2026-10-26","type":"code","summary":"Canvas: CanvasFrame + custom background; a1-web project canvas","ticket":"A1-2700"},
     {"date":"2026-06-23","type":"code","summary":"Canvas — elbow edge style, trackpad zoom fix; Node — own a1-web page"},
     {"date":"2026-06-23","type":"code","summary":"Canvas — `CanvasNode` renamed to `Node` (standalone component)"},
     {"date":"2026-06-23","type":"code","summary":"Canvas — surfaces + inverse; remove data-driven API"},
@@ -170,6 +172,9 @@ export const GENERATED_COMPONENT_HISTORY = {
   "number-field": [
     {"date":"2026-06-10","type":"code","summary":"NumberField unit fix"},
   ],
+  "overflow-menu": [
+    {"date":"2026-10-28","type":"code","summary":"Overflow menu pattern"},
+  ],
   "overlay": [
     {"date":"2026-07-05","type":"code","summary":"Overlay component","ticket":"A1-417"},
   ],
@@ -261,6 +266,9 @@ export const GENERATED_COMPONENT_HISTORY = {
   "sticky-actions": [
     {"date":"2026-07-07","type":"code","summary":"StickyActions dark-mode surface"},
   ],
+  "sticky-note": [
+    {"date":"2026-10-27","type":"code","summary":"Sticky Note","ticket":"A1-2718"},
+  ],
   "switch": [
     {"date":"2026-07-15","type":"code","summary":"A1:Figma Convert to Switch + Figure fill"},
     {"date":"2026-06-30","type":"code","summary":"Switch — fix page scroll-jump on toggle"},
@@ -281,6 +289,7 @@ export const GENERATED_COMPONENT_HISTORY = {
     {"date":"2026-07-06","type":"code","summary":"Figma Text Field component","ticket":"A1-959"},
   ],
   "textarea": [
+    {"date":"2026-10-27","type":"code","summary":"Textarea max radius"},
     {"date":"2026-07-14","type":"code","summary":"Figma Textarea content controls"},
   ],
   "toolbar": [

@@ -7,7 +7,8 @@
  *   outline without introducing any wrapper DOM element.
  * - Left click: selects the innermost (directly-clicked) editor node.
  * - Right click: shows the A1 ContextMenu with element-selection and delete actions.
- * - Drag-over from Add panel: shows before/into/after drop indicator, calls onCatalogDrop on drop.
+ * - Drag-over from Add panel or another canvas node: shows before/into/after
+ *   drop indication and routes the drop through the editor's existing move rules.
  *
  * Visual states (driven by CSS in styles.css):
  * - [data-editor-node]:hover           → dashed accent-color outline
@@ -58,6 +59,7 @@ interface EditorSelectionBoundaryProps {
   nodeId: string;
   nodeType: string;
   isSelected: boolean;
+  hasInlineEditableText?: boolean;
   isLocked?: boolean;
   patternOutline?: boolean;
   patternInstance?: PatternInstanceRef;
@@ -76,6 +78,8 @@ interface EditorSelectionBoundaryProps {
   getNodeProps?: (nodeId: string) => Record<string, unknown> | undefined;
   getNodeInfo: (id: string) => { isFirst: boolean; isLast: boolean; hasChildren: boolean };
   isContainer?: boolean;
+  canDrag?: boolean;
+  onNodeMove?: (move: { draggedId: string; targetId: string; position: 'before' | 'into' | 'after' }) => void;
   onCatalogDrop?: (catalogType: string, position: 'before' | 'into' | 'after') => void;
   onDetachPattern?: (nodeId: string) => void;
   onCreatePattern?: (nodeId: string) => void;
@@ -86,6 +90,7 @@ export function EditorSelectionBoundary({
   nodeId,
   nodeType,
   isSelected,
+  hasInlineEditableText,
   isLocked,
   patternOutline,
   patternInstance,
@@ -104,6 +109,8 @@ export function EditorSelectionBoundary({
   getNodeProps,
   getNodeInfo,
   isContainer,
+  canDrag,
+  onNodeMove,
   onCatalogDrop,
   onDetachPattern,
   onCreatePattern,
@@ -134,17 +141,11 @@ export function EditorSelectionBoundary({
 
     if (editorEls.length === 0) return;
 
-    // If the click landed inside an editable text region (an InlineEditable's
-    // contentEditable, or a field input/textarea), just select the node — never
-    // toggle it off — so clicking or double-clicking text to edit doesn't drop
-    // the selection out from under you.
-    const inEditable = path.some(
-      (el) =>
-        el instanceof HTMLElement &&
-        (el.isContentEditable || el.tagName === 'INPUT' || el.tagName === 'TEXTAREA'),
-    );
     const targetId = editorEls[0].dataset.editorNode!;
-    onSelect(inEditable ? targetId : isSelected ? null : targetId);
+    // Canvas clicks always select. Keeping the selection stable makes a second
+    // click available to enter inline text editing and lets container surfaces
+    // (Card, Grid, Stack, etc.) remain reliable drag handles.
+    onSelect(targetId);
   }
 
   // Right click — shows the context menu with select + delete actions.
@@ -336,14 +337,30 @@ export function EditorSelectionBoundary({
     return items;
   }
 
-  // ── Catalog drag-and-drop ──────────────────────────────────────────────────
+  // ── Canvas and catalog drag-and-drop ───────────────────────────────────────
 
-  const dragHandlers = onCatalogDrop ? {
+  const dragHandlers = onCatalogDrop || (canDrag && onNodeMove) ? {
+    draggable: canDrag || undefined,
+    ...(canDrag ? { 'data-editor-draggable': 'true' } : {}),
+    onDragStart: (e: React.DragEvent) => {
+      if (!canDrag || !onNodeMove) return;
+      e.stopPropagation();
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('a1-editor-node', nodeId);
+      (e.currentTarget as HTMLElement).dataset.editorDragging = 'true';
+      onSelect(nodeId);
+    },
+    onDragEnd: (e: React.DragEvent) => {
+      delete (e.currentTarget as HTMLElement).dataset.editorDragging;
+      document.querySelectorAll<HTMLElement>('[data-drop-position]').forEach((el) => delete el.dataset.dropPosition);
+    },
     onDragOver: (e: React.DragEvent) => {
-      if (!e.dataTransfer.types.includes('a1-catalog-type')) return;
+      const isNodeMove = e.dataTransfer.types.includes('a1-editor-node');
+      const isCatalogDrop = e.dataTransfer.types.includes('a1-catalog-type');
+      if (!isNodeMove && !isCatalogDrop) return;
       e.preventDefault();
       e.stopPropagation();
-      e.dataTransfer.dropEffect = 'copy';
+      e.dataTransfer.dropEffect = isNodeMove ? 'move' : 'copy';
       const el = e.currentTarget as HTMLElement;
       const rect = el.getBoundingClientRect();
       const pct = (e.clientY - rect.top) / rect.height;
@@ -354,14 +371,16 @@ export function EditorSelectionBoundary({
       if (!el.contains(e.relatedTarget as Node)) delete el.dataset.dropPosition;
     },
     onDrop: (e: React.DragEvent) => {
+      const draggedId = e.dataTransfer.getData('a1-editor-node');
       const catalogType = e.dataTransfer.getData('a1-catalog-type');
-      if (!catalogType) return;
+      if (!draggedId && !catalogType) return;
       e.preventDefault();
       e.stopPropagation();
       const el = e.currentTarget as HTMLElement;
       const pos = (el.dataset.dropPosition as 'before' | 'into' | 'after') ?? 'after';
       delete el.dataset.dropPosition;
-      onCatalogDrop(catalogType, pos);
+      if (draggedId) onNodeMove?.({ draggedId, targetId: nodeId, position: pos });
+      else onCatalogDrop?.(catalogType, pos);
     },
   } : {};
 
@@ -373,6 +392,7 @@ export function EditorSelectionBoundary({
     onContextMenu: handleContextMenu,
     'data-editor-node': nodeId,
     'data-editor-type': nodeType,
+    ...(hasInlineEditableText ? { 'data-editor-text': 'true' } : {}),
     ...(isSelected ? { 'data-editor-selected': 'true' } : {}),
     ...(isLocked ? { 'data-editor-locked': 'true' } : {}),
     ...(patternOutline ? { 'data-editor-pattern': 'true' } : {}),

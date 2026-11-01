@@ -1,0 +1,2 @@
+id,title,original,proposed,sourceUrl,sourceVersion,tags,owner
+example-checkbox-label,Checkbox label (fictional import example),Give each checkbox a visible label.,Associate each visible label with its checkbox.,https://example.com/design/checkbox,Example 1,Components:Checkbox|Patterns/tasks:Forms|Topics:Accessibility|Platforms/contexts:Web,Example reviewer

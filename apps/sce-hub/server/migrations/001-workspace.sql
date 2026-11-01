@@ -1,0 +1,12 @@
+PRAGMA journal_mode = WAL;
+PRAGMA foreign_keys = ON;
+CREATE TABLE IF NOT EXISTS schema_migrations (version INTEGER PRIMARY KEY, applied_at TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, email TEXT NOT NULL UNIQUE, name TEXT NOT NULL, role TEXT NOT NULL CHECK(role IN ('owner','editor','reviewer','viewer')), password_hash TEXT NOT NULL);
+CREATE TABLE IF NOT EXISTS sessions (token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, expires INTEGER NOT NULL);
+CREATE TABLE IF NOT EXISTS records (id TEXT PRIMARY KEY, kind TEXT NOT NULL, dataset TEXT NOT NULL CHECK(dataset IN ('sce','demo')), revision INTEGER NOT NULL, payload TEXT NOT NULL CHECK(json_valid(payload)), updated_at TEXT NOT NULL, deleted INTEGER NOT NULL DEFAULT 0);
+CREATE INDEX IF NOT EXISTS records_kind ON records(kind, dataset, deleted);
+CREATE TABLE IF NOT EXISTS revisions (record_id TEXT NOT NULL REFERENCES records(id), revision INTEGER NOT NULL, payload TEXT NOT NULL, actor TEXT NOT NULL, reason TEXT NOT NULL, created_at TEXT NOT NULL, PRIMARY KEY(record_id, revision));
+CREATE TABLE IF NOT EXISTS activity (id TEXT PRIMARY KEY, record_id TEXT, dataset TEXT NOT NULL, action TEXT NOT NULL, actor TEXT NOT NULL, reason TEXT NOT NULL, before_json TEXT, after_json TEXT, created_at TEXT NOT NULL);
+CREATE INDEX IF NOT EXISTS activity_date ON activity(created_at);
+CREATE TABLE IF NOT EXISTS attachments (id TEXT PRIMARY KEY, report_id TEXT NOT NULL REFERENCES records(id), name TEXT NOT NULL, mime TEXT NOT NULL, bytes BLOB NOT NULL, extracted_text TEXT NOT NULL DEFAULT '', indexing_status TEXT NOT NULL, created_at TEXT NOT NULL);
+INSERT OR IGNORE INTO schema_migrations VALUES (1, datetime('now'));

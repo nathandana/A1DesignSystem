@@ -58,6 +58,34 @@
             "ar": "البحث في المكونات"
           }
         },
+        "patterns": {
+          "$type": "string",
+          "$value": "Patterns",
+          "$description": "Top-level navigation group for the Pattern library (first-class patterns).",
+          "locale": {
+            "es": "Patrones",
+            "fr": "Modèles",
+            "de": "Muster",
+            "pt": "Modelos",
+            "ja": "パターン",
+            "zh": "模式",
+            "ar": "الأنماط"
+          }
+        },
+        "searchPatterns": {
+          "$type": "string",
+          "$value": "Search patterns",
+          "$description": "Accessible label for the search field in the Pattern library sidebar.",
+          "locale": {
+            "es": "Buscar patrones",
+            "fr": "Rechercher des modèles",
+            "de": "Muster suchen",
+            "pt": "Pesquisar padrões",
+            "ja": "パターンを検索",
+            "zh": "搜索模式",
+            "ar": "البحث في الأنماط"
+          }
+        },
         "editors": {
           "$type": "string",
           "$value": "Editors",
@@ -228,6 +256,20 @@
             "ja": "始める",
             "zh": "开始使用",
             "ar": "البدء"
+          }
+        },
+        "patternLibrary": {
+          "$type": "string",
+          "$value": "Pattern library",
+          "$description": "Pattern library overview page title (first-class patterns, /pattern-library).",
+          "locale": {
+            "es": "Biblioteca de patrones",
+            "fr": "Bibliothèque de modèles",
+            "de": "Musterbibliothek",
+            "pt": "Biblioteca de padrões",
+            "ja": "パターンライブラリ",
+            "zh": "模式库",
+            "ar": "مكتبة الأنماط"
           }
         },
         "patterns": {
@@ -3013,7 +3055,261 @@
           }
         }
       },
+      "components": {
+        "all": {
+          "$type": "string",
+          "$value": "All components",
+          "$description": "Components sidebar: the overview entry at the top of the tree.",
+          "locale": {
+            "es": "Todos los componentes",
+            "fr": "Tous les composants",
+            "de": "Alle Komponenten",
+            "pt": "Todos os componentes",
+            "ja": "すべてのコンポーネント",
+            "zh": "所有组件",
+            "ar": "جميع المكونات"
+          }
+        },
+        "tree": {
+          "$type": "string",
+          "$value": "Component tree",
+          "$description": "Accessible name of the Components sidebar tree.",
+          "locale": {
+            "es": "Árbol de componentes",
+            "fr": "Arborescence des composants",
+            "de": "Komponentenbaum",
+            "pt": "Árvore de componentes",
+            "ja": "コンポーネントツリー",
+            "zh": "组件树",
+            "ar": "شجرة المكونات"
+          }
+        },
+        "listView": {
+          "$type": "string",
+          "$value": "Component list view",
+          "$description": "Accessible name of the Components sidebar view toolbar (tree or A–Z).",
+          "locale": {
+            "es": "Vista de lista de componentes",
+            "fr": "Vue en liste des composants",
+            "de": "Komponentenlistenansicht",
+            "pt": "Visualização em lista de componentes",
+            "ja": "コンポーネントのリスト表示",
+            "zh": "组件列表视图",
+            "ar": "عرض قائمة المكونات"
+          }
+        },
+        "statusHeading": {
+          "$type": "string",
+          "$value": "Component status",
+          "$description": "Heading of the status card on a component page overview.",
+          "locale": {
+            "es": "Estado del componente",
+            "fr": "État du composant",
+            "de": "Komponentenstatus",
+            "pt": "Status do componente",
+            "ja": "コンポーネントのステータス",
+            "zh": "组件状态",
+            "ar": "حالة المكون"
+          }
+        },
+        "relatedHeading": {
+          "$type": "string",
+          "$value": "Related components",
+          "$description": "Heading of the related components list on a component or pattern page.",
+          "locale": {
+            "es": "Componentes relacionados",
+            "fr": "Composants associés",
+            "de": "Verwandte Komponenten",
+            "pt": "Componentes relacionados",
+            "ja": "関連コンポーネント",
+            "zh": "相关组件",
+            "ar": "المكونات ذات الصلة"
+          }
+        },
+        "inventoryTitle": {
+          "$type": "string",
+          "$value": "Component inventory",
+          "$description": "Components overview page title.",
+          "locale": {
+            "es": "Inventario de componentes",
+            "fr": "Inventaire des composants",
+            "de": "Komponenteninventar",
+            "pt": "Inventário de componentes",
+            "ja": "コンポーネント一覧",
+            "zh": "组件清单",
+            "ar": "جرد المكونات"
+          }
+        },
+        "inventoryDescription": {
+          "$type": "string",
+          "$value": "Full list of documented components, route targets, update dates, and package availability.",
+          "$description": "Description under the Components overview title.",
+          "locale": {
+            "es": "Lista completa de componentes documentados, rutas, fechas de actualización y disponibilidad por paquete.",
+            "fr": "Liste complète des composants documentés, de leurs routes, dates de mise à jour et disponibilité par paquet.",
+            "de": "Vollständige Liste der dokumentierten Komponenten mit Routen, Aktualisierungsdaten und Paketverfügbarkeit.",
+            "pt": "Lista completa de componentes documentados, rotas, datas de atualização e disponibilidade por pacote.",
+            "ja": "ドキュメント化されたコンポーネントの全リスト。ルート、更新日、パッケージごとの提供状況を含みます。",
+            "zh": "已记录组件的完整列表，包括路由、更新日期和各软件包的可用性。",
+            "ar": "قائمة كاملة بالمكونات الموثقة ومساراتها وتواريخ تحديثها وتوفرها في الحزم."
+          }
+        },
+        "tableCaption": {
+          "$type": "string",
+          "$value": "All A1 components",
+          "$description": "Caption of the Components overview table.",
+          "locale": {
+            "es": "Todos los componentes de A1",
+            "fr": "Tous les composants A1",
+            "de": "Alle A1-Komponenten",
+            "pt": "Todos os componentes A1",
+            "ja": "すべての A1 コンポーネント",
+            "zh": "所有 A1 组件",
+            "ar": "جميع مكونات A1"
+          }
+        },
+        "column": {
+          "$type": "string",
+          "$value": "Component",
+          "$description": "Column header naming the component in the Components overview table.",
+          "locale": {
+            "es": "Componente",
+            "fr": "Composant",
+            "de": "Komponente",
+            "pt": "Componente",
+            "ja": "コンポーネント",
+            "zh": "组件",
+            "ar": "المكون"
+          }
+        },
+        "categoriesLabel": {
+          "$type": "string",
+          "$value": "Categories",
+          "$description": "Overview stat: number of categories in a catalogue.",
+          "locale": {
+            "es": "Categorías",
+            "fr": "Catégories",
+            "de": "Kategorien",
+            "pt": "Categorias",
+            "ja": "カテゴリ",
+            "zh": "类别",
+            "ar": "الفئات"
+          }
+        },
+        "ruleFilesLabel": {
+          "$type": "string",
+          "$value": "Rule files",
+          "$description": "Overview stat: number of design rule files.",
+          "locale": {
+            "es": "Archivos de reglas",
+            "fr": "Fichiers de règles",
+            "de": "Regeldateien",
+            "pt": "Arquivos de regras",
+            "ja": "ルールファイル",
+            "zh": "规则文件",
+            "ar": "ملفات القواعد"
+          }
+        }
+      },
       "patterns": {
+        "all": {
+          "$type": "string",
+          "$value": "All patterns",
+          "$description": "Pattern library sidebar: the overview entry at the top of the tree.",
+          "locale": {
+            "es": "Todos los patrones",
+            "fr": "Tous les modèles",
+            "de": "Alle Muster",
+            "pt": "Todos os padrões",
+            "ja": "すべてのパターン",
+            "zh": "所有模式",
+            "ar": "جميع الأنماط"
+          }
+        },
+        "tree": {
+          "$type": "string",
+          "$value": "Pattern tree",
+          "$description": "Accessible name of the Pattern library sidebar tree.",
+          "locale": {
+            "es": "Árbol de patrones",
+            "fr": "Arborescence des modèles",
+            "de": "Musterbaum",
+            "pt": "Árvore de padrões",
+            "ja": "パターンツリー",
+            "zh": "模式树",
+            "ar": "شجرة الأنماط"
+          }
+        },
+        "listView": {
+          "$type": "string",
+          "$value": "Pattern list view",
+          "$description": "Accessible name of the Pattern library sidebar view toolbar (tree or A–Z).",
+          "locale": {
+            "es": "Vista de lista de patrones",
+            "fr": "Vue en liste des modèles",
+            "de": "Musterlistenansicht",
+            "pt": "Visualização em lista de padrões",
+            "ja": "パターンのリスト表示",
+            "zh": "模式列表视图",
+            "ar": "عرض قائمة الأنماط"
+          }
+        },
+        "statusHeading": {
+          "$type": "string",
+          "$value": "Pattern status",
+          "$description": "Heading of the status card on a pattern page overview.",
+          "locale": {
+            "es": "Estado del patrón",
+            "fr": "État du modèle",
+            "de": "Musterstatus",
+            "pt": "Status do padrão",
+            "ja": "パターンのステータス",
+            "zh": "模式状态",
+            "ar": "حالة النمط"
+          }
+        },
+        "libraryDescription": {
+          "$type": "string",
+          "$value": "Reusable compositions built from A1 components, configured like components and added to projects as one piece.",
+          "$description": "Description under the Pattern library overview title.",
+          "locale": {
+            "es": "Composiciones reutilizables creadas con componentes A1, que se configuran como componentes y se añaden a los proyectos como una sola pieza.",
+            "fr": "Compositions réutilisables construites à partir de composants A1, configurées comme des composants et ajoutées aux projets d'un seul bloc.",
+            "de": "Wiederverwendbare Kompositionen aus A1-Komponenten, die wie Komponenten konfiguriert und als Ganzes zu Projekten hinzugefügt werden.",
+            "pt": "Composições reutilizáveis criadas com componentes A1, configuradas como componentes e adicionadas aos projetos como uma única peça.",
+            "ja": "A1 コンポーネントから構築された再利用可能なコンポジション。コンポーネントと同じように設定し、ひとつのまとまりとしてプロジェクトに追加できます。",
+            "zh": "由 A1 组件构建的可重用组合，可像组件一样配置，并作为一个整体添加到项目中。",
+            "ar": "تركيبات قابلة لإعادة الاستخدام مبنية من مكونات A1، تُضبط مثل المكونات وتُضاف إلى المشاريع كقطعة واحدة."
+          }
+        },
+        "tableCaption": {
+          "$type": "string",
+          "$value": "All A1 patterns",
+          "$description": "Caption of the Pattern library overview table.",
+          "locale": {
+            "es": "Todos los patrones de A1",
+            "fr": "Tous les modèles A1",
+            "de": "Alle A1-Muster",
+            "pt": "Todos os padrões A1",
+            "ja": "すべての A1 パターン",
+            "zh": "所有 A1 模式",
+            "ar": "جميع أنماط A1"
+          }
+        },
+        "column": {
+          "$type": "string",
+          "$value": "Pattern",
+          "$description": "Column header naming the pattern in the Pattern library overview table.",
+          "locale": {
+            "es": "Patrón",
+            "fr": "Modèle",
+            "de": "Muster",
+            "pt": "Padrão",
+            "ja": "パターン",
+            "zh": "模式",
+            "ar": "النمط"
+          }
+        },
         "subtitle": {
           "$type": "string",
           "$value": "Reusable, governed compositions — a page header, a footer, or a standardized card. Open one to edit it and lock the parts that should stay consistent.",
@@ -3534,6 +3830,902 @@
             "ja": "キャンセル",
             "zh": "取消",
             "ar": "إلغاء"
+          }
+        },
+        "tagsDone": {
+          "$type": "string",
+          "$value": "Done",
+          "$description": "Button that closes the Add tags dialog on the Projects page. Tags are saved as they are added.",
+          "locale": {
+            "es": "Listo",
+            "fr": "Terminé",
+            "de": "Fertig",
+            "pt": "Concluído",
+            "ja": "完了",
+            "zh": "完成",
+            "ar": "تم"
+          }
+        },
+        "favorite": {
+          "$type": "string",
+          "$value": "Favorite",
+          "$description": "Project card menu item that marks the project as a favorite, which pins it to the top of the Projects menu and list.",
+          "locale": {
+            "es": "Favorito",
+            "fr": "Favori",
+            "de": "Favorit",
+            "pt": "Favorito",
+            "ja": "お気に入り",
+            "zh": "收藏",
+            "ar": "مفضّل"
+          }
+        },
+        "hidden": {
+          "$type": "string",
+          "$value": "Hidden",
+          "$description": "Toggle label in the Organize projects dialog, and a badge on hidden project cards.",
+          "locale": {
+            "es": "Oculto",
+            "fr": "Masqué",
+            "de": "Ausgeblendet",
+            "pt": "Oculto",
+            "ja": "非表示",
+            "zh": "已隐藏",
+            "ar": "مخفي"
+          }
+        },
+        "moveUp": {
+          "$type": "string",
+          "$value": "Move up 1",
+          "$description": "Project card menu item that moves the project one place earlier in the Projects menu and list.",
+          "locale": {
+            "es": "Subir 1",
+            "fr": "Monter de 1",
+            "de": "1 nach oben",
+            "pt": "Mover 1 para cima",
+            "ja": "1つ上へ",
+            "zh": "上移 1 位",
+            "ar": "نقل لأعلى بمقدار 1"
+          }
+        },
+        "moveDown": {
+          "$type": "string",
+          "$value": "Move down 1",
+          "$description": "Project card menu item that moves the project one place later in the Projects menu and list.",
+          "locale": {
+            "es": "Bajar 1",
+            "fr": "Descendre de 1",
+            "de": "1 nach unten",
+            "pt": "Mover 1 para baixo",
+            "ja": "1つ下へ",
+            "zh": "下移 1 位",
+            "ar": "نقل لأسفل بمقدار 1"
+          }
+        },
+        "tags": {
+          "$type": "string",
+          "$value": "Tags",
+          "$description": "Field label in the Add tags dialog on the Projects page.",
+          "locale": {
+            "es": "Etiquetas",
+            "fr": "Étiquettes",
+            "de": "Tags",
+            "pt": "Etiquetas",
+            "ja": "タグ",
+            "zh": "标签",
+            "ar": "الوسوم"
+          }
+        },
+        "removeFromFavorites": {
+          "$type": "string",
+          "$value": "Remove from favorites",
+          "$description": "Project card menu item that removes the project from favorites.",
+          "locale": {
+            "es": "Quitar de favoritos",
+            "fr": "Retirer des favoris",
+            "de": "Aus Favoriten entfernen",
+            "pt": "Remover dos favoritos",
+            "ja": "お気に入りから削除",
+            "zh": "从收藏中移除",
+            "ar": "إزالة من المفضلة"
+          }
+        },
+        "hide": {
+          "$type": "string",
+          "$value": "Hide",
+          "$description": "Project card menu item that hides the project from the Projects menu and list.",
+          "locale": {
+            "es": "Ocultar",
+            "fr": "Masquer",
+            "de": "Ausblenden",
+            "pt": "Ocultar",
+            "ja": "非表示にする",
+            "zh": "隐藏",
+            "ar": "إخفاء"
+          }
+        },
+        "show": {
+          "$type": "string",
+          "$value": "Show",
+          "$description": "Project card menu item that shows a hidden project again.",
+          "locale": {
+            "es": "Mostrar",
+            "fr": "Afficher",
+            "de": "Einblenden",
+            "pt": "Mostrar",
+            "ja": "表示する",
+            "zh": "显示",
+            "ar": "إظهار"
+          }
+        },
+        "favoritesHeading": {
+          "$type": "string",
+          "$value": "Favorites",
+          "$description": "Heading above favorite projects on the Projects page.",
+          "locale": {
+            "es": "Favoritos",
+            "fr": "Favoris",
+            "de": "Favoriten",
+            "pt": "Favoritos",
+            "ja": "お気に入り",
+            "zh": "收藏",
+            "ar": "المفضلة"
+          }
+        },
+        "otherProjectsHeading": {
+          "$type": "string",
+          "$value": "Other projects",
+          "$description": "Heading above non-favorite projects on the Projects page when favorites exist.",
+          "locale": {
+            "es": "Otros proyectos",
+            "fr": "Autres projets",
+            "de": "Weitere Projekte",
+            "pt": "Outros projetos",
+            "ja": "その他のプロジェクト",
+            "zh": "其他项目",
+            "ar": "مشاريع أخرى"
+          }
+        },
+        "filterByTag": {
+          "$type": "string",
+          "$value": "Filter by tag",
+          "$description": "Label for the tag filter chips on the Projects page.",
+          "locale": {
+            "es": "Filtrar por etiqueta",
+            "fr": "Filtrer par étiquette",
+            "de": "Nach Tag filtern",
+            "pt": "Filtrar por etiqueta",
+            "ja": "タグで絞り込み",
+            "zh": "按标签筛选",
+            "ar": "التصفية حسب الوسم"
+          }
+        },
+        "allTags": {
+          "$type": "string",
+          "$value": "All",
+          "$description": "Tag filter chip that shows projects with any tag.",
+          "locale": {
+            "es": "Todos",
+            "fr": "Tous",
+            "de": "Alle",
+            "pt": "Todos",
+            "ja": "すべて",
+            "zh": "全部",
+            "ar": "الكل"
+          }
+        },
+        "showHidden": {
+          "$type": "string",
+          "$value": "Show hidden",
+          "$description": "Toggle on the Projects page that includes hidden projects in the list. A count follows in parentheses.",
+          "locale": {
+            "es": "Mostrar ocultos",
+            "fr": "Afficher les masqués",
+            "de": "Ausgeblendete anzeigen",
+            "pt": "Mostrar ocultos",
+            "ja": "非表示を表示",
+            "zh": "显示隐藏项目",
+            "ar": "إظهار المخفية"
+          }
+        },
+        "allHiddenTitle": {
+          "$type": "string",
+          "$value": "All projects are hidden",
+          "$description": "Empty state title on the Projects page when every active project is hidden.",
+          "locale": {
+            "es": "Todos los proyectos están ocultos",
+            "fr": "Tous les projets sont masqués",
+            "de": "Alle Projekte sind ausgeblendet",
+            "pt": "Todos os projetos estão ocultos",
+            "ja": "すべてのプロジェクトが非表示です",
+            "zh": "所有项目均已隐藏",
+            "ar": "جميع المشاريع مخفية"
+          }
+        },
+        "allHiddenDescription": {
+          "$type": "string",
+          "$value": "Turn on Show hidden to see them.",
+          "$description": "Empty state description on the Projects page when every active project is hidden.",
+          "locale": {
+            "es": "Activa Mostrar ocultos para verlos.",
+            "fr": "Activez Afficher les masqués pour les voir.",
+            "de": "Aktiviere „Ausgeblendete anzeigen“, um sie zu sehen.",
+            "pt": "Ative Mostrar ocultos para vê-los.",
+            "ja": "表示するには「非表示を表示」をオンにしてください。",
+            "zh": "开启“显示隐藏项目”即可查看。",
+            "ar": "فعّل «إظهار المخفية» لعرضها."
+          }
+        },
+        "edit": {
+          "$type": "string",
+          "$value": "Edit",
+          "$description": "Icon button on a project card that opens the project in the editor.",
+          "locale": {
+            "es": "Editar",
+            "fr": "Modifier",
+            "de": "Bearbeiten",
+            "pt": "Editar",
+            "ja": "編集",
+            "zh": "编辑",
+            "ar": "تعديل"
+          }
+        },
+        "moreOptions": {
+          "$type": "string",
+          "$value": "More options",
+          "$description": "Icon button on a project card that opens its menu of favorite, ordering and tag actions.",
+          "locale": {
+            "es": "Más opciones",
+            "fr": "Plus d’options",
+            "de": "Weitere Optionen",
+            "pt": "Mais opções",
+            "ja": "その他のオプション",
+            "zh": "更多选项",
+            "ar": "مزيد من الخيارات"
+          }
+        },
+        "moveToTop": {
+          "$type": "string",
+          "$value": "Move to top",
+          "$description": "Project card menu item that moves the project to the start of its group in the Projects menu and list.",
+          "locale": {
+            "es": "Mover al principio",
+            "fr": "Placer en premier",
+            "de": "Ganz nach oben",
+            "pt": "Mover para o topo",
+            "ja": "先頭へ移動",
+            "zh": "移到顶部",
+            "ar": "نقل إلى الأعلى"
+          }
+        },
+        "moveToBottom": {
+          "$type": "string",
+          "$value": "Move to bottom",
+          "$description": "Project card menu item that moves the project to the end of its group in the Projects menu and list.",
+          "locale": {
+            "es": "Mover al final",
+            "fr": "Placer en dernier",
+            "de": "Ganz nach unten",
+            "pt": "Mover para o fim",
+            "ja": "末尾へ移動",
+            "zh": "移到底部",
+            "ar": "نقل إلى الأسفل"
+          }
+        },
+        "addTags": {
+          "$type": "string",
+          "$value": "Add tags…",
+          "$description": "Project card menu item that opens the Add tags dialog.",
+          "locale": {
+            "es": "Añadir etiquetas…",
+            "fr": "Ajouter des étiquettes…",
+            "de": "Tags hinzufügen …",
+            "pt": "Adicionar etiquetas…",
+            "ja": "タグを追加…",
+            "zh": "添加标签…",
+            "ar": "إضافة وسوم…"
+          }
+        },
+        "addTagsTitle": {
+          "$type": "string",
+          "$value": "Add tags",
+          "$description": "Title of the dialog for adding tags to a project.",
+          "locale": {
+            "es": "Añadir etiquetas",
+            "fr": "Ajouter des étiquettes",
+            "de": "Tags hinzufügen",
+            "pt": "Adicionar etiquetas",
+            "ja": "タグを追加",
+            "zh": "添加标签",
+            "ar": "إضافة وسوم"
+          }
+        },
+        "canvasView": {
+          "$type": "string",
+          "$value": "Canvas",
+          "$description": "Project overview view option that shows every page as a frame on an infinite canvas.",
+          "locale": {
+            "es": "Lienzo",
+            "fr": "Canevas",
+            "de": "Canvas",
+            "pt": "Tela",
+            "ja": "キャンバス",
+            "zh": "画布",
+            "ar": "لوحة"
+          }
+        },
+        "canvasLabel": {
+          "$type": "string",
+          "$value": "Project canvas",
+          "$description": "Accessible name of the project canvas, where each page is a frame.",
+          "locale": {
+            "es": "Lienzo del proyecto",
+            "fr": "Canevas du projet",
+            "de": "Projekt-Canvas",
+            "pt": "Tela do projeto",
+            "ja": "プロジェクトキャンバス",
+            "zh": "项目画布",
+            "ar": "لوحة المشروع"
+          }
+        },
+        "canvasToolbar": {
+          "$type": "string",
+          "$value": "Canvas",
+          "$description": "Accessible name of the toolbar above the project canvas.",
+          "locale": {
+            "es": "Lienzo",
+            "fr": "Canevas",
+            "de": "Canvas",
+            "pt": "Tela",
+            "ja": "キャンバス",
+            "zh": "画布",
+            "ar": "لوحة"
+          }
+        },
+        "canvasConnections": {
+          "$type": "string",
+          "$value": "Connections",
+          "$description": "Toggle on the project canvas that shows arrows for links between pages.",
+          "locale": {
+            "es": "Conexiones",
+            "fr": "Connexions",
+            "de": "Verbindungen",
+            "pt": "Conexões",
+            "ja": "接続",
+            "zh": "连接",
+            "ar": "الروابط"
+          }
+        },
+        "canvasBreakpoint": {
+          "$type": "string",
+          "$value": "Breakpoint",
+          "$description": "Project canvas control and frame menu group for the breakpoint a page frame renders at (XS–XL).",
+          "locale": {
+            "es": "Punto de ruptura",
+            "fr": "Point de rupture",
+            "de": "Breakpoint",
+            "pt": "Ponto de interrupção",
+            "ja": "ブレークポイント",
+            "zh": "断点",
+            "ar": "نقطة التوقف"
+          }
+        },
+        "canvasBreakpointAll": {
+          "$type": "string",
+          "$value": "Breakpoint for all pages",
+          "$description": "Accessible name of the project canvas breakpoint control when no frame is selected, so it sets every frame.",
+          "locale": {
+            "es": "Punto de ruptura de todas las páginas",
+            "fr": "Point de rupture de toutes les pages",
+            "de": "Breakpoint für alle Seiten",
+            "pt": "Ponto de interrupção de todas as páginas",
+            "ja": "すべてのページのブレークポイント",
+            "zh": "所有页面的断点",
+            "ar": "نقطة التوقف لجميع الصفحات"
+          }
+        },
+        "canvasDuplicatePage": {
+          "$type": "string",
+          "$value": "Duplicate page",
+          "$description": "Project canvas frame menu item that copies the page and places the copy at the end of the row.",
+          "locale": {
+            "es": "Duplicar página",
+            "fr": "Dupliquer la page",
+            "de": "Seite duplizieren",
+            "pt": "Duplicar página",
+            "ja": "ページを複製",
+            "zh": "复制页面",
+            "ar": "تكرار الصفحة"
+          }
+        },
+        "canvasOpenInWindow": {
+          "$type": "string",
+          "$value": "Open in new window",
+          "$description": "Project canvas frame menu item that opens that page in the standalone prototype in a new window.",
+          "locale": {
+            "es": "Abrir en una ventana nueva",
+            "fr": "Ouvrir dans une nouvelle fenêtre",
+            "de": "In neuem Fenster öffnen",
+            "pt": "Abrir em nova janela",
+            "ja": "新しいウィンドウで開く",
+            "zh": "在新窗口中打开",
+            "ar": "فتح في نافذة جديدة"
+          }
+        },
+        "canvasDeletePage": {
+          "$type": "string",
+          "$value": "Delete page…",
+          "$description": "Project canvas frame menu item that opens a confirmation dialog to delete the page.",
+          "locale": {
+            "es": "Eliminar página…",
+            "fr": "Supprimer la page…",
+            "de": "Seite löschen …",
+            "pt": "Excluir página…",
+            "ja": "ページを削除…",
+            "zh": "删除页面…",
+            "ar": "حذف الصفحة…"
+          }
+        },
+        "canvasDeleteTitle": {
+          "$type": "string",
+          "$value": "Delete page?",
+          "$description": "Title of the confirmation dialog for deleting a page from the project canvas.",
+          "locale": {
+            "es": "¿Eliminar la página?",
+            "fr": "Supprimer la page ?",
+            "de": "Seite löschen?",
+            "pt": "Excluir a página?",
+            "ja": "ページを削除しますか？",
+            "zh": "删除页面？",
+            "ar": "حذف الصفحة؟"
+          }
+        },
+        "canvasDeleteBody": {
+          "$type": "string",
+          "$value": "This page will be permanently deleted.",
+          "$description": "Confirmation dialog text when deleting a page with no subpages from the project canvas.",
+          "locale": {
+            "es": "Esta página se eliminará de forma permanente.",
+            "fr": "Cette page sera définitivement supprimée.",
+            "de": "Diese Seite wird endgültig gelöscht.",
+            "pt": "Esta página será excluída permanentemente.",
+            "ja": "このページは完全に削除されます。",
+            "zh": "此页面将被永久删除。",
+            "ar": "سيتم حذف هذه الصفحة نهائيًا."
+          }
+        },
+        "canvasDeleteBodySubpages": {
+          "$type": "string",
+          "$value": "This page and its subpages will be permanently deleted.",
+          "$description": "Confirmation dialog text when deleting a page that has subpages from the project canvas.",
+          "locale": {
+            "es": "Esta página y sus subpáginas se eliminarán de forma permanente.",
+            "fr": "Cette page et ses sous-pages seront définitivement supprimées.",
+            "de": "Diese Seite und ihre Unterseiten werden endgültig gelöscht.",
+            "pt": "Esta página e suas subpáginas serão excluídas permanentemente.",
+            "ja": "このページとそのサブページは完全に削除されます。",
+            "zh": "此页面及其子页面将被永久删除。",
+            "ar": "سيتم حذف هذه الصفحة وصفحاتها الفرعية نهائيًا."
+          }
+        },
+        "canvasDeleteConfirm": {
+          "$type": "string",
+          "$value": "Delete",
+          "$description": "Destructive button that confirms deleting a page from the project canvas.",
+          "locale": {
+            "es": "Eliminar",
+            "fr": "Supprimer",
+            "de": "Löschen",
+            "pt": "Excluir",
+            "ja": "削除",
+            "zh": "删除",
+            "ar": "حذف"
+          }
+        },
+        "canvasDeleteCancel": {
+          "$type": "string",
+          "$value": "Cancel",
+          "$description": "Button that closes the delete page dialog on the project canvas without deleting.",
+          "locale": {
+            "es": "Cancelar",
+            "fr": "Annuler",
+            "de": "Abbrechen",
+            "pt": "Cancelar",
+            "ja": "キャンセル",
+            "zh": "取消",
+            "ar": "إلغاء"
+          }
+        },
+        "canvasFullScreen": {
+          "$type": "string",
+          "$value": "Full screen",
+          "$description": "Project canvas toggle that lets the canvas take over the whole window, hiding the app header, project header and side panel.",
+          "locale": {
+            "es": "Pantalla completa",
+            "fr": "Plein écran",
+            "de": "Vollbild",
+            "pt": "Tela cheia",
+            "ja": "全画面",
+            "zh": "全屏",
+            "ar": "ملء الشاشة"
+          }
+        },
+        "canvasAutoArrange": {
+          "$type": "string",
+          "$value": "Auto arrange",
+          "$description": "Project canvas control that aligns page frames into a sitemap of the page hierarchy: top-level pages in the first row, each page's children below it.",
+          "locale": {
+            "es": "Organizar automáticamente",
+            "fr": "Organiser automatiquement",
+            "de": "Automatisch anordnen",
+            "pt": "Organizar automaticamente",
+            "ja": "自動整列",
+            "zh": "自动排列",
+            "ar": "ترتيب تلقائي"
+          }
+        },
+        "canvasViewportHeight": {
+          "$type": "string",
+          "$value": "Viewport height",
+          "$description": "Project canvas toggle that limits each page frame to its breakpoint's standard viewport height, with the page scrolling inside the frame.",
+          "locale": {
+            "es": "Altura de la ventana",
+            "fr": "Hauteur de la fenêtre",
+            "de": "Viewport-Höhe",
+            "pt": "Altura da janela",
+            "ja": "ビューポートの高さ",
+            "zh": "视口高度",
+            "ar": "ارتفاع إطار العرض"
+          }
+        },
+        "canvasAddNote": {
+          "$type": "string",
+          "$value": "Add sticky note",
+          "$description": "Project canvas control that adds a sticky note in view.",
+          "locale": {
+            "es": "Añadir nota adhesiva",
+            "fr": "Ajouter une note adhésive",
+            "de": "Haftnotiz hinzufügen",
+            "pt": "Adicionar nota adesiva",
+            "ja": "付箋を追加",
+            "zh": "添加便签",
+            "ar": "إضافة ملاحظة لاصقة"
+          }
+        },
+        "canvasAddNoteHere": {
+          "$type": "string",
+          "$value": "Add sticky note here",
+          "$description": "Project canvas context-menu item that adds a sticky note where the user right-clicked.",
+          "locale": {
+            "es": "Añadir nota adhesiva aquí",
+            "fr": "Ajouter une note adhésive ici",
+            "de": "Haftnotiz hier hinzufügen",
+            "pt": "Adicionar nota adesiva aqui",
+            "ja": "ここに付箋を追加",
+            "zh": "在此处添加便签",
+            "ar": "إضافة ملاحظة لاصقة هنا"
+          }
+        },
+        "canvasNotes": {
+          "$type": "string",
+          "$value": "Notes",
+          "$description": "Project canvas toggle that shows or hides sticky notes.",
+          "locale": {
+            "es": "Notas",
+            "fr": "Notes",
+            "de": "Notizen",
+            "pt": "Notas",
+            "ja": "付箋",
+            "zh": "便签",
+            "ar": "الملاحظات"
+          }
+        },
+        "canvasEditNote": {
+          "$type": "string",
+          "$value": "Edit note",
+          "$description": "Project canvas context-menu item that edits a sticky note.",
+          "locale": {
+            "es": "Editar nota",
+            "fr": "Modifier la note",
+            "de": "Notiz bearbeiten",
+            "pt": "Editar nota",
+            "ja": "付箋を編集",
+            "zh": "编辑便签",
+            "ar": "تعديل الملاحظة"
+          }
+        },
+        "canvasDeleteNote": {
+          "$type": "string",
+          "$value": "Delete note",
+          "$description": "Project canvas context-menu item that deletes a sticky note.",
+          "locale": {
+            "es": "Eliminar nota",
+            "fr": "Supprimer la note",
+            "de": "Notiz löschen",
+            "pt": "Excluir nota",
+            "ja": "付箋を削除",
+            "zh": "删除便签",
+            "ar": "حذف الملاحظة"
+          }
+        },
+        "canvasNoteDetails": {
+          "$type": "string",
+          "$value": "Note details…",
+          "$description": "Project canvas context-menu item that opens a sticky note's details (title, author, content and colour).",
+          "locale": {
+            "es": "Detalles de la nota…",
+            "fr": "Détails de la note…",
+            "de": "Notizdetails …",
+            "pt": "Detalhes da nota…",
+            "ja": "付箋の詳細…",
+            "zh": "便签详情…",
+            "ar": "تفاصيل الملاحظة…"
+          }
+        },
+        "canvasNoteEditTitle": {
+          "$type": "string",
+          "$value": "Edit sticky note",
+          "$description": "Title of the dialog that edits a sticky note on the project canvas.",
+          "locale": {
+            "es": "Editar nota adhesiva",
+            "fr": "Modifier la note adhésive",
+            "de": "Haftnotiz bearbeiten",
+            "pt": "Editar nota adesiva",
+            "ja": "付箋を編集",
+            "zh": "编辑便签",
+            "ar": "تعديل الملاحظة اللاصقة"
+          }
+        },
+        "canvasNoteTitle": {
+          "$type": "string",
+          "$value": "Title",
+          "$description": "Sticky note dialog field: the note's title.",
+          "locale": {
+            "es": "Título",
+            "fr": "Titre",
+            "de": "Titel",
+            "pt": "Título",
+            "ja": "タイトル",
+            "zh": "标题",
+            "ar": "العنوان"
+          }
+        },
+        "canvasNoteAuthor": {
+          "$type": "string",
+          "$value": "Author",
+          "$description": "Sticky note dialog field: who wrote the note.",
+          "locale": {
+            "es": "Autor",
+            "fr": "Auteur",
+            "de": "Autor",
+            "pt": "Autor",
+            "ja": "作成者",
+            "zh": "作者",
+            "ar": "الكاتب"
+          }
+        },
+        "canvasNoteContent": {
+          "$type": "string",
+          "$value": "Note",
+          "$description": "Sticky note dialog field: the note's content.",
+          "locale": {
+            "es": "Nota",
+            "fr": "Note",
+            "de": "Notiz",
+            "pt": "Nota",
+            "ja": "メモ",
+            "zh": "便签内容",
+            "ar": "الملاحظة"
+          }
+        },
+        "canvasNoteContentHint": {
+          "$type": "string",
+          "$value": "Supports Markdown: **bold**, *italic*, [links](https://…) and “- ” lists.",
+          "$description": "Hint under the sticky note content field describing the supported Markdown.",
+          "locale": {
+            "es": "Admite Markdown: **negrita**, *cursiva*, [enlaces](https://…) y listas con «- ».",
+            "fr": "Prend en charge le Markdown : **gras**, *italique*, [liens](https://…) et listes avec « - ».",
+            "de": "Unterstützt Markdown: **fett**, *kursiv*, [Links](https://…) und Listen mit „- “.",
+            "pt": "Aceita Markdown: **negrito**, *itálico*, [links](https://…) e listas com “- ”.",
+            "ja": "Markdown に対応：**太字**、*斜体*、[リンク](https://…)、「- 」で始まるリスト。",
+            "zh": "支持 Markdown：**粗体**、*斜体*、[链接](https://…) 和以“- ”开头的列表。",
+            "ar": "يدعم Markdown: **غامق** و*مائل* و[روابط](https://…) وقوائم تبدأ بـ «- »."
+          }
+        },
+        "canvasNoteColor": {
+          "$type": "string",
+          "$value": "Color",
+          "$description": "Sticky note dialog field: the paper colour.",
+          "locale": {
+            "es": "Color",
+            "fr": "Couleur",
+            "de": "Farbe",
+            "pt": "Cor",
+            "ja": "色",
+            "zh": "颜色",
+            "ar": "اللون"
+          }
+        },
+        "canvasNoteSave": {
+          "$type": "string",
+          "$value": "Save note",
+          "$description": "Button that saves a sticky note on the project canvas.",
+          "locale": {
+            "es": "Guardar nota",
+            "fr": "Enregistrer la note",
+            "de": "Notiz speichern",
+            "pt": "Salvar nota",
+            "ja": "付箋を保存",
+            "zh": "保存便签",
+            "ar": "حفظ الملاحظة"
+          }
+        },
+        "canvasNoteCancel": {
+          "$type": "string",
+          "$value": "Cancel",
+          "$description": "Button that closes the sticky note dialog without saving.",
+          "locale": {
+            "es": "Cancelar",
+            "fr": "Annuler",
+            "de": "Abbrechen",
+            "pt": "Cancelar",
+            "ja": "キャンセル",
+            "zh": "取消",
+            "ar": "إلغاء"
+          }
+        },
+        "canvasGrid": {
+          "$type": "string",
+          "$value": "Grid",
+          "$description": "Project canvas toggle that shows or hides the background dot grid.",
+          "locale": {
+            "es": "Cuadrícula",
+            "fr": "Grille",
+            "de": "Raster",
+            "pt": "Grade",
+            "ja": "グリッド",
+            "zh": "网格",
+            "ar": "الشبكة"
+          }
+        },
+        "canvasColorMode": {
+          "$type": "string",
+          "$value": "Color mode",
+          "$description": "Accessible name of the project canvas control that sets the color mode pages render in.",
+          "locale": {
+            "es": "Modo de color",
+            "fr": "Mode de couleur",
+            "de": "Farbmodus",
+            "pt": "Modo de cor",
+            "ja": "カラーモード",
+            "zh": "颜色模式",
+            "ar": "وضع الألوان"
+          }
+        },
+        "canvasColorModeLight": {
+          "$type": "string",
+          "$value": "Light",
+          "$description": "Project canvas color mode option: render pages in light mode.",
+          "locale": {
+            "es": "Claro",
+            "fr": "Clair",
+            "de": "Hell",
+            "pt": "Claro",
+            "ja": "ライト",
+            "zh": "浅色",
+            "ar": "فاتح"
+          }
+        },
+        "canvasColorModeDark": {
+          "$type": "string",
+          "$value": "Dark",
+          "$description": "Project canvas color mode option: render pages in dark mode.",
+          "locale": {
+            "es": "Oscuro",
+            "fr": "Sombre",
+            "de": "Dunkel",
+            "pt": "Escuro",
+            "ja": "ダーク",
+            "zh": "深色",
+            "ar": "داكن"
+          }
+        },
+        "canvasColorModeAuto": {
+          "$type": "string",
+          "$value": "Auto",
+          "$description": "Project canvas color mode option: pages follow the app's color mode.",
+          "locale": {
+            "es": "Automático",
+            "fr": "Auto",
+            "de": "Automatisch",
+            "pt": "Automático",
+            "ja": "自動",
+            "zh": "自动",
+            "ar": "تلقائي"
+          }
+        },
+        "canvasEditPage": {
+          "$type": "string",
+          "$value": "Edit page",
+          "$description": "Project canvas action that opens the selected page in the editor.",
+          "locale": {
+            "es": "Editar página",
+            "fr": "Modifier la page",
+            "de": "Seite bearbeiten",
+            "pt": "Editar página",
+            "ja": "ページを編集",
+            "zh": "编辑页面",
+            "ar": "تعديل الصفحة"
+          }
+        },
+        "canvasBackground": {
+          "$type": "string",
+          "$value": "Canvas background",
+          "$description": "Field label for the project canvas background colour.",
+          "locale": {
+            "es": "Fondo del lienzo",
+            "fr": "Arrière-plan du canevas",
+            "de": "Canvas-Hintergrund",
+            "pt": "Fundo da tela",
+            "ja": "キャンバスの背景",
+            "zh": "画布背景",
+            "ar": "خلفية اللوحة"
+          }
+        },
+        "canvasBackgroundPanel": {
+          "$type": "string",
+          "$value": "Panel",
+          "$description": "Canvas background option: the panel surface colour.",
+          "locale": {
+            "es": "Panel",
+            "fr": "Panneau",
+            "de": "Panel",
+            "pt": "Painel",
+            "ja": "パネル",
+            "zh": "面板",
+            "ar": "لوحة جانبية"
+          }
+        },
+        "canvasBackgroundPage": {
+          "$type": "string",
+          "$value": "Page",
+          "$description": "Canvas background option: the page surface colour.",
+          "locale": {
+            "es": "Página",
+            "fr": "Page",
+            "de": "Seite",
+            "pt": "Página",
+            "ja": "ページ",
+            "zh": "页面",
+            "ar": "الصفحة"
+          }
+        },
+        "canvasBackgroundRaised": {
+          "$type": "string",
+          "$value": "Raised",
+          "$description": "Canvas background option: the raised surface colour.",
+          "locale": {
+            "es": "Elevado",
+            "fr": "Surélevé",
+            "de": "Erhöht",
+            "pt": "Elevado",
+            "ja": "浮き上がり",
+            "zh": "凸起",
+            "ar": "مرتفع"
+          }
+        },
+        "canvasBackgroundCustom": {
+          "$type": "string",
+          "$value": "Custom",
+          "$description": "Canvas background option that opens a dialog to choose a custom colour.",
+          "locale": {
+            "es": "Personalizado",
+            "fr": "Personnalisé",
+            "de": "Benutzerdefiniert",
+            "pt": "Personalizado",
+            "ja": "カスタム",
+            "zh": "自定义",
+            "ar": "مخصّص"
           }
         }
       },
@@ -5659,23 +6851,23 @@
             "zh": "endContent 在运行时组合，不包含在 JSON 中。",
             "ar": "يُركَّب endContent أثناء التشغيل ولا يُضمَّن في JSON."
           }
-        },
-        "jsonSplitNote": {
-          "$type": "string",
-          "$value": "Split button is not part of the page-definition schema — the JSON describes a standard Button.",
-          "$description": "Info banner in the Button configurator's JSON view when the split (menu) option is on, which has no page-definition node type.",
-          "locale": {
-            "es": "El botón dividido no forma parte del esquema de definición de página; el JSON describe un botón estándar.",
-            "fr": "Le bouton scindé ne fait pas partie du schéma de définition de page — le JSON décrit un bouton standard.",
-            "de": "Der geteilte Button ist nicht Teil des Seitendefinitionsschemas — das JSON beschreibt einen Standard-Button.",
-            "pt": "O botão dividido não faz parte do esquema de definição de página — o JSON descreve um botão padrão.",
-            "ja": "スプリットボタンはページ定義スキーマに含まれていないため、JSONは標準のボタンを表します。",
-            "zh": "拆分按钮不在页面定义架构中——JSON 描述的是标准按钮。",
-            "ar": "الزر المنقسم ليس جزءًا من مخطط تعريف الصفحة — يصف JSON زرًا قياسيًا."
-          }
         }
       },
       "editor": {
+        "projectOverview": {
+          "$type": "string",
+          "$value": "Project",
+          "$description": "Persistent editor sidebar item that opens and identifies the active project overview.",
+          "locale": {
+            "es": "Proyecto",
+            "fr": "Projet",
+            "de": "Projekt",
+            "pt": "Projeto",
+            "ja": "プロジェクト",
+            "zh": "项目",
+            "ar": "المشروع"
+          }
+        },
         "backToProjectOverview": {
           "$type": "string",
           "$value": "Back to project overview",
@@ -6058,6 +7250,20 @@
             "ja": "コントラストチェック",
             "zh": "对比度检查",
             "ar": "فحص التباين"
+          }
+        },
+        "printPreviewAction": {
+          "$type": "string",
+          "$value": "Print preview",
+          "$description": "Toolbar action label in the page editor that switches the preview to a paper size with the print stylesheet applied.",
+          "locale": {
+            "es": "Vista previa de impresión",
+            "fr": "Aperçu avant impression",
+            "de": "Druckvorschau",
+            "pt": "Visualizar impressão",
+            "ja": "印刷プレビュー",
+            "zh": "打印预览",
+            "ar": "معاينة الطباعة"
           }
         },
         "contrastCheckTitle": {
@@ -7898,18 +9104,18 @@
             "ar": "الرموز"
           }
         },
-        "dashboardLink": {
+        "statPatterns": {
           "$type": "string",
-          "$value": "System dashboard",
-          "$description": "Text link below the Home page stats strip that navigates to the system dashboard.",
+          "$value": "Patterns",
+          "$description": "Label beneath the governed pattern count on the Home page stats strip.",
           "locale": {
-            "es": "Panel del sistema",
-            "fr": "Tableau de bord du système",
-            "de": "System-Dashboard",
-            "pt": "Painel do sistema",
-            "ja": "システムダッシュボード",
-            "zh": "系统仪表板",
-            "ar": "لوحة معلومات النظام"
+            "es": "Patrones",
+            "fr": "Modèles",
+            "de": "Muster",
+            "pt": "Padrões",
+            "ja": "パターン",
+            "zh": "模式",
+            "ar": "الأنماط"
           }
         },
         "howItWorksBadge": {
@@ -8108,8 +9314,17 @@
         },
         "toolPatternsBody": {
           "$type": "string",
-          "$value": "Commonly defined patterns that can be shared within or across projects.",
-          "$description": "Body text of the Patterns tool card on the Home page."
+          "$value": "Governed compositions ready to inspect, edit, and reuse across projects.",
+          "$description": "Body text of the Patterns tool card on the Home page.",
+          "locale": {
+            "es": "Composiciones reguladas listas para inspeccionar, editar y reutilizar en distintos proyectos.",
+            "fr": "Des compositions gouvernées prêtes à être inspectées, modifiées et réutilisées dans plusieurs projets.",
+            "de": "Geregelte Kompositionen, die projektübergreifend geprüft, bearbeitet und wiederverwendet werden können.",
+            "pt": "Composições governadas prontas para inspecionar, editar e reutilizar em diferentes projetos.",
+            "ja": "プロジェクト間で確認、編集、再利用できる管理された構成です。",
+            "zh": "可在多个项目中检查、编辑和复用的受控组合。",
+            "ar": "تراكيب محكومة جاهزة للفحص والتحرير وإعادة الاستخدام عبر المشاريع."
+          }
         },
         "toolImageLibraryTitle": {
           "$type": "string",

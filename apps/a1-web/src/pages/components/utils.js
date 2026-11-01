@@ -84,7 +84,7 @@ function scoreTerms(query, terms, exactScore, startsScore, includesScore, fuzzyS
   const compactQuery = compactSearchTerm(query)
   if (!normalizedQuery) return 0
 
-  return terms.reduce((best, term) => {
+  const phraseScore = terms.reduce((best, term) => {
     const normalizedTerm = normalizeSearchTerm(term)
     const compactTerm = compactSearchTerm(term)
     if (!normalizedTerm) return best
@@ -100,10 +100,21 @@ function scoreTerms(query, terms, exactScore, startsScore, includesScore, fuzzyS
 
     return best
   }, 0)
+
+  // Match separate word prefixes in either order, e.g. "button spl" → "Split Button".
+  // Complete phrases retain their stronger exact/start/contains ranking.
+  const words = normalizedQuery.split(' ')
+  const wordMatch = words.length > 1 && terms.some(term => {
+    const candidates = normalizeSearchTerm(term).split(' ')
+    return words.every(word => candidates.some(candidate => candidate.startsWith(word)))
+  })
+  return Math.max(phraseScore, wordMatch ? includesScore : 0)
 }
 
+// Catalogue items (components and patterns) carry their own keywords; the
+// component map is the fallback for bare data.js entries.
 export function getComponentSearchKeywords(component) {
-  return COMPONENT_SEARCH_KEYWORDS[component.id] ?? []
+  return component.searchKeywords ?? COMPONENT_SEARCH_KEYWORDS[component.id] ?? []
 }
 
 export function getComponentSearchText(component) {
@@ -153,7 +164,7 @@ export const componentPageIds = componentCategories.flatMap((category) =>
 // order. Shared with main.jsx so tab state, URL (`?tab=`) deep-linking, and
 // cross-component persistence agree on the valid set. Example tabs use the
 // `example:<id>` form and are handled separately.
-export const DETAIL_TAB_IDS = ['configure', 'rules', 'properties', 'accessibility', 'history']
+export const DETAIL_TAB_IDS = ['configure', 'rules', 'properties', 'configurator-editor', 'accessibility', 'history']
 
 export const componentPageTitles = {
   components: 'Components',
@@ -182,7 +193,7 @@ export const allComponents = componentCategories.flatMap((category) =>
   })
 )
 
-const COMPONENT_ROUTE_SLUGS = {
+export const COMPONENT_ROUTE_SLUGS = {
   'action-tile': 'action-tiles',
   overlay: 'overlay-component',
 }

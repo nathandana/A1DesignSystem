@@ -1,15 +1,30 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
-  Section, Stack, Cluster, Grid, Heading, Paragraph, Button, IconButton,
-  Card, MessageBadge, MessageEmptyState, TextField, TextareaField, SelectField,
-  Switch, Autocomplete, Dialog, Banner,
+  Autocomplete,
+  Banner,
+  Button,
+  Card,
+  Cluster,
+  Dialog,
+  Grid,
+  Heading,
+  IconButton,
+  MessageBadge,
+  MessageEmptyState,
+  PageTitle,
+  Paragraph,
+  Section,
+  SelectField,
+  Stack,
+  Switch,
+  TextareaField,
+  TextField,
 } from '@gtivr4/a1-design-system-react'
 import { DataGrid, SelectColumn, textEditor } from '@gtivr4/a1-design-system-react/components/data-grid/DataGrid.jsx'
 import { useDataSources } from './DataSourcesContext.jsx'
 import { datasetScopeLabel, COLUMN_TYPES } from '../services/dataSources/types'
 import { parseDataSourceJson } from '../services/dataSources/importJson'
 import { SAMPLE_DATA_SOURCES } from '../services/dataSources/samples'
-import { PageTitleArea } from '../pages/PageTitleArea.jsx'
 
 // ── Row-id helpers ──────────────────────────────────────────────────────────
 // react-data-grid needs a stable row key. We tag each grid row with a synthetic
@@ -67,9 +82,9 @@ export function DataSourcesView({ projects = [], onNavigate }) {
   return (
     <>
       {!open && (
-        <PageTitleArea
-          headingId="data-sources-heading"
-          breadcrumbItems={[
+        <PageTitle
+          titleId="data-sources-heading"
+          breadcrumb={[
             { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
             { label: 'Data sources' },
           ]}

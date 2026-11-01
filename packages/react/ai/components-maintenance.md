@@ -1,48 +1,199 @@
 # A1 Design System — Component Maintenance Log
 
-## 2026-10-28 — Labs Pause after click label
+## 2026-11-01 — A1-2738 Design with A1
 
-Labs 0.78.1 shortens the hover treatment label to Pause after click. Updated current guidance and browser selectors while preserving behavior and the internal treatment ID. No CSS changes.
+Added the public React-first agent guide with localized instructions, prompts, official agent setup sources, and the JSON validation/preview path. Generated `design.md` combines current resolved tokens with maintained design rationale in Google’s DESIGN.md format; the same document is downloadable and exposed as `a1://docs/design`. Build checks reject stale copies. Existing A1 components only; no new CSS or component contracts. See [Design with A1](design-with-a1.md).
 
-## 2026-10-28 — Labs hover checkbox group
+## 2026-11-01 — React library setup through MCP
 
-Labs 0.78.0 renames Toolbar group to Hover state and selected and adds a labeled five-option CheckboxGroup as the second example. Six scoped hover treatments preserve native checkmarks, focus and disabled state. Toolbar and checkbox wrappers share the post-click pause lifecycle, including label clicks. The existing route stays valid; gallery, search copy and preview reflect the expanded study. No shared component changes or new tokens.
+Added read-only `get_react_setup`, the `a1://docs/react-setup` resource and setup discovery in initialization/component responses. The index reads the canonical [package setup guide](../guidelines/setup.md) and package manifest instead of duplicating instructions. Added npm version-selection guidance and a minimal React example using existing A1 components. Integration coverage checks discovery, resource/tool parity and manifest metadata. No CSS, tokens or component APIs changed.
 
-## 2026-10-28 — Labs hover pause label
+## 2026-11-01 — Temporary JSON previews
 
-Labs 0.77.5 labels the treatment Hover matches selection (pause after click), with matching README, guidance and browser selectors. Behavior and the internal treatment ID are unchanged. No CSS added.
+Added MCP/HTTP snapshot creation and an isolated A1 Web preview entry using the shared validator, renderer and project navigation. Added expiring storage, error states, localized copy and coverage. A trusted preview toolbar now lets signed-in users import a snapshot through the existing workspace, with single-use intent, hydration/expiry checks and page-link remapping; see [JSON validation and previews](json-validation.md#temporary-rendered-previews).
 
-## 2026-10-28 — Labs post-click hover pause
+## 2026-11-01 — A1-2737 shared JSON validation
 
-Labs 0.77.4 keeps the newly selected toolbar state visible after pointer activation in Hover matches selection. Hover resumes after leaving and returning to the item. Capture plus a layout-effect ARIA comparison prevents pauses for ignored state changes; marker cleanup handles pointer exit, treatment changes and unmount. Scoped CSS uses existing resting-state colors. Browser checks cover on/off clicks, re-entry, radio selection and unchanged re-selection.
+MCP adds `validate_json` with structured errors, warnings and repair paths. The page editor and project import/JSON editor share its validator. Prop contracts are generated from TypeScript declarations, adapter config and formal pattern manifests, with freshness gates and MCP/editor parity tests. Validation now blocks unknown components and invalid props; legacy page versions, blank pages and encoded definitions remain supported. Corrected stale button variants and Pagination defaults in the editor example/catalog, and Section padding in the import starter. New diagnostic labels cover all supported locales; the import Dialog has an explicit accessible name. No CSS, tokens or component APIs changed. See [JSON validation](json-validation.md).
+## 2026-11-01 — A1-2732 configurator presentation editor
 
-## 2026-10-28 — Labs hover selection color swap
+A1 Web component pages now expose a generated configurator editor sourced from the existing React property metadata. The reusable renderer supports strings, longer text, enumerated values, booleans and numbers; presentation overrides cover control choice, label, help, grouping, order and conditional visibility. Versioned JSON stores sparse overrides and contract references, while drift and unsupported properties remain explicit. Existing A1 components provide the complete UI; no CSS, tokens or public React component APIs changed.
 
-Labs 0.77.3 corrects Hover matches selection: off items use the selected surface/foreground on hover, while selected items become transparent with the ordinary toolbar foreground. Disabled appearance, focus and selection shadows remain intact. Scoped CSS uses existing Toolbar color variables. Browser checks compare hovered paint against the opposite resting state and exercise toggling while hovered.
+## 2026-10-31 — A1-2731 JSON from MCP
 
-## 2026-10-28 — Labs hover treatment label
+The MCP server adds `get_json_model`, returning a blank page or project starter and a structural JSON Schema generated from the canonical component type registry. Detailed props and governed pattern rules remain owned by `get_component`, `get_pattern` and `validate_patterns`. No UI, CSS, tokens or component APIs changed.
 
-Labs 0.77.2 renames Hover matches active to Hover matches selection in the toolbar study, README and browser checks. The internal `match-active` value and styling remain unchanged. No CSS added.
+## 2026-10-31 — Mobile project overview default
 
-## 2026-10-28 — Labs selected hover feedback and large segmented example
+Project overviews now initialize to List at xs and sm (up to 640 px) and retain the Canvas default from md upward. The existing A1 Toolbar Group still owns explicit view changes. No CSS, tokens or component APIs changed.
 
-Labs 0.77.1 corrects Hover matches active so selected and unselected toolbar items share distinct hover/pressed colors. Existing action tokens and scoped CSS are reused. Segmented control transitions defaults to the largest supported `lg` size through its existing prop, with no new size CSS.
+## 2026-10-31 — A1-2729 post-release pattern discovery
 
-## 2026-10-28 — Labs toolbar hover matches active
+A1 Web Home now replaces the Packages statistic with a first-class pattern count derived from the Pattern library catalogue, omits the former System dashboard link below the stats, and links its Patterns tool card to `/pattern-library`. The existing 0.35.0 release article covers the project canvas and governed pattern contracts. The MCP landing page now names the formal pattern contract, validation and migration tools. Existing A1 components and tokens provide the UI; no CSS or component API changed.
 
-Labs 0.77.0 adds a sixth toolbar treatment with matching hover, press and selected/on colors. Existing Toolbar selected-color variables are reused in study-scoped CSS. Browser checks compare hover/press paint to selected paint across themes and modes; selection and disabled behavior remain intact.
+## 2026-10-31 — Page title placement
 
-## 2026-10-28 — Labs distinct toolbar hover when off
+PageTitle must sit flush with the top and side edges of its page or containing surface, with no outer margins or inset spacing. Do not wrap the title band in a padded Section or add a parent gap before it. Keep the pattern’s internal padding; apply body spacing to a separate sibling Section below it. The contentWidth prop constrains the inner content, never the full-width title surface.
 
-Labs 0.76.0 adds the fifth toolbar treatment: the strong action-colored hover appears only on enabled off/unselected items. Selected and disabled items retain their resting paint. Existing action tokens and study-scoped CSS are reused; browser coverage includes the new treatment across themes and modes.
+The rule is documented in the pattern manifest, React API docs, registry, Storybook page example and configurator guidance. SCE uses a shared page composition with its title outside the padded body section. No shared API, CSS or tokens changed.
 
-## 2026-10-28 — Labs toolbar hover when off
+## 2026-10-30 — Labs Hover state and selected
 
-Labs 0.75.0 adds a fourth toolbar treatment: only enabled off/unselected items show the existing subtle hover. Selected and disabled items retain their resting paint. CSS stays scoped to the study and consumes existing Toolbar tokens. The browser check covers the new treatment across themes and modes.
+Labs 0.78.1 adds `/experiments/toolbar-group`, comparing six scoped hover treatments on real A1 toolbar toggles, single-selection groups and a five-option CheckboxGroup. Pause after click preserves the newly committed state until pointer exit. Native selection, focus and disabled behavior remain unchanged; shared A1 components and tokens are reused. See [Hover state and selected](labs-toolbar-group.md).
 
-## 2026-10-28 — Labs toolbar group hover study
+## 2026-10-30 — Card action zone
 
-Labs 0.74.0 adds `/experiments/toolbar-group`: current, no-hover and distinct-hover treatments on shared A1 toggles and single-selection groups. A scoped `HoverToolbar` uses existing action tokens; shared Toolbar implementation and styling are unchanged. Includes label/disabled controls, gallery capture and focused interaction checks. See [Toolbar group](labs-toolbar-group.md).
+Card now accepts `actions` and `actionsLabel`, rendering non-navigation actions
+as a labelled, bordered group inset from the top-right corner. The geometry
+promotes the Labs touch-card control group while intentionally omitting its
+touch/hover enlargement. Its radius follows the Card radius minus the 8px inset,
+with the small radius token as a floor so the default Card retains a smooth
+inner corner. The shared Card configurator keeps the area off by default and
+edits up to three Icon Button labels, icons and optional destinations. The same
+structured configuration is used by component, project and pattern editors.
+
+## 2026-10-30 — Labs touch-card configuration placement
+
+The Touch card configuration now uses the standard right-side Labs panel on
+desktop and the shared bottom sheet on small screens. The temporary start-side
+placement override was removed from the shared experiment shell.
+
+## 2026-10-30 — Labs touch-card zoom transition
+
+Touch-card actions now ease their button size, group spacing, padding, surface
+and shadow using A1's normal motion duration and standard easing. The overlay
+still prevents content reflow, and reduced motion applies the state instantly.
+
+## 2026-10-30 — Labs touch-card preview control
+
+The Touch card experiment adds a standard configuration-panel switch that
+shows the 44×44px enlarged action state on hover on devices
+without touch input. Mouse and keyboard actions remain immediate, the controls
+return to compact size when hover leaves and card content does not reflow.
+No shared component API changed.
+
+## 2026-10-30 — Labs touch card stable enlargement
+
+The Touch card now expands its touch actions in an overlay anchored to a fixed
+compact-size slot. Expanded IconButtons are exactly 44×44px, derived from the
+40px and 4px spacing tokens, while the Card height, heading and body positions
+remain unchanged. Shared IconButton sizing and Card APIs are unchanged.
+
+## 2026-10-30 — Labs touch card inner radius
+
+The Touch card action-group radius now resolves to 4px: the experiment Card's
+12px radius minus the group's 8px edge inset. This restores concentric corner
+geometry after moving the group closer to the Card edge.
+
+## 2026-10-30 — Labs touch card action placement
+
+The Touch card action group now sits 8px from the Card's top and right edges.
+Token-backed negative margins offset the Card's 16px content padding and 1px border while
+keeping the controls in normal flow. Shared component APIs are unchanged.
+
+## 2026-10-30 — Labs touch card radius
+
+The Touch card experiment increases its outer radius one A1 step from `lg` to
+`xl`. Its nested action-group radius continues to derive from the experiment
+Card radius minus Card padding, clamped at zero. The shared Card default is
+unchanged.
+
+## 2026-10-30 — Labs touch card concentric corners
+
+The Touch card action-group radius now resolves from Card radius minus Card
+padding, clamped at zero. This keeps the nested control's corner geometry tied
+to the outer Card without adding a new token or changing shared APIs.
+
+## 2026-10-30 — Labs touch card action grouping
+
+The Touch card experiment now places its three compact IconButtons inside one
+subtly bordered group. The refinement uses existing Card border-width and
+semantic subtle-border tokens; shared component APIs are unchanged.
+
+## 2026-10-30 — Labs touch card actions
+
+Labs adds a realistic A1 Card with three small IconButtons aligned in its
+top-right corner. Mouse and keyboard activate Save, Share and Details directly.
+For actual touch pointers, the first tap enlarges the whole group to large A1
+touch targets and announces the change; the next tap performs the selected
+action. The experiment is local to Labs and does not change the shared Card or
+IconButton API.
+
+## 2026-10-29 — Context menu submenus
+
+ContextMenu items can opt out of automatic close while opening a submenu, and
+the parent can remain open during interaction with a second ContextMenu. Items
+can also run `onHover` after an optional `hoverDelay` (200 ms by default) for
+cascading menus while retaining click activation. Default single-menu dismissal
+is unchanged. Both item callbacks receive the triggering button so consumers can
+place a submenu directly against its row. Labs uses the opt-in API for cascading
+Button property menus. A `custom` entry can host an accessible inline control
+group, used by Labs to consolidate ToolbarGroup radio controls inside a context
+menu while keeping the menu's outside-click and keyboard handling.
+While any ContextMenu is open it cancels the native `contextmenu` event at the
+document level, so a second right-click cannot layer the browser menu over the
+A1 editing surface.
+
+## 2026-10-29 — Project canvas drag and drop (A1-2728)
+
+Project editor components are directly draggable on the canvas. Native drag
+events reuse the existing governed move path, before/inside/after indicators,
+history and undo. Locked pattern content stays fixed; blank-area rules still
+govern destinations. The source uses the existing reordering opacity token.
+Layers-tree drag/drop and boundary-aware Move up/Move down context-menu actions
+use the same handlers and advertise the existing Alt+arrow shortcuts.
+Seamless InlineEditable now has opt-in double-click activation, with Enter and
+F2 as keyboard equivalents, so text can remain a selection and drag surface.
+Its cursor inherits from that surface until editing begins, then changes to the
+text caret. Single-clicked editable text suppresses the component selection
+outline until editing begins, avoiding a false editable-state affordance;
+container selections keep their normal outline.
+No label, token or page-definition contract changed.
+
+## 2026-10-28 — Button preview-frame padding
+
+Button and Split Button configurator frames use `Section padding="sm"` to provide matching space around their examples. This is preview spacing; exported component code is unchanged. Other previews retain their existing padding. No CSS added.
+
+## 2026-10-28 — Split Button configurator and search
+
+Registered a dedicated Split Button detail module built from the Button configurator: real preview, shared spacing, Size/Variant toolbars and always-available secondary action editing. Removed the split toggle from Button controls. Dedicated JSON uses the existing `Button` with `split`/`menuActions` contract and exports actual SplitButton JSX. Search preserves phrase ranking while accepting reordered word prefixes, including “button spl.” No CSS added.
+
+## 2026-10-28 — Catalog NavigationTree parity
+
+Components and Pattern library navigation both render through CatalogSidebar → NavigationTree. Compared against the previous CatalogSidebar from `2cc1a670` using identical current catalog data and styles. Initial display, category/item selection, ranked search, no results, clearing, A–Z and persisted A–Z matched in content, row geometry, selection and expansion (18 before/after states). Component example selection/ancestor expansion and panel geometry matched at five breakpoints. Most screenshots were pixel-identical; three search captures differed only at the sort-control edge while computed geometry matched. Temporary baseline fixtures were removed after comparison. Existing catalog tests plus an example-route regression test cover the replacement. No new CSS for adoption.
+
+## 2026-10-28 — Nested Accordion and Tree Menu controls
+
+Scoped Accordion open-state body, chevron and subtext rules to its own children. A closed nested item no longer exposes inert Add child/Remove controls. Adding a child opens its configurator; importing an empty TreeMenu no longer repopulates sample items. Preview selection and expanded branches now synchronize with configuration and JSON imports. Added a nested Accordion story and browser coverage. CSS changes repair shared state scoping, with no new visual values or application styles.
+
+## 2026-10-28 — Menu surface and Settings padding
+
+Menu and TopHeader flyouts share the 2px Menu border and xl shadow token. Menu adds a `padding` prop for existing 8/12/16/20/24 spacing steps, with stories, configurator, JSON and editor support. Settings uses 12px. Mobile retains its minimum spacing and safe-area inset. Pure SideNav reads its own border token rather than borrowing Menu’s. CSS changes are confined to shared component token consumption and mobile spacing safeguards; no application CSS added.
+
+## 2026-10-28 — Navigation tree search width
+
+Without sorting, NavigationTree stretches the search field across the header using the existing Stack direction and alignment props. The WithoutSorting story and shared configurator expose this state. No CSS added.
+
+## 2026-10-28 — Settings menu width
+
+The A1 Settings Menu uses `a1-min-w-sm` to increase its desktop width from 260px to the existing 320px system step. Mobile retains the shared Menu's full-width sheet. No custom CSS or new component API.
+
+## 2026-10-28 — Pattern code presentation
+
+Generated JSX uses multiline long tags and structured Overflow Menu action objects. Verification Dialog translation keys sit beside their literal fallbacks; exports preserve both so missing labels and providers remain readable. No CSS added.
+
+## 2026-10-28 — Verification dialog translations
+
+Added `titleKey`, `messageKey`, `confirmLabelKey` and `cancelLabelKey` label bindings, seven locale translations alongside English, Label editor/lookup registration and shared configurator controls. Text edits clear a binding; JSON and JSX preserve explicitly selected keys. No CSS added.
+
+
+## 2026-10-28 — Navigation tree pattern and example containers
+
+The Navigation tree pattern page now starts with editable example categories, nested items and search keywords, with Invoices selected to reveal a nested branch. Code and JSON show the same sample data. Imported nodes and new editor instances retain empty defaults. No CSS changes for the sample-data addition.
+
+Added React `NavigationTree`, a props-only composition of SideNav, SearchField, Toolbar and TreeMenu. Unlimited nested categories/items, optional search/sorting, ranked search, active ancestor expansion, disabled navigation and controlled host callbacks. The catalog adapter preserves component example routes, localized labels and persisted view choices for both Components and Patterns. Added the library/editor configurator, stories, formal recursive collection contract and MCP documentation. Responsive SideNav overlays and desktop icon collapse are included. Preview containers now always have zero padding, with the padding control removed.
+
+CSS review: no pattern stylesheet or new visual values. Reused existing SideNav and TreeMenu presentation. The existing bounded preview frame now contains mobile scrims so they cannot cover the host page; removed padding from the shared legacy preview selector and set the preview Section's padding prop to none. The catalog adapter also hides the fixed footer with its existing control-hiding rule, preserving its prior appearance. Collection validation now checks IDs and links recursively. Focused unit, browser, keyboard and axe checks cover the new composition.
 
 Dated log of component, token, theme, label, rule, and a1-web changes. **Newest at the top.**
 Split out of `components.md` to keep the registry focused — add an entry here whenever you change a
@@ -51,6 +202,19 @@ component change checklist in `project-context.md`).
 
 | Date | Change |
 |------|--------|
+| 2026-10-27 | **Sticky notes on the project canvas** (A1-2718): StickyNote gains controlled `editing` + `onTitleChange` / `onContentChange` / `onEditingChange` (seamless InlineEditable fields; field focus ring remapped to the note ink; `stickyNote.titlePlaceholder` / `contentPlaceholder` / `titleField` / `contentField` / `colors.*` labels). Canvas: `CanvasFrame variant="plain"` (no chrome; focus-only title handle), frames skip drag/pan from editable targets, `canvasMenuItems` accepts `(point) => items`, `controlsActions` `onClick({ center })`, `focusZoom`. a1-web project canvas: `canvas.notes` / `canvas.showNotes` in `ProjectCanvas` (synced with the canvas); Add sticky note control + "Add sticky note here" menu item create a note at the view centre / click point, zoom to 100% and open it for in-place editing (saved on leaving the note); double-click / Edit note re-edits; Note details… dialog (title, author, content, colour); colour and Delete note in the context menu; Notes toggle in the canvas tools; drag and arrow-key nudge; full-screen Escape ignores editable targets. New `app.projects.canvas*Note*` labels (7 locales). |
+| 2026-10-27 | **Textarea max radius**: new token `component.field.textarea.maxBorderRadius` (`base.radius.xl`); React `textarea-field.css`, Pure `a1-pure.css` and the `a1-base.css` template use `min(field radius, max)` so pill-field themes (Kong) don't turn textareas into stadiums. Verified all 12 themes × light/dark: textarea radius ≤ 12px everywhere. Pre-existing gap noted: only compact fields read `component.field.*.borderRadius`; default/comfortable use base radii directly, so theme field-radius overrides (Kong, Lumen, Heritage, Wireframe) apply inconsistently across densities. |
+| 2026-10-27 | **Sticky Note** (A1-2718): new React `StickyNote` (`<aside>`, `aria-labelledby` title or `stickyNote.note` label; author `MessageBadge` with visually hidden `stickyNote.author` prefix). Tokens `system/tokens/component/sticky-note.json` — paper colours alias theme ramp steps as `var(--base-color-…)` strings (highlighted/warn/success/info/error/accent-200, neutral-100) so theme ramp overrides flow through; foreground neutral-900 meets AA on all; local light text context remaps `--semantic-color-text-*`/`surface-raised`/`border-subtle`. Shadow `component.stickyNote.shadow` → `semantic.shadow.lg` (raised from md). Sizes xs–xl = 10/13/16/20/24rem; floating z-index 1 (content layer, below `semantic.z.sticky`). `movable` (floating only): IconButton move handle — pointer drag + arrow keys (8/32px), clamped to the offset parent, offset applied with `translate` via `--a1-sticky-note-offset-x/y`; `position`/`defaultPosition`/`onMove`; handle recoloured through IconButton's `--a1-icon-button-*` layer. Markdown: `noteMarkdown.jsx` parses string content (bold/italic/strike/code/links/lists/paragraphs) straight to A1 elements — no `dangerouslySetInnerHTML`; URL allow-list (http(s), mailto, tel, relative/fragment); link tokens remapped to note ink so links pass contrast on paper in dark mode. `markdown` prop (default true). Separate from a1-web `pageRenderer`'s Paragraph markdown (DOMParser, no links) — a shared parser is a follow-up. Accessible theme / `prefers-contrast` outline, forced-colors border, print colour-adjust. Labels `system/labels/sticky-note.json`; rules `system/rules/sticky-note.yaml`. a1-web: configurator `detail/sticky-note.jsx`, data.js (Feedback, experimental), prop table, editor registry/catalog/pageTypes/props bridge; agent brief + page-definition standard updated. |
+| 2026-10-26 | **Canvas: CanvasFrame + custom background; a1-web project canvas** (A1-2700, slices 1–2): `CanvasFrame` (top-left positioned content frame; measured height via ResizeObserver; selection, drag, arrow-key nudge, context menu, fit and connector routing via a shared `nodeDims` helper) and custom-colour `background` (`.a1-canvas--custom` + `--a1-canvas-surface-custom`). Tokens `component.canvas.frame.{titleGap,borderWidth,selectedRingWidth}`. Stories Frames + Custom background; axe clean on 13 Canvas stories. a1-web: project overview **Canvas** view (`ProjectCanvasView.jsx`) renders each page in an inert iframe via the new shared `useFrameDocument` hook (extracted from `ResponsivePreviewFrame`; `viewportHeight` pins Section screen/hero and PageLayout viewport-height to the device height so full-height frames don't grow their own viewport); per-frame device (XS–XL presets), connectors from `/?page=` links (`pageGraph.js`, shared with the Nodes view), background via a shared `canvasBackground.js` swatch group + CustomColorDialog (also in the Canvas configurator). Layout persists as `project.canvas` (`saveProjectCanvas`, synced; no `updatedAt` bump). App CSS: `.a1-web-project-canvas` (75dvh) and `.a1-web-page-preview-frame`. Follow-ups in TODO.md (P1). Iteration: Canvas `controlsExpandable` + `controlsContent` (collapsed zoom-level toggle that expands; `system/labels/canvas.json`, registered in a1-web label registries); CanvasFrame chrome counter-scales via `--a1-canvas-zoom`. Project canvas is the default overview view, fills the space below the header (measured), keeps all tools in the expandable controls, sets the breakpoint per frame or for all frames, and duplicates pages from the frame menu (`handleDuplicateProjectPage(id, { open: false })`; existing frames pinned). Full screen (default, per-viewer `a1-web-canvas-fullscreen` preference): portaled to `<body>`, `position: fixed` at the new `--semantic-z-pinned`, app `#root` set `inert`, Escape exits. Auto arrange (`arrangeHierarchy`): sitemap layout — subtree widths, parents centred over children, rows top-aligned and spaced by the tallest measured frame (`PagePreviewFrame` `onHeight`). Viewport height toggle (`project.canvas.viewportHeight`; frames get `height` = preset height + new CanvasFrame `scrollable`); Light/Dark/Auto colour mode (per-viewer `a1-web-canvas-color-mode`, via new `useFrameDocument` `colorMode` option + ProjectThemeScope props); project header actions consolidated into one Toolbar (+ primary Add page). Canvas `onNodeDoubleClick` (frames open their page), `focusNodeId` (duplicate brings the copy into view and selects it), `controlsActions[].pressed` (full screen is a persistent toggle); Grid toggle (`project.canvas.showGrid` → Canvas `showGrid`); frame menu Delete page… with a confirmation dialog (`handleDeleteProjectPage`). **New tokens:** semantic z-index scale `semantic.z.{sticky,pinned,popover,modal,toast}` (`system/tokens/z-index.json`) per the foundations target scale. |
+| 2026-10-26 | **a1-web project organization** (A1-2712): `Project` gains optional `favorite`, `hidden` and `tags` (synced through `exportAllText`/`importAllText`); manual order is the stored list order. New store helpers `organizeProject` (no `updatedAt` bump), `moveProject` (swap within the favorites/other group), `moveProjectToEdge`, `sortProjects`, `projectTags`. Projects list adds Favorites/Other projects groups, tag filter (ChipGroup), Show hidden (ToolbarToggle) and card tag/hidden badges; cards drop `variant="navigation"` for an Edit IconButton link plus a More options IconButton opening an A1 Menu (favorite, move to top / up 1 / down 1 / to bottom, Add tags… → Autocomplete dialog); Hide/Show stays on the card's context menu. Gap found: A1 Dialog has no accessible name (no `aria-labelledby` to its title). Editors → Projects menu omits hidden projects and labels Favorites/Other projects sections via TopHeader divider labels. 20 `app.projects.*` labels. **Autocomplete fix:** Escape on an open listbox no longer closes an enclosing native Dialog. No new CSS. |
+| 2026-10-26 | **Print stylesheet** (A1-2707): paper is always light — `system/build-themes.mjs`, `scripts/build-html-css.mjs`, `color-scheme-static.css`, Tooltip, Chart and `a1-pure.css` now use `@media screen and (prefers-color-scheme: dark)`, and the generated `.a1-inverse` / `html.a1-theme-light .a1-inverse` dark blocks are wrapped in `@media screen`. Keyword-only `@media print` blocks appended to PageLayout, TopHeader, Section, SideNav (+ scrim), BottomDrawer, BottomSheet, StickyActions, PageNav, Snackbar, Tooltip, Code, DataTable, Heading, Figure, Card, Message, Link, Button, Chip, Notification, Avatar, StatusBar, CircularProgress, StepTracker, SegmentedControl, Switch, CheckboxGroup, RadioGroup, ChoiceGroup, Slider and inline `kbd`. StickyActions spacer gains `.a1-sticky-actions__spacer`. a1-web swaps `.a1-theme-dark` → `.a1-theme-light` on `beforeprint`, releases its `body` overflow and hides its configurator aside in print. Contract in `project-foundations.md` → Print contract and `guidelines/tokens.md`. a1-web adds an editor **Print preview**: Letter/A4 paper presets in the responsive preview iframe that swap the `print`/`screen` media types on the iframe's cloned stylesheets (emulating print on screen without a dialog), and a shared `usePrintLightMode` hook so project theme scopes print light too. Known gaps: Kong/Lumen inverse restores and contrast-more inverse rules still print dark; Pure has no component print rules; SideNav/StickyActions demos on their own docs pages don't print. |
+| 2026-10-26 | **Badge overflow** (A1-2704): `MessageBadge` labels now render in `.a1-message-badge__label` and truncate with an ellipsis when wider than the container (previously `white-space: nowrap` text spilled outside the pill, e.g. long Scope/tag badges on backlog cards). Uses `overflow-x: clip` so descenders aren't cut at `line-height: 1`; the icon has `flex-shrink: 0`. String/number labels default the badge `title` to the full text. Decision: truncate rather than wrap so badges keep a single-line pill in dense rows, matching React Native. New "Long labels — truncate" story. No token or label changes. Pure `.a1-badge` (wraps, no truncation) left as a follow-up. |
+| 2026-10-28 | **Reusable VerificationDialog:** extracted overflow confirmation into its own formal React pattern and versioned manifest. OverflowMenu actions nest real VerificationDialog elements in React and full pattern nodes in JSON. Shared controls edit the nested dialog; validation traverses declared collection relationships, JSX export retains nesting, and the dialog owns an empty-by-default Content area. Added library/editor/MCP registration, stories and focused browser/contract tests. |
+| 2026-10-28 | **Overflow menu pattern:** added React `OverflowMenu`, a fixed tertiary `more_vert` IconButton + Menu with ordered actions and optional per-action verification Dialog. Any action can verify; cancellation never executes, callbacks/navigation wait for confirmation and focus returns to the trigger. Library defaults to Edit, Duplicate, Delete (Delete verified); missing imported actions stay empty. Registered in the editor, configurator, system manifest/rules, MCP, stories and tests. Manifest schema 1.1 adds structured collections without artificial child slots. Shared Dialog adds `initialFocusId` for predictable initial focus. |
+| 2026-10-28 | **Versioned formal contracts:** system manifests replace authored `patternAreas.ts` data. Shared policies, validation and explicit migrations serve React, the editor, configurators and MCP. Added lossless JSON round trips, authoritative zone locks, diagnostics, validated import/publication/code export, disabled-anchor behavior and mixed-action alignment. Contract/MCP/browser CI and postdeploy parity checks cover the integration. See `pattern-contract-recommendations.md`. |
+| 2026-10-28 | **Formal patterns review**: Overview Card takes its width from its parent, retains authored content and action metadata in configurator JSON, and uses consistent small secondary/tertiary actions. Page title and Overview Card starter areas are empty until configured. Added `pattern-contract-recommendations.md` for shared manifests, open areas, constrained zones, validation and MCP deployment. |
+| 2026-10-28 | **Second pattern — Overview card** (A1-2720): new `packages/react/src/patterns/overview-card/` (`OverviewCard` + `normalizeOverviewCardActions` — details (renamed from facts), a content area between the details and the actions, and Button / Link / IconButton actions; d.ts, stories; props-only composition of Card, Heading, DefinitionList, ButtonContainer), exported from the package root; `system/rules/overview-card.yaml` (locked presentation, no primary action, labelled status, short details). a1-web: **Cards** category + entry in `pages/patterns/data.js`, configurator `detail/overview-card.jsx` (Preview at card width, Controls, Snippet, JSON with an Actions zone), prop table, rules registration; editor page type, registry, Add-panel entry (also in the Common set), props bridge, Layers icon, in-place title editing; `patternAreas.ts` adds the OverviewCard Actions zone (Button, Link, IconButton; max 2; `itemProps` Button and IconButton `size: "sm"`), an open Content area (React `children`, between the details and the actions) and the zone option `noPrimary`, applied by `applyZoneItemProps`. Page title's pattern-data body text no longer mentions the removed accessory. |
+| 2026-10-27 | **First-class patterns — Page title** (A1-2720): new `packages/react/src/patterns/page-title/` (`PageTitle` JSX + d.ts + stories; props-only composition of Section, Breadcrumb, Heading, Paragraph, ButtonContainer, MessageBadge; no CSS/tokens), exported from the package root and `./patterns/*`; `system/rules/page-title.yaml`. a1-web: `pages/catalog/createCatalog.js` generalises the component pages (sidebar, overview, category, detail) behind a catalogue descriptor; `pages/patterns/` (data, catalogue, `PatternLibrary`) adds the **Patterns** top-header menu at `/pattern-library` with `patterns-{category}` / `pattern-{id}` routes (public like components); `PageTitleArea` now delegates to `PageTitle`; editor `PageTitle` page type + registry + Add-panel **Patterns** group + props bridge; detail configurator `detail/page-title.jsx` with Code/JSON views; labels `app.nav.patterns`, `app.nav.searchPatterns`, `app.page.patternLibrary`, `app.components.*`, `app.patterns.*` (7 locales). MCP: `.d.ts` walker covers `src/patterns`; `## Patterns` section in components.md is indexed as a category. Scripts: `verify-pack` RSC check and the history miner cover patterns. Locks: PageTitle fixes surface / title scale / h1 and enforces one primary action last (`normalizePageTitleActions`). Editable areas: `editableAreas` on the detail module → `SlotPlaceholder` outlines + **Editable areas** toggle; catalogue default node ships `Slot` children per area (Actions: allow Button/Link/IconButton, max 4, one primary Button seeded; Content) and `AREA_PROPS_BY_TYPE` in `pageRenderer` maps the Actions slot's nodes into the `actions` prop with the primary-last rule (`orderPageTitleActionNodes`); Layers tree shows a slot's label; `EditorSlot` renders nothing when empty outside editor mode (`useEditorMode` exported from `pageRenderer`). Auto breadcrumb: `breadcrumb: true` → `buildProjectBreadcrumb` (projectNav) + `resolveAutoBreadcrumbs` (projectLayout, also via `combinePageIntoLayout`) at the editor canvas, preview, prototype and export sites. Pattern pages expose the responsive view as a toolbar group (`responsiveViewControl`). In-place text: `INLINE_TEXT_PROPS_BY_TYPE` + `onPropTextChange` in `pageRenderer` / `EditorPage` wrap PageTitle's eyebrow, title and description in seamless InlineEditable on the canvas. Zones: `editor/patternAreas.ts` is the single registry of a pattern's areas (`PATTERN_AREAS`, `patternAreaSlot`, `patternAreaProp`, `isPatternZone`, `zoneLock` / `effectiveLock`); the Actions area is a zone — its Slot node carries `{ area, zone: true, label, rules, allow, max }`, the editor derives a structural + rule-prop lock from `zone: true` (`getNodeLock`), refuses delete / move / duplicate / ungroup / group / convert / visibility / utilities with a zone notice, keeps add-into open for Slots (`addIntoLocked`), applies slot rules to sibling adds, drops and Layers-tree moves (`governingSlot`, `slotRuleRejection`), turns "after a Slot" into "into" (`resolveAddTarget`), and passes `label` / `zone` / `rules` to the Add panel; `EditorSlot` shows the rule sentence, `EditorPropsPanel` shows a zone card (`ZoneControls`) and carries `area` / `zone` / `rules` through the Slot bridge, `EditorSidebar` marks zones with the `rule` icon; `AREA_PROPS_BY_TYPE` is replaced by the registry. `SlotPlaceholder` is quieter: `borderSize="xs"`, `borderVariant="strong"`, `padding="xs"`, `gap="xs"`, `sm` label. Generic sample copy ("Page title", "Parent page", "Secondary action" / "Primary action") in the configurator defaults and stories. Pressure test: `PageTitleArea` removed — its 45 call sites use `PageTitle` (`breadcrumb`, `titleId`, `accessory`); Backlog, BacklogTicketPage (header + not found), GetStarted, LabelEditor, VirtualTeam and component example pages converted from hand-built bands; `normalizeActionNodes` treats a `Button` / `SplitButton` without `variant` as primary (and `orderPageTitleActionNodes` a Button node without one); Backlog badge `size="mdprefe"` typo fixed. Action types and metadata: `PageTitle` `accessory` replaced by `meta` (badge data or composed badges, always directly below the title); actions accept SplitButton, a ButtonContainer group (kept together; primary to its end, group last), Toolbar and SegmentedControl (`normalizeActionNodes`, node-level `orderPageTitleActionNodes`); Actions zone allow-list + rule sentence updated in `patternAreas.ts`; `system/rules/page-title.yaml` adds `page-title-allowed-actions` and `page-title-metadata-below-title`. Split buttons in page definitions: `Button` `split` + `menuActions` (`EditorButton` in `editorComponents.jsx`, Button bridge, Button configurator menu-action editor, `definitionToJsx` exports `<SplitButton actions>`); `label.app.configurator.jsonSplitNote` removed. `definitionToJsx` writes pattern zones as their prop and unwraps open areas. Callers (About, KitchenSink, LabelEditor, VirtualTeam, Backlog, BacklogTicketPage) use `meta`. ButtonContainer CSS: a nested `.a1-button-container` (and its `__inner`) is `display: contents` + `container-type: normal`, so a button group joins the parent row; `.a1-split-button` direct children get the Button width rules (full width stacked, auto from 480px); SplitButton `__main` is `flex: 1 1 auto`. A direct `.a1-icon-button` is `align-self: flex-start` when stacked and `center` in a row (and in fill-buttons rows), so it never stretches. Story `NestedGroupAndSplitButton`. Metadata zone: `patternAreas.ts` adds `meta` (allow MessageBadge, max 5, prop `meta`) and zone `itemProps` (`applyZoneItemProps` — badges fixed to `size: "sm"`, `subtle: true`) used by `pageRenderer` and `definitionToJsx`; the action ordering is limited to the Actions zone; catalog default node and the configurator `toJson` / `fromJson` carry a Metadata zone of MessageBadge nodes; the configurator's Metadata editor is hidden in the editor and the library preview outlines the empty zone. |
 | 2026-10-12 | **npm releases:** enabled publishing on release/main pushes, configured npm OIDC trusted publishing for React and React Native, retained the website release gate, and added token/RSC/tarball checks plus registry/integrity verification, retry-safe publication and rollback protection. Six publication tests cover failure and propagation cases. Release completion instructions are in `npm-releases.md`. React 0.33.0 is now published as latest; runtime versions are unchanged by this workflow-only change. No CSS changes. |
 | 2026-10-12 | **Release preparation:** versioned A1 Web 0.34.0, React 0.33.0, Pure CSS 0.3.0 and MCP 0.1.2; prepared public notes and the Labs release newsletter; synchronized the Code export inventory and MCP initialization version. Labs remains 0.73.2. Validation and publication are recorded in `release-preparation-2026-10-12.md`. |
 | 2026-10-12 | **Labs published**: promoted verified v0.73.2 deploy `6accda1f7e136c3f40f7bd7d` to labs.a1design.app. Live routes, preview assets, iframe/lazy rendering and HTTPS redirect checked. Automatic Git builds remain stopped pending merge. Deployment only; no application or CSS changes. |

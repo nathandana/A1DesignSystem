@@ -28,7 +28,7 @@ export const landingPage: PageDefinition = {
               id: 'hero',
               type: 'Section',
               props: {
-                padding: 'xl',
+                padding: 'lg',
                 surface: 'panel',
                 gradient: 'accent',
                 gradientPosition: 'bottom-left',
@@ -92,7 +92,7 @@ export const landingPage: PageDefinition = {
             {
               id: 'features',
               type: 'Section',
-              props: { padding: 'xl', contentWidth: 'lg', gap: 'lg' },
+              props: { padding: 'lg', contentWidth: 'lg', gap: 'lg' },
               a11y: { labelledBy: 'landing-features-title' },
               children: [
                 {

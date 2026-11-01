@@ -17,11 +17,11 @@
   overflow-y: auto;
   overscroll-behavior: contain;
 
-  padding: var(--base-spacing-8);
+  padding: var(--a1-menu-padding, var(--base-spacing-8));
   border: var(--component-menu-border-width) solid var(--semantic-color-border-subtle);
   border-radius: var(--base-radius-lg);
   background: var(--semantic-color-surface-panel);
-  box-shadow: var(--semantic-shadow-lg);
+  box-shadow: var(--semantic-shadow-xl);
   color: var(--semantic-color-text-default);
 }
 
@@ -187,9 +187,9 @@
     max-width: 100dvw;
     max-height: min(var(--component-menu-mobile-max-height), calc(100dvh - var(--base-spacing-32)));
     padding:
-      var(--base-spacing-16)
-      var(--base-spacing-16)
-      calc(var(--base-spacing-40) + env(safe-area-inset-bottom, 0px));
+      max(var(--base-spacing-16), var(--a1-menu-padding, var(--base-spacing-8)))
+      max(var(--base-spacing-16), var(--a1-menu-padding, var(--base-spacing-8)))
+      calc(max(var(--base-spacing-40), var(--a1-menu-padding, var(--base-spacing-8))) + env(safe-area-inset-bottom, 0px));
     border-right: none;
     border-bottom: none;
     border-left: none;

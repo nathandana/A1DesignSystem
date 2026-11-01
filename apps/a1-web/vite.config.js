@@ -18,7 +18,24 @@ const isAnthropicSdkBrowserExternalizationWarning = (warning) => {
   )
 }
 
+// Match Netlify's isolated preview response locally, including opaque-origin
+// module fetches. Public build assets carry no credentials.
+const previewPolicy = "sandbox allow-scripts; base-uri 'none'; object-src 'none'; frame-ancestors 'self'"
+function previewMiddleware(server) {
+  server.middlewares.use((request, response, next) => {
+    if (/^\/(preview\/|json-preview\.html)/.test(request.url || '')) {
+      if (request.url.startsWith('/json-preview.html')) response.setHeader('Content-Security-Policy', previewPolicy)
+      response.setHeader('Referrer-Policy', 'no-referrer')
+      response.setHeader('Cache-Control', 'no-store')
+      if (request.url.startsWith('/preview/')) request.url = '/preview.html'
+    }
+    next()
+  })
+}
+
 export default {
+  plugins: [{ name: 'a1-json-preview', configureServer: previewMiddleware, configurePreviewServer: previewMiddleware }],
+  preview: { cors: { origin: '*' } },
   esbuild: {
     jsxImportSource: 'react'
   },
@@ -35,6 +52,7 @@ export default {
     ]
   },
   server: {
+    cors: { origin: '*' },
     fs: {
       allow: [repoRoot]
     }
@@ -53,6 +71,7 @@ export default {
     outDir: 'dist',
     chunkSizeWarningLimit: 5000,
     rollupOptions: {
+      input: { main: resolve(__dirname, 'index.html'), jsonPreview: resolve(__dirname, 'json-preview.html'), previewHost: resolve(__dirname, 'preview.html') },
       onwarn(warning, defaultHandler) {
         if (isAnthropicSdkBrowserExternalizationWarning(warning)) {
           return

@@ -1,0 +1,175 @@
+/* StickyNote (A1-2718) — post-it style note.
+   Paper colours come from the theme's colour ramps (component.stickyNote.color.*)
+   and stay light in dark mode, so the note sets a local light text context: the
+   semantic text / surface variables its title and author badge read are mapped
+   to the note's own tokens (as Card does for its accent surface). */
+.a1-sticky-note {
+  --a1-sticky-note-bg: var(--component-sticky-note-color-yellow);
+  --semantic-color-text-default: var(--component-sticky-note-foreground);
+  --semantic-color-text-muted: var(--component-sticky-note-muted-foreground);
+  --semantic-color-surface-raised: var(--component-sticky-note-raised-surface);
+  --semantic-color-border-subtle: var(--component-sticky-note-subtle-border);
+  /* Links in Markdown content use the note's ink in every colour scheme (the
+     A1 link blues are for page surfaces; light-blue dark-mode links would fail
+     on light paper). The underline keeps them distinct from body text. */
+  --component-link-color: var(--component-sticky-note-foreground);
+  --component-link-color-hover: var(--component-sticky-note-muted-foreground);
+  --component-link-color-pressed: var(--component-sticky-note-foreground);
+  --component-link-inverse-color: var(--component-sticky-note-foreground);
+  --component-link-inverse-color-hover: var(--component-sticky-note-muted-foreground);
+  --component-link-inverse-color-pressed: var(--component-sticky-note-foreground);
+  /* Inline editing: the field focus ring in the note's ink, which stays
+     visible on light paper in every colour scheme. */
+  --component-field-focus-ring-color: var(--component-sticky-note-foreground);
+  /* A darker step of the paper: the adhesive strip and the move handle's hover. */
+  --a1-sticky-note-edge: color-mix(in srgb, var(--a1-sticky-note-bg) 88%, var(--component-sticky-note-foreground));
+
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--component-sticky-note-gap);
+  inline-size: var(--a1-sticky-note-width, var(--component-sticky-note-size-md));
+  max-inline-size: 100%;
+  block-size: var(--a1-sticky-note-height, auto);
+  padding: var(--component-sticky-note-padding);
+  /* The darker strip along the top reads as the note's adhesive edge. */
+  border-block-start: var(--component-sticky-note-strip-height) solid var(--a1-sticky-note-edge);
+  border-radius: var(--component-sticky-note-border-radius);
+  background: var(--a1-sticky-note-bg);
+  color: var(--component-sticky-note-foreground);
+  box-shadow: var(--component-sticky-note-shadow);
+  color-scheme: light;
+}
+
+/* Colours */
+.a1-sticky-note--yellow { --a1-sticky-note-bg: var(--component-sticky-note-color-yellow); }
+.a1-sticky-note--orange { --a1-sticky-note-bg: var(--component-sticky-note-color-orange); }
+.a1-sticky-note--green  { --a1-sticky-note-bg: var(--component-sticky-note-color-green); }
+.a1-sticky-note--blue   { --a1-sticky-note-bg: var(--component-sticky-note-color-blue); }
+.a1-sticky-note--pink   { --a1-sticky-note-bg: var(--component-sticky-note-color-pink); }
+.a1-sticky-note--purple { --a1-sticky-note-bg: var(--component-sticky-note-color-purple); }
+.a1-sticky-note--grey   { --a1-sticky-note-bg: var(--component-sticky-note-color-grey); }
+
+/* Width and height: T-shirt sizes, or auto (content / container) */
+.a1-sticky-note--width-auto { --a1-sticky-note-width: auto; }
+.a1-sticky-note--width-xs { --a1-sticky-note-width: var(--component-sticky-note-size-xs); }
+.a1-sticky-note--width-sm { --a1-sticky-note-width: var(--component-sticky-note-size-sm); }
+.a1-sticky-note--width-md { --a1-sticky-note-width: var(--component-sticky-note-size-md); }
+.a1-sticky-note--width-lg { --a1-sticky-note-width: var(--component-sticky-note-size-lg); }
+.a1-sticky-note--width-xl { --a1-sticky-note-width: var(--component-sticky-note-size-xl); }
+
+.a1-sticky-note--height-xs { --a1-sticky-note-height: var(--component-sticky-note-size-xs); }
+.a1-sticky-note--height-sm { --a1-sticky-note-height: var(--component-sticky-note-size-sm); }
+.a1-sticky-note--height-md { --a1-sticky-note-height: var(--component-sticky-note-size-md); }
+.a1-sticky-note--height-lg { --a1-sticky-note-height: var(--component-sticky-note-size-lg); }
+.a1-sticky-note--height-xl { --a1-sticky-note-height: var(--component-sticky-note-size-xl); }
+
+/* A fixed or resizable height scrolls its content; resizable adds the
+   textarea-style vertical resize handle. */
+.a1-sticky-note--scrolls { overflow: auto; }
+.a1-sticky-note--resizable { resize: vertical; min-block-size: var(--component-sticky-note-size-xs); }
+
+.a1-sticky-note--scrolls:focus-visible {
+  outline: var(--component-button-focus-ring-width) solid var(--component-button-focus-ring);
+  outline-offset: var(--component-button-focus-ring-offset);
+}
+
+.a1-sticky-note__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--component-sticky-note-gap);
+}
+
+/* Movable (floating only): offset from the anchor corner by the move handle. */
+.a1-sticky-note--movable {
+  translate: var(--a1-sticky-note-offset-x, 0) var(--a1-sticky-note-offset-y, 0);
+}
+
+/* Move handle: an A1 IconButton drawn in the note's ink on the paper (its
+   tertiary wash and accent ink are for page surfaces, not coloured paper). */
+.a1-sticky-note .a1-sticky-note__move {
+  --a1-icon-button-background: transparent;
+  --a1-icon-button-background-hover: var(--a1-sticky-note-edge);
+  --a1-icon-button-background-pressed: var(--a1-sticky-note-edge);
+  --a1-icon-button-foreground: var(--component-sticky-note-foreground);
+  --a1-icon-button-foreground-hover: var(--component-sticky-note-foreground);
+  --a1-icon-button-foreground-pressed: var(--component-sticky-note-foreground);
+  --a1-icon-button-border: transparent;
+  --a1-icon-button-border-hover: transparent;
+  --a1-icon-button-border-pressed: transparent;
+  cursor: grab;
+  touch-action: none;
+}
+
+.a1-sticky-note .a1-sticky-note__move:active {
+  cursor: grabbing;
+}
+
+/* The handle leads; the title takes the remaining space. */
+.a1-sticky-note__header > .a1-sticky-note__title {
+  flex: 1 1 auto;
+}
+
+/* Editing: the content field fills the body so the whole area takes a caret. */
+.a1-sticky-note--editing .a1-sticky-note__body .a1-inline-editable--seamless {
+  display: block;
+  min-block-size: 1lh;
+}
+
+.a1-sticky-note__title {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.a1-sticky-note__body > :first-child { margin-block-start: 0; }
+.a1-sticky-note__body > :last-child { margin-block-end: 0; }
+
+.a1-sticky-note__visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Floating: placed over content at a corner of the nearest positioned
+   ancestor, on the content z-layer (above in-flow content, below sticky chrome
+   and popovers — semantic.z.sticky / semantic.z.popover). */
+.a1-sticky-note--floating {
+  position: absolute;
+  z-index: var(--component-sticky-note-z-index);
+}
+.a1-sticky-note--top-start    { inset-block-start: var(--component-sticky-note-floating-offset); inset-inline-start: var(--component-sticky-note-floating-offset); }
+.a1-sticky-note--top-end      { inset-block-start: var(--component-sticky-note-floating-offset); inset-inline-end: var(--component-sticky-note-floating-offset); }
+.a1-sticky-note--bottom-start { inset-block-end: var(--component-sticky-note-floating-offset); inset-inline-start: var(--component-sticky-note-floating-offset); }
+.a1-sticky-note--bottom-end   { inset-block-end: var(--component-sticky-note-floating-offset); inset-inline-end: var(--component-sticky-note-floating-offset); }
+
+/* Accessible theme and OS high contrast: a visible edge as well as the shadow. */
+.a1-theme-accessible .a1-sticky-note,
+.a1-contrast-more .a1-sticky-note {
+  outline: var(--component-card-border-width) solid var(--component-sticky-note-foreground);
+}
+
+@media (prefers-contrast: more) {
+  .a1-sticky-note {
+    outline: var(--component-card-border-width) solid var(--component-sticky-note-foreground);
+  }
+}
+
+@media (forced-colors: active) {
+  .a1-sticky-note { border: var(--component-card-border-width) solid CanvasText; }
+}
+
+@media print {
+  .a1-sticky-note {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    break-inside: avoid;
+  }
+}

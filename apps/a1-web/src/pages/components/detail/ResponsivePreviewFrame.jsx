@@ -17,11 +17,129 @@ export const VIEWPORT_PRESETS = [
   { value: 'xl', label: 'XL', icon: 'desktop_windows', width: 1600, height: 1000 },
 ]
 
+// Paper presets for print preview (A1-2707): the printable area of the page at
+// the browser's default margins, in CSS px (96 per inch), so viewport media
+// queries respond as they do on paper. Print rules apply via `media: 'print'`.
+export const PRINT_PRESETS = [
+  { value: 'print-letter', label: 'Print (Letter)', icon: 'print', width: 739, height: 979, media: 'print' },
+  { value: 'print-a4', label: 'Print (A4)', icon: 'print', width: 718, height: 1047, media: 'print' },
+]
+
 // Resolve a device size from a viewport value, or null for "Fit".
 export function viewportSize(value) {
   if (!value || value === 'fit') return null
-  const preset = VIEWPORT_PRESETS.find((p) => p.value === value)
-  return preset?.width ? { width: preset.width, height: preset.height } : null
+  const preset = [...VIEWPORT_PRESETS, ...PRINT_PRESETS].find((p) => p.value === value)
+  return preset?.width ? { width: preset.width, height: preset.height, media: preset.media } : null
+}
+
+// Swap the `print` and `screen` media types in a media list, so print-only rules
+// match on screen and screen-only rules (dark-mode queries, inverse islands) don't.
+function swapMediaTypes(list) {
+  if (!list?.length) return
+  list.mediaText = Array.from(list)
+    .map((medium) => medium.replace(/\b(print|screen)\b/g, (type) => (type === 'print' ? 'screen' : 'print')))
+    .join(', ')
+}
+
+function emulatePrintRules(rules) {
+  for (const rule of Array.from(rules ?? [])) {
+    if (rule.media) swapMediaTypes(rule.media)
+    if (rule.cssRules) emulatePrintRules(rule.cssRules)
+  }
+}
+
+// Apply print emulation to one cloned <style>/<link> once its sheet is parsed.
+function emulatePrintSheet(node) {
+  const apply = () => {
+    try {
+      swapMediaTypes(node.sheet?.media)
+      emulatePrintRules(node.sheet?.cssRules)
+    } catch { /* ignore cross-origin sheets (e.g. web fonts) */ }
+  }
+  if (node.sheet) apply()
+  else node.addEventListener('load', apply, { once: true })
+}
+
+/**
+ * Prepare a src-less iframe as a preview document: clone the app stylesheets +
+ * theme so A1 CSS applies inside, keep its appearance in sync with the host, and
+ * return its <body> as a portal target. Shared by ResponsivePreviewFrame and the
+ * project canvas page frames.
+ * - `print` emulates print media on the cloned sheets (print preview).
+ * - `colorMode` ('light' | 'dark') forces that mode in the frame instead of
+ *   mirroring the host's (print preview forces light).
+ * - `viewportHeight` (px) pins the system's viewport-height layouts — Section
+ *   `height="screen"` / `"hero"` and PageLayout `viewportHeight` — to that device
+ *   height, so a frame sized to its content doesn't grow its own viewport.
+ */
+export function useFrameDocument(iframeEl, { print = false, colorMode, viewportHeight } = {}) {
+  const [body, setBody] = useState(null)
+  // A src-less (about:blank) iframe fires `load` unreliably, so set up directly
+  // (guarded) and also on `load`.
+  useEffect(() => {
+    if (!iframeEl) { setBody(null); return undefined }
+    const syncAppearance = () => {
+      const doc = iframeEl.contentDocument
+      if (!doc) return
+      const html = document.documentElement
+      doc.documentElement.className = html.className
+      doc.documentElement.style.cssText = html.style.cssText
+      if (html.hasAttribute('data-theme')) doc.documentElement.setAttribute('data-theme', html.getAttribute('data-theme'))
+      else doc.documentElement.removeAttribute('data-theme')
+      doc.documentElement.style.colorScheme = getComputedStyle(html).colorScheme
+      // Paper is always light (mirrors the before-print swap); otherwise an
+      // explicit colorMode overrides the host's mode.
+      const forced = print ? 'light' : colorMode
+      if (forced) {
+        doc.documentElement.classList.toggle('a1-theme-dark', forced === 'dark')
+        doc.documentElement.classList.toggle('a1-theme-light', forced === 'light')
+        doc.documentElement.style.colorScheme = forced
+      }
+      doc.documentElement.style.height = 'auto'
+      doc.documentElement.style.overflow = 'auto'
+    }
+    const setup = () => {
+      const doc = iframeEl.contentDocument
+      if (!doc || !doc.body) return
+      doc.head.querySelectorAll('[data-a1-cloned]').forEach((node) => node.remove())
+      document.querySelectorAll('style, link[rel="stylesheet"]').forEach((node) => {
+        const clone = node.cloneNode(true)
+        clone.setAttribute('data-a1-cloned', '')
+        doc.head.appendChild(clone)
+        if (print) emulatePrintSheet(clone)
+      })
+      syncAppearance()
+      // Force the iframe document to scroll: the cloned app stylesheets set the
+      // shell to a fixed-height, overflow-hidden viewport, which would otherwise
+      // clip the page instead of letting it scroll inside the device.
+      doc.documentElement.style.height = 'auto'
+      doc.documentElement.style.overflow = 'auto'
+      doc.body.style.margin = '0'
+      doc.body.style.height = 'auto'
+      doc.body.style.minBlockSize = '100%'
+      doc.body.style.overflow = 'visible'
+      doc.body.style.background = 'var(--semantic-color-surface-page)'
+      if (viewportHeight) {
+        const pin = doc.createElement('style')
+        pin.setAttribute('data-a1-cloned', '')
+        // Mirrors section.css (100svh / 90svh − header) and page-layout.css.
+        pin.textContent = `
+          .a1-section--height-screen { min-block-size: ${viewportHeight}px; }
+          .a1-section--height-hero { min-block-size: calc(${viewportHeight * 0.9}px - var(--component-top-header-height)); }
+          .a1-page-layout--viewport-height, .a1-page-layout--viewport-height .a1-page-layout__body,
+          .a1-page-layout--viewport-height .a1-page-layout__main, .a1-page-layout--viewport-height .a1-page-layout__main-scroll { block-size: auto; overflow: visible; }
+        `
+        doc.head.appendChild(pin)
+      }
+      setBody(doc.body)
+    }
+    setup()
+    const appearanceObserver = new MutationObserver(syncAppearance)
+    appearanceObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style', 'data-theme'] })
+    iframeEl.addEventListener('load', setup)
+    return () => { appearanceObserver.disconnect(); iframeEl.removeEventListener('load', setup) }
+  }, [iframeEl, print, colorMode, viewportHeight])
+  return body
 }
 
 /**
@@ -31,12 +149,12 @@ export function viewportSize(value) {
  * layout is viewable inside a narrow panel. `width` null = "fit" (no simulation;
  * children render normally).
  */
-export function ResponsivePreviewFrame({ width, height, children }) {
+export function ResponsivePreviewFrame({ width, height, media, children }) {
+  const print = media === 'print'
   const outerRef = useRef(null)
   // Callback ref (state) so the setup effect runs once the iframe is in the DOM.
   const [iframeEl, setIframeEl] = useState(null)
   const [scale, setScale] = useState(1)
-  const [body, setBody] = useState(null)
 
   // Fit both dimensions, including caption, bezel and any bottom configuration
   // sheet. Measure the host's scrolling panel; content still scrolls in the iframe.
@@ -103,52 +221,7 @@ export function ResponsivePreviewFrame({ width, height, children }) {
     }
   }, [width, height])
 
-  // Prepare the iframe document: clone the app stylesheets + theme so A1 CSS
-  // applies inside, and expose its <body> as the portal target. A src-less
-  // (about:blank) iframe fires `load` unreliably, so set up directly (guarded)
-  // and also on `load`.
-  useEffect(() => {
-    if (!iframeEl) { setBody(null); return undefined }
-    const syncAppearance = () => {
-      const doc = iframeEl.contentDocument
-      if (!doc) return
-      const html = document.documentElement
-      doc.documentElement.className = html.className
-      doc.documentElement.style.cssText = html.style.cssText
-      if (html.hasAttribute('data-theme')) doc.documentElement.setAttribute('data-theme', html.getAttribute('data-theme'))
-      else doc.documentElement.removeAttribute('data-theme')
-      doc.documentElement.style.colorScheme = getComputedStyle(html).colorScheme
-      doc.documentElement.style.height = 'auto'
-      doc.documentElement.style.overflow = 'auto'
-    }
-    const setup = () => {
-      const doc = iframeEl.contentDocument
-      if (!doc || !doc.body) return
-      doc.head.querySelectorAll('[data-a1-cloned]').forEach((node) => node.remove())
-      document.querySelectorAll('style, link[rel="stylesheet"]').forEach((node) => {
-        const clone = node.cloneNode(true)
-        clone.setAttribute('data-a1-cloned', '')
-        doc.head.appendChild(clone)
-      })
-      syncAppearance()
-      // Force the iframe document to scroll: the cloned app stylesheets set the
-      // shell to a fixed-height, overflow-hidden viewport, which would otherwise
-      // clip the page instead of letting it scroll inside the device.
-      doc.documentElement.style.height = 'auto'
-      doc.documentElement.style.overflow = 'auto'
-      doc.body.style.margin = '0'
-      doc.body.style.height = 'auto'
-      doc.body.style.minBlockSize = '100%'
-      doc.body.style.overflow = 'visible'
-      doc.body.style.background = 'var(--semantic-color-surface-page)'
-      setBody(doc.body)
-    }
-    setup()
-    const appearanceObserver = new MutationObserver(syncAppearance)
-    appearanceObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'style', 'data-theme'] })
-    iframeEl.addEventListener('load', setup)
-    return () => { appearanceObserver.disconnect(); iframeEl.removeEventListener('load', setup) }
-  }, [iframeEl])
+  const body = useFrameDocument(iframeEl, { print })
 
   if (!width) return children
 
@@ -158,7 +231,7 @@ export function ResponsivePreviewFrame({ width, height, children }) {
         {width} × {height}px{scale < 1 ? ` · ${Math.round(scale * 100)}%` : ''}
       </div>
       <div
-        className="a1-web-responsive-preview__viewport"
+        className={`a1-web-responsive-preview__viewport${print ? ' a1-web-responsive-preview__viewport--paper' : ''}`}
         style={{ inlineSize: `${width * scale}px`, blockSize: `${height * scale}px` }}
       >
         <iframe

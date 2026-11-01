@@ -1,6 +1,8 @@
-import { Canvas, NodeConnector, Node, Code, Stack } from '@gtivr4/a1-design-system-react'
+import { Canvas, NodeConnector, Node, Code, Stack, Toolbar, ToolbarGroup } from '@gtivr4/a1-design-system-react'
 import { useState } from 'react'
-import { Choice, FieldState } from './configKit.jsx'
+import { Choice, FieldState, WithHelp } from './configKit.jsx'
+import { CustomColorDialog } from './CustomColorDialog.jsx'
+import { CUSTOM_BACKGROUND, canvasBackgroundItems, isCustomCanvasBackground } from './canvasBackground.js'
 
 export const bareDisplay = true
 
@@ -17,12 +19,6 @@ const DEMO_EDGES = [
   { id: 'e3', from: 'react',  to: 'pure',  direction: 'both', variant: 'dashed' },
 ]
 
-const BG_OPTIONS = [
-  { value: 'panel',  label: 'Panel' },
-  { value: 'page',   label: 'Page' },
-  { value: 'raised', label: 'Raised' },
-]
-
 export function getDefaultConfig() {
   return {
     background: 'panel',
@@ -31,6 +27,7 @@ export function getDefaultConfig() {
     gridType: 'lines',
     gridSpacing: '16',
     showControls: true,
+    controlsExpandable: false,
     mode: 'view',
     snapToGrid: false,
   }
@@ -44,6 +41,7 @@ function buildSnippet(config) {
     config.showGrid && config.gridType !== 'lines' ? `gridType="${config.gridType}"` : null,
     config.showGrid && config.gridSpacing !== '16' ? `gridSpacing={${config.gridSpacing}}` : null,
     !config.showControls ? 'showControls={false}' : null,
+    config.showControls && config.controlsExpandable ? 'controlsExpandable' : null,
     config.mode === 'edit' ? 'mode="edit"' : null,
     config.snapToGrid ? 'snapToGrid' : null,
   ].filter(Boolean)
@@ -82,6 +80,7 @@ export function Preview({ config }) {
         gridType={config.gridType}
         gridSpacing={Number(config.gridSpacing)}
         showControls={config.showControls}
+        controlsExpandable={config.controlsExpandable}
         snapToGrid={config.snapToGrid}
         defaultPan={{ x: 80, y: 20 }}
         aria-label="Canvas preview"
@@ -112,14 +111,35 @@ export function Preview({ config }) {
 
 export function Controls({ config, setConfig }) {
   const set = (patch) => setConfig((c) => ({ ...c, ...patch }))
+  const [customColorOpen, setCustomColorOpen] = useState(false)
   return (
     <Stack gap="lg">
-      <Choice prop="background" label="Background" value={config.background} onChange={(background) => set({ background })} options={BG_OPTIONS} />
+      <WithHelp helper="Sets the canvas surface — a page, panel or raised token, or a custom color. Check contrast against the grid and content when you use a custom color.">
+        <Toolbar label="Background">
+          <ToolbarGroup
+            aria-label="Background"
+            labelMode="selected"
+            value={config.background}
+            onChange={(background) => {
+              if (background === CUSTOM_BACKGROUND) setCustomColorOpen(true)
+              else set({ background })
+            }}
+            options={canvasBackgroundItems(config.background)}
+          />
+        </Toolbar>
+      </WithHelp>
+      <CustomColorDialog
+        open={customColorOpen}
+        value={isCustomCanvasBackground(config.background) ? config.background : ''}
+        onClose={() => setCustomColorOpen(false)}
+        onApply={(background) => set({ background })}
+      />
       <FieldState
         label="Options"
         items={[
           { key: 'showGrid',     label: 'Grid',         icon: 'grid_4x4',   value: config.showGrid },
           { key: 'showControls', label: 'Controls',     icon: 'tune',        value: config.showControls },
+          { key: 'controlsExpandable', label: 'Compact controls', icon: 'unfold_more', value: config.controlsExpandable },
           { key: 'inverse',      label: 'Inverse',      icon: 'dark_mode',   value: config.inverse },
           { key: 'snapToGrid',   label: 'Snap to grid', icon: 'grid_on',     value: config.snapToGrid },
         ]}

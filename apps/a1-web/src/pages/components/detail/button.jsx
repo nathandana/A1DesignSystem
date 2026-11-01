@@ -2,13 +2,15 @@ import { useState, useEffect } from 'react'
 import {
   Button,
   Code,
+  Divider,
+  IconButton,
   SplitButton,
   Stack,
   TextField,
   Toolbar,
   ToolbarToggle,
 } from '@gtivr4/a1-design-system-react'
-import { Choice, ConfigSlider } from './configKit.jsx'
+import { Choice, WithHelp } from './configKit.jsx'
 import { IconSelect } from './IconSelect.jsx'
 import { PageLinkField } from './PageLinkField.jsx'
 
@@ -24,7 +26,8 @@ const VARIANT_ICONS = {
 }
 const SIZE_OPTIONS = ['sm', 'md', 'lg']
 
-// Sample secondary actions for the split-button demo.
+// The split button's default menu actions; page definitions carry them as the
+// Button's `menuActions`.
 const SAMPLE_ACTIONS = [
   { id: 'draft', label: 'Save as draft', icon: 'draft' },
   { id: 'template', label: 'Save as template', icon: 'bookmark' },
@@ -67,6 +70,10 @@ function escapeJsxText(value) {
     .replaceAll('>', '&gt;')
 }
 
+function escapeJsString(value) {
+  return String(value ?? '').replaceAll('\\', '\\\\').replaceAll("'", "\\'")
+}
+
 function escapeJsxString(value) {
   return String(value ?? '').replaceAll('"', '&quot;')
 }
@@ -83,7 +90,32 @@ export function getDefaultConfig() {
     loading: false,
     disabled: false,
     split: false,
+    menuActions: SAMPLE_ACTIONS.map((action) => ({ ...action })),
   }
+}
+
+let menuActionCount = 0
+function freshMenuActionId() {
+  menuActionCount += 1
+  return `menu-action-${Date.now().toString(36)}-${menuActionCount}`
+}
+
+// The menu actions as page-definition data: label and optional icon.
+function menuActionsData(actions) {
+  return (actions ?? [])
+    .filter((action) => action.label)
+    .map((action) => (action.icon ? { label: action.label, icon: action.icon } : { label: action.label }))
+}
+
+// Page-definition menu actions → configurator items (with ids for editing).
+export function menuActionsFromData(data) {
+  return Array.isArray(data)
+    ? data
+        .filter((action) => action && typeof action.label === 'string')
+        // Index-based ids: the editor rebuilds config from props on every
+        // render, and stable keys keep a field focused while it is typed in.
+        .map((action, index) => ({ id: `menu-action-${index + 1}`, label: action.label, icon: typeof action.icon === 'string' ? action.icon : '' }))
+    : []
 }
 
 // ── Page-definition JSON (the configurator's JSON view, A1-1651) ─────────────
@@ -105,16 +137,15 @@ export function toJson(config) {
   if (config.loading) props.loading = true
   if (config.disabled) props.disabled = true
 
+  // A split button is a Button with `split` and its menu actions as data.
+  if (config.split) {
+    props.split = true
+    props.menuActions = menuActionsData(config.menuActions)
+  }
+
   const node = { id: 'button-1', type: 'Button', content: { fallback: config.label || 'Button' } }
   if (Object.keys(props).length > 0) node.props = props
-  // SplitButton has no page-definition type — the node describes the main action.
-  const note = config.split
-    ? {
-        key: 'label.app.configurator.jsonSplitNote',
-        fallback: 'Split button is not part of the page-definition schema — the JSON describes a standard Button.',
-      }
-    : null
-  return { node, note }
+  return { node, note: null }
 }
 
 export function fromJson(node) {
@@ -132,6 +163,8 @@ export function fromJson(node) {
   config.fullWidth = props.fullWidth === true
   config.loading = props.loading === true
   config.disabled = props.disabled === true
+  config.split = props.split === true
+  if (config.split && Array.isArray(props.menuActions)) config.menuActions = menuActionsFromData(props.menuActions)
   return config
 }
 
@@ -184,7 +217,7 @@ export function Preview({ config, viewAs = 'react', utilityClass = '' }) {
       iconPosition={config.iconPosition}
       loading={config.loading}
       disabled={config.disabled}
-      actions={SAMPLE_ACTIONS}
+      actions={(config.menuActions ?? []).filter((action) => action.label).map((action) => ({ ...action, icon: action.icon || undefined }))}
     >
       {config.label || 'Button'}
     </SplitButton>
@@ -212,7 +245,7 @@ export function Preview({ config, viewAs = 'react', utilityClass = '' }) {
   )
 }
 
-export function Controls({ config, setConfig, pages, viewAs = 'react', textAction = null }) {
+export function Controls({ config, setConfig, pages, viewAs = 'react', textAction = null, splitOnly = false }) {
   const s = support(viewAs)
   return (
     <Stack gap="lg">
@@ -233,7 +266,7 @@ export function Controls({ config, setConfig, pages, viewAs = 'react', textActio
         onChange={(variant) => setConfig((current) => ({ ...current, variant }))}
         options={VARIANT_OPTIONS.map((opt) => ({ label: optionLabel(opt), value: opt, icon: VARIANT_ICONS[opt] }))}
       />
-      <ConfigSlider prop="size" label="Size" helper="Controls the button's height, padding, and text size." values={SIZE_OPTIONS} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
+      <Choice prop="size" label="Size" helper="Controls the button's height, padding, and text size." options={SIZE_OPTIONS.map((value, index) => ({ value, label: ['Small', 'Default', 'Large'][index] }))} value={config.size} onChange={(size) => setConfig((current) => ({ ...current, size }))} />
       <Choice
         label="Icon"
         iconOnly
@@ -254,7 +287,7 @@ export function Controls({ config, setConfig, pages, viewAs = 'react', textActio
           onChange={(icon) => setConfig((current) => ({ ...current, icon }))}
         />
       )}
-      {s.href && (
+      {s.href && !splitOnly && (
         <PageLinkField
           pages={pages}
           value={config.href ?? ''}
@@ -262,18 +295,58 @@ export function Controls({ config, setConfig, pages, viewAs = 'react', textActio
         />
       )}
       <Toolbar label="State">
-        {s.fullWidth && (
+        {s.fullWidth && !splitOnly && (
           <ToolbarToggle icon="width_full" label="Full width" pressed={config.fullWidth} onChange={(fullWidth) => setConfig((current) => ({ ...current, fullWidth }))} />
         )}
         {s.loading && (
           <ToolbarToggle icon="progress_activity" label="Loading" pressed={config.loading} onChange={(loading) => setConfig((current) => ({ ...current, loading }))} />
         )}
         <ToolbarToggle icon="block" label="Disabled" pressed={config.disabled} onChange={(disabled) => setConfig((current) => ({ ...current, disabled }))} />
-        {s.split && (
-          <ToolbarToggle icon="arrow_drop_down_circle" label="Split (menu)" pressed={config.split} onChange={(split) => setConfig((current) => ({ ...current, split }))} />
-        )}
       </Toolbar>
+      {s.split && config.split && (
+        <MenuActionsEditor
+          actions={config.menuActions ?? []}
+          onChange={(menuActions) => setConfig((current) => ({ ...current, menuActions }))}
+        />
+      )}
     </Stack>
+  )
+}
+
+// The split button's menu: each option's label and optional icon.
+function MenuActionsEditor({ actions, onChange }) {
+  const update = (id, patch) => onChange(actions.map((action) => (action.id === id ? { ...action, ...patch } : action)))
+  return (
+    <WithHelp helper="The options in the split button's menu. The button runs its own action; the caret opens these.">
+      <Stack gap="md">
+        {actions.map((action, index) => (
+          <Stack key={action.id} gap="sm">
+            {index > 0 && <Divider space="none" />}
+            <Stack direction="row" gap="xs" align="end">
+              <Stack grow>
+                <TextField
+                  label={`Menu action ${index + 1}`}
+                  size="compact"
+                  value={action.label}
+                  onChange={(event) => update(action.id, { label: event.target.value })}
+                />
+              </Stack>
+              <IconButton
+                icon="delete"
+                variant="destructive"
+                size="sm"
+                label={`Remove menu action ${index + 1}`}
+                onClick={() => onChange(actions.filter((item) => item.id !== action.id))}
+              />
+            </Stack>
+            <IconSelect label="Icon (optional)" value={action.icon} onChange={(icon) => update(action.id, { icon })} />
+          </Stack>
+        ))}
+        <Button variant="secondary" size="sm" icon="add" onClick={() => onChange([...actions, { id: freshMenuActionId(), label: 'Another action', icon: '' }])}>
+          Add menu action
+        </Button>
+      </Stack>
+    </WithHelp>
   )
 }
 
@@ -357,9 +430,7 @@ function buildSplitSnippet(config, utilityClass = '') {
   return `<SplitButton
   ${props}
   actions={[
-    { id: 'draft', label: 'Save as draft', icon: 'draft' },
-    { id: 'template', label: 'Save as template', icon: 'bookmark' },
-    { id: 'duplicate', label: 'Duplicate', icon: 'content_copy' },
+${menuActionsData(config.menuActions).map((action, index) => `    { id: 'action-${index + 1}', label: '${escapeJsString(action.label)}'${action.icon ? `, icon: '${action.icon}'` : ''} },`).join('\n')}
   ]}
 >
   ${escapeJsxText(config.label || 'Button')}

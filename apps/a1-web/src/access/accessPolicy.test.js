@@ -38,9 +38,13 @@ test('applies the page hierarchy and defaults unknown pages to admin', () => {
 })
 
 test('keeps component and foundation documentation public', () => {
+  assert.equal(canRoleAccessPage(USER_ROLES.GUEST, 'design-with-a1'), true)
   assert.equal(canRoleAccessPage(USER_ROLES.GUEST, 'component-button'), true)
   assert.equal(canRoleAccessPage(USER_ROLES.GUEST, 'components-layout'), true)
   assert.equal(canRoleAccessPage(USER_ROLES.GUEST, 'foundation-color'), true)
+  assert.equal(canRoleAccessPage(USER_ROLES.GUEST, 'pattern-library'), true)
+  assert.equal(canRoleAccessPage(USER_ROLES.GUEST, 'patterns-page-structure'), true)
+  assert.equal(canRoleAccessPage(USER_ROLES.GUEST, 'pattern-page-title'), true)
 })
 
 test('restricts feature capabilities independently from routes', () => {

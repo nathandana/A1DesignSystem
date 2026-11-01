@@ -169,6 +169,31 @@ export function splitLayoutAtOutlet(
 }
 
 /**
+ * Fill a Page title pattern's automatic breadcrumb: every `PageTitle` node whose
+ * `breadcrumb` is `true` takes the project's trail for the current page. A trail
+ * with only the current page (the home page) shows no breadcrumb.
+ */
+export function resolveAutoBreadcrumbs(
+  definition: PageDefinition,
+  breadcrumb: Array<{ label: string; href?: string; onClick?: (e: MouseEvent) => void }> | null | undefined,
+): PageDefinition {
+  const items = breadcrumb && breadcrumb.length > 1 ? breadcrumb : undefined;
+  const walk = (nodes: ComponentNode[]): ComponentNode[] => nodes.map((node) => {
+    const next = node.children?.length ? { ...node, children: walk(node.children) } : node;
+    if (next.type === 'PageTitle' && (next.props as Record<string, unknown> | undefined)?.breadcrumb === true) {
+      return { ...next, props: { ...next.props, breadcrumb: items } } as ComponentNode;
+    }
+    return next;
+  });
+  const regions = layoutRegions(definition);
+  if (!regions.length) return definition;
+  return {
+    ...definition,
+    page: { ...definition.page, layout: { ...definition.page.layout, regions: regions.map((region) => ({ ...region, nodes: walk(regionNodes(region.nodes)) })) } },
+  } as PageDefinition;
+}
+
+/**
  * Compose a page into the shared layout: clone the layout definition, inject the
  * auto nav + logo onto its TopHeader, and replace the `Outlet` with the page's
  * region nodes. If the layout has no Outlet, the page nodes are appended after
@@ -177,9 +202,16 @@ export function splitLayoutAtOutlet(
 export function combinePageIntoLayout(
   layoutDef: PageDefinition,
   pageDef: PageDefinition,
-  { navItems, logoFallback = '', logoHref }: { navItems?: unknown; logoFallback?: string; logoHref?: string } = {},
+  { navItems, logoFallback = '', logoHref, breadcrumb }: {
+    navItems?: unknown;
+    logoFallback?: string;
+    logoHref?: string;
+    /** The project's breadcrumb trail for this page (fills `PageTitle` nodes with `breadcrumb: true`). */
+    breadcrumb?: Array<{ label: string; href?: string; onClick?: (e: MouseEvent) => void }> | null;
+  } = {},
 ): PageDefinition {
-  const pageNodes = layoutRegions(pageDef).flatMap((region) => regionNodes(region.nodes));
+  const resolvedPage = breadcrumb ? resolveAutoBreadcrumbs(pageDef, breadcrumb) : pageDef;
+  const pageNodes = layoutRegions(resolvedPage).flatMap((region) => regionNodes(region.nodes));
   const sourceRegions = layoutRegions(layoutDef);
   const regions = sourceRegions.map((region) => {
     const [nodes] = substitute(regionNodes(region.nodes), pageNodes, navItems, logoFallback, logoHref);

@@ -1,0 +1,13 @@
+[
+  {
+    "id": "example-checkbox-label",
+    "title": "Checkbox label (fictional import example)",
+    "original": "Give each checkbox a visible label.",
+    "proposed": "Associate each visible label with its checkbox.",
+    "sourceUrl": "https://example.com/design/checkbox",
+    "sourceVersion": "Example 1",
+    "nodeRef": "example-node",
+    "tags": ["Components:Checkbox", "Patterns/tasks:Forms", "Topics:Accessibility", "Platforms/contexts:Web"],
+    "owner": "Example reviewer"
+  }
+]

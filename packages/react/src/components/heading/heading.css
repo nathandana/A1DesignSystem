@@ -162,3 +162,12 @@
 .a1-heading-mark--underline-sketch {
   --a1-heading-mark-underline-mask: url("data:image/svg+xml,%3Csvg width='480' height='72' viewBox='0 0 480 72' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8 43C72 38 134 31 194 36C273 43 351 31 472 39' stroke='black' stroke-width='28' stroke-linecap='round'/%3E%3Cpath d='M15 52C85 43 137 48 213 44C293 40 372 46 463 31' stroke='black' stroke-width='16' stroke-linecap='round' opacity='.76'/%3E%3C/svg%3E");
 }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Keep a heading on the same page as the content it introduces. */
+
+@media print {
+  .a1-heading {
+    break-after: avoid;
+  }
+}

@@ -5,6 +5,8 @@ const baselineDirectory = fileURLToPath(new URL('./visual-baselines/a1-web', imp
 
 export default defineConfig({
   testDir: './tests/a1-web',
+  // Signed-in preview tests use an isolated build and server in playwright.preview.config.js.
+  testIgnore: 'json-preview.spec.js',
   timeout: 30 * 60 * 1000,
   expect: {
     timeout: 15_000,

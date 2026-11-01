@@ -15,3 +15,12 @@
   opacity: 1;
   pointer-events: auto;
 }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Screen-only chrome: hidden when printed. */
+
+@media print {
+  .a1-scrim {
+    display: none;
+  }
+}

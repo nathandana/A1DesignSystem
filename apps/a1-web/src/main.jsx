@@ -52,6 +52,7 @@ const VALID_LOCALES = localeOptions.map((o) => o.value)
 import { Home } from './pages/Home.jsx'
 import { Features } from './pages/Features.jsx'
 import { GetStarted } from './pages/GetStarted.jsx'
+import { DesignWithA1 } from './pages/DesignWithA1.jsx'
 import { Presentation } from './pages/Presentation.jsx'
 import { SystemDashboard } from './pages/SystemDashboard.jsx'
 import { FoundationDetail, Foundations, foundations } from './pages/foundations'
@@ -75,6 +76,7 @@ import {
   DETAIL_TAB_IDS,
 } from './pages/components/utils.js'
 import { Patterns } from './pages/Patterns.jsx'
+import { PATTERN_ROUTE_IDS, PatternLibrary, getPatternsAside, getPatternsSidebar, patternCategories, patternPageTitles } from './pages/patterns/index.jsx'
 import { JsonPlayground, JsonPlaygroundSidebar, formatPlaygroundJson, parsePlaygroundJson } from './pages/JsonPlayground.jsx'
 import {
   acknowledgeFigmaPageCreate,
@@ -123,12 +125,13 @@ import { ThemeWorkspaceSidebar } from './pages/ThemeWorkspaceSidebar.jsx'
 import { getTheme, subscribeThemes } from './lib/themeStore.ts'
 import { ProjectWorkspaceSidebar } from './projects/ProjectWorkspaceSidebar.jsx'
 import { combinePageIntoLayout } from './projects/projectLayout'
-import { buildProjectNav } from './projects/projectNav'
+import { buildProjectNav, buildProjectBreadcrumb } from './projects/projectNav'
 import { materializeResolvedLabelContent } from './editor/contentText.js'
 import { ImageLibraryProvider } from './editor/ImageLibraryContext.jsx'
 import { CustomIconFontProvider } from './editor/CustomIconFontProvider.jsx'
 import * as projectStore from './projects/projectStore.ts'
 import { EDITOR_EXAMPLES, makeBlankPage } from './editor/examples/index.ts'
+import { usePreviewImport } from './preview/usePreviewImport.js'
 import { AuthProvider, useAuth } from './lib/AuthContext.jsx'
 import { TProvider } from './labels/useT.js'
 import { AccountPage } from './pages/AccountPage.jsx'
@@ -152,6 +155,7 @@ import { PostHogProvider } from 'posthog-js/react'
 import { posthog, posthogEnabled, initPostHog } from './lib/posthog.js'
 import { recordPageView, startVisitHeartbeat } from './lib/visitAnalytics.js'
 import { themeClassName, themeOptions, settingsThemeOptions, settingsThemeValues, VALID_THEMES } from './lib/appThemes.ts'
+import { usePrintLightMode } from './lib/usePrintLightMode.js'
 import './styles.css'
 
 // True when this window was opened as a standalone preview (no app chrome).
@@ -160,11 +164,12 @@ const IS_STANDALONE = new URLSearchParams(window.location.search).has('standalon
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
 const BLOG_ARTICLE_SLUG = BLOG_POSTS[0]?.slug || 'search-shortcuts-and-walkthroughs'
-const EXPLORE_PAGE_IDS = ['dashboard', 'features', 'get-started', 'presentation', 'blog', 'backlog', 'accessibility', 'releases', 'about', ...(import.meta.env.DEV ? ['virtual-team'] : [])]
+const EXPLORE_PAGE_IDS = ['dashboard', 'features', 'get-started', 'design-with-a1', 'presentation', 'blog', 'backlog', 'accessibility', 'releases', 'about', ...(import.meta.env.DEV ? ['virtual-team'] : [])]
 const PAGE_ICONS = {
   dashboard: 'monitoring',
   features: 'star',
   'get-started': 'rocket_launch',
+  'design-with-a1': 'auto_awesome',
   presentation: 'slideshow',
   blog: 'article',
   help: 'help',
@@ -178,22 +183,25 @@ const PAGE_ICONS = {
   admin: 'admin_panel_settings',
   'admin-analytics': 'monitoring',
   playground: 'code',
+  'pattern-library': 'dashboard_customize',
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'dashboard', 'features', 'get-started', 'presentation', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, 'patterns', 'playground', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', ...HELP_ARTICLE_PAGE_IDS, 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account', 'admin', 'admin-analytics']
+const PAGES = ['home', 'dashboard', 'features', 'get-started', 'design-with-a1', 'presentation', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, ...PATTERN_ROUTE_IDS, 'patterns', 'playground', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', ...HELP_ARTICLE_PAGE_IDS, 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account', 'admin', 'admin-analytics']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
   dashboard: 'Dashboard',
   features: 'Features',
   'get-started': 'Get started',
+  'design-with-a1': 'Design with A1',
   presentation: 'Presentation',
   blog: 'Blog',
   'blog-article': 'Search, shortcuts, and walkthroughs',
   foundations: 'Foundations',
   ...Object.fromEntries(foundations.map((foundation) => [foundation.id, foundation.title])),
   ...componentPageTitles,
+  ...patternPageTitles,
   patterns: 'Patterns',
   playground: 'JSON playground',
   editor: 'Editor',
@@ -249,14 +257,19 @@ function getComponentTab(pathname = window.location.pathname, search = window.lo
   return DETAIL_TAB_IDS.includes(tab) ? tab : 'configure'
 }
 
-// Build the URL for a component + tab. Example tabs use their path segment; a
-// standard non-default tab is carried as `?tab=`; Configure (the default) stays
-// clean with no query string.
-function componentPathWithTab(componentId, tab) {
-  if (tab && tab.startsWith('example:')) {
-    return getComponentExamplePath(componentId, tab.slice('example:'.length))
+// A component or pattern detail page (both share the tabbed detail layout).
+function isDetailPage(page) {
+  return page.startsWith('component-') || (page.startsWith('pattern-') && page !== 'pattern-library')
+}
+
+// Build the URL for a detail page + tab. Component example tabs use their path
+// segment; a standard non-default tab is carried as `?tab=`; Configure (the
+// default) stays clean with no query string.
+function detailPathWithTab(page, tab) {
+  if (page.startsWith('component-') && tab && tab.startsWith('example:')) {
+    return getComponentExamplePath(page.slice('component-'.length), tab.slice('example:'.length))
   }
-  const base = `/components/${componentRouteSlug(componentId)}`
+  const base = getPath(page)
   return tab && tab !== 'configure' && DETAIL_TAB_IDS.includes(tab) ? `${base}?tab=${tab}` : base
 }
 
@@ -291,6 +304,16 @@ function getPage(search = window.location.search, pathname = window.location.pat
     return 'components'
   }
 
+  // /pattern-library → 'pattern-library', /pattern-library/page-structure →
+  // 'patterns-page-structure', /pattern-library/page-title → 'pattern-page-title'
+  if (path === 'pattern-library') return 'pattern-library'
+  if (path.startsWith('pattern-library/')) {
+    const suffix = path.slice('pattern-library/'.length)
+    if (PAGES.includes(`patterns-${suffix}`)) return `patterns-${suffix}`
+    if (PAGES.includes(`pattern-${suffix}`)) return `pattern-${suffix}`
+    return 'pattern-library'
+  }
+
   // /backlog/A1-{n} → 'backlog-ticket'
   if (/^backlog\/A1-\d+$/i.test(path)) return 'backlog-ticket'
 
@@ -320,6 +343,9 @@ function getPath(page) {
   if (page.startsWith('foundation-')) return `/foundations/${page.slice('foundation-'.length)}`
   if (page.startsWith('components-')) return `/components/${page.slice('components-'.length)}`
   if (page.startsWith('component-')) return `/components/${componentRouteSlug(page.slice('component-'.length))}`
+  if (page === 'pattern-library') return '/pattern-library'
+  if (page.startsWith('patterns-')) return `/pattern-library/${page.slice('patterns-'.length)}`
+  if (page.startsWith('pattern-')) return `/pattern-library/${page.slice('pattern-'.length)}`
   if (page === 'backlog-ticket') return '/backlog'
   if (page === 'admin-analytics') return '/admin/analytics'
   if (page.startsWith(HELP_ARTICLE_PAGE_PREFIX)) return getHelpArticlePath(helpArticleIdFromPage(page))
@@ -396,10 +422,12 @@ const PAGE_TITLE_LABEL_KEYS = {
   dashboard: 'app.page.dashboard',
   features: 'app.page.features',
   'get-started': 'app.page.getStarted',
+  'design-with-a1': 'designWithA1.title',
   blog: 'app.page.blog',
   'blog-article': 'app.page.blogArticle',
   foundations: 'app.nav.foundations',
   components: 'app.nav.components',
+  'pattern-library': 'app.page.patternLibrary',
   patterns: 'app.page.patterns',
   editor: 'app.page.editor',
   'editor-preview': 'app.page.editorPreview',
@@ -472,10 +500,12 @@ function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const settingsAnchorRef = useRef(null)
   const { user: authUser, signOut } = useAuth()
+  const [previewImportWorkspace, setPreviewImportWorkspace] = useState({ userId: null, state: 'loading' })
   const { canAccessPage, canUseFeature, role: accessRole } = useAccess()
   const backlog = useBacklog()
   const [componentMenuSearch, setComponentMenuSearch] = useState('')
   const [componentSearch, setComponentSearch] = useState('')
+  const [patternSearch, setPatternSearch] = useState('')
   const [detailTab, setDetailTab] = useState(() => getComponentTab())
   const [releaseMode, setReleaseMode] = useState('simplified')
   const [releaseSource, setReleaseSource] = useState('a1-web')
@@ -497,6 +527,8 @@ function App() {
   // The editor is organised into isolated projects; `activeProjectId` + `openPageId`
   // are mirrored in the URL (`?page=editor&project=…&doc=…`) so links are shareable.
   const [projects, setProjects] = useState(() => projectStore.loadProjects())
+  // Projects menu: visible projects, favorites first, in manual order (A1-2712).
+  const menuProjects = useMemo(() => projectStore.sortProjects(projects.filter((project) => !project.hidden)), [projects])
   const [archivedProjects, setArchivedProjects] = useState(() => projectStore.loadArchivedProjects())
   const [activeProjectId, setActiveProjectId] = useState(() => {
     const params = new URLSearchParams(window.location.search)
@@ -559,6 +591,11 @@ function App() {
                   const composedDefinition = combinePageIntoLayout(layout, definition, {
                     navItems,
                     logoFallback: project.name || '',
+                    breadcrumb: buildProjectBreadcrumb(projectPages, {
+                      activePageId: page.id,
+                      onNavigate: () => {},
+                      hrefFor: (pageId) => `?project=${encodeURIComponent(project.id)}&doc=${encodeURIComponent(pageId)}`,
+                    }),
                   })
                   json = JSON.stringify(
                     materializeResolvedLabelContent(composedDefinition, resolveProjectText),
@@ -864,6 +901,7 @@ function App() {
     addPage('home', 'Start page for A1 tools, packages, and product areas.', ['overview'])
     addPage('dashboard', 'Live dashboard for A1 health, backlog, components, tokens, rules, labels, and system flow.', ['health', 'metrics', 'charts', 'data viz', 'counts'])
     addPage('features', 'Current A1 feature set and product capabilities.', ['tools', 'capabilities'])
+    addPage('design-with-a1', t('designWithA1.intro'), ['React', 'JSON', 'MCP', 'design.md', 'Codex', 'Claude', 'Cursor', 'Gemini'])
     addPage('get-started', 'Setup paths and first steps for using A1.', ['install', 'docs'])
     addPage('presentation', 'Focused walkthrough deck about A1, AI, and software creation.', ['slides', 'walkthrough', 'presentation', 'ai', 'designer', 'engineer'])
     addPage('blog', 'Release newsletters, demos, and walkthroughs from A1.', ['posts', 'video', 'walkthrough', 'global search', 'newsletter'])
@@ -940,6 +978,32 @@ function App() {
         })
       })
     })
+
+    if (canAccessPage('pattern-library')) {
+      addPage('pattern-library', 'Reusable compositions built from A1 components.', ['patterns', 'compositions', 'page title'])
+      patternCategories.forEach((category) => {
+        entries.push({
+          id: `pattern-category-${category.id}`,
+          title: category.title,
+          category: 'Pattern categories',
+          description: category.body,
+          icon: category.icon,
+          keywords: [category.id, 'patterns'],
+          onSelect: () => navigate(`patterns-${category.id}`),
+        })
+        category.patterns.forEach((pattern) => {
+          entries.push({
+            id: `pattern-${pattern.id}`,
+            title: pattern.title,
+            category: 'Pattern library',
+            description: pattern.body,
+            icon: pattern.icon,
+            keywords: [pattern.id, category.title, 'pattern', 'composition'],
+            onSelect: () => navigate(`pattern-${pattern.id}`),
+          })
+        })
+      })
+    }
 
     projects.forEach((project) => {
       entries.push({
@@ -1040,7 +1104,11 @@ function App() {
   // Cloud sync: on sign-in pull the user's projects into local storage (then
   // refresh the list) and start pushing local changes up; on sign-out, stop.
   useEffect(() => {
-    if (authUser) startCloudSync(authUser.id, { onHydrated: refreshProjects })
+    let active = true
+    setPreviewImportWorkspace({ userId: authUser?.id ?? null, state: 'loading' })
+    if (authUser) startCloudSync(authUser.id, { onHydrated: refreshProjects }).then(hydrated => {
+      if (active) setPreviewImportWorkspace({ userId: authUser.id, state: hydrated ? 'ready' : 'error' })
+    }).catch(() => { if (active) setPreviewImportWorkspace({ userId: authUser.id, state: 'error' }) })
     else stopCloudSync()
     // Point the image library at the user's Supabase storage (or back to local)
     // and rebuild the URL cache so referenced Figures re-resolve.
@@ -1055,6 +1123,7 @@ function App() {
     setHistoryUser(authUser ?? null)
     // (The backlog points itself at the right store via BacklogProvider, which
     // owns its own auth wiring.)
+    return () => { active = false }
   }, [authUser]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Project navigation ───────────────────────────────────────────────────────
@@ -1143,8 +1212,40 @@ function App() {
     }
   }
 
+  usePreviewImport({
+    user: authUser,
+    workspace: previewImportWorkspace,
+    onImport: data => {
+      const project = projectStore.importProjectJson(data)
+      refreshProjects()
+      openProject(project.id)
+    },
+    onMessage: setEditorMessage,
+    t,
+  })
+
   function handleRenameProject(id, patch) {
     projectStore.updateProject(id, patch)
+    refreshProjects()
+  }
+
+  function handleOrganizeProject(id, patch) {
+    projectStore.organizeProject(id, patch)
+    refreshProjects()
+  }
+
+  function handleMoveProject(id, direction) {
+    projectStore.moveProject(id, direction)
+    refreshProjects()
+  }
+
+  function handleSaveProjectCanvas(id, patch) {
+    projectStore.saveProjectCanvas(id, patch)
+    refreshProjects()
+  }
+
+  function handleMoveProjectToEdge(id, edge) {
+    projectStore.moveProjectToEdge(id, edge)
     refreshProjects()
   }
 
@@ -1205,13 +1306,15 @@ function App() {
     refreshProjects()
   }
 
-  function handleDuplicateProjectPage(id) {
-    if (!activeProjectId) return
+  // `open: false` keeps the user where they are (e.g. the project canvas).
+  function handleDuplicateProjectPage(id, { open = true } = {}) {
+    if (!activeProjectId) return null
     const result = projectStore.duplicatePage(activeProjectId, id)
-    if (!result) return
+    if (!result) return null
     setProjectPages(result.pages)
-    handleOpenPage(result.page.id)
+    if (open) handleOpenPage(result.page.id)
     refreshProjects()
+    return result.page
   }
 
   function handleDeleteProjectPage(id) {
@@ -1281,8 +1384,7 @@ function App() {
     const next = PAGES.includes(page) ? page : 'home'
     let nextPath = pathOverride ?? getPath(next)
     let nextTab = null
-    if (next.startsWith('component-')) {
-      const componentId = next.slice('component-'.length)
+    if (isDetailPage(next)) {
       if (pathOverride) {
         // An explicit destination (e.g. an example link) decides the tab.
         const url = new URL(pathOverride, window.location.origin)
@@ -1292,7 +1394,7 @@ function App() {
         // standard tab so switching components stays on the same tab, and
         // reflect it in the URL so the destination is deep-linkable.
         nextTab = DETAIL_TAB_IDS.includes(detailTab) ? detailTab : 'configure'
-        nextPath = componentPathWithTab(componentId, nextTab)
+        nextPath = detailPathWithTab(next, nextTab)
       }
     }
     const currentPath = `${window.location.pathname}${window.location.search}`
@@ -1301,7 +1403,7 @@ function App() {
     }
     setActivePage(next)
     setRoutePath(new URL(nextPath, window.location.origin).pathname)
-    if (next.startsWith('component-')) {
+    if (isDetailPage(next)) {
       setDetailTab(nextTab ?? 'configure')
     }
     setSidebarOpen(false)
@@ -1312,9 +1414,8 @@ function App() {
   // tab is deep-linkable (replaceState — a tab switch is not a new history entry).
   function selectDetailTab(nextTab) {
     setDetailTab(nextTab)
-    if (!activePage.startsWith('component-')) return
-    const componentId = activePage.slice('component-'.length)
-    const path = componentPathWithTab(componentId, nextTab)
+    if (!isDetailPage(activePage)) return
+    const path = detailPathWithTab(activePage, nextTab)
     const currentPath = `${window.location.pathname}${window.location.search}`
     if (path !== currentPath) {
       window.history.replaceState({ page: activePage }, '', path)
@@ -1428,6 +1529,8 @@ function App() {
     document.documentElement.classList.toggle('a1-reduce-motion', reducedMotion)
     document.documentElement.classList.toggle('a1-contrast-more', contrastMore)
   }, [theme, resolvedColorScheme, colorMode, reducedMotion, contrastMore])
+
+  usePrintLightMode(document.documentElement, { dark: resolvedColorScheme === 'dark', light: colorMode === 'light' })
 
   // Don't persist a standalone preview's forced theme — it must not leak into the
   // main app window's stored preference.
@@ -1812,6 +1915,37 @@ function App() {
       items: componentMenuItems,
     },
     {
+      id: 'pattern-library',
+      icon: 'dashboard_customize',
+      label: t('app.nav.patterns', 'Patterns'),
+      active: PATTERN_ROUTE_IDS.includes(activePage),
+      items: [
+        {
+          icon: 'dashboard_customize',
+          label: t('app.nav.overview', 'Overview'),
+          href: getPath('pattern-library'),
+          onClick: (e) => handleNavClick(e, 'pattern-library'),
+        },
+        { divider: true },
+        ...patternCategories.map((category) => ({
+          icon: category.icon,
+          label: category.title,
+          href: getPath(`patterns-${category.id}`),
+          active: activePage === `patterns-${category.id}`,
+          onClick: (e) => handleNavClick(e, `patterns-${category.id}`),
+          items: category.patterns.map((pattern) => {
+            const page = `pattern-${pattern.id}`
+            return {
+              label: pattern.title,
+              href: getPath(page),
+              active: activePage === page,
+              onClick: (e) => handleNavClick(e, page),
+            }
+          }),
+        })),
+      ],
+    },
+    {
       id: 'editor',
       icon: 'design_services',
       label: t('app.nav.editors', 'Editors'),
@@ -1828,14 +1962,25 @@ function App() {
               href: getPath('editor'),
               onClick: handleEditorNav,
             },
-            ...(projects.length ? [{ divider: true }] : []),
-            ...projects.map((project) => ({
-              icon: project.icon || 'folder',
-              label: project.name,
-              href: `/editor?project=${project.id}`,
-              active: activePage === 'editor' && activeProjectId === project.id,
-              onClick: (e) => handleProjectNav(e, project.id),
-            })),
+            // Hidden projects stay out of the menu; favorites come first. When any
+            // exist, labelled sections set them off from the rest (A1-2712).
+            ...menuProjects.flatMap((project, index) => [
+              ...(index === 0 || (!project.favorite && menuProjects[index - 1].favorite)
+                ? [{
+                    divider: true,
+                    ...(menuProjects[0].favorite
+                      ? { label: project.favorite ? t('app.projects.favoritesHeading', 'Favorites') : t('app.projects.otherProjectsHeading', 'Other projects') }
+                      : {}),
+                  }]
+                : []),
+              {
+                icon: project.icon || 'folder',
+                label: project.name,
+                href: `/editor?project=${project.id}`,
+                active: activePage === 'editor' && activeProjectId === project.id,
+                onClick: (e) => handleProjectNav(e, project.id),
+              },
+            ]),
           ],
         },
         ...(canAccessPage('patterns') ? [{
@@ -2019,7 +2164,7 @@ function App() {
       ? <div id="a1-web-backlog-aside-slot" className="a1-web-config-aside a1-web-config-aside--start" />
       : activePage === 'foundation-color-visualization'
       ? <div id="a1-web-color-visualization-aside-slot" className="a1-web-config-aside" />
-      : getComponentsAside({ activePage, detailTab })
+      : getComponentsAside({ activePage, detailTab }) ?? getPatternsAside({ activePage, detailTab })
     : undefined
 
   function runSkipMenuAction(action) {
@@ -2163,6 +2308,7 @@ function App() {
                 onClose={() => setSidebarOpen(false)}
                 project={activeProject}
                 onBackToProjects={handleBackToProjects}
+                onBackToProject={handleBackToProjectOverview}
                 pages={projectPages}
                 activePageId={openPageId}
                 hasOpenPage={!!openPageId}
@@ -2218,6 +2364,15 @@ function App() {
                 open={sidebarOpen}
                 onClose={() => setSidebarOpen(false)}
               />
+            : PATTERN_ROUTE_IDS.includes(activePage)
+            ? getPatternsSidebar({
+                activePage,
+                detailTab,
+                onNavigate: navigate,
+                onSelectDetailTab: selectDetailTab,
+                search: patternSearch,
+                setSearch: setPatternSearch,
+              })
             : COMPONENT_ROUTE_IDS.includes(activePage)
             ? getComponentsSidebar({
                 activePage,
@@ -2269,6 +2424,7 @@ function App() {
         {activePage === 'home' && <Home onNavigate={navigate} />}
         {activePage === 'dashboard' && <SystemDashboard onNavigate={navigate} />}
         {activePage === 'features' && <Features onNavigate={navigate} />}
+        {activePage === 'design-with-a1' && <DesignWithA1 />}
         {activePage === 'get-started' && <GetStarted onNavigate={navigate} />}
         {activePage === 'blog' && <Blog onNavigate={navigate} />}
         {activePage === 'blog-article' && <BlogArticle pathname={routePath} onNavigate={navigate} />}
@@ -2288,6 +2444,15 @@ function App() {
             projectId={activeProjectId}
             search={componentSearch}
             setSearch={setComponentSearch}
+            detailTab={detailTab}
+            setDetailTab={selectDetailTab}
+          />
+        )}
+        {PATTERN_ROUTE_IDS.includes(activePage) && (
+          <PatternLibrary
+            activePage={activePage}
+            onNavigate={navigate}
+            projectId={activeProjectId}
             detailTab={detailTab}
             setDetailTab={selectDetailTab}
           />
@@ -2338,6 +2503,9 @@ function App() {
               onOpenProject={openProject}
               onCreateProject={handleCreateProject}
               onRenameProject={handleRenameProject}
+              onOrganizeProject={handleOrganizeProject}
+              onMoveProject={handleMoveProject}
+              onMoveProjectToEdge={handleMoveProjectToEdge}
               onDuplicateProject={handleDuplicateProject}
               onDeleteProject={handleDeleteProject}
               archivedProjects={archivedProjects}
@@ -2392,6 +2560,11 @@ function App() {
               onDeleteProject={handleDeleteProject}
               onNavigateHome={() => navigate('home')}
               onBackToProjects={handleBackToProjects}
+              onSaveCanvas={handleSaveProjectCanvas}
+              onDuplicatePage={(id) => handleDuplicateProjectPage(id, { open: false })}
+              onDeletePage={handleDeleteProjectPage}
+              colorMode={colorMode}
+              resolvedColorScheme={resolvedColorScheme}
             />
           ) : (
             <EditorPage
@@ -2407,7 +2580,6 @@ function App() {
               resolvedColorScheme={resolvedColorScheme}
               projectPages={projectPages}
               onNavigateToPage={handleOpenPage}
-              onBackToProjectOverview={handleBackToProjectOverview}
               composeWithAi={openPageId === aiComposePageId}
               onAiComposeConsumed={() => setAiComposePageId(null)}
               pageLevel={projectStore.getPageLevel(projectPages, openPageId)}
@@ -2484,6 +2656,9 @@ function App() {
             onOpenProject={openProject}
             onCreateProject={handleCreateProject}
             onRenameProject={handleRenameProject}
+            onOrganizeProject={handleOrganizeProject}
+            onMoveProject={handleMoveProject}
+            onMoveProjectToEdge={handleMoveProjectToEdge}
             onDuplicateProject={handleDuplicateProject}
             onDeleteProject={handleDeleteProject}
             archivedProjects={archivedProjects}
@@ -2562,7 +2737,7 @@ function App() {
         onComplete={completeProductTour}
       />
 
-      <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} anchorRef={settingsAnchorRef} aria-label="Settings">
+      <Menu open={settingsOpen} onClose={() => setSettingsOpen(false)} anchorRef={settingsAnchorRef} aria-label="Settings" className="a1-min-w-sm" padding={12}>
         <MenuSection label={t('app.page.theme', 'Theme')}>
           {settingsThemeOptions.length > 5 ? (
             <SelectField

@@ -11,6 +11,22 @@ project. Read `Guidelines.md` first for the hub and key rules.
 npm install @gtivr4/a1-design-system-react
 ```
 
+The package is available on [npm](https://www.npmjs.com/package/@gtivr4/a1-design-system-react).
+Run the command in the consuming React project's directory and commit its
+lockfile. It installs the registry's current `latest` version. To inspect that
+version or install a specific published version:
+
+```sh
+npm view @gtivr4/a1-design-system-react version
+npm install @gtivr4/a1-design-system-react@<published-version>
+```
+
+Replace `<published-version>` with a version confirmed on npm. The MCP's
+`sourceVersion` identifies its indexed repository snapshot and may be ahead of
+the published package. For an existing project, check its installed version with
+`npm ls @gtivr4/a1-design-system-react` before upgrading. The installed package's
+`guidelines/` directory describes that version's contracts.
+
 **Peer dependency:** React 18 or later.
 
 **Bundler requirement:** the package ships untranspiled ESM + JSX source
@@ -177,6 +193,44 @@ The `labels` object follows the A1 label format: nested categories under a
 `label` root, each leaf carrying `$value` (English) and optional
 `locale`/`brand` maps. The label source JSON is not bundled with this package —
 bring your own translations in that shape.
+
+---
+
+## Minimal React page
+
+After the CSS, fonts and PostCSS setup above, render this component from your
+app. Component styles load through the package imports; no extra provider is
+required. The Page title sits at the edge of its container, with body spacing
+inside the following Section.
+
+```jsx
+import {
+  Button,
+  PageLayout,
+  PageTitle,
+  Paragraph,
+  Section,
+  Stack,
+} from "@gtivr4/a1-design-system-react";
+
+export default function Example() {
+  return (
+    <PageLayout>
+      <PageTitle title="Hello from A1" description="Build with shared components and tokens." />
+      <Section padding="lg" contentWidth="md">
+        <Stack gap="md" align="start">
+          <Paragraph>Your React app now uses A1 components.</Paragraph>
+          <Button href="https://a1design.app">Explore A1</Button>
+        </Stack>
+      </Section>
+    </PageLayout>
+  );
+}
+```
+
+Use MCP `get_component` and `get_pattern` for props and examples. The A1 Web
+JSON renderer is separate from the npm component library: use `get_json_model`,
+`validate_json` and `create_preview` when generating A1 page/project JSON.
 
 ---
 

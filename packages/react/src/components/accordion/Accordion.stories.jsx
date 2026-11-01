@@ -250,3 +250,21 @@ export const A11yDisabledState = {
     children: LOREM,
   },
 };
+
+export const Nested = {
+  args: {
+    label: 'Parent section', defaultOpen: true,
+    children: <Accordion label="Child section" subtext="Closed until opened">
+      <Button onClick={() => {}}>Child action</Button>
+    </Accordion>,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const child = canvas.getByRole('button', { name: 'Child section Closed until opened' });
+    const panel = canvasElement.querySelector(`#${CSS.escape(child.getAttribute('aria-controls'))}`);
+    await waitFor(() => { if (panel.getBoundingClientRect().height > 1) throw new Error('Closed child panel is visible'); });
+    await userEvent.click(child);
+    await waitFor(() => { if (panel.hasAttribute('inert')) throw new Error('Open child panel is inert'); });
+    await userEvent.click(canvas.getByRole('button', { name: 'Child action' }));
+  },
+};

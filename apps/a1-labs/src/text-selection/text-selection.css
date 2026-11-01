@@ -1,0 +1,39 @@
+.a1-selection-study--action-solid ::selection {
+  color: var(--semantic-color-action-foreground);
+  background-color: var(--semantic-color-action-background);
+}
+
+.a1-selection-study--action-subtle ::selection {
+  color: var(--semantic-color-text-accent);
+  background-color: var(--semantic-color-action-surface);
+}
+
+.a1-selection-study--info ::selection {
+  color: var(--semantic-color-status-info-text);
+  background-color: var(--semantic-color-status-info-surface);
+}
+
+.a1-selection-study--success ::selection {
+  color: var(--semantic-color-status-success-text);
+  background-color: var(--semantic-color-status-success-surface);
+}
+
+.a1-selection-study--warning ::selection {
+  color: var(--semantic-color-status-warn-text);
+  background-color: var(--semantic-color-status-warn-surface);
+}
+
+.a1-selection-study--error ::selection {
+  color: var(--semantic-color-status-error-text);
+  background-color: var(--semantic-color-status-error-surface);
+}
+
+.a1-selection-study--highlight-subtle ::selection {
+  color: var(--base-color-highlighted-900);
+  background-color: var(--base-color-highlighted-100);
+}
+
+.a1-selection-study--highlight-obvious ::selection {
+  color: var(--base-color-highlighted-1000);
+  background-color: var(--base-color-highlighted-400);
+}

@@ -1,0 +1,257 @@
+# A1 Design System — Setup
+
+How to install and configure `@gtivr4/a1-design-system-react` in a consuming
+project. Read `Guidelines.md` first for the hub and key rules.
+
+---
+
+## Install
+
+```sh
+npm install @gtivr4/a1-design-system-react
+```
+
+The package is available on [npm](https://www.npmjs.com/package/@gtivr4/a1-design-system-react).
+Run the command in the consuming React project's directory and commit its
+lockfile. It installs the registry's current `latest` version. To inspect that
+version or install a specific published version:
+
+```sh
+npm view @gtivr4/a1-design-system-react version
+npm install @gtivr4/a1-design-system-react@<published-version>
+```
+
+Replace `<published-version>` with a version confirmed on npm. The MCP's
+`sourceVersion` identifies its indexed repository snapshot and may be ahead of
+the published package. For an existing project, check its installed version with
+`npm ls @gtivr4/a1-design-system-react` before upgrading. The installed package's
+`guidelines/` directory describes that version's contracts.
+
+**Peer dependency:** React 18 or later.
+
+**Bundler requirement:** the package ships untranspiled ESM + JSX source
+(`main` points at `src/index.js`, which re-exports `.jsx` modules). Your
+bundler must transform `.jsx` files inside `node_modules`:
+
+- **Vite 4+** — works out of the box (esbuild transforms `.jsx` everywhere with
+  the automatic JSX runtime).
+- **Next.js** — add the package to `transpilePackages` in `next.config.mjs`:
+  ```js
+  const nextConfig = {
+    transpilePackages: ["@gtivr4/a1-design-system-react"],
+  };
+
+  export default nextConfig;
+  ```
+- **webpack / other** — extend your JSX loader rule to include this package
+  (do not exclude `node_modules/@gtivr4`).
+
+The package marks its shipped component modules with `"use client"`. React
+Server Components may import them from the package root and render them
+without adding a wrapper solely to establish the client boundary. Props passed
+across that boundary must still be serializable; put event handlers and other
+client-owned behavior in your own Client Component.
+
+---
+
+## Required CSS imports
+
+Import once at your app entry point, in this order:
+
+```js
+import "@gtivr4/a1-design-system-react/tokens.css";
+import "@gtivr4/a1-design-system-react/themes.css";
+import "@gtivr4/a1-design-system-react/color-scheme.css";
+```
+
+| File | Provides | Required? |
+|---|---|---|
+| `tokens.css` | Every design token as a `:root` CSS custom property (color, spacing, typography, radii, shadows, component dimensions). **Must be first.** | Yes — components are unstyled without it |
+| `themes.css` | `.a1-theme-*` selector overrides (heritage, accessible, fresh, crochet, aperture, marshmallow, catlympics) | Only if you activate a non-default theme |
+| `color-scheme.css` | Light/dark mode switching, `.a1-inverse` scopes, global `box-sizing: border-box` reset, contrast/reduced-motion handling | Yes |
+
+Per-component CSS is imported by each component module — no extra imports needed.
+
+Optional utilities:
+
+```js
+import "@gtivr4/a1-design-system-react/utilities/spacing.css"; // .a1-p-*/.a1-m-* padding/margin classes
+import "@gtivr4/a1-design-system-react/utilities/width.css";   // .a1-max-w-*/.a1-min-w-* width constraints
+import "@gtivr4/a1-design-system-react/utilities/sr-only.css"; // visually-hidden helper
+```
+
+---
+
+## PostCSS custom media (required)
+
+Component CSS uses `@custom-media` breakpoint queries (e.g.
+`@media (--bp-md-up)`). These are a CSS draft feature and must be expanded at
+build time or browsers drop the rules — responsive behavior in Grid, Stack,
+field layouts, SideNav, and others silently breaks.
+
+Install the required plugins:
+
+```sh
+npm install -D postcss-custom-media @csstools/postcss-global-data
+```
+
+### Next.js
+
+Next.js expects named PostCSS plugins in an object map. Add a CommonJS
+`postcss.config.js` at the project root:
+
+```js
+const breakpoints = require.resolve(
+  "@gtivr4/a1-design-system-react/breakpoints.css",
+);
+
+module.exports = {
+  plugins: {
+    "@csstools/postcss-global-data": { files: [breakpoints] },
+    "postcss-custom-media": {},
+  },
+};
+```
+
+Do not pass pre-invoked plugin functions in an array to Next.js; its built-in
+PostCSS loader rejects that configuration shape.
+
+### Vite and other ESM-based tools
+
+Add a `postcss.config.mjs` at the project root:
+
+```js
+import postcssGlobalData from "@csstools/postcss-global-data";
+import postcssCustomMedia from "postcss-custom-media";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
+const breakpoints = require.resolve("@gtivr4/a1-design-system-react/breakpoints.css");
+
+export default {
+  plugins: [
+    postcssGlobalData({ files: [breakpoints] }),
+    postcssCustomMedia(),
+  ],
+};
+```
+
+Vite picks up `postcss.config.mjs` automatically.
+
+---
+
+## Fonts
+
+Nothing in the package embeds fonts — the host page must load them.
+
+**Always required:**
+
+```html
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block" rel="stylesheet">
+```
+
+**Default themes (base / light / dark / accessible / heritage)** use Inter with
+system-font fallbacks:
+
+```html
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+```
+
+**Branded themes** need additional faces:
+
+| Theme | Text faces |
+|---|---|
+| `fresh` | Nunito, Libre Baskerville |
+| `crochet` | Fraunces, Libre Baskerville, Roboto Slab |
+| `aperture` | Pinyon Script, Playfair Display, Manrope |
+| `marshmallow` | Varela Round, Nunito |
+
+If a face isn't loaded, the token's fallback stack renders instead — the app
+works but loses the theme's typographic character.
+
+---
+
+## Providers
+
+No provider is required for default usage. `LabelsProvider` is optional:
+
+- Every built-in UI string (close buttons, pagination labels, table controls,
+  etc.) has an English default baked into the components.
+- To localize or override strings, wrap your app in `LabelsProvider` and pass a
+  `labels` object plus optional `locale` / `brand`:
+
+```jsx
+import { LabelsProvider } from "@gtivr4/a1-design-system-react";
+
+<LabelsProvider locale="es" labels={labels}>
+  <App />
+</LabelsProvider>
+```
+
+The `labels` object follows the A1 label format: nested categories under a
+`label` root, each leaf carrying `$value` (English) and optional
+`locale`/`brand` maps. The label source JSON is not bundled with this package —
+bring your own translations in that shape.
+
+---
+
+## Minimal React page
+
+After the CSS, fonts and PostCSS setup above, render this component from your
+app. Component styles load through the package imports; no extra provider is
+required. The Page title sits at the edge of its container, with body spacing
+inside the following Section.
+
+```jsx
+import {
+  Button,
+  PageLayout,
+  PageTitle,
+  Paragraph,
+  Section,
+  Stack,
+} from "@gtivr4/a1-design-system-react";
+
+export default function Example() {
+  return (
+    <PageLayout>
+      <PageTitle title="Hello from A1" description="Build with shared components and tokens." />
+      <Section padding="lg" contentWidth="md">
+        <Stack gap="md" align="start">
+          <Paragraph>Your React app now uses A1 components.</Paragraph>
+          <Button href="https://a1design.app">Explore A1</Button>
+        </Stack>
+      </Section>
+    </PageLayout>
+  );
+}
+```
+
+Use MCP `get_component` and `get_pattern` for props and examples. The A1 Web
+JSON renderer is separate from the npm component library: use `get_json_model`,
+`validate_json` and `create_preview` when generating A1 page/project JSON.
+
+---
+
+## Activating a theme
+
+Add the theme class to `<html>` (or any container to scope it):
+
+```html
+<html class="a1-theme-heritage">
+```
+
+See `tokens.md` for the full theme list, dark mode, and the `<Inverse>` scope
+contract.
+
+---
+
+## Checklist
+
+1. `npm install @gtivr4/a1-design-system-react`
+2. Import `tokens.css`, `themes.css`, `color-scheme.css` (in that order)
+3. Load Material Symbols Outlined + Inter (+ branded-theme faces if used)
+4. Configure `postcss-custom-media` with the package's `breakpoints.css`
+5. Import components: `import { Button } from "@gtivr4/a1-design-system-react"`
+6. Optional: `LabelsProvider` for localization, utility CSS for spacing/width helpers

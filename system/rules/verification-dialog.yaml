@@ -1,0 +1,14 @@
+component: VerificationDialog
+rules:
+  - id: verification-dialog-confirmation
+    components: [VerificationDialog]
+    requirement: Explain the consequence, then offer Cancel and one explicit confirmation action. Only confirmation invokes onConfirm.
+    do: Use a specific action verb and enable destructive styling when appropriate. Put optional supporting details in Content.
+    dont: Run the action on open, Cancel, Escape, close or backdrop dismissal.
+    applies_to: [usability, content]
+  - id: verification-dialog-focus
+    components: [VerificationDialog]
+    requirement: Focus Cancel when opening, trap keyboard focus in the dialog and return focus to the trigger when closing.
+    do: Provide an accessible title and explanatory message.
+    dont: Focus the destructive action automatically or omit the dialog name.
+    applies_to: [accessibility]

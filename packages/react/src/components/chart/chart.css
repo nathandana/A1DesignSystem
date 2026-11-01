@@ -71,7 +71,7 @@ html.a1-theme-dark .a1-inverse .a1-chart--variant-subtle {
   --component-chart-series-error: var(--semantic-color-status-error-border);
 }
 
-@media (prefers-color-scheme: dark) {
+@media screen and (prefers-color-scheme: dark) {
   html:not(.a1-theme-light) .a1-chart--variant-subtle {
     --component-chart-series-accent: var(--semantic-color-action-surface);
     --component-chart-series-info: var(--semantic-color-status-info-surface);

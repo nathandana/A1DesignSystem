@@ -139,19 +139,24 @@ ${LIGHT}
 /* ─── .a1-inverse: dark island on a light page ─────────────────────────────
    On a light page: .a1-inverse = dark.
    On a dark page (.a1-theme-dark or prefers-dark): overridden by the rules below.
-   Specificity (0,1,0) — intentionally lower than the dark class overrides. */
+   Specificity (0,1,0) — intentionally lower than the dark class overrides.
+   Screen-only: on paper an inverse island prints with the page's light values,
+   since browsers drop its dark background by default (A1-2707). */
 
-.a1-inverse {
-  color-scheme: dark;
-${DARK}
+@media screen {
+  .a1-inverse {
+    color-scheme: dark;
+${DARK4}
+  }
 }
 
 /* ─── System dark mode (OS-level preference) ────────────────────────────────
    Activates when the OS prefers dark and no explicit class overrides it.
+   Screen-only: printed pages always use the light baseline (A1-2707).
    .a1-inverse restore comes after the standalone .a1-inverse rule above,
    so same-specificity later-source-order wins and correctly flips it to light. */
 
-@media (prefers-color-scheme: dark) {
+@media screen and (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
 ${DARK4}
@@ -195,11 +200,14 @@ ${LIGHT}
 /* ─── Dark island inside explicit light (.a1-theme-light .a1-inverse) ───────
    When .a1-theme-light is on <html> and OS prefers dark, the system @media
    block (0,1,0) would flip .a1-inverse to light. This rule (0,2,1) overrides
-   that and keeps .a1-inverse sections dark under an explicit light page. */
+   that and keeps .a1-inverse sections dark under an explicit light page.
+   Screen-only, like the standalone .a1-inverse rule. */
 
-html.a1-theme-light .a1-inverse {
-  color-scheme: dark;
-${DARK}
+@media screen {
+  html.a1-theme-light .a1-inverse {
+    color-scheme: dark;
+${DARK4}
+  }
 }
 `;
 

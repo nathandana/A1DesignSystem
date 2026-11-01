@@ -8,19 +8,29 @@ on:
 permissions:
   contents: read
 
-# Serialize releases so concurrent runs cannot race the npm latest tag.
-concurrency:
-  group: npm-release
-  cancel-in-progress: false
-
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
 
 jobs:
+  publishing-identity:
+    name: Verify npm trusted publisher
+    if: github.ref == 'refs/heads/release' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+      - run: node scripts/check-npm-publisher.mjs
+
   a1-web-baseline:
     name: A1-Web release baseline
     if: github.ref == 'refs/heads/release' || github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    # Baselines are authored on macOS; Linux font rendering changes comparisons.
+    runs-on: macos-15
 
     steps:
       - uses: actions/checkout@v5
@@ -45,14 +55,20 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: a1-web-baseline-${{ github.sha }}
-          path: test-results/a1-web/
+          path: |
+            test-results/a1-web/
+            test-results/json-preview/
           retention-days: 30
           if-no-files-found: ignore
 
   publish:
     name: Publish packages
     runs-on: ubuntu-latest
-    needs: a1-web-baseline
+    needs: [a1-web-baseline, publishing-identity]
+    # Checks may run concurrently, but npm tag mutations must be serialized.
+    concurrency:
+      group: npm-package-publish
+      cancel-in-progress: false
     permissions:
       contents: read
       id-token: write
@@ -65,16 +81,23 @@ jobs:
       - uses: actions/setup-node@v5
         with:
           node-version: 24
-          registry-url: https://registry.npmjs.org
 
       - run: npm ci
 
       - name: Install npm with trusted publishing support
         run: npm install --global npm@11.21.0
 
+      - name: Verify publishing identity is available
+        run: |
+          npm --version
+          node --input-type=module -e "for (const key of ['ACTIONS_ID_TOKEN_REQUEST_URL', 'ACTIONS_ID_TOKEN_REQUEST_TOKEN']) { if (!process.env[key]) throw new Error(key + ' is unavailable; check id-token permissions'); } console.log('GitHub OIDC publishing identity is available');"
+
       - name: Build and validate release packages
         run: |
           npm run build:tokens
+          npm run patterns:check
+          npm run build:mcp-index:check
+          npm run test:patterns
           npm run test:rsc
           npm run pack:check
           node --test scripts/publish-npm.test.mjs

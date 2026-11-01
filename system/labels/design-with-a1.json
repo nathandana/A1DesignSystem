@@ -1,0 +1,440 @@
+{
+  "label": {
+    "designWithA1": {
+      "title": {
+        "$type": "string",
+        "$value": "Design with A1",
+        "$description": "Design with A1 guide: title.",
+        "locale": {
+          "es": "Diseña con A1",
+          "fr": "Concevoir avec A1",
+          "de": "Mit A1 gestalten",
+          "pt": "Crie com A1",
+          "ja": "A1 でデザイン",
+          "zh": "使用 A1 设计",
+          "ar": "صمّم باستخدام A1"
+        }
+      },
+      "intro": {
+        "$type": "string",
+        "$value": "Give your agent the system, then build with real components.",
+        "$description": "Design with A1 guide: intro.",
+        "locale": {
+          "es": "Dale el sistema a tu agente y crea con componentes reales.",
+          "fr": "Donnez le système à votre agent, puis créez avec de vrais composants.",
+          "de": "Gib deinem Agenten das System und baue mit echten Komponenten.",
+          "pt": "Dê o sistema ao seu agente e crie com componentes reais.",
+          "ja": "エージェントにシステムを共有し、実際のコンポーネントで構築します。",
+          "zh": "将系统交给智能体，再用实际组件构建。",
+          "ar": "زوّد وكيلك بالنظام، ثم ابنِ باستخدام مكونات فعلية."
+        }
+      },
+      "download": {
+        "$type": "string",
+        "$value": "Download design.md",
+        "$description": "Design with A1 guide: download.",
+        "locale": {
+          "es": "Descargar design.md",
+          "fr": "Télécharger design.md",
+          "de": "design.md herunterladen",
+          "pt": "Baixar design.md",
+          "ja": "design.md をダウンロード",
+          "zh": "下载 design.md",
+          "ar": "تنزيل design.md"
+        }
+      },
+      "reactTitle": {
+        "$type": "string",
+        "$value": "Build with React",
+        "$description": "Design with A1 guide: reactTitle.",
+        "locale": {
+          "es": "Crear con React",
+          "fr": "Créer avec React",
+          "de": "Mit React bauen",
+          "pt": "Criar com React",
+          "ja": "React で構築",
+          "zh": "使用 React 构建",
+          "ar": "البناء باستخدام React"
+        }
+      },
+      "reactBody": {
+        "$type": "string",
+        "$value": "Start here for a coded application. Ask MCP for get_react_setup, install the npm package, then use get_component and get_pattern for the APIs you need.",
+        "$description": "Design with A1 guide: reactBody.",
+        "locale": {
+          "es": "Empieza aquí para crear una aplicación con código. Pide get_react_setup a MCP, instala el paquete npm y usa get_component y get_pattern para consultar las API necesarias.",
+          "fr": "Commencez ici pour une application en code. Demandez get_react_setup à MCP, installez le paquet npm, puis utilisez get_component et get_pattern pour les API nécessaires.",
+          "de": "Beginne hier für eine Anwendung mit Code. Rufe get_react_setup über MCP ab, installiere das npm-Paket und nutze get_component und get_pattern für die benötigten APIs.",
+          "pt": "Comece aqui para um aplicativo com código. Peça get_react_setup ao MCP, instale o pacote npm e use get_component e get_pattern para as APIs necessárias.",
+          "ja": "コードでアプリを作る場合はここから始めます。MCP で get_react_setup を取得し、npm パッケージをインストールして、get_component と get_pattern で必要な API を確認します。",
+          "zh": "编写应用程序时从这里开始。通过 MCP 获取 get_react_setup，安装 npm 包，再使用 get_component 和 get_pattern 查询所需 API。",
+          "ar": "ابدأ هنا لإنشاء تطبيق برمجي. اطلب get_react_setup من MCP، وثبّت حزمة npm، ثم استخدم get_component وget_pattern لواجهات API المطلوبة."
+        }
+      },
+      "setupBody": {
+        "$type": "string",
+        "$value": "Follow the setup guide for CSS order, fonts and required PostCSS breakpoints. Check the installed package version: the MCP source version may be newer than npm.",
+        "$description": "Design with A1 guide: setupBody.",
+        "locale": {
+          "es": "Sigue la guía para el orden del CSS, las fuentes y los puntos de ruptura de PostCSS obligatorios. Comprueba la versión instalada: la de MCP puede ser más reciente que la de npm.",
+          "fr": "Suivez le guide pour l’ordre CSS, les polices et les points de rupture PostCSS requis. Vérifiez la version installée : celle de MCP peut être plus récente que celle de npm.",
+          "de": "Beachte die Anleitung für CSS-Reihenfolge, Schriften und erforderliche PostCSS-Breakpoints. Prüfe die installierte Version: Die MCP-Quellversion kann neuer als npm sein.",
+          "pt": "Siga o guia para a ordem do CSS, fontes e pontos de quebra obrigatórios do PostCSS. Confira a versão instalada: a versão do MCP pode ser mais recente que a do npm.",
+          "ja": "CSS の順序、フォント、必須の PostCSS ブレークポイントはセットアップガイドに従ってください。MCP のソースは npm より新しい場合があるため、インストール済みのバージョンを確認します。",
+          "zh": "按照设置指南配置 CSS 顺序、字体和必需的 PostCSS 断点。检查已安装的版本：MCP 源代码版本可能比 npm 更新。",
+          "ar": "اتبع دليل الإعداد لترتيب CSS والخطوط ونقاط توقف PostCSS المطلوبة. تحقّق من الإصدار المثبّت؛ فقد يكون إصدار مصدر MCP أحدث من npm."
+        }
+      },
+      "setupLink": {
+        "$type": "string",
+        "$value": "React setup guide",
+        "$description": "Design with A1 guide: setupLink.",
+        "locale": {
+          "es": "Guía de configuración de React",
+          "fr": "Guide de configuration React",
+          "de": "React-Einrichtungsanleitung",
+          "pt": "Guia de configuração do React",
+          "ja": "React セットアップガイド",
+          "zh": "React 设置指南",
+          "ar": "دليل إعداد React"
+        }
+      },
+      "promptTitle": {
+        "$type": "string",
+        "$value": "Start with this prompt",
+        "$description": "Design with A1 guide: promptTitle.",
+        "locale": {
+          "es": "Empieza con esta instrucción",
+          "fr": "Commencez avec cette consigne",
+          "de": "Mit dieser Anweisung beginnen",
+          "pt": "Comece com esta instrução",
+          "ja": "このプロンプトから開始",
+          "zh": "从这条提示开始",
+          "ar": "ابدأ بهذا الطلب"
+        }
+      },
+      "reactPrompt": {
+        "$type": "string",
+        "$value": "Read design.md. Build this interface with @gtivr4/a1-design-system-react. Use get_react_setup and inspect the relevant component and pattern APIs first. Preserve my content and hierarchy. Use A1 props and tokens; keep PageTitle flush to its container. Check keyboard access, themes and xs–xl layouts. Show the working React implementation and verification results.",
+        "$description": "Design with A1 guide: reactPrompt.",
+        "locale": {
+          "es": "Lee design.md. Crea esta interfaz con @gtivr4/a1-design-system-react. Usa get_react_setup y consulta primero las API de componentes y patrones pertinentes. Conserva mi contenido y jerarquía. Usa props y tokens de A1; coloca PageTitle al ras del contenedor. Comprueba el acceso por teclado, los temas y los diseños xs–xl. Muestra la implementación React y los resultados de verificación.",
+          "fr": "Lisez design.md. Créez cette interface avec @gtivr4/a1-design-system-react. Utilisez get_react_setup et consultez les API des composants et modèles concernés. Conservez mon contenu et sa hiérarchie. Utilisez les props et tokens A1 ; placez PageTitle au bord de son conteneur. Vérifiez le clavier, les thèmes et les mises en page xs–xl. Présentez le code React fonctionnel et les vérifications.",
+          "de": "Lies design.md. Baue diese Oberfläche mit @gtivr4/a1-design-system-react. Nutze get_react_setup und prüfe zuerst die relevanten Komponenten- und Muster-APIs. Bewahre meinen Inhalt und seine Hierarchie. Nutze A1-Props und Tokens; PageTitle liegt bündig am Container. Prüfe Tastaturbedienung, Themes und xs–xl-Layouts. Zeige die funktionierende React-Implementierung und Prüfergebnisse.",
+          "pt": "Leia design.md. Crie esta interface com @gtivr4/a1-design-system-react. Use get_react_setup e consulte primeiro as APIs dos componentes e padrões relevantes. Preserve meu conteúdo e hierarquia. Use props e tokens do A1; mantenha PageTitle junto à borda do contêiner. Verifique teclado, temas e layouts xs–xl. Mostre a implementação React funcional e os resultados.",
+          "ja": "design.md を読んでください。@gtivr4/a1-design-system-react でこの画面を構築します。最初に get_react_setup と関連するコンポーネントおよびパターンの API を確認してください。内容と階層を維持し、A1 の props とトークンを使い、PageTitle をコンテナの端に配置します。キーボード操作、テーマ、xs–xl のレイアウトを確認し、動作する React 実装と検証結果を示してください。",
+          "zh": "阅读 design.md。使用 @gtivr4/a1-design-system-react 构建此界面。先使用 get_react_setup 并检查相关组件和模式 API。保留我的内容和层级。使用 A1 属性和令牌，让 PageTitle 紧贴容器边缘。检查键盘访问、主题和 xs–xl 布局。展示可运行的 React 实现及验证结果。",
+          "ar": "اقرأ design.md. ابنِ هذه الواجهة باستخدام @gtivr4/a1-design-system-react. استخدم get_react_setup وافحص واجهات المكونات والأنماط أولًا. حافظ على المحتوى والتسلسل الهرمي. استخدم خصائص A1 ورموزه، وضع PageTitle بمحاذاة حافة الحاوية. تحقّق من لوحة المفاتيح والسمات وتخطيطات xs–xl. اعرض تنفيذ React العامل ونتائج التحقق."
+        }
+      },
+      "agentsTitle": {
+        "$type": "string",
+        "$value": "Connect your agent",
+        "$description": "Design with A1 guide: agentsTitle.",
+        "locale": {
+          "es": "Conecta tu agente",
+          "fr": "Connectez votre agent",
+          "de": "Agent verbinden",
+          "pt": "Conecte seu agente",
+          "ja": "エージェントを接続",
+          "zh": "连接智能体",
+          "ar": "اربط وكيلك"
+        }
+      },
+      "agentsBody": {
+        "$type": "string",
+        "$value": "Use the HTTP MCP endpoint below. Download design.md into your project and explicitly ask the agent to read it. Keep project instructions short and request only the APIs relevant to the task.",
+        "$description": "Design with A1 guide: agentsBody.",
+        "locale": {
+          "es": "Usa el endpoint HTTP de MCP de abajo. Descarga design.md en tu proyecto y pide al agente que lo lea. Mantén breves las instrucciones del proyecto y solicita solo las API pertinentes.",
+          "fr": "Utilisez le point d’accès HTTP MCP ci-dessous. Téléchargez design.md dans votre projet et demandez à l’agent de le lire. Gardez des consignes courtes et demandez seulement les API utiles.",
+          "de": "Nutze den HTTP-MCP-Endpunkt unten. Lade design.md in dein Projekt und bitte den Agenten ausdrücklich, die Datei zu lesen. Halte Projektanweisungen kurz und frage nur relevante APIs ab.",
+          "pt": "Use o endpoint HTTP MCP abaixo. Baixe design.md no projeto e peça explicitamente ao agente para lê-lo. Mantenha as instruções curtas e solicite apenas as APIs relevantes.",
+          "ja": "以下の HTTP MCP エンドポイントを使います。design.md をプロジェクトにダウンロードし、読むよう明示的に指示してください。プロジェクトの指示は短くし、必要な API だけを取得します。",
+          "zh": "使用下方的 HTTP MCP 端点。将 design.md 下载到项目中，并明确要求智能体阅读。保持项目指令简短，只查询与任务相关的 API。",
+          "ar": "استخدم نقطة نهاية HTTP MCP أدناه. نزّل design.md إلى مشروعك واطلب من الوكيل قراءته صراحةً. اجعل تعليمات المشروع موجزة واطلب واجهات API ذات الصلة فقط."
+        }
+      },
+      "codexBody": {
+        "$type": "string",
+        "$value": "Connect with the command below. In AGENTS.md, tell Codex to read design.md before interface work. Ask for implementation and local verification in the same task.",
+        "$description": "Design with A1 guide: codexBody.",
+        "locale": {
+          "es": "Conecta con el comando de abajo. En AGENTS.md, indica a Codex que lea design.md antes de trabajar en interfaces. Pide implementación y verificación local en la misma tarea.",
+          "fr": "Connectez-vous avec la commande ci-dessous. Dans AGENTS.md, demandez à Codex de lire design.md avant de travailler sur l’interface. Demandez le code et sa vérification locale dans la même tâche.",
+          "de": "Verbinde mit dem Befehl unten. Weise Codex in AGENTS.md an, design.md vor Oberflächenarbeiten zu lesen. Fordere Implementierung und lokale Prüfung in derselben Aufgabe an.",
+          "pt": "Conecte com o comando abaixo. No AGENTS.md, instrua o Codex a ler design.md antes de trabalhar na interface. Peça implementação e verificação local na mesma tarefa.",
+          "ja": "以下のコマンドで接続します。AGENTS.md に、UI 作業の前に design.md を読むよう記載します。実装とローカル検証を同じタスクで依頼してください。",
+          "zh": "使用下方命令连接。在 AGENTS.md 中要求 Codex 在界面工作前阅读 design.md。在同一任务中请求实现和本地验证。",
+          "ar": "اتصل بالأمر أدناه. وجّه Codex في AGENTS.md لقراءة design.md قبل العمل على الواجهة. اطلب التنفيذ والتحقق المحلي في المهمة نفسها."
+        }
+      },
+      "claudeBody": {
+        "$type": "string",
+        "$value": "Add A1 at project scope with the command below. Reference design.md in CLAUDE.md. Use /mcp to check the connection, then request the relevant components before coding.",
+        "$description": "Design with A1 guide: claudeBody.",
+        "locale": {
+          "es": "Añade A1 al proyecto con el comando de abajo. Referencia design.md en CLAUDE.md. Usa /mcp para comprobar la conexión y consulta los componentes pertinentes antes de programar.",
+          "fr": "Ajoutez A1 au projet avec la commande ci-dessous. Référencez design.md dans CLAUDE.md. Vérifiez la connexion avec /mcp, puis consultez les composants utiles avant de coder.",
+          "de": "Füge A1 mit dem Befehl unten zum Projekt hinzu. Verweise in CLAUDE.md auf design.md. Prüfe die Verbindung mit /mcp und frage vor dem Programmieren die relevanten Komponenten ab.",
+          "pt": "Adicione A1 ao projeto com o comando abaixo. Referencie design.md no CLAUDE.md. Use /mcp para verificar a conexão e consulte os componentes relevantes antes de programar.",
+          "ja": "以下のコマンドでプロジェクトに A1 を追加します。CLAUDE.md から design.md を参照してください。/mcp で接続を確認し、コーディング前に関連コンポーネントを取得します。",
+          "zh": "使用下方命令在项目范围添加 A1。在 CLAUDE.md 中引用 design.md。通过 /mcp 检查连接，然后在编码前查询相关组件。",
+          "ar": "أضف A1 على مستوى المشروع بالأمر أدناه. أشر إلى design.md في CLAUDE.md. استخدم /mcp للتحقق من الاتصال، ثم اطلب المكونات المناسبة قبل البرمجة."
+        }
+      },
+      "cursorBody": {
+        "$type": "string",
+        "$value": "Add this configuration to .cursor/mcp.json, merging it with existing servers. Add a project rule in .cursor/rules that tells Agent to read design.md. Scope rules to the interface files you are changing.",
+        "$description": "Design with A1 guide: cursorBody.",
+        "locale": {
+          "es": "Añade esta configuración a .cursor/mcp.json, combinándola con los servidores existentes. Crea una regla en .cursor/rules que indique a Agent que lea design.md. Limita las reglas a los archivos de interfaz que cambias.",
+          "fr": "Ajoutez cette configuration à .cursor/mcp.json en conservant les serveurs existants. Ajoutez une règle dans .cursor/rules demandant à Agent de lire design.md. Limitez les règles aux fichiers d’interface concernés.",
+          "de": "Ergänze diese Konfiguration in .cursor/mcp.json, ohne bestehende Server zu ersetzen. Erstelle in .cursor/rules eine Regel zum Lesen von design.md. Begrenze Regeln auf die betroffenen Oberflächendateien.",
+          "pt": "Adicione esta configuração a .cursor/mcp.json, preservando os servidores existentes. Crie uma regra em .cursor/rules para Agent ler design.md. Restrinja as regras aos arquivos de interface alterados.",
+          "ja": "既存のサーバーを維持しながら .cursor/mcp.json に以下の設定を追加します。.cursor/rules に design.md を読むルールを追加し、対象を変更する UI ファイルに絞ってください。",
+          "zh": "将此配置合并到 .cursor/mcp.json，保留现有服务器。在 .cursor/rules 中添加要求 Agent 阅读 design.md 的项目规则，并将规则范围限定为正在修改的界面文件。",
+          "ar": "ادمج هذا الإعداد في .cursor/mcp.json مع الخوادم الحالية. أضف قاعدة في .cursor/rules تطلب من Agent قراءة design.md. اجعل نطاق القواعد ملفات الواجهة التي تعدّلها."
+        }
+      },
+      "geminiBody": {
+        "$type": "string",
+        "$value": "Connect with the command below. Reference design.md in GEMINI.md and use /memory show to confirm the project context. Ask for React code and a browser check of the result.",
+        "$description": "Design with A1 guide: geminiBody.",
+        "locale": {
+          "es": "Conecta con el comando de abajo. Referencia design.md en GEMINI.md y usa /memory show para confirmar el contexto. Pide código React y una comprobación del resultado en el navegador.",
+          "fr": "Connectez-vous avec la commande ci-dessous. Référencez design.md dans GEMINI.md et vérifiez le contexte avec /memory show. Demandez du code React et une vérification dans le navigateur.",
+          "de": "Verbinde mit dem Befehl unten. Verweise in GEMINI.md auf design.md und prüfe den Kontext mit /memory show. Fordere React-Code und eine Prüfung im Browser an.",
+          "pt": "Conecte com o comando abaixo. Referencie design.md no GEMINI.md e confirme o contexto com /memory show. Peça código React e verificação no navegador.",
+          "ja": "以下のコマンドで接続します。GEMINI.md から design.md を参照し、/memory show でコンテキストを確認します。React コードとブラウザでの確認を依頼してください。",
+          "zh": "使用下方命令连接。在 GEMINI.md 中引用 design.md，用 /memory show 确认项目上下文。请求 React 代码和浏览器结果检查。",
+          "ar": "اتصل بالأمر أدناه. أشر إلى design.md في GEMINI.md واستخدم /memory show لتأكيد سياق المشروع. اطلب كود React وفحص النتيجة في المتصفح."
+        }
+      },
+      "otherTitle": {
+        "$type": "string",
+        "$value": "Other agents and chat tools",
+        "$description": "Design with A1 guide: otherTitle.",
+        "locale": {
+          "es": "Otros agentes y herramientas de chat",
+          "fr": "Autres agents et outils de chat",
+          "de": "Andere Agenten und Chat-Tools",
+          "pt": "Outros agentes e ferramentas de chat",
+          "ja": "その他のエージェントとチャットツール",
+          "zh": "其他智能体和聊天工具",
+          "ar": "وكلاء وأدوات محادثة أخرى"
+        }
+      },
+      "otherBody": {
+        "$type": "string",
+        "$value": "Attach design.md or paste it into the conversation. If the tool supports remote MCP, add the endpoint above using its own setup guide. Without a code workspace, request A1 JSON and import it in Projects. If MCP is unavailable, supply the A1 JSON model as context; do not invent the schema.",
+        "$description": "Design with A1 guide: otherBody.",
+        "locale": {
+          "es": "Adjunta design.md o pégalo en la conversación. Si la herramienta admite MCP remoto, añade el endpoint anterior siguiendo su guía. Sin un espacio de código, pide JSON de A1 e impórtalo en Proyectos. Si MCP no está disponible, proporciona el modelo JSON de A1; no inventes el esquema.",
+          "fr": "Joignez design.md ou collez-le dans la conversation. Si l’outil accepte MCP distant, ajoutez le point d’accès selon son guide. Sans espace de code, demandez du JSON A1 et importez-le dans Projets. Sans MCP, fournissez le modèle JSON A1 ; n’inventez pas le schéma.",
+          "de": "Hänge design.md an oder füge den Inhalt in den Chat ein. Unterstützt das Tool Remote-MCP, füge den Endpunkt gemäß seiner Anleitung hinzu. Ohne Code-Arbeitsbereich fordere A1-JSON an und importiere es in Projekte. Ohne MCP stelle das A1-JSON-Modell bereit; erfinde kein Schema.",
+          "pt": "Anexe design.md ou cole na conversa. Se a ferramenta aceitar MCP remoto, adicione o endpoint conforme o guia dela. Sem espaço de código, peça JSON do A1 e importe em Projetos. Sem MCP, forneça o modelo JSON do A1; não invente o esquema.",
+          "ja": "design.md を添付するか会話に貼り付けます。リモート MCP 対応ツールでは、そのガイドに従って上記のエンドポイントを追加してください。コード環境がない場合は A1 JSON を生成し、プロジェクトでインポートします。MCP が使えない場合は A1 JSON モデルを共有し、スキーマを推測しないでください。",
+          "zh": "附加 design.md 或将其粘贴到对话中。如果工具支持远程 MCP，请按照其指南添加上述端点。没有代码工作区时，请求 A1 JSON 并在项目中导入。如果 MCP 不可用，请提供 A1 JSON 模型作为上下文；不要编造模式。",
+          "ar": "أرفق design.md أو الصقه في المحادثة. إذا كانت الأداة تدعم MCP البعيد، فأضف نقطة النهاية وفق دليلها. دون مساحة برمجة، اطلب JSON لـ A1 واستورده في المشاريع. إذا تعذّر MCP، قدّم نموذج JSON الخاص بـ A1؛ لا تخترع المخطط."
+        }
+      },
+      "docsLink": {
+        "$type": "string",
+        "$value": "MCP setup documentation",
+        "$description": "Design with A1 guide: docsLink.",
+        "locale": {
+          "es": "Documentación de configuración de MCP",
+          "fr": "Documentation de configuration MCP",
+          "de": "MCP-Einrichtungsdokumentation",
+          "pt": "Documentação de configuração do MCP",
+          "ja": "MCP セットアップ資料",
+          "zh": "MCP 设置文档",
+          "ar": "وثائق إعداد MCP"
+        }
+      },
+      "contextLink": {
+        "$type": "string",
+        "$value": "Project context documentation",
+        "$description": "Design with A1 guide: contextLink.",
+        "locale": {
+          "es": "Documentación del contexto del proyecto",
+          "fr": "Documentation du contexte de projet",
+          "de": "Dokumentation zum Projektkontext",
+          "pt": "Documentação do contexto do projeto",
+          "ja": "プロジェクトコンテキスト資料",
+          "zh": "项目上下文文档",
+          "ar": "وثائق سياق المشروع"
+        }
+      },
+      "jsonTitle": {
+        "$type": "string",
+        "$value": "Build directly in A1 with JSON",
+        "$description": "Design with A1 guide: jsonTitle.",
+        "locale": {
+          "es": "Crear directamente en A1 con JSON",
+          "fr": "Créer directement dans A1 avec JSON",
+          "de": "Direkt in A1 mit JSON bauen",
+          "pt": "Criar diretamente no A1 com JSON",
+          "ja": "JSON で A1 に直接構築",
+          "zh": "通过 JSON 直接在 A1 中构建",
+          "ar": "البناء مباشرةً في A1 باستخدام JSON"
+        }
+      },
+      "jsonBody": {
+        "$type": "string",
+        "$value": "Use this path for editable A1 pages and projects. Generate from get_json_model, validate with validate_json, repair errors, then send the document to create_preview. Review the preview and import it as a project when signed in. Validation checks the contract; still review layout and accessibility.",
+        "$description": "Design with A1 guide: jsonBody.",
+        "locale": {
+          "es": "Usa esta opción para páginas y proyectos editables de A1. Genera con get_json_model, valida con validate_json, corrige errores y envía el documento a create_preview. Revisa la vista previa e impórtala como proyecto al iniciar sesión. La validación comprueba el contrato; revisa también diseño y accesibilidad.",
+          "fr": "Choisissez ce parcours pour des pages et projets A1 modifiables. Générez avec get_json_model, validez avec validate_json, corrigez les erreurs, puis envoyez le document à create_preview. Vérifiez l’aperçu et importez-le comme projet une fois connecté. La validation vérifie le contrat ; contrôlez aussi la mise en page et l’accessibilité.",
+          "de": "Nutze diesen Weg für bearbeitbare A1-Seiten und Projekte. Generiere mit get_json_model, prüfe mit validate_json, behebe Fehler und sende das Dokument an create_preview. Prüfe die Vorschau und importiere sie angemeldet als Projekt. Die Validierung prüft den Vertrag; kontrolliere auch Layout und Barrierefreiheit.",
+          "pt": "Use este caminho para páginas e projetos editáveis no A1. Gere com get_json_model, valide com validate_json, corrija erros e envie o documento para create_preview. Revise a prévia e importe como projeto após entrar. A validação verifica o contrato; confira também layout e acessibilidade.",
+          "ja": "編集可能な A1 ページやプロジェクトにはこの方法を使います。get_json_model から生成し、validate_json で検証してエラーを修正し、create_preview に送信します。プレビューを確認し、ログイン後にプロジェクトとしてインポートします。検証は契約を確認するため、レイアウトとアクセシビリティも確認してください。",
+          "zh": "此路径适用于可编辑的 A1 页面和项目。根据 get_json_model 生成，用 validate_json 验证，修复错误后将文档发送到 create_preview。查看预览，登录后将其导入为项目。验证检查的是契约；仍需检查布局和无障碍体验。",
+          "ar": "استخدم هذا المسار لصفحات ومشاريع A1 القابلة للتحرير. أنشئ عبر get_json_model، وتحقّق عبر validate_json، وأصلح الأخطاء، ثم أرسل المستند إلى create_preview. راجع المعاينة واستوردها كمشروع بعد تسجيل الدخول. التحقق يفحص العقد؛ راجع التخطيط وإمكانية الوصول أيضًا."
+        }
+      },
+      "jsonPrompt": {
+        "$type": "string",
+        "$value": "Read design.md and get_json_model. Generate an A1 project for my brief using supported components and patterns. Validate it with validate_json, repair all errors and review warnings. Call create_preview with the repaired JSON and return the preview link and JSON for import. Preserve my content; verify the rendered result.",
+        "$description": "Design with A1 guide: jsonPrompt.",
+        "locale": {
+          "es": "Lee design.md y get_json_model. Genera un proyecto A1 según mis requisitos con componentes y patrones compatibles. Valídalo con validate_json, corrige errores y revisa advertencias. Llama a create_preview con el JSON corregido y devuelve el enlace y el JSON para importar. Conserva mi contenido y verifica el resultado.",
+          "fr": "Lisez design.md et get_json_model. Générez un projet A1 selon mon brief avec les composants et modèles pris en charge. Validez avec validate_json, corrigez les erreurs et examinez les avertissements. Appelez create_preview avec le JSON corrigé et fournissez le lien et le JSON à importer. Conservez mon contenu et vérifiez le rendu.",
+          "de": "Lies design.md und get_json_model. Generiere ein A1-Projekt nach meinem Briefing mit unterstützten Komponenten und Mustern. Prüfe mit validate_json, behebe alle Fehler und prüfe Warnungen. Rufe create_preview mit dem korrigierten JSON auf und liefere Vorschaulink und Import-JSON. Bewahre meinen Inhalt und prüfe das Ergebnis.",
+          "pt": "Leia design.md e get_json_model. Gere um projeto A1 para meu briefing com componentes e padrões compatíveis. Valide com validate_json, corrija erros e revise avisos. Chame create_preview com o JSON corrigido e retorne o link e o JSON para importação. Preserve meu conteúdo e verifique o resultado.",
+          "ja": "design.md と get_json_model を読んでください。対応するコンポーネントとパターンで要件に合う A1 プロジェクトを生成します。validate_json で検証し、全エラーを修正して警告を確認します。修正した JSON で create_preview を呼び出し、プレビューリンクとインポート用 JSON を返してください。内容を維持し、描画結果を確認してください。",
+          "zh": "阅读 design.md 和 get_json_model。使用支持的组件和模式，根据我的需求生成 A1 项目。通过 validate_json 验证，修复所有错误并检查警告。用修复后的 JSON 调用 create_preview，返回预览链接和可导入的 JSON。保留我的内容并验证渲染结果。",
+          "ar": "اقرأ design.md وget_json_model. أنشئ مشروع A1 وفق متطلباتي بالمكونات والأنماط المدعومة. تحقّق عبر validate_json وأصلح الأخطاء وراجع التحذيرات. استدعِ create_preview باستخدام JSON المصحح وأعد رابط المعاينة وJSON للاستيراد. حافظ على المحتوى وافحص النتيجة المعروضة."
+        }
+      },
+      "projectsLink": {
+        "$type": "string",
+        "$value": "Open Projects",
+        "$description": "Design with A1 guide: projectsLink.",
+        "locale": {
+          "es": "Abrir Proyectos",
+          "fr": "Ouvrir Projets",
+          "de": "Projekte öffnen",
+          "pt": "Abrir Projetos",
+          "ja": "プロジェクトを開く",
+          "zh": "打开项目",
+          "ar": "فتح المشاريع"
+        }
+      },
+      "modelLink": {
+        "$type": "string",
+        "$value": "A1 JSON model",
+        "$description": "Design with A1 guide: modelLink.",
+        "locale": {
+          "es": "Modelo JSON de A1",
+          "fr": "Modèle JSON A1",
+          "de": "A1-JSON-Modell",
+          "pt": "Modelo JSON do A1",
+          "ja": "A1 JSON モデル",
+          "zh": "A1 JSON 模型",
+          "ar": "نموذج JSON لـ A1"
+        }
+      },
+      "designTitle": {
+        "$type": "string",
+        "$value": "Keep the design context current",
+        "$description": "Design with A1 guide: designTitle.",
+        "locale": {
+          "es": "Mantén actualizado el contexto de diseño",
+          "fr": "Gardez le contexte de conception à jour",
+          "de": "Designkontext aktuell halten",
+          "pt": "Mantenha o contexto de design atualizado",
+          "ja": "デザインのコンテキストを最新に保つ",
+          "zh": "保持设计上下文最新",
+          "ar": "حافظ على تحديث سياق التصميم"
+        }
+      },
+      "designBody": {
+        "$type": "string",
+        "$value": "design.md combines A1 tokens with guidance on hierarchy, layout, components and accessibility, following Google’s DESIGN.md format. Download a fresh copy when adopting a new A1 version. Agents can also read a1://docs/design through MCP resources.",
+        "$description": "Design with A1 guide: designBody.",
+        "locale": {
+          "es": "design.md combina tokens de A1 con orientación sobre jerarquía, diseño, componentes y accesibilidad según el formato DESIGN.md de Google. Descarga una copia nueva al adoptar otra versión de A1. Los agentes también pueden leer a1://docs/design mediante los recursos MCP.",
+          "fr": "design.md associe les tokens A1 à des conseils sur la hiérarchie, la mise en page, les composants et l’accessibilité, au format DESIGN.md de Google. Téléchargez une nouvelle copie lors d’un changement de version A1. Les agents peuvent aussi lire a1://docs/design via MCP.",
+          "de": "design.md verbindet A1-Tokens mit Hinweisen zu Hierarchie, Layout, Komponenten und Barrierefreiheit im DESIGN.md-Format von Google. Lade bei einem A1-Versionswechsel eine neue Kopie herunter. Agenten können auch a1://docs/design über MCP-Ressourcen lesen.",
+          "pt": "design.md combina tokens do A1 com orientações sobre hierarquia, layout, componentes e acessibilidade no formato DESIGN.md do Google. Baixe uma cópia nova ao adotar outra versão do A1. Agentes também podem ler a1://docs/design pelos recursos MCP.",
+          "ja": "design.md は Google の DESIGN.md 形式に従い、A1 のトークンと階層、レイアウト、コンポーネント、アクセシビリティの指針をまとめます。A1 のバージョンを更新するときに再ダウンロードしてください。MCP リソースの a1://docs/design からも取得できます。",
+          "zh": "design.md 遵循 Google 的 DESIGN.md 格式，将 A1 令牌与层级、布局、组件和无障碍指南结合。采用新版 A1 时下载最新副本。智能体也可以通过 MCP 资源读取 a1://docs/design。",
+          "ar": "يجمع design.md رموز A1 وإرشادات التسلسل والتخطيط والمكونات وإمكانية الوصول وفق تنسيق DESIGN.md من Google. نزّل نسخة جديدة عند اعتماد إصدار جديد من A1. يمكن للوكلاء أيضًا قراءة a1://docs/design عبر موارد MCP."
+        }
+      },
+      "specLink": {
+        "$type": "string",
+        "$value": "Google DESIGN.md specification",
+        "$description": "Design with A1 guide: specLink.",
+        "locale": {
+          "es": "Especificación DESIGN.md de Google",
+          "fr": "Spécification DESIGN.md de Google",
+          "de": "Google-DESIGN.md-Spezifikation",
+          "pt": "Especificação DESIGN.md do Google",
+          "ja": "Google DESIGN.md 仕様",
+          "zh": "Google DESIGN.md 规范",
+          "ar": "مواصفات DESIGN.md من Google"
+        }
+      },
+      "codex": {
+        "$type": "string",
+        "$value": "Codex",
+        "$description": "Agent product name; preserve the official brand in every locale.",
+        "locale": {
+          "es": "Codex",
+          "fr": "Codex",
+          "de": "Codex",
+          "pt": "Codex",
+          "ja": "Codex",
+          "zh": "Codex",
+          "ar": "Codex"
+        }
+      },
+      "claude": {
+        "$type": "string",
+        "$value": "Claude Code",
+        "$description": "Agent product name; preserve the official brand in every locale.",
+        "locale": {
+          "es": "Claude Code",
+          "fr": "Claude Code",
+          "de": "Claude Code",
+          "pt": "Claude Code",
+          "ja": "Claude Code",
+          "zh": "Claude Code",
+          "ar": "Claude Code"
+        }
+      },
+      "cursor": {
+        "$type": "string",
+        "$value": "Cursor",
+        "$description": "Agent product name; preserve the official brand in every locale.",
+        "locale": {
+          "es": "Cursor",
+          "fr": "Cursor",
+          "de": "Cursor",
+          "pt": "Cursor",
+          "ja": "Cursor",
+          "zh": "Cursor",
+          "ar": "Cursor"
+        }
+      },
+      "gemini": {
+        "$type": "string",
+        "$value": "Gemini CLI",
+        "$description": "Agent product name; preserve the official brand in every locale.",
+        "locale": {
+          "es": "Gemini CLI",
+          "fr": "Gemini CLI",
+          "de": "Gemini CLI",
+          "pt": "Gemini CLI",
+          "ja": "Gemini CLI",
+          "zh": "Gemini CLI",
+          "ar": "Gemini CLI"
+        }
+      }
+    }
+  }
+}

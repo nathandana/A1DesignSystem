@@ -2,6 +2,7 @@
 node_modules/
 .netlify/
 **/.netlify/
+**/supabase/.temp/
 
 # Local env files — may hold secrets (Supabase keys, etc.). Never commit.
 # Ignore every .env variant but keep the committed .env.example template.
@@ -34,3 +35,6 @@ walkthroughs/narration/
 .ds-sync/
 ds-bundle/
 _tmp-design_handoff_apigrid/
+
+# Isolated browser test build with mocked Supabase configuration.
+apps/a1-web/preview-test-dist/

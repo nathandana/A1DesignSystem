@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react'
 import { themeClassName } from './appThemes.ts'
+import { usePrintLightMode } from './usePrintLightMode.js'
 
 const scopedThemeStyleDocs = new WeakSet()
 
@@ -60,5 +61,6 @@ export function ProjectThemeScope({ theme, colorMode, resolvedColorScheme, child
     () => projectThemeClassName({ theme, colorMode, resolvedColorScheme }),
     [theme, colorMode, resolvedColorScheme],
   )
+  usePrintLightMode(ref, { dark: resolvedColorScheme === 'dark', light: colorMode === 'light' })
   return <div ref={ref} className={className}>{children}</div>
 }

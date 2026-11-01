@@ -26,8 +26,9 @@ import {
   ListItem,
   MessageBadge,
   MessageEmptyState,
-  NumberField,
   Notification,
+  NumberField,
+  PageTitle,
   Pagination,
   Paragraph,
   RadioGroup,
@@ -45,10 +46,9 @@ import {
   TabList,
   TabPanel,
   Tabs,
-  TextField,
   TextareaField,
+  TextField,
 } from '@gtivr4/a1-design-system-react'
-import { PageTitleArea } from './PageTitleArea.jsx'
 
 // One labelled subsection on the sticker sheet — a heading, optional note, and
 // the live examples below it. Keeps every category visually consistent.
@@ -130,14 +130,14 @@ export function KitchenSink({ onNavigate }) {
 
   return (
     <>
-      <PageTitleArea
-        breadcrumbItems={[
+      <PageTitle
+        breadcrumb={[
           { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
           { label: 'Components', href: '/components', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('components') } },
           { label: 'Kitchen sink' },
         ]}
         title="Kitchen sink"
-        titleAccessory={<MessageBadge status="info">Preview</MessageBadge>}
+        meta={[{ label: 'Preview', status: 'info' }]}
         description="A single page that previews as many A1 components as possible. Switch themes and resize the window to scan the whole system at a glance."
         actions={(
           <ButtonContainer>

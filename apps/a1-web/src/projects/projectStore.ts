@@ -15,9 +15,13 @@
  * Everything persists as JSON in localStorage via the shared (gzip-compressed)
  * storage helpers.
  */
+import { validatePatterns, formatPatternDiagnostics } from '../../../../packages/react/src/patterns/patternValidation.js';
+import { validateImportJson, formatJsonDiagnostics } from '../editor/jsonValidation.js';
 import { readStored, writeStored } from '../editor/storage';
 import { EDITOR_EXAMPLES, makeBlankPage } from '../editor/examples/index';
 import type { PageDefinition } from '../editor/pageTypes';
+import { remapImportedDefinition } from './projectImportLinks.js';
+import type { ProjectImportBundle } from './projectImportTypes';
 import { LAYOUT_DOC_ID, defaultLayoutDefinition } from './projectLayout';
 import {
   restaurantProject,
@@ -33,6 +37,43 @@ import {
   VEHICLE_PROJECT_ID,
   VEHICLE_PROJECT_SEED_FLAG,
 } from './sampleVehicles';
+import {
+  sportsBlogProject,
+  sportsBlogPages,
+  sportsBlogContent,
+  SPORTS_BLOG_PROJECT_ID,
+  SPORTS_BLOG_SEED_FLAG,
+} from './sampleSportsBlog';
+
+/** Projects seeded from bundled samples. A cloud pull keeps these when the
+ *  shared copy predates them, so a newly bundled sample isn't wiped on sign-in. */
+const SAMPLE_PROJECT_IDS = new Set([RESTAURANT_PROJECT_ID, VEHICLE_PROJECT_ID, SPORTS_BLOG_PROJECT_ID]);
+
+export interface ProjectCanvasFrame { x: number; y: number; device?: string }
+/** A sticky note on the project canvas (top-left corner in canvas px). */
+export interface ProjectCanvasNote {
+  id: string;
+  x: number;
+  y: number;
+  title?: string;
+  author?: string;
+  /** Basic Markdown, rendered by StickyNote. */
+  content?: string;
+  color?: 'yellow' | 'orange' | 'green' | 'blue' | 'pink' | 'purple' | 'grey';
+}
+export interface ProjectCanvas {
+  background?: string;
+  showConnections?: boolean;
+  /** Show the canvas dot grid (default on). */
+  showGrid?: boolean;
+  /** Clip each frame to its breakpoint's viewport height; the page scrolls inside. */
+  viewportHeight?: boolean;
+  frames?: Record<string, ProjectCanvasFrame>;
+  /** Sticky notes; a patch replaces the whole list. */
+  notes?: ProjectCanvasNote[];
+  /** Show sticky notes on the canvas (default on). */
+  showNotes?: boolean;
+}
 
 export interface Project {
   id: string;
@@ -47,6 +88,16 @@ export interface Project {
   labelOverrides?: Record<string, Record<string, string>>;
   /** Archived projects are hidden from the projects list (soft delete). Restorable. */
   archived?: boolean;
+  /** Favorites come first in the Projects menu and list (A1-2712). */
+  favorite?: boolean;
+  /** Hidden projects stay active but are left out of the Projects menu, and out
+   *  of the Projects list unless hidden projects are shown (A1-2712). */
+  hidden?: boolean;
+  /** Free-form tags for filtering the Projects list (A1-2712). */
+  tags?: string[];
+  /** Project canvas view layout (A1-2700): background, connections toggle and
+   *  each page frame's position (top-left, canvas px) and device preset. */
+  canvas?: ProjectCanvas;
   /** Primary navigation style for the project's prototype: an auto TopHeader
    *  (default) or a left sidebar (SideNav + TreeMenu from the page hierarchy). */
   navStyle?: 'header' | 'sidebar';
@@ -186,6 +237,80 @@ export function createProject(input: { name: string; description?: string; icon?
   return project;
 }
 
+// ── Organizing (A1-2712) ──────────────────────────────────────────────────────
+// Favorites, hidden and tags organize the list rather than edit the project, so
+// they don't bump `updatedAt`. Manual order is the order of the stored list.
+
+type ProjectOrganization = Pick<Project, 'favorite' | 'hidden' | 'tags'>;
+
+/** Set a project's favorite / hidden / tags. Empty values are removed. */
+export function organizeProject(id: string, patch: ProjectOrganization): Project[] {
+  const projects = loadProjectsRaw().map((p) => {
+    if (p.id !== id) return p;
+    const next: Project = { ...p, ...patch };
+    if (!next.favorite) delete next.favorite;
+    if (!next.hidden) delete next.hidden;
+    next.tags = [...new Set((next.tags ?? []).map((tag) => tag.trim()).filter(Boolean))];
+    if (!next.tags.length) delete next.tags;
+    return next;
+  });
+  saveProjects(projects);
+  return projects;
+}
+
+/** Display order: favorites first, each group in manual order. */
+export function sortProjects<T extends Pick<Project, 'favorite'>>(projects: T[]): T[] {
+  return [...projects.filter((p) => p.favorite), ...projects.filter((p) => !p.favorite)];
+}
+
+/** Move a project one place earlier (-1) or later (1) within its display group
+ *  (favorites or the rest), by swapping it with that group's neighbor. */
+export function moveProject(id: string, direction: -1 | 1): Project[] {
+  const projects = loadProjectsRaw();
+  const from = projects.findIndex((p) => p.id === id);
+  if (from < 0) return projects;
+  const group = (p: Project) => !p.archived && !!p.favorite === !!projects[from].favorite;
+  let to = from + direction;
+  while (to >= 0 && to < projects.length && !group(projects[to])) to += direction;
+  if (to < 0 || to >= projects.length) return projects;
+  const next = [...projects];
+  [next[from], next[to]] = [next[to], next[from]];
+  saveProjects(next);
+  return next;
+}
+
+/** Move a project to the top or bottom of its display group (favorites or the rest). */
+export function moveProjectToEdge(id: string, edge: 'top' | 'bottom'): Project[] {
+  const projects = loadProjectsRaw();
+  const moving = projects.find((p) => p.id === id);
+  if (!moving) return projects;
+  const inGroup = (p: Project) => !p.archived && !!p.favorite === !!moving.favorite;
+  const rest = projects.filter((p) => p.id !== id);
+  const groupIndexes = rest.flatMap((p, index) => (inGroup(p) ? [index] : []));
+  if (!groupIndexes.length) return projects;
+  const at = edge === 'top' ? groupIndexes[0] : groupIndexes[groupIndexes.length - 1] + 1;
+  const next = [...rest.slice(0, at), moving, ...rest.slice(at)];
+  saveProjects(next);
+  return next;
+}
+
+/** Merge a change into a project's canvas layout (A1-2700). Layout isn't a content
+ *  edit, so `updatedAt` is unchanged. Frame entries merge per page. */
+export function saveProjectCanvas(id: string, patch: ProjectCanvas): Project[] {
+  const projects = loadProjectsRaw().map((p) => {
+    if (p.id !== id) return p;
+    const frames = patch.frames ? { ...p.canvas?.frames, ...patch.frames } : p.canvas?.frames;
+    return { ...p, canvas: { ...p.canvas, ...patch, ...(frames ? { frames } : {}) } };
+  });
+  saveProjects(projects);
+  return projects;
+}
+
+/** Every tag used by an active project, sorted for display. */
+export function projectTags(projects: Pick<Project, 'tags'>[]): string[] {
+  return [...new Set(projects.flatMap((p) => p.tags ?? []))].sort((a, b) => a.localeCompare(b));
+}
+
 export function updateProject(id: string, patch: Partial<Omit<Project, 'id' | 'createdAt'>>): Project[] {
   // Raw list so updates preserve archived projects (and can target one).
   const projects = loadProjectsRaw().map((p) =>
@@ -238,6 +363,11 @@ export function removeFigmaPageLink(projectId: string, pageId: string): void {
 
 /** Publish a project to a stable local/workspace prototype URL (`/p/{slug}`). */
 export function publishProject(id: string): Project[] {
+  const json = exportProjectJson(id);
+  if (json) {
+    const validation = validatePatterns(JSON.parse(json));
+    if (!validation.valid) throw new Error(formatPatternDiagnostics(validation.diagnostics));
+  }
   const projects = loadProjectsRaw();
   const now = Date.now();
   const next = projects.map((project) => {
@@ -736,7 +866,7 @@ export function exportAllText(): string {
     '',
   ];
   for (const proj of projects) {
-    parts.push(`##### PROJECT ${JSON.stringify({ id: proj.id, name: proj.name, description: proj.description ?? '', icon: proj.icon ?? 'folder', theme: proj.theme ?? '', archived: proj.archived ?? false, navStyle: proj.navStyle ?? '', published: proj.published ?? null, figmaPageLinks: proj.figmaPageLinks ?? [] })} #####`);
+    parts.push(`##### PROJECT ${JSON.stringify({ id: proj.id, name: proj.name, description: proj.description ?? '', icon: proj.icon ?? 'folder', theme: proj.theme ?? '', archived: proj.archived ?? false, favorite: proj.favorite ?? false, hidden: proj.hidden ?? false, tags: proj.tags ?? [], canvas: proj.canvas ?? null, navStyle: proj.navStyle ?? '', published: proj.published ?? null, figmaPageLinks: proj.figmaPageLinks ?? [] })} #####`);
     for (const pg of loadPages(proj.id)) {
       parts.push(`===== PAGE ${JSON.stringify({ id: pg.id, title: pg.title, icon: pg.icon ?? '', description: pg.description ?? '', parentId: pg.parentId, order: pg.order })} =====`);
       parts.push(resolvePageJson(pg.id) ?? '(no content)');
@@ -752,20 +882,21 @@ export function exportAllText(): string {
 export function importAllText(
   text: string,
   { replaceProjects = false }: { replaceProjects?: boolean } = {},
-): { projects: number; pages: number } {
+): { projects: number; pages: number; keptSamples: string[] } {
   const projMatches = [...text.matchAll(/^##### PROJECT (.*) #####$/gm)];
-  if (!projMatches.length) return { projects: 0, pages: 0 };
+  if (!projMatches.length) return { projects: 0, pages: 0, keptSamples: [] };
 
   const existingProjects = loadProjectsRaw();
   const existingPages = replaceProjects
     ? new Map(existingProjects.map((project) => [project.id, loadPages(project.id)]))
     : new Map<string, ProjectPage[]>();
   const importedProjectIds = new Set<string>();
+  const keptSamples: string[] = [];
   const byId = new Map<string, Project>(replaceProjects ? [] : existingProjects.map((p) => [p.id, p]));
   let pageCount = 0;
 
   projMatches.forEach((pm, i) => {
-    let meta: { id: string; name?: string; description?: string; icon?: string; theme?: string; archived?: boolean; navStyle?: string; published?: Project['published'] | null; figmaPageLinks?: FigmaPageSyncLink[] };
+    let meta: { id: string; name?: string; description?: string; icon?: string; theme?: string; archived?: boolean; favorite?: boolean; hidden?: boolean; tags?: string[]; canvas?: ProjectCanvas | null; navStyle?: string; published?: Project['published'] | null; figmaPageLinks?: FigmaPageSyncLink[] };
     try { meta = JSON.parse(pm[1]); } catch { return; }
     importedProjectIds.add(meta.id);
     const bodyStart = (pm.index ?? 0) + pm[0].length;
@@ -805,6 +936,7 @@ export function importAllText(
 
     const now = Date.now();
     const existing = existingProjects.find((project) => project.id === meta.id);
+    const tags = Array.isArray(meta.tags) ? meta.tags : existing?.tags;
     byId.set(meta.id, {
       id: meta.id,
       name: meta.name || existing?.name || 'Imported project',
@@ -814,6 +946,11 @@ export function importAllText(
       // Preserve soft-delete + nav style across export/import (and cloud sync),
       // else an archived project reappears on the next hydrate.
       archived: meta.archived ?? existing?.archived ?? undefined,
+      // Organization (A1-2712) syncs like archive; an older bundle without it keeps local values.
+      favorite: (meta.favorite ?? existing?.favorite) || undefined,
+      hidden: (meta.hidden ?? existing?.hidden) || undefined,
+      tags: tags?.length ? tags : undefined,
+      canvas: meta.canvas ?? existing?.canvas ?? undefined,
       navStyle: (meta.navStyle as Project['navStyle']) || existing?.navStyle || undefined,
       published: meta.published ?? existing?.published ?? undefined,
       figmaPageLinks: Array.isArray(meta.figmaPageLinks) ? meta.figmaPageLinks : existing?.figmaPageLinks,
@@ -825,13 +962,20 @@ export function importAllText(
 
   if (replaceProjects) {
     for (const project of existingProjects) {
-      if (!importedProjectIds.has(project.id)) purgeProjectStorage(project.id);
+      if (importedProjectIds.has(project.id)) continue;
+      // A local bundled sample the imported bundle doesn't know about yet stays;
+      // the next push shares it.
+      if (SAMPLE_PROJECT_IDS.has(project.id)) {
+        byId.set(project.id, project);
+        keptSamples.push(project.id);
+      }
+      else purgeProjectStorage(project.id);
     }
-    if (!importedProjectIds.has(getActiveProjectId() ?? '')) setActiveProjectId(null);
+    if (!byId.has(getActiveProjectId() ?? '')) setActiveProjectId(null);
   }
 
   saveProjects([...byId.values()]);
-  return { projects: projMatches.length, pages: pageCount };
+  return { projects: projMatches.length, pages: pageCount, keptSamples };
 }
 
 // ── Upload a project from a single JSON object ──────────────────────────────────
@@ -868,7 +1012,7 @@ function normalizeImport(data: any): NormalizedImport | null {
       name: (typeof data.page.name === 'string' && data.page.name.trim()) || 'Imported page',
       description: typeof data.page.description === 'string' ? data.page.description : undefined,
       pages: [{
-        key: '#0',
+        key: data.page.id || '#0',
         title: (typeof data.page.name === 'string' && data.page.name.trim()) || 'Page',
         parentKey: null,
         definitionJson: JSON.stringify(data, null, 2),
@@ -899,146 +1043,29 @@ function normalizeImport(data: any): NormalizedImport | null {
   return null;
 }
 
-function checkImportNodes(
-  nodes: any[],
-  path: string,
-  errors: string[],
-  warnings: string[],
-  knownTypes?: Set<string>,
-): void {
-  nodes.forEach((n, i) => {
-    const p = `${path} › node ${i}`;
-    if (!n || typeof n !== 'object') { errors.push(`${p} is not an object.`); return; }
-    if (typeof n.type !== 'string') errors.push(`${p} is missing a string "type".`);
-    else if (knownTypes && knownTypes.size && !knownTypes.has(n.type)) {
-      warnings.push(`${p}: "${n.type}" is not a known A1 component — it will render a visible fallback.`);
-    }
-    if (n.children != null) {
-      if (!Array.isArray(n.children)) errors.push(`${p}.children must be an array.`);
-      else checkImportNodes(n.children, p, errors, warnings, knownTypes);
-    }
-  });
-}
-
-const FIGURE_ASPECT_RATIOS = new Set(['16:9', '4:3', '3:2', '1:1', '2:3', '3:4', '9:16', '21:9']);
-
-/**
- * Consistency lint for a single page definition — non-blocking design-quality
- * warnings (not structural errors). Covers the rules that keep generated pages
- * consistent: no per-page TopHeader in a project (auto-generated), top-level
- * sections need a contentWidth and non-zero, matching padding, cards belong in a
- * Grid, and card images need a valid, consistent aspectRatio.
- */
-function lintDefinition(def: any): string[] {
-  const warnings: string[] = [];
-  const regions = def?.page?.layout?.regions;
-  if (!Array.isArray(regions)) return warnings;
-
-  const walk = (nodes: any[], parentType: string | null): void => {
-    if (!Array.isArray(nodes)) return;
-    const cardSiblings = nodes.filter((n) => n?.type === 'Card').length;
-    for (const n of nodes) {
-      if (!n || typeof n !== 'object') continue;
-      const id = typeof n.id === 'string' ? n.id : n.type;
-
-      if (n.type === 'TopHeader') {
-        warnings.push(`remove the TopHeader node "${id}" — projects auto-generate the top nav from the page hierarchy (this creates a duplicate header).`);
-      }
-      if (n.type === 'Card' && parentType !== 'Grid' && cardSiblings >= 2) {
-        warnings.push(`card "${id}": multiple sibling cards should be wrapped in a Grid.`);
-      }
-      if (n.type === 'Figure') {
-        const ar = n.props?.aspectRatio;
-        if (ar != null && !FIGURE_ASPECT_RATIOS.has(ar)) {
-          warnings.push(`Figure "${id}": aspectRatio "${ar}" is invalid — use one of ${[...FIGURE_ASPECT_RATIOS].join(', ')}.`);
-        }
-        if (parentType === 'Card' && ar == null) {
-          warnings.push(`card image "${id}": set a consistent aspectRatio (e.g. "4:3") on card images.`);
-        }
-      }
-      if (Array.isArray(n.children)) walk(n.children, n.type);
-    }
-  };
-
-  for (const region of regions) {
-    const top: any[] = Array.isArray(region?.nodes) ? region.nodes : [];
-    walk(top, null);
-
-    // Top-level sections = the page's primary outer elements.
-    const sections = top.filter((n) => n?.type === 'Section');
-    let prevPad: unknown;
-    let prevId: string | undefined;
-    for (const s of sections) {
-      const id = typeof s.id === 'string' ? s.id : 'Section';
-      const pad = s.props?.padding;
-      if (s.props?.contentWidth == null) {
-        warnings.push(`Section "${id}": a primary (top-level) section should set a contentWidth.`);
-      }
-      if (pad == null || pad === 'none' || pad === 0) {
-        warnings.push(`Section "${id}": sections should generally have non-zero padding.`);
-      }
-      if (prevPad != null && pad != null && String(prevPad) !== String(pad)) {
-        warnings.push(`adjacent sections "${prevId}" and "${id}" use different padding ("${prevPad}" vs "${pad}") — neighboring sections should match.`);
-      }
-      prevPad = pad;
-      prevId = id;
-    }
-  }
-  return warnings;
-}
-
-/**
- * Validate a parsed JSON object for {@link importProjectJson}. Returns blocking
- * `errors` (clear these before importing) and non-blocking `warnings` (unknown
- * component types + consistency lint, which still import and render). Pass the
- * set of valid component `type` names (registry keys) to enable type warnings.
- */
+/** Import validation shares MCP diagnostics; only the legacy UI shape is formatted here. */
 export function validateProjectImport(
   data: unknown,
-  knownTypes?: Set<string>,
+  _knownTypes?: Set<string>,
+  t?: (key: string, fallback: string) => string,
 ): { errors: string[]; warnings: string[] } {
-  const errors: string[] = [];
-  const warnings: string[] = [];
-
-  if (data == null || typeof data !== 'object') {
-    errors.push('Expected a JSON object — a project bundle ({ "name", "pages": [ … ] }) or a single page definition ({ "page": { … } }).');
-    return { errors, warnings };
-  }
-  const norm = normalizeImport(data);
-  if (!norm) {
-    errors.push('Unrecognised shape. Provide "pages": [ … ] for a project, or a "page" definition for a single page.');
-    return { errors, warnings };
-  }
-  if (norm.pages.length === 0) errors.push('A project needs at least one page.');
-
-  norm.pages.forEach((pg, i) => {
-    const label = `Page ${i + 1}${pg.title ? ` ("${pg.title}")` : ''}`;
-    if (!pg.definitionJson) return; // a blank page is allowed
-    let def: any;
-    try { def = JSON.parse(pg.definitionJson); } catch (e: any) {
-      errors.push(`${label}: definition is not valid JSON (${e.message}).`); return;
-    }
-    const regions = def?.page?.layout?.regions;
-    if (!Array.isArray(regions)) { errors.push(`${label}: missing page.layout.regions array.`); return; }
-    regions.forEach((r: any, ri: number) => {
-      if (!Array.isArray(r?.nodes)) { errors.push(`${label}: region ${ri} has no "nodes" array.`); return; }
-      checkImportNodes(r.nodes, `${label} › region ${ri}`, errors, warnings, knownTypes);
-    });
-    for (const w of lintDefinition(def)) warnings.push(`${label}: ${w}`);
-  });
-
-  return { errors, warnings };
+  const result = validateImportJson(data);
+  return {
+    errors: result.errors.map(d => formatJsonDiagnostics([d], t)),
+    warnings: result.warnings.map(d => formatJsonDiagnostics([d], t)),
+  };
 }
 
 /** Create a brand-new project (and its pages + content) from a parsed JSON
  *  object — a project bundle or a single page definition. Validate first with
  *  {@link validateProjectImport}; this throws only if the shape is unusable. */
 export function importProjectJson(data: unknown): Project {
+  const validation = validateProjectImport(data);
+  if (validation.errors.length) throw new Error(validation.errors.join('\n'));
   const norm = normalizeImport(data);
   if (!norm) throw new Error('Invalid project JSON.');
 
   const project = createProject({ name: norm.name, description: norm.description, icon: norm.icon, theme: norm.theme });
-  if (norm.figmaPageLinks?.length) updateProject(project.id, { figmaPageLinks: norm.figmaPageLinks });
 
   const keyToId = new Map<string, string>();
   norm.pages.forEach((p) => keyToId.set(p.key, uid('page')));
@@ -1052,7 +1079,8 @@ export function importProjectJson(data: unknown): Project {
     order: i,
   }));
 
-  norm.pages.forEach((p, i) => seedPageContent(pages[i].id, p.definitionJson, pages[i].title));
+  if (norm.figmaPageLinks?.length) updateProject(project.id, { figmaPageLinks: norm.figmaPageLinks.map(link => ({ ...link, pageId: keyToId.get(link.pageId) ?? link.pageId })) });
+  norm.pages.forEach((p, i) => seedPageContent(pages[i].id, remapImportedDefinition(p.definitionJson, pages[i].id, keyToId), pages[i].title));
   savePages(project.id, reindex(pages));
   return project;
 }
@@ -1061,6 +1089,8 @@ export function importProjectJson(data: unknown): Project {
  * project identity. Existing page ids are retained; newly added pages receive
  * fresh ids so they cannot collide with another project. */
 export function replaceProjectJson(projectId: string, data: unknown): Project {
+  const validation = validateProjectImport(data);
+  if (validation.errors.length) throw new Error(validation.errors.join('\n'));
   const norm = normalizeImport(data);
   if (!norm || !Array.isArray((data as any)?.pages)) throw new Error('Invalid project JSON.');
 
@@ -1132,7 +1162,7 @@ export function replaceProjectJson(projectId: string, data: unknown): Project {
 export function exportProjectJson(projectId: string): string | null {
   const project = loadProjects().find((p) => p.id === projectId);
   if (!project) return null;
-  const bundle = {
+  const bundle: ProjectImportBundle = {
     name: project.name,
     description: project.description,
     icon: project.icon,
@@ -1140,7 +1170,7 @@ export function exportProjectJson(projectId: string): string | null {
     figmaPageLinks: project.figmaPageLinks,
     pages: loadPages(projectId).map((pg) => {
       const json = resolvePageJson(pg.id);
-      let definition: unknown;
+      let definition: PageDefinition | string | undefined;
       if (json) { try { definition = JSON.parse(json); } catch { definition = json; } }
       return {
         id: pg.id,
@@ -1202,12 +1232,27 @@ function ensureSampleProjects(): void {
       pages: vehiclePages,
       content: vehicleContent,
     },
+    {
+      flag: SPORTS_BLOG_SEED_FLAG,
+      projectId: SPORTS_BLOG_PROJECT_ID,
+      project: sportsBlogProject,
+      pages: sportsBlogPages,
+      content: sportsBlogContent,
+      // A starter project: added once, then owned by the shared (Supabase)
+      // workspace. A seed-flag bump never rewrites pages that already exist.
+      starter: true,
+    },
   ];
 
   for (const sample of samples) {
     try {
       if (localStorage.getItem(sample.flag)) continue;
     } catch {
+      continue;
+    }
+
+    if ('starter' in sample && sample.starter && loadProjectsRaw().some((project) => project.id === sample.projectId)) {
+      try { localStorage.setItem(sample.flag, '1'); } catch { /* ignore */ }
       continue;
     }
 

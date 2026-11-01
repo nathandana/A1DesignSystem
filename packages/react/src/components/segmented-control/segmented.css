@@ -143,3 +143,14 @@
 .a1-segmented--full-width .a1-segment {
   flex: 1;
 }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Keep this background on paper: browsers drop backgrounds by default,
+   which would leave white text on white or erase meaning carried by colour. */
+
+@media print {
+  .a1-segmented {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

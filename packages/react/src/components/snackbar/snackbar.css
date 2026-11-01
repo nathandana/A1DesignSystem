@@ -199,3 +199,13 @@
     top: var(--component-snackbar-viewport-offset-mobile);
   }
 }
+
+/* ── Print (A1-2707) ─────────────────────────────────────────────────────────
+   Screen-only chrome: hidden when printed. */
+
+@media print {
+  .a1-snackbar,
+  .a1-snackbar-stack {
+    display: none;
+  }
+}

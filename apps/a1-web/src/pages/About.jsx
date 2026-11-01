@@ -4,13 +4,12 @@ import {
   Heading,
   Icon,
   Link,
-  MessageBadge,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import { version } from '../../package.json'
-import { PageTitleArea } from './PageTitleArea.jsx'
 
 // Surfaces of the app, surfaced as navigation cards.
 const EXPLORE = [
@@ -33,13 +32,13 @@ const PRINCIPLES = [
 export function About({ onNavigate }) {
   return (
     <>
-      <PageTitleArea
-        breadcrumbItems={[
+      <PageTitle
+        breadcrumb={[
           { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigate?.('home') } },
           { label: 'About' },
         ]}
         title="About A1"
-        titleAccessory={<MessageBadge status="info" >Version {version}</MessageBadge>}
+        meta={[{ label: `Version ${version}`, status: 'info' }]}
         description="A1 is a multi-platform, token-driven design system — and a place to design, theme, and build with it."
       />
 

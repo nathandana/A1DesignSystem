@@ -42,7 +42,7 @@ const knownPlugins = {
 export default [
   {
     ignores: [
-      '**/node_modules/**', '**/dist/**', '**/build/**', 'build/**',
+      '**/node_modules/**', '**/dist/**', '**/preview-test-dist/**', '**/build/**', 'build/**',
       '**/storybook-static/**', '**/coverage/**', 'packages/pure/dist/**',
       // Vendored / generated / tooling — not design-system UI code.
       '.design-sync/**', '.tools/**', 'packages/eslint-plugin-a1/**', 'scripts/**',

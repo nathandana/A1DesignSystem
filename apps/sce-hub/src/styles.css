@@ -1,0 +1,61 @@
+/* All visual values use existing A1 tokens. Layout is composed with A1 components. */
+body {
+  margin: 0;
+  font-family: var(--component-paragraph-font-family);
+  background: var(--semantic-color-surface-page);
+  color: var(--semantic-color-text-default);
+}
+* {
+  box-sizing: border-box;
+}
+.a1-sce-markdown {
+  overflow-wrap: anywhere;
+  min-inline-size: 0;
+}
+.a1-sce-prose {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.a1-sce-canvas {
+  block-size: calc(var(--component-canvas-node-size) * 6);
+  min-block-size: calc(var(--component-canvas-node-size) * 6);
+}
+.a1-sce-pdf {
+  inline-size: 100%;
+  block-size: calc(var(--component-canvas-node-size) * 6);
+  border: 0;
+}
+.a1-sce-scroll {
+  overflow: auto;
+}
+.a1-sce-skip {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  transform: translateY(-200%);
+}
+.a1-sce-skip:focus {
+  transform: none;
+  background: var(--semantic-color-surface-card);
+  padding: var(--semantic-spacing-gap-md);
+  z-index: var(--component-tooltip-z-index);
+}
+.a1-sce-detail-summary {
+  cursor: pointer;
+  padding-block: var(--semantic-spacing-gap-sm);
+  color: var(--semantic-color-text-accent);
+}
+.a1-sce-detail-summary:focus-visible {
+  outline: var(--component-button-focus-ring-width) solid
+    var(--semantic-color-action-background);
+}
+.a1-sce-file {
+  max-inline-size: 100%;
+  font: inherit;
+}
+.a1-sce-compact {
+  max-inline-size: var(--component-dialog-width-lg);
+}
+.a1-sce-audit-section {
+  scroll-margin-block-start: var(--a1-sce-audit-scroll-offset, var(--base-spacing-16));
+}

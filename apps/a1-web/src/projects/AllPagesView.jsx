@@ -1,7 +1,9 @@
+import { validatePatterns, formatPatternDiagnostics } from '../../../../packages/react/src/patterns/patternValidation.js'
 import { useMemo, useState } from 'react'
 import {
   ActionTile,
   ActionTiles,
+  Banner,
   Button,
   Canvas,
   Code,
@@ -10,44 +12,22 @@ import {
   MessageEmptyState,
   Node,
   NodeConnector,
+  PageTitle,
   Paragraph,
   Section,
-  SegmentedControl,
   Stack,
+  Toolbar,
+  ToolbarButton,
+  ToolbarDivider,
+  ToolbarGroup,
 } from '@gtivr4/a1-design-system-react'
-import { PageTitleArea } from '../pages/PageTitleArea.jsx'
 import { ProjectDialog } from './ProjectDialog.jsx'
 import { componentRegistry } from '../editor/componentRegistry'
-import { getPublishedProjectPath, exportProjectJson, resolvePageJson, validateProjectImport } from './projectStore'
+import { getPublishedProjectPath, exportProjectJson, validateProjectImport } from './projectStore'
+import { extractPageLinks, flattenPages } from './pageGraph.js'
+import { ProjectCanvasView } from './ProjectCanvasView.jsx'
+import { getDefaultProjectView } from './projectView.js'
 import { useT } from '../labels/useT.js'
-
-/** Flatten the page tree into document order, tagging each with its level. */
-function flattenPages(pages) {
-  const childrenOf = (parentId) => pages.filter((p) => p.parentId === parentId).sort((a, b) => a.order - b.order)
-  const out = []
-  const walk = (parentId, level) => {
-    for (const page of childrenOf(parentId)) { out.push({ page, level }); walk(page.id, level + 1) }
-  }
-  walk(null, 1)
-  return out
-}
-
-/** Scan each page's stored definition for /?page= hrefs pointing to other pages in this project. */
-function extractPageLinks(pages) {
-  const pageIds = new Set(pages.map((p) => p.id))
-  const links = new Map() // fromId → Set<toId>
-  for (const page of pages) {
-    const json = resolvePageJson(page.id)
-    if (!json) continue
-    const targets = new Set()
-    for (const m of json.matchAll(/[?&]page=([^&"\\]+)/g)) {
-      const targetId = decodeURIComponent(m[1])
-      if (targetId !== page.id && pageIds.has(targetId)) targets.add(targetId)
-    }
-    if (targets.size) links.set(page.id, targets)
-  }
-  return links
-}
 
 const LEVEL_X    = { 1: 120, 2: 380, 3: 640 }
 const LEVEL_COLOR = { 1: 'accent', 2: 'success', 3: 'warn' }
@@ -149,6 +129,11 @@ export function AllPagesView({
   onDeleteProject,
   onNavigateHome,
   onBackToProjects,
+  onSaveCanvas,
+  onDuplicatePage,
+  onDeletePage,
+  colorMode,
+  resolvedColorScheme,
 }) {
   const t = useT()
   const flat = flattenPages(pages)
@@ -156,22 +141,30 @@ export function AllPagesView({
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [jsonOpen, setJsonOpen] = useState(false)
   const [publishOpen, setPublishOpen] = useState(false)
-  const [viewMode, setViewMode] = useState('list')
+  const [publishErrors, setPublishErrors] = useState('')
+  const [viewMode, setViewMode] = useState(getDefaultProjectView)
   const [projectJson, setProjectJson] = useState('')
   const [jsonValidationResult, setJsonValidationResult] = useState(null)
   const knownTypes = useMemo(() => new Set(Object.keys(componentRegistry)), [])
   const jsonValidation = useMemo(() => {
-    if (!projectJson.trim()) return { errors: ['Project JSON cannot be empty.'], warnings: [] }
-    try { return validateProjectImport(JSON.parse(projectJson), knownTypes) }
-    catch (error) { return { errors: [`Invalid JSON: ${error.message}`], warnings: [] } }
-  }, [projectJson, knownTypes])
+    return validateProjectImport(projectJson, knownTypes, t)
+  }, [projectJson, knownTypes, t])
   const publishedPath = project?.published ? getPublishedProjectPath(project) : ''
   const publishedUrl = publishedPath && typeof window !== 'undefined'
     ? `${window.location.origin}${publishedPath}`
     : ''
 
+  function publishValidated() {
+    try {
+      const validation = validatePatterns(JSON.parse(exportProjectJson(project?.id) ?? '{}'))
+      const errors = validation.valid ? '' : formatPatternDiagnostics(validation.diagnostics)
+      setPublishErrors(errors)
+      if (!errors && project?.id) onPublishProject?.(project.id)
+    } catch (error) { setPublishErrors(error.message) }
+  }
+
   function openPublishDialog() {
-    if (project?.id && !project.published) onPublishProject?.(project.id)
+    if (project?.id && !project.published) publishValidated()
     setPublishOpen(true)
   }
 
@@ -205,9 +198,9 @@ export function AllPagesView({
 
   return (
     <>
-      <PageTitleArea
-        headingId="all-pages-heading"
-        breadcrumbItems={[
+      <PageTitle
+        titleId="all-pages-heading"
+        breadcrumb={[
           { label: 'Home', href: '/', onClick: (e) => { e?.preventDefault?.(); onNavigateHome?.() } },
           { label: 'Projects', href: '/editor', onClick: (e) => { e?.preventDefault?.(); onBackToProjects?.() } },
           { label: project?.name ?? 'Project' },
@@ -216,33 +209,66 @@ export function AllPagesView({
         description={project?.description}
         actions={(
           <>
-            <Button variant="secondary" size='sm' icon="edit" onClick={() => setEditOpen(true)}>Edit</Button>
-            {onEditLayout && (
-              <Button variant="secondary" size='sm' icon="space_dashboard" onClick={onEditLayout}>Shared layout</Button>
-            )}
-            <Button variant="secondary" icon="archive"  size='sm' onClick={() => setConfirmDelete(true)}>Archive</Button>
-            <Button variant="secondary" icon="data_object" size='sm' onClick={openJsonDialog}>JSON</Button>
-            {flat.length > 0 && (
-              <>
-                <Button
-                  variant="secondary"
-                  icon={project?.published ? 'public' : 'publish'}
-                  size='sm'
-                  onClick={openPublishDialog}
-                >
-                  {project?.published
-                    ? t('label.app.projects.publishedProjectAction', 'Published')
-                    : t('label.app.projects.publishProjectAction', 'Publish')}
-                </Button>
-                <Button variant="secondary" icon="open_in_new" size='sm' onClick={onLaunchPrototype}>
-                  Launch
-                </Button>
-              </>
-            )}
-            <Button icon="add" onClick={() => onAddPage?.({})} size='sm'>Add page</Button>
+            {/* Project actions and the page view share one toolbar; on narrow
+                screens it drops to icons and overflows into a More menu.
+                Add page stays the primary action. */}
+            <Toolbar aria-label="Project actions" overflow overflowLabel="More project actions">
+              {flat.length > 0 && (
+                <>
+                  <ToolbarGroup
+                    aria-label="Page view"
+                    showLabels={{ xs: false, md: true }}
+                    value={viewMode}
+                    onChange={setViewMode}
+                    options={[
+                      { value: 'canvas', label: t('app.projects.canvasView', 'Canvas'), icon: 'dashboard' },
+                      { value: 'list',  label: 'List',  icon: 'list' },
+                      { value: 'nodes', label: 'Nodes', icon: 'account_tree' },
+                    ]}
+                  />
+                  <ToolbarDivider />
+                </>
+              )}
+              <ToolbarButton icon="edit" label="Edit" showLabel={{ xs: false, md: true }} onClick={() => setEditOpen(true)} />
+              {onEditLayout && (
+                <ToolbarButton icon="space_dashboard" label="Shared layout" showLabel={{ xs: false, md: true }} onClick={onEditLayout} />
+              )}
+              <ToolbarButton icon="data_object" label="JSON" showLabel={{ xs: false, md: true }} onClick={openJsonDialog} />
+              {flat.length > 0 && (
+                <>
+                  <ToolbarButton
+                    icon={project?.published ? 'public' : 'publish'}
+                    label={project?.published
+                      ? t('label.app.projects.publishedProjectAction', 'Published')
+                      : t('label.app.projects.publishProjectAction', 'Publish')}
+                    showLabel={{ xs: false, md: true }}
+                    onClick={openPublishDialog}
+                  />
+                  <ToolbarButton icon="open_in_new" label="Launch" showLabel={{ xs: false, md: true }} onClick={onLaunchPrototype} />
+                </>
+              )}
+              <ToolbarButton icon="archive" label="Archive" showLabel={{ xs: false, md: true }} onClick={() => setConfirmDelete(true)} />
+            </Toolbar>
+            <Button icon="add" onClick={() => onAddPage?.({})} size="sm">Add page</Button>
           </>
         )}
       />
+
+      {/* Canvas fills everything below the project header (A1-2700). */}
+      {viewMode === 'canvas' && flat.length > 0 && (
+        <ProjectCanvasView
+          project={project}
+          pages={pages}
+          onOpenPage={onOpenPage}
+          onSaveCanvas={(patch) => onSaveCanvas?.(project.id, patch)}
+          onDuplicatePage={onDuplicatePage}
+          onDeletePage={onDeletePage}
+          colorMode={colorMode}
+          resolvedColorScheme={resolvedColorScheme}
+        />
+      )}
+
+      {!(viewMode === 'canvas' && flat.length > 0) && (
 
       <Section padding="sm" aria-labelledby="all-pages-heading" contentWidth="md">
         <Stack direction="column" gap="lg">
@@ -256,18 +282,6 @@ export function AllPagesView({
           />
         ) : (
           <Stack direction="column" gap="md">
-            <Stack direction="row" justify="end">
-              <SegmentedControl
-                value={viewMode}
-                onChange={setViewMode}
-                options={[
-                  { value: 'list',  label: 'List',  icon: 'list' },
-                  { value: 'nodes', label: 'Nodes', icon: 'account_tree' },
-                ]}
-                aria-label="Page view"
-              />
-            </Stack>
-
             {viewMode === 'list' ? (
               <ActionTiles layout="stack" iconLayout="side" aria-label="Project pages">
                 {flat.map(({ page, level }) => (
@@ -298,6 +312,8 @@ export function AllPagesView({
           </Stack>
         )}
       </Stack>
+      </Section>
+      )}
 
       <ProjectDialog
         key={editOpen ? `edit-${project?.id}` : 'closed'}
@@ -367,7 +383,7 @@ export function AllPagesView({
                 <Button variant="secondary" onClick={() => setPublishOpen(false)}>
                   {t('label.app.projects.publishCancel', 'Cancel')}
                 </Button>
-                <Button icon="publish" onClick={() => project?.id && onPublishProject?.(project.id)}>
+                <Button icon="publish" onClick={publishValidated}>
                   {t('label.app.projects.publishProjectConfirm', 'Publish project')}
                 </Button>
               </>
@@ -376,6 +392,7 @@ export function AllPagesView({
         )}
       >
         <Stack direction="column" gap="sm">
+          {publishErrors && <Banner status="error" title="Fix pattern errors before publishing">{publishErrors}</Banner>}
           <Paragraph size="sm" color="muted">
             {project?.published
               ? t('label.app.projects.publishedDialogDescription', 'This project is available as a standalone prototype at this URL.')
@@ -417,7 +434,6 @@ export function AllPagesView({
           projects. You can restore it anytime from Archived.
         </Paragraph>
       </Dialog>
-      </Section>
     </>
   )
 }

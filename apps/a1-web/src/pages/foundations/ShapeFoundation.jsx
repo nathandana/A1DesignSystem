@@ -1,12 +1,12 @@
 import {
   DataTable,
   Heading,
+  PageTitle,
   Paragraph,
   Section,
   Stack,
 } from '@gtivr4/a1-design-system-react'
 import tokens from '../../../../../build/json/tokens.json'
-import { PageTitleArea } from '../PageTitleArea.jsx'
 import { getFoundationBreadcrumbItems } from './utils.js'
 
 function TokenCode({ children }) {
@@ -40,9 +40,9 @@ const radiusRows = Object.entries(tokens.base.radius).map(([name, value]) => ({
 export function ShapeFoundationPage({ onNavigate }) {
   return (
     <>
-      <PageTitleArea
-        headingId="shape-heading"
-        breadcrumbItems={getFoundationBreadcrumbItems('Shape', onNavigate)}
+      <PageTitle
+        titleId="shape-heading"
+        breadcrumb={getFoundationBreadcrumbItems('Shape', onNavigate)}
         title="Shape"
         description="Radius, container shape, control shape, and the geometric rules that make components feel consistent — from subtle rounding on controls to the expressive curves on cards and dialogs."
       />
