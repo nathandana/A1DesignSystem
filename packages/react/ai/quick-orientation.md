@@ -20,6 +20,8 @@
 | a1-web dev | `npm run dev:a1-web` |
 | General dev server | `npm run dev` |
 | Rebuild the MCP server's static index | `npm run build:mcp-index` |
+| Regenerate/check the shared JSON validation contract | `npm run build:json-contract` / `npm run json-contract:check` |
+| Test MCP and editor JSON validation parity | `npm run test:json-validation` |
 | MCP server local dev | `npm run dev:mcp-server` |
 
 ## Stable local ports
@@ -636,3 +638,7 @@ The Three.js Canvas wrapper has `role="group"` so its descriptive label is
 valid. The A1 Web route check waits for the selected token label before its
 screenshot; page-shell readiness does not guarantee the lazy 3D scene has
 rendered. The existing token controls provide the keyboard alternative.
+
+## Design context
+
+After token or design guidance changes: `npm run build:tokens && npm run build:design-md && npm run build:mcp-index`. `npm run design-md:check` verifies the root document and public downloads. See [Design with A1](design-with-a1.md).

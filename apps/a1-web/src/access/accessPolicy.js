@@ -25,6 +25,7 @@ const PAGE_ACCESS = Object.freeze({
   home: USER_ROLES.GUEST,
   features: USER_ROLES.GUEST,
   'get-started': USER_ROLES.GUEST,
+  'design-with-a1': USER_ROLES.GUEST,
   presentation: USER_ROLES.GUEST,
   blog: USER_ROLES.GUEST,
   'blog-article': USER_ROLES.GUEST,

@@ -52,6 +52,7 @@ const VALID_LOCALES = localeOptions.map((o) => o.value)
 import { Home } from './pages/Home.jsx'
 import { Features } from './pages/Features.jsx'
 import { GetStarted } from './pages/GetStarted.jsx'
+import { DesignWithA1 } from './pages/DesignWithA1.jsx'
 import { Presentation } from './pages/Presentation.jsx'
 import { SystemDashboard } from './pages/SystemDashboard.jsx'
 import { FoundationDetail, Foundations, foundations } from './pages/foundations'
@@ -130,6 +131,7 @@ import { ImageLibraryProvider } from './editor/ImageLibraryContext.jsx'
 import { CustomIconFontProvider } from './editor/CustomIconFontProvider.jsx'
 import * as projectStore from './projects/projectStore.ts'
 import { EDITOR_EXAMPLES, makeBlankPage } from './editor/examples/index.ts'
+import { usePreviewImport } from './preview/usePreviewImport.js'
 import { AuthProvider, useAuth } from './lib/AuthContext.jsx'
 import { TProvider } from './labels/useT.js'
 import { AccountPage } from './pages/AccountPage.jsx'
@@ -162,11 +164,12 @@ const IS_STANDALONE = new URLSearchParams(window.location.search).has('standalon
 
 const FOUNDATION_PAGE_IDS = foundations.map((foundation) => foundation.id)
 const BLOG_ARTICLE_SLUG = BLOG_POSTS[0]?.slug || 'search-shortcuts-and-walkthroughs'
-const EXPLORE_PAGE_IDS = ['dashboard', 'features', 'get-started', 'presentation', 'blog', 'backlog', 'accessibility', 'releases', 'about', ...(import.meta.env.DEV ? ['virtual-team'] : [])]
+const EXPLORE_PAGE_IDS = ['dashboard', 'features', 'get-started', 'design-with-a1', 'presentation', 'blog', 'backlog', 'accessibility', 'releases', 'about', ...(import.meta.env.DEV ? ['virtual-team'] : [])]
 const PAGE_ICONS = {
   dashboard: 'monitoring',
   features: 'star',
   'get-started': 'rocket_launch',
+  'design-with-a1': 'auto_awesome',
   presentation: 'slideshow',
   blog: 'article',
   help: 'help',
@@ -184,13 +187,14 @@ const PAGE_ICONS = {
 }
 const COMPONENT_ROUTE_IDS = ['components', ...componentCategoryPageIds, ...componentPageIds]
 
-const PAGES = ['home', 'dashboard', 'features', 'get-started', 'presentation', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, ...PATTERN_ROUTE_IDS, 'patterns', 'playground', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', ...HELP_ARTICLE_PAGE_IDS, 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account', 'admin', 'admin-analytics']
+const PAGES = ['home', 'dashboard', 'features', 'get-started', 'design-with-a1', 'presentation', 'blog', 'blog-article', 'foundations', ...FOUNDATION_PAGE_IDS, ...COMPONENT_ROUTE_IDS, ...PATTERN_ROUTE_IDS, 'patterns', 'playground', 'editor', 'editor-preview', 'image-library', 'custom-icons', 'data', 'theme-editor', 'rules', 'label-editor', 'priority-guide', 'projects', 'help', ...HELP_ARTICLE_PAGE_IDS, 'accessibility', 'releases', 'backlog', ...(import.meta.env.DEV ? ['virtual-team'] : []), 'backlog-ticket', 'about', 'kitchen-sink', 'account', 'admin', 'admin-analytics']
 
 const PAGE_TITLES = {
   home: 'A1 Design System',
   dashboard: 'Dashboard',
   features: 'Features',
   'get-started': 'Get started',
+  'design-with-a1': 'Design with A1',
   presentation: 'Presentation',
   blog: 'Blog',
   'blog-article': 'Search, shortcuts, and walkthroughs',
@@ -418,6 +422,7 @@ const PAGE_TITLE_LABEL_KEYS = {
   dashboard: 'app.page.dashboard',
   features: 'app.page.features',
   'get-started': 'app.page.getStarted',
+  'design-with-a1': 'designWithA1.title',
   blog: 'app.page.blog',
   'blog-article': 'app.page.blogArticle',
   foundations: 'app.nav.foundations',
@@ -495,6 +500,7 @@ function App() {
   const [settingsOpen, setSettingsOpen] = useState(false)
   const settingsAnchorRef = useRef(null)
   const { user: authUser, signOut } = useAuth()
+  const [previewImportWorkspace, setPreviewImportWorkspace] = useState({ userId: null, state: 'loading' })
   const { canAccessPage, canUseFeature, role: accessRole } = useAccess()
   const backlog = useBacklog()
   const [componentMenuSearch, setComponentMenuSearch] = useState('')
@@ -895,6 +901,7 @@ function App() {
     addPage('home', 'Start page for A1 tools, packages, and product areas.', ['overview'])
     addPage('dashboard', 'Live dashboard for A1 health, backlog, components, tokens, rules, labels, and system flow.', ['health', 'metrics', 'charts', 'data viz', 'counts'])
     addPage('features', 'Current A1 feature set and product capabilities.', ['tools', 'capabilities'])
+    addPage('design-with-a1', t('designWithA1.intro'), ['React', 'JSON', 'MCP', 'design.md', 'Codex', 'Claude', 'Cursor', 'Gemini'])
     addPage('get-started', 'Setup paths and first steps for using A1.', ['install', 'docs'])
     addPage('presentation', 'Focused walkthrough deck about A1, AI, and software creation.', ['slides', 'walkthrough', 'presentation', 'ai', 'designer', 'engineer'])
     addPage('blog', 'Release newsletters, demos, and walkthroughs from A1.', ['posts', 'video', 'walkthrough', 'global search', 'newsletter'])
@@ -1097,7 +1104,11 @@ function App() {
   // Cloud sync: on sign-in pull the user's projects into local storage (then
   // refresh the list) and start pushing local changes up; on sign-out, stop.
   useEffect(() => {
-    if (authUser) startCloudSync(authUser.id, { onHydrated: refreshProjects })
+    let active = true
+    setPreviewImportWorkspace({ userId: authUser?.id ?? null, state: 'loading' })
+    if (authUser) startCloudSync(authUser.id, { onHydrated: refreshProjects }).then(hydrated => {
+      if (active) setPreviewImportWorkspace({ userId: authUser.id, state: hydrated ? 'ready' : 'error' })
+    }).catch(() => { if (active) setPreviewImportWorkspace({ userId: authUser.id, state: 'error' }) })
     else stopCloudSync()
     // Point the image library at the user's Supabase storage (or back to local)
     // and rebuild the URL cache so referenced Figures re-resolve.
@@ -1112,6 +1123,7 @@ function App() {
     setHistoryUser(authUser ?? null)
     // (The backlog points itself at the right store via BacklogProvider, which
     // owns its own auth wiring.)
+    return () => { active = false }
   }, [authUser]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Project navigation ───────────────────────────────────────────────────────
@@ -1199,6 +1211,18 @@ function App() {
       console.error('Project import failed:', err)
     }
   }
+
+  usePreviewImport({
+    user: authUser,
+    workspace: previewImportWorkspace,
+    onImport: data => {
+      const project = projectStore.importProjectJson(data)
+      refreshProjects()
+      openProject(project.id)
+    },
+    onMessage: setEditorMessage,
+    t,
+  })
 
   function handleRenameProject(id, patch) {
     projectStore.updateProject(id, patch)
@@ -2400,6 +2424,7 @@ function App() {
         {activePage === 'home' && <Home onNavigate={navigate} />}
         {activePage === 'dashboard' && <SystemDashboard onNavigate={navigate} />}
         {activePage === 'features' && <Features onNavigate={navigate} />}
+        {activePage === 'design-with-a1' && <DesignWithA1 />}
         {activePage === 'get-started' && <GetStarted onNavigate={navigate} />}
         {activePage === 'blog' && <Blog onNavigate={navigate} />}
         {activePage === 'blog-article' && <BlogArticle pathname={routePath} onNavigate={navigate} />}

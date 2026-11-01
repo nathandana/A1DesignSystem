@@ -175,7 +175,7 @@ export const editorExamplePage: PageDefinition = {
                       { id: 'btn-primary', type: 'Button', props: { variant: 'primary', icon: 'add', iconPosition: 'start' }, content: { fallback: 'Primary' } },
                       { id: 'btn-secondary', type: 'Button', props: { variant: 'secondary' }, content: { fallback: 'Secondary' } },
                       { id: 'btn-tertiary', type: 'Button', props: { variant: 'tertiary', icon: 'download', iconPosition: 'start' }, content: { fallback: 'Download report' } },
-                      { id: 'btn-danger', type: 'Button', props: { variant: 'danger' }, content: { fallback: 'Delete' } },
+                      { id: 'btn-danger', type: 'Button', props: { variant: 'destructive' }, content: { fallback: 'Delete' } },
                     ],
                   },
                   {
@@ -186,7 +186,7 @@ export const editorExamplePage: PageDefinition = {
                       { id: 'iconbtn-edit', type: 'IconButton', props: { icon: 'edit', label: 'Edit', variant: 'tertiary' } },
                       { id: 'iconbtn-delete', type: 'IconButton', props: { icon: 'delete', label: 'Delete', variant: 'tertiary' } },
                       { id: 'iconbtn-share', type: 'IconButton', props: { icon: 'share', label: 'Share', variant: 'secondary' } },
-                      { id: 'iconbtn-settings', type: 'IconButton', props: { icon: 'settings', label: 'Settings', variant: 'primary' } },
+                      { id: 'iconbtn-settings', type: 'IconButton', props: { icon: 'settings', label: 'Settings', variant: 'secondary' } },
                     ],
                   },
                   { id: 'link-example', type: 'Link', props: { href: '#', icon: 'arrow_forward', iconPosition: 'end' }, content: { fallback: 'Navigation link' } },
@@ -280,7 +280,7 @@ export const editorExamplePage: PageDefinition = {
                   { label: 'Status', value: 'Active' },
                 ]}},
                 { id: 'data-spacer', type: 'Spacer', props: { size: 'md' } },
-                { id: 'pagination-example', type: 'Pagination', props: { totalPages: 10, siblings: 1, size: 'md' } },
+                { id: 'pagination-example', type: 'Pagination', props: { page: 1, totalPages: 10, siblings: 1, size: 'md' } },
               ],
             },
 

@@ -4,6 +4,12 @@ This file is the entry point for all agents and AI assistants working in this re
 
 **Related files in this directory:**
 
+- `packages/react/ai/design-with-a1.md` — generated design.md, public agent setup page, sources and maintenance checks.
+
+- `packages/react/guidelines/setup.md` — canonical npm React setup guide, also exposed by MCP through `get_react_setup` and `a1://docs/react-setup`. The index derives package metadata from `packages/react/package.json`; regenerate it after setup or manifest changes.
+
+- `packages/react/ai/json-validation.md` — shared page/project validator, MCP validation loop, diagnostics and generated contract maintenance.
+
 - `packages/react/ai/sce-workspace.md` — private SCE project hub, source coverage, review workflows, persistence, access, verification and deployment.
 
 - `packages/react/ai/labs-toolbar-group.md` — Labs Hover state and selected: toolbar, checkbox and single-selection hover treatments, reusable API and validation.

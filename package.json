@@ -11,7 +11,7 @@
   "scripts": {
     "build": "npm run build:priority-guide && npm run build:cat-stack-cafe && npm run build:careguide && npm run build:storybook",
     "build:priority-guide": "npm run build:tokens && vite build examples/priority-guide -- --outDir dist",
-    "build:a1-web": "npm run patterns:check && npm run build:tokens && npm run a11y:reports:check && vite build apps/a1-web",
+    "build:a1-web": "npm run patterns:check && npm run json-contract:check && npm run build:tokens && npm run design-md:check && npm run a11y:reports:check && vite build apps/a1-web",
     "build:a1-web:test": "VITE_SUPABASE_URL= VITE_SUPABASE_ANON_KEY= VITE_POSTHOG_KEY= npm run build:a1-web",
     "build:a1-jobs": "npm run build:tokens && vite build apps/a1-jobs",
     "build:tesla-a1": "npm run build:tokens && vite build apps/tesla-a1",
@@ -101,8 +101,14 @@
     "build:patterns": "node scripts/build-patterns.mjs",
     "patterns:check": "node scripts/build-patterns.mjs --check && node scripts/check-pattern-contracts.mjs",
     "test:patterns": "node --test tests/patterns/*.test.mjs",
-    "build:mcp-index:check": "node packages/mcp-server/scripts/build-index.mjs --check",
-    "patterns:verify-mcp": "node scripts/check-pattern-mcp.mjs"
+    "build:json-contract": "node scripts/build-json-contract.mjs",
+    "json-contract:check": "node scripts/build-json-contract.mjs --check",
+    "test:json-preview": "VITE_SUPABASE_URL=https://preview-auth.example VITE_SUPABASE_ANON_KEY=preview-test-key VITE_POSTHOG_KEY= vite build apps/a1-web --outDir preview-test-dist && playwright test --config playwright.preview.config.js",
+    "test:json-validation": "node --test tests/json-validation/*.test.mjs",
+    "build:mcp-index:check": "npm run design-md:check && npm run json-contract:check && node packages/mcp-server/scripts/build-index.mjs --check",
+    "patterns:verify-mcp": "node scripts/check-pattern-mcp.mjs",
+    "build:design-md": "node scripts/build-design-md.mjs",
+    "design-md:check": "node scripts/build-design-md.mjs --check"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.104.2",

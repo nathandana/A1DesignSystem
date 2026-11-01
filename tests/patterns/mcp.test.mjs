@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import fs from 'node:fs';
 import handler from '../../packages/mcp-server/netlify/functions/mcp.mjs';
 import { createPatternNode } from '../../packages/react/src/patterns/patternPolicies.js';
 import { validatePatterns } from '../../packages/react/src/patterns/patternValidation.js';
@@ -32,9 +33,40 @@ test('MCP negotiates ChatGPT-compatible protocol versions and tool schemas', asy
   assert.ok(listed.result.tools.length > 0);
   for (const tool of listed.result.tools) {
     assert.equal(tool.inputSchema.$schema, 'http://json-schema.org/draft-07/schema#');
-    assert.deepEqual(tool.annotations, { readOnlyHint: true, destructiveHint: false });
+    assert.deepEqual(tool.annotations, tool.name === 'create_preview'
+      ? { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false }
+      : { readOnlyHint: true, destructiveHint: false });
   }
   assert.equal(JSON.stringify(listed).includes('propertyNames'), false);
+});
+
+test('MCP discovers npm installation and returns the canonical React setup guide', async () => {
+  const uri = 'a1://docs/react-setup';
+  const manifest = JSON.parse(fs.readFileSync(new URL('../../packages/react/package.json', import.meta.url), 'utf8'));
+  const guide = fs.readFileSync(new URL('../../packages/react/guidelines/setup.md', import.meta.url), 'utf8');
+  const initialized = await rpc('initialize', { protocolVersion: '2025-03-26' });
+  assert.match(initialized.result.instructions, /get_react_setup/);
+  assert.ok((await rpc('tools/list')).result.tools.some(tool => tool.name === 'get_react_setup'));
+  assert.ok((await rpc('resources/list')).result.resources.some(resource => resource.uri === uri));
+  const setup = await call('get_react_setup', {});
+  assert.equal(setup.packageName, manifest.name);
+  assert.equal(setup.sourceVersion, manifest.version);
+  assert.deepEqual(setup.peerDependencies, manifest.peerDependencies);
+  assert.equal(setup.installCommand, `npm install ${manifest.name}`);
+  assert.equal(setup.checkPublishedVersionCommand, `npm view ${manifest.name} version`);
+  assert.equal(setup.resourceUri, uri);
+  assert.equal(setup.guideMarkdown, guide);
+  assert.equal((await rpc('resources/read', { uri })).result.contents[0].text, guide);
+  assert.equal((await call('get_component', { name: 'Button' })).setupResource, uri);
+});
+
+test('MCP exposes the same design document as the public download', async () => {
+  const uri = 'a1://docs/design';
+  const design = fs.readFileSync(new URL('../../design.md', import.meta.url), 'utf8');
+  assert.equal(fs.readFileSync(new URL('../../apps/a1-web/public/design.md', import.meta.url), 'utf8'), design);
+  assert.ok((await rpc('resources/list')).result.resources.some(resource => resource.uri === uri));
+  assert.equal((await rpc('resources/read', { uri })).result.contents[0].text, design);
+  assert.match((await rpc('initialize', { protocolVersion: '2025-03-26' })).result.instructions, /a1:\/\/docs\/design/);
 });
 
 test('MCP discovery exposes the same versioned manifest and empty starter as the editor', async () => {

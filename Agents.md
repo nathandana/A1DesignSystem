@@ -1,5 +1,7 @@
 # A1 Design System — Agent Instructions
 
+[Page and project JSON validation](packages/react/ai/json-validation.md).
+
 > **Do not add content directly to this file.**
 > All project context, policies, and reference material belongs in `packages/react/ai/`.
 > Add a link below when you create or update a file there.
@@ -263,3 +265,9 @@ For formal pattern contracts, editable areas, JSON defaults and MCP recommendati
 [Hover state and selected](packages/react/ai/labs-toolbar-group.md).
 
 [SCE project workspace](packages/react/ai/sce-workspace.md).
+
+For the generated design.md, agent setup page and maintenance checks:
+
+[Design with A1](packages/react/ai/design-with-a1.md).
+
+[Design document rationale](packages/react/ai/design-md-body.md).

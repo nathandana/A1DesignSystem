@@ -1,0 +1,25 @@
+{
+  "Slot": {
+    "label": { "type": "string" }, "allow": { "type": "array", "items": { "type": "string" } },
+    "allowPatterns": { "type": "array", "items": { "type": "string" } },
+    "min": { "type": "number" }, "max": { "type": "number" },
+    "columns": { "anyOf": [{ "type": "number" }, { "type": "object" }] },
+    "gap": { "type": ["string", "number"] }, "area": { "type": "string" },
+    "zone": { "type": "boolean" }, "prop": { "type": "string" }, "rules": { "type": "string" }
+  },
+  "Outlet": {},
+  "Tabs": {
+    "size": { "enum": ["default", "compact"] },
+    "items": { "type": "array", "items": { "type": "object", "properties": {
+      "id": { "type": "string" }, "value": { "type": "string" }, "label": { "type": "string" },
+      "children": { "type": "array" }
+    } } },
+    "panels": { "type": "array", "items": { "type": "object" } }
+  },
+  "Toolbar": { "tools": { "type": "array", "items": { "type": "object" } } },
+  "Button": {
+    "split": { "type": "boolean" }, "menuLabel": { "type": "string" },
+    "menuActions": { "type": "array", "items": { "type": "object" } }
+  },
+  "DataTable": { "paginationExample": { "enum": ["compact"] } }
+}

@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- **Design context** (A1-2738) — added `a1://docs/design` and initialization guidance for the generated A1 design document. Web and MCP build checks reject stale design downloads.
+
+- **React library setup** — added `get_react_setup` and `a1://docs/react-setup` with npm installation, manifest-derived React requirements and the canonical CSS/font/PostCSS/theme guide. Initialization and component responses point agents to setup; source versions are explicitly distinguished from published npm versions.
+
+- **Rendered previews** (A1-2737 follow-up) — added `create_preview` and HTTP POST/GET preview endpoints backed by temporary Netlify Blobs snapshots. Creation revalidates JSON; responses include URL and expiry. Added hourly cleanup, read-time expiry, request limits and deployment configuration.
+- **Page and project JSON validation** (A1-2737) — added read-only `validate_json` with structured results and JSON Pointer diagnostics, sharing the A1 Web validator. Discovery includes generated JSON prop schemas, validation guidance and the JSON-validation resource. Generated contracts and MCP/editor parity checks run before deployment.
+
 ## 0.3.0 — 2026-10-31
 
 - **JSON authoring model** (A1-2731) — added `get_json_model` for a copy-ready page definition or project bundle, paired with a structural JSON Schema whose component type enum comes from the current editor registry. Component props and governed pattern rules continue through the existing specialized MCP tools. MCP initialization now negotiates ChatGPT-supported protocol versions, and tool discovery advertises draft-07 schemas with read-only annotations.

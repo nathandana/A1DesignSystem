@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- **Design guidance** (A1-2738) — added maintained design rationale and generation of root design.md from resolved A1 tokens, following Google’s DESIGN.md format. Documents the React-first workflow, flush PageTitle placement, themes and accessibility without changing component APIs.
+
+- **Setup guidance** — expanded the shipped setup guide with npm version checks and a minimal React page. MCP now exposes this same guide for agents installing the library.
+
 ## 0.34.1 — 2026-10-31
 
 - **Page title placement** — documented the flush placement rule: no outer margins, padded parent or gap before the title band; keep internal padding and put body spacing in a separate section below.

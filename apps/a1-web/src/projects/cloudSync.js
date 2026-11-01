@@ -96,6 +96,7 @@ export async function startCloudSync(userId, { onHydrated } = {}) {
   currentUserId = userId
   onHydratedCb = onHydrated ?? null
   if (!supabaseConfigured || !userId) return
+  let hydrated = false
   try {
     const remote = await fetchSharedData()
     if (remote && remote.trim()) {
@@ -113,6 +114,7 @@ export async function startCloudSync(userId, { onHydrated } = {}) {
       await saveSharedData(envelope)
     }
     await hydrateLabels()
+    hydrated = true
   } catch (e) {
     console.warn('[cloudSync] pull failed', e)
   }
@@ -146,6 +148,7 @@ export async function startCloudSync(userId, { onHydrated } = {}) {
     // Let the Account "Sync now" action pull the shared workspace on demand.
     unsubscribers.push(registerSyncSource('cloud', syncNow))
   }
+  return hydrated
 }
 
 // Explicitly push everything in local storage up to the shared workspace now

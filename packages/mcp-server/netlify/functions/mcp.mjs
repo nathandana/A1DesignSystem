@@ -7,7 +7,7 @@
 // other functions in apps/a1-web/netlify/functions/) rather than the official
 // @modelcontextprotocol/sdk transport class, which targets Node's
 // IncomingMessage/ServerResponse — a mismatch with Netlify Functions v2. Every
-// tool here is a stateless read-only lookup, so the SDK's session/streaming
+// tool here is sessionless, so the SDK's session/streaming
 // machinery isn't needed; zod still validates each tool's input against its
 // schema and doubles as the JSON Schema source for `tools/list`.
 
@@ -19,6 +19,9 @@ import manifest from '../../package.json' with { type: 'json' };
 import { validatePatterns } from '../../../react/src/patterns/patternValidation.js';
 import { migratePatternNode } from '../../../react/src/patterns/patternMigrations.js';
 import { getJsonModel } from './json-model.mjs';
+import { validateJson } from '../../../../system/json-model/validate.js';
+import { getJsonPropsSchema } from '../../../../system/json-model/model.js';
+import { previewService, PreviewError, readPreviewRequest } from '../../lib/previews.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const INDEX_PATH = path.resolve(HERE, '../../index.json');
@@ -47,6 +50,52 @@ function findComponent(index, name) {
 }
 
 const TOOLS = [
+  {
+    name: 'get_react_setup',
+    description: 'Start here to install and use the A1 React component library from npm. Returns the npm package, install command, React peer requirements and canonical setup guide: global CSS order, fonts, PostCSS breakpoints, Vite/Next.js, themes, client boundaries and a working example. The indexed source version is not a live npm registry lookup.',
+    input: z.object({}),
+    handler(_args, index) {
+      const { name, sourceVersion, peerDependencies } = index.reactPackage;
+      const guide = index.docs.find(doc => doc.uri === 'a1://docs/react-setup');
+      return {
+        packageName: name,
+        sourceVersion,
+        peerDependencies,
+        npmUrl: `https://www.npmjs.com/package/${name}`,
+        installCommand: `npm install ${name}`,
+        checkPublishedVersionCommand: `npm view ${name} version`,
+        versionNote: 'sourceVersion describes the indexed repository. Check npm before pinning it; the source version may not be published yet.',
+        resourceUri: guide.uri,
+        guideMarkdown: guide.text,
+      };
+    },
+  },
+  {
+    name: 'validate_json',
+    description: 'Validate A1 page or project JSON against the shared component, structural and formal pattern contracts. Returns valid, contractVersion, errors and warnings with JSON Pointer paths and stable codes. Read get_json_model, generate JSON, validate, repair and revalidate. Does not save, render or modify the document; success does not certify visual layout or runtime accessibility.',
+    input: z.object({
+      kind: z.enum(['page', 'project']),
+      document: z.unknown().describe('A parsed JSON document or JSON text to validate'),
+      contractVersion: z.string().optional().describe('Optional validator contract version; omit to use the current version'),
+    }),
+    outputSchema: {
+      type: 'object', required: ['valid', 'contractVersion', 'errors', 'warnings'],
+      properties: {
+        valid: { type: 'boolean' }, contractVersion: { type: 'string' },
+        errors: { type: 'array', items: { $ref: '#/definitions/diagnostic' } },
+        warnings: { type: 'array', items: { $ref: '#/definitions/diagnostic' } },
+      },
+      definitions: { diagnostic: {
+        type: 'object', required: ['code', 'path', 'message'],
+        properties: {
+          code: { type: 'string' }, path: { type: 'string' }, message: { type: 'string' },
+          allowedValues: { type: 'array', items: {} }, expectedType: { type: 'string' },
+          ruleId: { type: 'string' }, detail: { type: 'string' }, recovery: { type: 'string' },
+        },
+      } },
+    },
+    handler(args) { return validateJson(args); },
+  },
   {
     name: 'get_json_model',
     description: 'Get a copy-ready A1 page or project JSON starter plus a structural JSON Schema generated from the current registered component types.',
@@ -124,6 +173,8 @@ const TOOLS = [
       const category = index.categories.find((c) => c.id === component.categoryId);
       return {
         name: component.name,
+        setupResource: 'a1://docs/react-setup',
+        jsonPropsSchema: component.exports.map(e => getJsonPropsSchema(e.exportedName)).find(Boolean) ?? null,
         pattern: index.patterns?.find(p => component.exports.some(e => e.exportedName === p.type)) ?? null,
         category: category?.heading ?? null,
         coverage: component.coverage,
@@ -232,6 +283,28 @@ class ToolError extends Error {
   }
 }
 
+const validationTool = TOOLS.find(tool => tool.name === 'validate_json');
+TOOLS.push({
+  name: 'create_preview',
+  description: 'Validate page or project JSON and create a temporary A1 rendered preview URL, available for 24 hours to anyone with the link. Returns validation diagnostics and, only when valid, previewId, previewUrl and expiresAt. Stores an expiring snapshot; does not import, save or publish a workspace project. Open the URL to inspect layout and accessibility; submit revised JSON to create a new preview.',
+  input: validationTool.input,
+  outputSchema: {
+    ...validationTool.outputSchema,
+    properties: {
+      ...validationTool.outputSchema.properties,
+      previewId: { type: 'string' }, previewUrl: { type: 'string' }, expiresAt: { type: 'string' },
+    },
+  },
+  annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: false },
+  async handler(args, _index, services) {
+    try { return await services.createPreview(args); }
+    catch (error) {
+      if (error instanceof PreviewError) throw new ToolError(error.code, { code: error.code });
+      throw new ToolError('PREVIEW_UNAVAILABLE');
+    }
+  },
+});
+
 const toolsByName = new Map(TOOLS.map((t) => [t.name, t]));
 
 // ── JSON-RPC dispatch ────────────────────────────────────────────────────────
@@ -250,7 +323,8 @@ function toolsListResult() {
       name: t.name,
       description: t.description,
       inputSchema: z.toJSONSchema(t.input, { target: 'draft-7' }),
-      annotations: { readOnlyHint: true, destructiveHint: false },
+      ...(t.outputSchema ? { outputSchema: t.outputSchema } : {}),
+      annotations: t.annotations ?? { readOnlyHint: true, destructiveHint: false },
     })),
   };
 }
@@ -266,7 +340,7 @@ function resourcesListResult(index) {
   };
 }
 
-function handleMethod(method, params, index) {
+async function handleMethod(method, params, index, services) {
   switch (method) {
     case 'initialize':
       return {
@@ -275,6 +349,7 @@ function handleMethod(method, params, index) {
           : PROTOCOL_VERSION,
         capabilities: { tools: {}, resources: {} },
         serverInfo: { name: SERVER_NAME, version: SERVER_VERSION },
+        instructions: 'Read a1://docs/design for A1 design language and token rationale. For React projects, start with get_react_setup to install the npm library and configure CSS, fonts and responsive breakpoints. Then use get_component/get_pattern for APIs. For A1 page/project JSON, use get_json_model, validate_json and create_preview.',
       };
     case 'tools/list':
       return toolsListResult();
@@ -286,8 +361,8 @@ function handleMethod(method, params, index) {
         throw new RpcError(-32602, 'Invalid tool arguments.', parsed.error.issues);
       }
       try {
-        const result = tool.handler(parsed.data, index);
-        return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] };
+        const result = await tool.handler(parsed.data, index, services);
+        return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }], ...(tool.outputSchema ? { structuredContent: result } : {}) };
       } catch (err) {
         if (err instanceof ToolError) {
           return {
@@ -344,14 +419,15 @@ function json(body, status = 200) {
   });
 }
 
-async function handleRequest(request) {
+async function handleRequest(request, services) {
   if (request.method === 'OPTIONS') return json(null, 204);
   if (request.method !== 'POST') return json({ error: 'Use POST for MCP JSON-RPC requests.' }, 405);
 
   let body;
   try {
-    body = await request.json();
-  } catch {
+    body = await readPreviewRequest(request);
+  } catch (error) {
+    if (error?.status === 413) return json(rpcErrorResponse(null, new RpcError(-32600, 'Request exceeds the 3 MB limit.')), 413);
     return json(rpcErrorResponse(null, new RpcError(-32700, 'Invalid JSON in request body.')), 200);
   }
 
@@ -364,7 +440,7 @@ async function handleRequest(request) {
 
   try {
     const index = loadIndex();
-    const result = handleMethod(body.method, body.params, index);
+    const result = await handleMethod(body.method, body.params, index, services);
     if (isNotification) return json(null, 202);
     return json(rpcResponse(body.id, result));
   } catch (err) {
@@ -374,4 +450,6 @@ async function handleRequest(request) {
   }
 }
 
-export default (request) => handleRequest(request);
+export const createMcpHandler = (services = { createPreview: input => previewService.create(input) }) => request => handleRequest(request, services);
+export default createMcpHandler();
+export const config = { rateLimit: { action: 'rate_limit', aggregateBy: ['ip', 'domain'], windowSize: 60, windowLimit: 120 } };

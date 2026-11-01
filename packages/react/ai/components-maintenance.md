@@ -1,5 +1,21 @@
 # A1 Design System — Component Maintenance Log
 
+## 2026-11-01 — A1-2738 Design with A1
+
+Added the public React-first agent guide with localized instructions, prompts, official agent setup sources, and the JSON validation/preview path. Generated `design.md` combines current resolved tokens with maintained design rationale in Google’s DESIGN.md format; the same document is downloadable and exposed as `a1://docs/design`. Build checks reject stale copies. Existing A1 components only; no new CSS or component contracts. See [Design with A1](design-with-a1.md).
+
+## 2026-11-01 — React library setup through MCP
+
+Added read-only `get_react_setup`, the `a1://docs/react-setup` resource and setup discovery in initialization/component responses. The index reads the canonical [package setup guide](../guidelines/setup.md) and package manifest instead of duplicating instructions. Added npm version-selection guidance and a minimal React example using existing A1 components. Integration coverage checks discovery, resource/tool parity and manifest metadata. No CSS, tokens or component APIs changed.
+
+## 2026-11-01 — Temporary JSON previews
+
+Added MCP/HTTP snapshot creation and an isolated A1 Web preview entry using the shared validator, renderer and project navigation. Added expiring storage, error states, localized copy and coverage. A trusted preview toolbar now lets signed-in users import a snapshot through the existing workspace, with single-use intent, hydration/expiry checks and page-link remapping; see [JSON validation and previews](json-validation.md#temporary-rendered-previews).
+
+## 2026-11-01 — A1-2737 shared JSON validation
+
+MCP adds `validate_json` with structured errors, warnings and repair paths. The page editor and project import/JSON editor share its validator. Prop contracts are generated from TypeScript declarations, adapter config and formal pattern manifests, with freshness gates and MCP/editor parity tests. Validation now blocks unknown components and invalid props; legacy page versions, blank pages and encoded definitions remain supported. Corrected stale button variants and Pagination defaults in the editor example/catalog, and Section padding in the import starter. New diagnostic labels cover all supported locales; the import Dialog has an explicit accessible name. No CSS, tokens or component APIs changed. See [JSON validation](json-validation.md).
+
 ## 2026-10-31 — A1-2731 JSON from MCP
 
 The MCP server adds `get_json_model`, returning a blank page or project starter and a structural JSON Schema generated from the canonical component type registry. Detailed props and governed pattern rules remain owned by `get_component`, `get_pattern` and `validate_patterns`. No UI, CSS, tokens or component APIs changed.

@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Banner, Button, Code, Dialog, Paragraph, Stack } from '@gtivr4/a1-design-system-react'
 import { componentRegistry } from '../editor/componentRegistry'
 import { validateProjectImport } from './projectStore.ts'
+import { useT } from '../labels/useT.js'
 
 // Starter scaffold shown in the editable block so the expected shape is obvious.
 const STARTER = `{
@@ -26,7 +27,7 @@ const STARTER = `{
                   {
                     "id": "hero",
                     "type": "Section",
-                    "props": { "padding": "xl", "contentWidth": "lg", "gap": "md", "align": "center" },
+                    "props": { "padding": "lg", "contentWidth": "lg", "gap": "md", "align": "center" },
                     "children": [
                       { "id": "title", "type": "Heading", "props": { "as": "h1", "size": "xl" }, "content": { "fallback": "Hello from JSON" } },
                       { "id": "body", "type": "Paragraph", "props": { "color": "muted" }, "content": { "fallback": "Paste a project definition and import it." } }
@@ -45,19 +46,16 @@ const STARTER = `{
 /**
  * ProjectImportDialog — paste a project bundle (or a single page definition) as
  * JSON, see live validation, and import it as a new project. Errors block the
- * import; warnings (e.g. unknown component types) don't.
+ * import; advisory design warnings don't.
  */
 export function ProjectImportDialog({ open, onCancel, onImport }) {
+  const t = useT()
   const [text, setText] = useState(STARTER)
   const knownTypes = useMemo(() => new Set(Object.keys(componentRegistry)), [])
 
   const { errors, warnings } = useMemo(() => {
-    const trimmed = text.trim()
-    if (!trimmed) return { errors: ['Paste a project or page definition.'], warnings: [] }
-    let data
-    try { data = JSON.parse(trimmed) } catch (e) { return { errors: [`Invalid JSON: ${e.message}`], warnings: [] } }
-    return validateProjectImport(data, knownTypes)
-  }, [text, knownTypes])
+    return validateProjectImport(text, knownTypes, t)
+  }, [text, knownTypes, t])
 
   const canImport = errors.length === 0
 
@@ -71,7 +69,8 @@ export function ProjectImportDialog({ open, onCancel, onImport }) {
     <Dialog
       open={open}
       onClose={onCancel}
-      title="Upload project from JSON"
+      title={t('label.jsonValidation.importTitle', 'Upload project from JSON')}
+      aria-label={t('label.jsonValidation.importTitle', 'Upload project from JSON')}
       footer={
         <>
           <Button variant="secondary" onClick={onCancel}>Cancel</Button>
@@ -104,7 +103,7 @@ export function ProjectImportDialog({ open, onCancel, onImport }) {
           </Banner>
         ) : (
           <Banner status="success" title="Valid — ready to import">
-            <Paragraph size="sm">The JSON parses and every node has a known component type.</Paragraph>
+            <Paragraph size="sm">{t('label.jsonValidation.validHelp', 'The JSON meets the A1 contract. Check the rendered layout and accessibility separately.')}</Paragraph>
           </Banner>
         )}
       </Stack>

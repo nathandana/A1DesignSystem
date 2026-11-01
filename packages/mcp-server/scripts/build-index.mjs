@@ -6,7 +6,7 @@
 // page-definition contract, and always after `npm run build:tokens`.
 
 import fs from 'node:fs';
-import { MCP_SERVER_ROOT } from './lib/paths.mjs';
+import { MCP_SERVER_ROOT, repoPath } from './lib/paths.mjs';
 import { parseTokens } from './lib/parse-tokens.mjs';
 import { parseThemes } from './lib/parse-themes.mjs';
 import { parseRules } from './lib/parse-rules.mjs';
@@ -65,6 +65,7 @@ function main() {
   const { categories, components } = buildComponents();
   const { componentTypes } = parsePageTypes();
   const docs = parseDocs();
+  const reactManifest = JSON.parse(fs.readFileSync(repoPath('packages/react/package.json'), 'utf8'));
 
   const patterns = patternManifests.map(manifest => ({
     ...manifest,
@@ -81,6 +82,11 @@ function main() {
   }
   const index = {
     schemaVersion: '0.2.0',
+    reactPackage: {
+      name: reactManifest.name,
+      sourceVersion: reactManifest.version,
+      peerDependencies: reactManifest.peerDependencies,
+    },
     patterns,
     generatedAt: new Date().toISOString(),
     categories,

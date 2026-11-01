@@ -58,7 +58,8 @@ import type { CatalogEntry } from '../editor/componentCatalog';
 import { COMPONENT_CATALOG, createNodeFromEntry } from '../editor/componentCatalog';
 import { effectiveLock, isPatternZone, zoneLabel, zoneLock } from '../editor/patternAreas';
 import { canonicalizePatternTree } from '../../../../packages/react/src/patterns/patternPolicies.js';
-import { validatePatterns, validatePatternEdit, formatPatternDiagnostics } from '../../../../packages/react/src/patterns/patternValidation.js';
+import { validatePatternEdit, formatPatternDiagnostics } from '../../../../packages/react/src/patterns/patternValidation.js';
+import { validateJson, formatJsonDiagnostics } from '../editor/jsonValidation.js';
 import { definitionToJsx } from '../editor/definitionToJsx';
 import { instantiatePattern } from '../patterns/instantiatePattern.js';
 import { getAllPatterns, loadPattern, newPatternId, patternAvailableToProject, registerPattern, savePattern } from '../patterns/patternStore.js';
@@ -1206,21 +1207,16 @@ export function EditorPage({
     return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
 
+  const jsonValidation = useMemo(() => validateJson({ kind: 'page', document: previewJson ?? history.workingJson }), [previewJson, history.workingJson]);
   const parsedDefinition = useMemo<ParseResult>(() => {
+    if (!jsonValidation.valid) return { ok: false, error: formatJsonDiagnostics(jsonValidation.errors, t) };
     try {
       const source = JSON.parse(previewJson ?? history.workingJson);
-      const validation = validatePatterns(source);
-      if (!validation.valid) return { ok: false, error: formatPatternDiagnostics(validation.diagnostics.filter(d => d.severity === 'error')) };
       return { ok: true, value: canonicalizePatternTree(source) as PageDefinition };
     } catch (e) {
       return { ok: false, error: e instanceof Error ? e.message : 'Invalid JSON' };
     }
-  }, [previewJson, history.workingJson]);
-
-  const patternDiagnostics = useMemo(() => {
-    try { return validatePatterns(JSON.parse(previewJson ?? history.workingJson)).diagnostics; }
-    catch { return []; }
-  }, [previewJson, history.workingJson]);
+  }, [previewJson, history.workingJson, jsonValidation, t]);
 
   // Read-only React (JSX) rendition of the current definition.
   const reactCode = useMemo(
@@ -2592,10 +2588,10 @@ export function EditorPage({
           ) : parseError
         )}
 
-        {patternDiagnostics.length > 0 && (
-          <Banner status={patternDiagnostics.some(d => d.severity === 'error') ? 'error' : 'warn'} title="Pattern validation">
-            <Stack gap="xs">{patternDiagnostics.map((diagnostic, index) => (
-              <Paragraph key={index} size="sm">{diagnostic.nodeId}: {diagnostic.message} {diagnostic.recovery}</Paragraph>
+        {jsonValidation.warnings.length > 0 && (
+          <Banner status="warn">
+            <Stack gap="xs">{jsonValidation.warnings.map((diagnostic, index) => (
+              <Paragraph key={index} size="sm">{formatJsonDiagnostics([diagnostic], t)}</Paragraph>
             ))}</Stack>
           </Banner>
         )}
