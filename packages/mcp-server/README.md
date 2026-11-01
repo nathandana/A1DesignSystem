@@ -5,7 +5,7 @@ System's component registry, design tokens, design rules, and page-definition co
 agents — inside this repo or in any other project consuming `@gtivr4/a1-design-system-react`.
 
 It's a **stateless Streamable HTTP** endpoint: one JSON-RPC 2.0 request in, one response out, no
-session state. Deployed as a single Netlify Function backed by a generated static index whose freshness is checked on every deploy.
+session state. The MCP function uses a generated static index whose freshness is checked on every deploy. Temporary previews use a separate Netlify Blobs store and retrieval/cleanup functions.
 
 ## Why this exists
 
@@ -52,7 +52,10 @@ The dev server needs a **fresh** `build/json/tokens.json` and `index.json` — r
 
 | Tool | Purpose |
 |---|---|
+| `get_react_setup` | npm installation, package metadata and the canonical React setup guide, including CSS, fonts, PostCSS, themes and examples |
 | `get_json_model` | Copy-ready page or project starter plus a structural JSON Schema generated from the current component type registry |
+| `create_preview` | Validate JSON and store a temporary rendered preview; returns a 24-hour URL, expiry and diagnostics without saving a workspace project |
+| `validate_json` | Shared page/project validation with stable codes, JSON Pointer paths, errors and advisory warnings; never changes or saves input |
 | `list_components` | Coverage list (React/Native/Pure/Web Components/Figma), filterable by category or package. Patterns (`packages/react/src/patterns/`) appear under the `Patterns` category |
 | `get_component` | Full detail for one component: coverage, structured `.d.ts` props, and the relevant components.md excerpt |
 | `get_pattern` | Versioned manifest, props schema, ordered areas, locked props, policies, empty starter, populated examples and migrations |
@@ -68,7 +71,9 @@ The dev server needs a **fresh** `build/json/tokens.json` and `index.json` — r
 
 | URI | Content |
 |---|---|
+| `a1://docs/react-setup` | `packages/react/guidelines/setup.md`, the same setup guide shipped in the npm package |
 | `a1://docs/pattern-contracts` | Generated reference from `system/patterns/*.json` |
+| `a1://docs/json-validation` | Validation request/result contract, repair workflow, sources and limits |
 | `a1://docs/agent-brief` | `packages/react/ai/a1-agent-brief.md`, full text |
 | `a1://docs/page-definition-standard` | `packages/react/ai/page-definition-standard.md`, full text |
 
@@ -93,7 +98,41 @@ claude mcp add --transport http a1-design https://mcp.a1design.app/mcp  # deploy
 - **No auth.** Everything served is already-published, non-sensitive documentation, so the endpoint is
   public and unauthenticated. Revisit if usage patterns ever call for a shared-secret header.
 - **Pattern parity is tested.** `tests/patterns/mcp.test.mjs` calls the function handler and checks discovery, diagnostics and migrations. The postdeploy parity script checks the actual HTTP endpoint. Token/theme parser behavior is outside this focused suite.
-- **The JSON model is structural.** `get_json_model` owns the page/project envelope and registered component-name enum. Use `get_component` for component props, `get_pattern` for governed pattern starters and `validate_patterns` for formal pattern diagnostics.
+- **JSON validation is shared.** `get_json_model` exposes generated page/project envelopes; `get_component` includes the JSON prop schema alongside the React API. Use `get_pattern` for governed starters, then `validate_json` for the whole document. A1 Web imports and page editing call the same validator. Rendered layout and runtime accessibility require separate checks.
+
+## Install the React library
+
+Call `get_react_setup` with `{}` to get the npm install command, package page,
+React peer requirements and complete setup instructions. Clients that support
+resources can also read `a1://docs/react-setup`. MCP initialization points agents
+to this tool, and `get_component` links back to the setup resource.
+
+The guide is indexed directly from the React package's canonical setup document;
+package name, source version and peer requirements come from its manifest. It
+covers CSS import order, fonts, PostCSS custom media, Vite/Next.js, themes,
+providers and a minimal React page. `sourceVersion` is the indexed repository
+version, not a live npm lookup. Use the returned `npm view` command before
+pinning a version that may not have been published yet.
+
+## Validate generated JSON
+
+Read the model, generate JSON, then call `validate_json` with
+`{ "kind": "page", "document": { "schemaVersion": "1.1.0", "page": { ... } } }`.
+Use `kind: "project"` for a project bundle. `document` also accepts JSON text;
+malformed text returns diagnostics. Optional `contractVersion: "1.1.0"` pins the
+validator contract; unsupported pins are rejected explicitly.
+
+Results contain `valid`, `contractVersion`, `errors` and `warnings`, returned as
+both MCP `structuredContent` and JSON text. Each diagnostic includes a stable
+`code`, a JSON Pointer `path` and a readable `message`, plus allowed values or
+pattern recovery details where applicable. Repair errors and revalidate; warnings
+are advisory. No JSON is modified, persisted, executed or published.
+
+The shared core lives in `system/json-model/validate.js`. Run
+`npm run build:json-contract` after changing page/project declarations, React
+props, adapter config or formal patterns, then `npm run build:mcp-index`.
+`npm run json-contract:check` and `npm run test:json-validation` verify freshness
+and MCP/editor parity. See [the full contract and limitations](../react/ai/json-validation.md).
 
 ## Formal pattern generation
 
@@ -102,3 +141,29 @@ Author contracts under `system/patterns/`, then run `npm run build:patterns` and
 discovery remains compatible and `get_component` includes the matching contract.
 Do not hand-edit the generated artifacts. Netlify and release CI reject stale
 artifacts. See [implementation and release checks](../react/ai/pattern-contract-recommendations.md).
+
+## Create rendered previews
+
+After `validate_json`, call `create_preview` with the same arguments. Valid input
+returns `previewUrl`, `previewId` and `expiresAt` alongside diagnostics. Open the
+URL to inspect real A1 rendering; revised JSON creates a new snapshot and URL.
+This tool writes temporary storage and advertises `readOnlyHint: false`.
+
+For non-MCP clients, `POST https://mcp.a1design.app/previews` accepts the same
+body. `GET /previews/:id` retrieves the snapshot until expiry. Anyone with the
+link can view it for 24 hours. The isolated viewer cannot read signed-in A1
+workspace storage. Creation does not import or publish a project; signed-in
+viewers can choose **Import as project** from the trusted toolbar. Expired links
+return 410; an hourly function removes expired records.
+
+Deploy both sites together. MCP `A1_PREVIEW_APP_URL` defaults to
+`https://a1design.app`; viewer `VITE_A1_PREVIEW_API_URL` defaults to
+`https://mcp.a1design.app`. Blobs uses the Netlify site environment automatically.
+See [preview contracts, limits, local setup and standards review](../react/ai/json-validation.md#temporary-rendered-previews).
+
+Netlify API references: [Blobs](https://docs.netlify.com/build/data-and-storage/netlify-blobs/)
+and [function configuration](https://docs.netlify.com/build/functions/api/).
+
+## Design context
+
+Read `a1://docs/design` for the generated A1 design vocabulary and rationale. It is identical to [design.md](../../design.md) and the [public download](https://a1design.app/design.md). The [Design with A1 guide](https://a1design.app/design-with-a1) covers React-first setup and direct JSON workflows. Regenerate after tokens or rationale change with `npm run build:tokens && npm run build:design-md && npm run build:mcp-index`.

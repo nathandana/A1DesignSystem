@@ -1,4 +1,7 @@
+import designWithA1Labels from '../../../../system/labels/design-with-a1.json'
 import appLabels       from '../../../../system/labels/app.json'
+import jsonPreviewLabels from '../../../../system/labels/json-preview.json'
+import jsonValidationLabels from '../../../../system/labels/json-validation.json'
 import actionLabels    from '../../../../system/labels/action.json'
 import backlogLabels   from '../../../../system/labels/backlog.json'
 import calendarLabels  from '../../../../system/labels/calendar.json'
@@ -18,6 +21,9 @@ import navigationTreeLabels from '../../../../system/labels/navigation-tree.json
 export const SYSTEM_LABELS = {
   label: {
     ...appLabels.label,
+    ...designWithA1Labels.label,
+    ...jsonValidationLabels.label,
+    ...jsonPreviewLabels.label,
     ...actionLabels.label,
     ...overflowMenuLabels.label,
     ...verificationDialogLabels.label,

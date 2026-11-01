@@ -1225,7 +1225,7 @@ export const COMPONENT_CATALOG: CatalogCategory[] = [
         description: 'Page navigation controls',
         defaultNode: {
           type: 'Pagination',
-          props: { totalPages: 10, siblings: 1, size: 'md' },
+          props: { page: 1, totalPages: 10, siblings: 1, size: 'md' },
         },
       },
       {

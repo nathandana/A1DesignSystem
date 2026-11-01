@@ -1,0 +1,410 @@
+{
+  "label": {
+    "jsonValidation": {
+      "BOUND_VALUE": {
+        "$type": "string", "$value": "Check this value after its data binding resolves.", "$description": "Validation warning for a value supplied by a runtime dataset binding.",
+        "locale": { "es": "Comprueba este valor después de resolver su enlace de datos.", "fr": "Vérifiez cette valeur après résolution de sa liaison de données.", "de": "Prüfen Sie diesen Wert nach Auflösung seiner Datenbindung.", "pt": "Verifique este valor após resolver sua vinculação de dados.", "ja": "データバインディングの解決後にこの値を確認してください。", "zh": "请在数据绑定解析后检查此值。", "ar": "افحص هذه القيمة بعد حل ربط البيانات." }
+      },
+      "importTitle": {
+        "$type": "string", "$value": "Upload project from JSON", "$description": "Visible title and accessible name of the project JSON import dialog.",
+        "locale": { "es": "Cargar proyecto desde JSON", "fr": "Importer un projet depuis JSON", "de": "Projekt aus JSON hochladen", "pt": "Carregar projeto de JSON", "ja": "JSON からプロジェクトをアップロード", "zh": "从 JSON 上传项目", "ar": "تحميل مشروع من JSON" }
+      },
+      "validHelp": {
+        "$type": "string", "$value": "The JSON meets the A1 contract. Check the rendered layout and accessibility separately.", "$description": "Import success explanation distinguishing JSON validation from rendered checks.",
+        "locale": { "es": "El JSON cumple el contrato de A1. Comprueba el diseño renderizado y la accesibilidad por separado.", "fr": "Le JSON respecte le contrat A1. Vérifiez séparément la mise en page et l’accessibilité du rendu.", "de": "Das JSON erfüllt den A1-Vertrag. Prüfen Sie gerendertes Layout und Barrierefreiheit separat.", "pt": "O JSON atende ao contrato A1. Verifique o layout renderizado e a acessibilidade separadamente.", "ja": "JSON は A1 契約を満たしています。描画されたレイアウトとアクセシビリティは別途確認してください。", "zh": "JSON 符合 A1 契约。请单独检查渲染布局和无障碍性。", "ar": "يتوافق JSON مع عقد A1. افحص التخطيط المعروض وإمكانية الوصول بشكل منفصل." }
+      },
+      "INVALID_JSON": {
+        "$type": "string",
+        "$value": "Provide valid JSON.",
+        "$description": "JSON validation diagnostic: invalid json. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Proporciona JSON válido.",
+          "fr": "Fournissez du JSON valide.",
+          "de": "Geben Sie gültiges JSON an.",
+          "pt": "Forneça JSON válido.",
+          "ja": "有効な JSON を指定してください。",
+          "zh": "请提供有效的 JSON。",
+          "ar": "قدّم JSON صالحًا."
+        }
+      },
+      "INVALID_DOCUMENT": {
+        "$type": "string",
+        "$value": "Provide a JSON object.",
+        "$description": "JSON validation diagnostic: invalid document. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Proporciona un objeto JSON.",
+          "fr": "Fournissez un objet JSON.",
+          "de": "Geben Sie ein JSON-Objekt an.",
+          "pt": "Forneça um objeto JSON.",
+          "ja": "JSON オブジェクトを指定してください。",
+          "zh": "请提供 JSON 对象。",
+          "ar": "قدّم كائن JSON."
+        }
+      },
+      "INVALID_KIND": {
+        "$type": "string",
+        "$value": "Choose page or project validation.",
+        "$description": "JSON validation diagnostic: invalid kind. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Elige validación de página o proyecto.",
+          "fr": "Choisissez la validation d’une page ou d’un projet.",
+          "de": "Wählen Sie Seiten- oder Projektvalidierung.",
+          "pt": "Escolha a validação de página ou projeto.",
+          "ja": "ページまたはプロジェクトの検証を選択してください。",
+          "zh": "请选择页面或项目验证。",
+          "ar": "اختر التحقق من صفحة أو مشروع."
+        }
+      },
+      "LIMIT_EXCEEDED": {
+        "$type": "string",
+        "$value": "Reduce the document size or nesting depth.",
+        "$description": "JSON validation diagnostic: limit exceeded. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Reduce el tamaño o la profundidad del documento.",
+          "fr": "Réduisez la taille ou la profondeur du document.",
+          "de": "Reduzieren Sie Größe oder Verschachtelung des Dokuments.",
+          "pt": "Reduza o tamanho ou a profundidade do documento.",
+          "ja": "ドキュメントのサイズまたは入れ子の深さを減らしてください。",
+          "zh": "请减小文档大小或嵌套深度。",
+          "ar": "قلّل حجم المستند أو عمق التداخل."
+        }
+      },
+      "REQUIRED_FIELD": {
+        "$type": "string",
+        "$value": "Add the required field.",
+        "$description": "JSON validation diagnostic: required field. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Añade el campo obligatorio.",
+          "fr": "Ajoutez le champ obligatoire.",
+          "de": "Fügen Sie das Pflichtfeld hinzu.",
+          "pt": "Adicione o campo obrigatório.",
+          "ja": "必須フィールドを追加してください。",
+          "zh": "请添加必填字段。",
+          "ar": "أضف الحقل المطلوب."
+        }
+      },
+      "INVALID_TYPE": {
+        "$type": "string",
+        "$value": "Use the type defined by the contract.",
+        "$description": "JSON validation diagnostic: invalid type. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Usa el tipo definido por el contrato.",
+          "fr": "Utilisez le type défini par le contrat.",
+          "de": "Verwenden Sie den im Vertrag definierten Typ.",
+          "pt": "Use o tipo definido pelo contrato.",
+          "ja": "契約で定義された型を使用してください。",
+          "zh": "请使用契约定义的类型。",
+          "ar": "استخدم النوع المحدد في العقد."
+        }
+      },
+      "INVALID_VALUE": {
+        "$type": "string",
+        "$value": "Use a value allowed by the contract.",
+        "$description": "JSON validation diagnostic: invalid value. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Usa un valor permitido por el contrato.",
+          "fr": "Utilisez une valeur autorisée par le contrat.",
+          "de": "Verwenden Sie einen im Vertrag zulässigen Wert.",
+          "pt": "Use um valor permitido pelo contrato.",
+          "ja": "契約で許可された値を使用してください。",
+          "zh": "请使用契约允许的值。",
+          "ar": "استخدم قيمة مسموحًا بها في العقد."
+        }
+      },
+      "UNKNOWN_FIELD": {
+        "$type": "string",
+        "$value": "Remove this unsupported field.",
+        "$description": "JSON validation diagnostic: unknown field. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Elimina este campo no compatible.",
+          "fr": "Supprimez ce champ non pris en charge.",
+          "de": "Entfernen Sie dieses nicht unterstützte Feld.",
+          "pt": "Remova este campo não compatível.",
+          "ja": "この未対応のフィールドを削除してください。",
+          "zh": "请移除此不受支持的字段。",
+          "ar": "أزل هذا الحقل غير المدعوم."
+        }
+      },
+      "UNKNOWN_COMPONENT": {
+        "$type": "string",
+        "$value": "Use a registered A1 component.",
+        "$description": "JSON validation diagnostic: unknown component. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Usa un componente A1 registrado.",
+          "fr": "Utilisez un composant A1 enregistré.",
+          "de": "Verwenden Sie eine registrierte A1-Komponente.",
+          "pt": "Use um componente A1 registrado.",
+          "ja": "登録済みの A1 コンポーネントを使用してください。",
+          "zh": "请使用已注册的 A1 组件。",
+          "ar": "استخدم مكوّن A1 مسجلًا."
+        }
+      },
+      "UNKNOWN_PROP": {
+        "$type": "string",
+        "$value": "Remove this unsupported component prop.",
+        "$description": "JSON validation diagnostic: unknown prop. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Elimina esta propiedad de componente no compatible.",
+          "fr": "Supprimez cette propriété de composant non prise en charge.",
+          "de": "Entfernen Sie diese nicht unterstützte Komponenteneigenschaft.",
+          "pt": "Remova esta propriedade de componente não compatível.",
+          "ja": "この未対応のコンポーネントプロパティを削除してください。",
+          "zh": "请移除此不受支持的组件属性。",
+          "ar": "أزل خاصية المكوّن غير المدعومة."
+        }
+      },
+      "UNSUPPORTED_VERSION": {
+        "$type": "string",
+        "$value": "Use a supported contract version or migrate explicitly.",
+        "$description": "JSON validation diagnostic: unsupported version. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Usa una versión de contrato compatible o realiza una migración explícita.",
+          "fr": "Utilisez une version de contrat prise en charge ou effectuez une migration explicite.",
+          "de": "Verwenden Sie eine unterstützte Vertragsversion oder migrieren Sie ausdrücklich.",
+          "pt": "Use uma versão de contrato compatível ou faça uma migração explícita.",
+          "ja": "対応する契約バージョンを使用するか、明示的に移行してください。",
+          "zh": "请使用受支持的契约版本或明确执行迁移。",
+          "ar": "استخدم إصدار عقد مدعومًا أو نفّذ ترحيلًا صريحًا."
+        }
+      },
+      "DUPLICATE_ID": {
+        "$type": "string",
+        "$value": "Use a unique, nonempty ID within this document.",
+        "$description": "JSON validation diagnostic: duplicate id. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Usa un ID único y no vacío en este documento.",
+          "fr": "Utilisez un identifiant unique et non vide dans ce document.",
+          "de": "Verwenden Sie eine eindeutige, nicht leere ID in diesem Dokument.",
+          "pt": "Use um ID único e não vazio neste documento.",
+          "ja": "このドキュメント内で一意の空でない ID を使用してください。",
+          "zh": "请在此文档中使用唯一且非空的 ID。",
+          "ar": "استخدم معرّفًا فريدًا وغير فارغ في هذا المستند."
+        }
+      },
+      "EMPTY_ID": {
+        "$type": "string",
+        "$value": "Provide a nonempty ID.",
+        "$description": "JSON validation diagnostic: empty id. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Proporciona un ID no vacío.",
+          "fr": "Fournissez un identifiant non vide.",
+          "de": "Geben Sie eine nicht leere ID an.",
+          "pt": "Forneça um ID não vazio.",
+          "ja": "空でない ID を指定してください。",
+          "zh": "请提供非空 ID。",
+          "ar": "قدّم معرّفًا غير فارغ."
+        }
+      },
+      "EMPTY_PROJECT": {
+        "$type": "string",
+        "$value": "Add at least one page to the project.",
+        "$description": "JSON validation diagnostic: empty project. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Añade al menos una página al proyecto.",
+          "fr": "Ajoutez au moins une page au projet.",
+          "de": "Fügen Sie dem Projekt mindestens eine Seite hinzu.",
+          "pt": "Adicione pelo menos uma página ao projeto.",
+          "ja": "プロジェクトに少なくとも1ページ追加してください。",
+          "zh": "请向项目添加至少一个页面。",
+          "ar": "أضف صفحة واحدة على الأقل إلى المشروع."
+        }
+      },
+      "INVALID_LAYOUT": {
+        "$type": "string",
+        "$value": "Use PageLayout for the page layout.",
+        "$description": "JSON validation diagnostic: invalid layout. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Usa PageLayout para el diseño de la página.",
+          "fr": "Utilisez PageLayout pour la mise en page.",
+          "de": "Verwenden Sie PageLayout für das Seitenlayout.",
+          "pt": "Use PageLayout para o layout da página.",
+          "ja": "ページレイアウトに PageLayout を使用してください。",
+          "zh": "请使用 PageLayout 作为页面布局。",
+          "ar": "استخدم PageLayout لتخطيط الصفحة."
+        }
+      },
+      "INVALID_PLACEMENT": {
+        "$type": "string",
+        "$value": "Move this node to a supported parent or area.",
+        "$description": "JSON validation diagnostic: invalid placement. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Mueve este nodo a un padre o área compatible.",
+          "fr": "Déplacez ce nœud vers un parent ou une zone pris en charge.",
+          "de": "Verschieben Sie diesen Knoten in einen unterstützten Elternknoten oder Bereich.",
+          "pt": "Mova este nó para um pai ou área compatível.",
+          "ja": "このノードを対応する親または領域に移動してください。",
+          "zh": "请将此节点移至受支持的父节点或区域。",
+          "ar": "انقل هذه العقدة إلى أصل أو منطقة مدعومة."
+        }
+      },
+      "BROKEN_REFERENCE": {
+        "$type": "string",
+        "$value": "Reference an existing page or node.",
+        "$description": "JSON validation diagnostic: broken reference. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Referencia una página o un nodo existente.",
+          "fr": "Référencez une page ou un nœud existant.",
+          "de": "Verweisen Sie auf eine vorhandene Seite oder einen vorhandenen Knoten.",
+          "pt": "Referencie uma página ou um nó existente.",
+          "ja": "既存のページまたはノードを参照してください。",
+          "zh": "请引用现有页面或节点。",
+          "ar": "أشر إلى صفحة أو عقدة موجودة."
+        }
+      },
+      "PARENT_CYCLE": {
+        "$type": "string",
+        "$value": "Remove the cycle in the page hierarchy.",
+        "$description": "JSON validation diagnostic: parent cycle. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Elimina el ciclo de la jerarquía de páginas.",
+          "fr": "Supprimez le cycle dans la hiérarchie des pages.",
+          "de": "Entfernen Sie den Zyklus in der Seitenhierarchie.",
+          "pt": "Remova o ciclo na hierarquia de páginas.",
+          "ja": "ページ階層の循環を解消してください。",
+          "zh": "请移除页面层级中的循环。",
+          "ar": "أزل الحلقة في التسلسل الهرمي للصفحات."
+        }
+      },
+      "REFERENCE_CONTEXT": {
+        "$type": "string",
+        "$value": "Validate the project bundle to check this page reference.",
+        "$description": "JSON validation diagnostic: reference context. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Valida el paquete del proyecto para comprobar esta referencia de página.",
+          "fr": "Validez le projet complet pour vérifier cette référence de page.",
+          "de": "Validieren Sie das Projektpaket, um diesen Seitenverweis zu prüfen.",
+          "pt": "Valide o pacote do projeto para verificar esta referência de página.",
+          "ja": "このページ参照を確認するにはプロジェクト全体を検証してください。",
+          "zh": "请验证项目包以检查此页面引用。",
+          "ar": "تحقق من حزمة المشروع لفحص مرجع الصفحة هذا."
+        }
+      },
+      "PATTERN_CONTRACT": {
+        "$type": "string",
+        "$value": "Follow the formal pattern contract at this path.",
+        "$description": "JSON validation diagnostic: pattern contract. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Sigue el contrato del patrón formal en esta ruta.",
+          "fr": "Respectez le contrat du motif formel à ce chemin.",
+          "de": "Befolgen Sie den Vertrag des formalen Musters an diesem Pfad.",
+          "pt": "Siga o contrato do padrão formal neste caminho.",
+          "ja": "このパスの正式なパターン契約に従ってください。",
+          "zh": "请遵循此路径的正式模式契约。",
+          "ar": "اتبع عقد النمط الرسمي في هذا المسار."
+        }
+      },
+      "SECTION_WIDTH": {
+        "$type": "string",
+        "$value": "Set a content width for this top-level section.",
+        "$description": "JSON validation diagnostic: section width. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Establece un ancho de contenido para esta sección de nivel superior.",
+          "fr": "Définissez une largeur de contenu pour cette section de premier niveau.",
+          "de": "Legen Sie eine Inhaltsbreite für diesen obersten Abschnitt fest.",
+          "pt": "Defina uma largura de conteúdo para esta seção de nível superior.",
+          "ja": "この最上位セクションにコンテンツ幅を設定してください。",
+          "zh": "请为此顶级区域设置内容宽度。",
+          "ar": "حدّد عرض المحتوى لهذا القسم العلوي."
+        }
+      },
+      "SECTION_PADDING": {
+        "$type": "string",
+        "$value": "Use nonzero, consistent padding on adjacent sections.",
+        "$description": "JSON validation diagnostic: section padding. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Usa un relleno coherente y distinto de cero en secciones adyacentes.",
+          "fr": "Utilisez un espacement intérieur cohérent et non nul entre les sections adjacentes.",
+          "de": "Verwenden Sie einheitliche Innenabstände größer als null für benachbarte Abschnitte.",
+          "pt": "Use espaçamento interno consistente e diferente de zero em seções adjacentes.",
+          "ja": "隣接するセクションには一貫したゼロ以外の余白を使用してください。",
+          "zh": "请在相邻区域使用一致且非零的内边距。",
+          "ar": "استخدم حشوة متسقة وغير صفرية للأقسام المتجاورة."
+        }
+      },
+      "CARD_GRID": {
+        "$type": "string",
+        "$value": "Place sibling cards in a Grid.",
+        "$description": "JSON validation diagnostic: card grid. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Coloca las tarjetas hermanas en un Grid.",
+          "fr": "Placez les cartes de même niveau dans un Grid.",
+          "de": "Platzieren Sie gleichrangige Karten in einem Grid.",
+          "pt": "Coloque cartões irmãos em um Grid.",
+          "ja": "同階層のカードを Grid に配置してください。",
+          "zh": "请将同级卡片放入 Grid。",
+          "ar": "ضع البطاقات المتجاورة في Grid."
+        }
+      },
+      "CARD_IMAGE_RATIO": {
+        "$type": "string",
+        "$value": "Set a consistent aspect ratio on card images.",
+        "$description": "JSON validation diagnostic: card image ratio. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Establece una relación de aspecto coherente para las imágenes de tarjetas.",
+          "fr": "Définissez un rapport d’aspect cohérent pour les images des cartes.",
+          "de": "Legen Sie ein einheitliches Seitenverhältnis für Kartenbilder fest.",
+          "pt": "Defina uma proporção consistente para as imagens dos cartões.",
+          "ja": "カード画像に一貫した縦横比を設定してください。",
+          "zh": "请为卡片图片设置一致的宽高比。",
+          "ar": "حدّد نسبة أبعاد متسقة لصور البطاقات."
+        }
+      },
+      "DUPLICATE_HEADER": {
+        "$type": "string",
+        "$value": "Project navigation already supplies a top header.",
+        "$description": "JSON validation diagnostic: duplicate header. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "La navegación del proyecto ya proporciona un encabezado superior.",
+          "fr": "La navigation du projet fournit déjà un en-tête.",
+          "de": "Die Projektnavigation stellt bereits eine Kopfzeile bereit.",
+          "pt": "A navegação do projeto já fornece um cabeçalho superior.",
+          "ja": "プロジェクトナビゲーションには既にヘッダーがあります。",
+          "zh": "项目导航已提供顶部标题栏。",
+          "ar": "يوفّر تنقل المشروع ترويسة علوية بالفعل."
+        }
+      },
+      "PRIMARY_ACTIONS": {
+        "$type": "string",
+        "$value": "Choose one primary action in this button container.",
+        "$description": "JSON validation diagnostic: primary actions. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Elige una acción principal en este contenedor de botones.",
+          "fr": "Choisissez une action principale dans ce conteneur de boutons.",
+          "de": "Wählen Sie eine primäre Aktion in diesem Button-Container.",
+          "pt": "Escolha uma ação principal neste contêiner de botões.",
+          "ja": "このボタンコンテナーでは主操作を1つ選択してください。",
+          "zh": "请在此按钮容器中选择一个主要操作。",
+          "ar": "اختر إجراءً رئيسيًا واحدًا في حاوية الأزرار هذه."
+        }
+      },
+      "NESTED_INTERACTION": {
+        "$type": "string",
+        "$value": "Keep interactive controls outside an interactive card.",
+        "$description": "JSON validation diagnostic: nested interaction. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Mantén los controles interactivos fuera de una tarjeta interactiva.",
+          "fr": "Gardez les contrôles interactifs hors d’une carte interactive.",
+          "de": "Platzieren Sie interaktive Steuerelemente außerhalb interaktiver Karten.",
+          "pt": "Mantenha controles interativos fora de um cartão interativo.",
+          "ja": "インタラクティブなコントロールは操作可能なカードの外に配置してください。",
+          "zh": "请将交互控件放在可交互卡片之外。",
+          "ar": "أبقِ عناصر التحكم التفاعلية خارج البطاقة التفاعلية."
+        }
+      },
+      "INLINE_STYLE": {
+        "$type": "string",
+        "$value": "Use A1 props and tokenized utilities for styling.",
+        "$description": "JSON validation diagnostic: inline style. The JSON path and allowed values are displayed separately.",
+        "locale": {
+          "es": "Usa propiedades A1 y utilidades basadas en tokens para los estilos.",
+          "fr": "Utilisez les propriétés A1 et les utilitaires basés sur des jetons pour les styles.",
+          "de": "Verwenden Sie A1-Eigenschaften und tokenbasierte Hilfsmittel für Stile.",
+          "pt": "Use propriedades A1 e utilitários baseados em tokens para estilos.",
+          "ja": "スタイルには A1 プロパティとトークンベースのユーティリティを使用してください。",
+          "zh": "请使用 A1 属性和基于令牌的工具设置样式。",
+          "ar": "استخدم خصائص A1 والأدوات المبنية على الرموز للتنسيق."
+        }
+      }
+    }
+  }
+}

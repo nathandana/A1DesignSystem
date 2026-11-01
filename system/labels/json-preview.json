@@ -1,0 +1,230 @@
+{
+  "label": {
+    "jsonPreview": {
+      "title": {
+        "$type": "string",
+        "$value": "A1 preview",
+        "$description": "Temporary JSON preview: title.",
+        "locale": {
+          "es": "Vista previa de A1",
+          "fr": "Aperçu A1",
+          "de": "A1-Vorschau",
+          "pt": "Prévia do A1",
+          "ja": "A1 プレビュー",
+          "zh": "A1 预览",
+          "ar": "معاينة A1"
+        }
+      },
+      "loading": {
+        "$type": "string",
+        "$value": "Loading preview…",
+        "$description": "Temporary JSON preview: loading.",
+        "locale": {
+          "es": "Cargando vista previa…",
+          "fr": "Chargement de l’aperçu…",
+          "de": "Vorschau wird geladen…",
+          "pt": "Carregando prévia…",
+          "ja": "プレビューを読み込み中…",
+          "zh": "正在加载预览…",
+          "ar": "جارٍ تحميل المعاينة…"
+        }
+      },
+      "expired": {
+        "$type": "string",
+        "$value": "This preview has expired. Generate a new preview from the JSON.",
+        "$description": "Temporary JSON preview: expired.",
+        "locale": {
+          "es": "Esta vista previa ha caducado. Genera una nueva a partir del JSON.",
+          "fr": "Cet aperçu a expiré. Générez un nouvel aperçu à partir du JSON.",
+          "de": "Diese Vorschau ist abgelaufen. Erstellen Sie eine neue Vorschau aus dem JSON.",
+          "pt": "Esta prévia expirou. Gere uma nova prévia a partir do JSON.",
+          "ja": "このプレビューは期限切れです。JSON から新しいプレビューを生成してください。",
+          "zh": "此预览已过期。请根据 JSON 生成新预览。",
+          "ar": "انتهت صلاحية هذه المعاينة. أنشئ معاينة جديدة من JSON."
+        }
+      },
+      "missing": {
+        "$type": "string",
+        "$value": "Preview not found. Check the link or generate a new preview.",
+        "$description": "Temporary JSON preview: missing.",
+        "locale": {
+          "es": "No se encontró la vista previa. Comprueba el enlace o genera una nueva.",
+          "fr": "Aperçu introuvable. Vérifiez le lien ou générez un nouvel aperçu.",
+          "de": "Vorschau nicht gefunden. Prüfen Sie den Link oder erstellen Sie eine neue Vorschau.",
+          "pt": "Prévia não encontrada. Verifique o link ou gere uma nova prévia.",
+          "ja": "プレビューが見つかりません。リンクを確認するか、新しいプレビューを生成してください。",
+          "zh": "找不到预览。请检查链接或生成新预览。",
+          "ar": "لم يتم العثور على المعاينة. تحقق من الرابط أو أنشئ معاينة جديدة."
+        }
+      },
+      "unavailable": {
+        "$type": "string",
+        "$value": "The preview is unavailable. Try reloading the page.",
+        "$description": "Temporary JSON preview: unavailable.",
+        "locale": {
+          "es": "La vista previa no está disponible. Intenta volver a cargar la página.",
+          "fr": "L’aperçu est indisponible. Essayez de recharger la page.",
+          "de": "Die Vorschau ist nicht verfügbar. Laden Sie die Seite erneut.",
+          "pt": "A prévia está indisponível. Tente recarregar a página.",
+          "ja": "プレビューを表示できません。ページを再読み込みしてください。",
+          "zh": "预览暂时不可用。请尝试重新加载页面。",
+          "ar": "المعاينة غير متاحة. حاول إعادة تحميل الصفحة."
+        }
+      },
+      "invalid": {
+        "$type": "string",
+        "$value": "This snapshot no longer meets the A1 contract. Validate the JSON and generate a new preview.",
+        "$description": "Temporary JSON preview: invalid.",
+        "locale": {
+          "es": "Esta captura ya no cumple el contrato de A1. Valida el JSON y genera una nueva vista previa.",
+          "fr": "Cet instantané ne respecte plus le contrat A1. Validez le JSON et générez un nouvel aperçu.",
+          "de": "Dieser Stand erfüllt den A1-Vertrag nicht mehr. Validieren Sie das JSON und erstellen Sie eine neue Vorschau.",
+          "pt": "Este registro não atende mais ao contrato do A1. Valide o JSON e gere uma nova prévia.",
+          "ja": "このスナップショットは A1 の仕様に適合しません。JSON を検証し、新しいプレビューを生成してください。",
+          "zh": "此快照不再符合 A1 规范。请验证 JSON 并生成新预览。",
+          "ar": "لم تعد هذه اللقطة تستوفي مواصفات A1. تحقق من JSON وأنشئ معاينة جديدة."
+        }
+      },
+      "renderError": {
+        "$type": "string",
+        "$value": "A1 could not render this preview. Revise the JSON and generate a new preview.",
+        "$description": "Temporary JSON preview: renderError.",
+        "locale": {
+          "es": "A1 no pudo mostrar esta vista previa. Revisa el JSON y genera una nueva.",
+          "fr": "A1 n’a pas pu afficher cet aperçu. Révisez le JSON et générez un nouvel aperçu.",
+          "de": "A1 konnte diese Vorschau nicht darstellen. Überarbeiten Sie das JSON und erstellen Sie eine neue Vorschau.",
+          "pt": "O A1 não conseguiu renderizar esta prévia. Revise o JSON e gere uma nova prévia.",
+          "ja": "A1 はこのプレビューを表示できませんでした。JSON を修正し、新しいプレビューを生成してください。",
+          "zh": "A1 无法渲染此预览。请修改 JSON 并生成新预览。",
+          "ar": "تعذر على A1 عرض هذه المعاينة. راجع JSON وأنشئ معاينة جديدة."
+        }
+      },
+      "pageMissing": {
+        "$type": "string",
+        "$value": "This page is not in the preview. Use the project navigation to choose a page.",
+        "$description": "Temporary JSON preview: pageMissing.",
+        "locale": {
+          "es": "Esta página no está en la vista previa. Usa la navegación del proyecto para elegir una página.",
+          "fr": "Cette page ne figure pas dans l’aperçu. Choisissez une page dans la navigation du projet.",
+          "de": "Diese Seite ist nicht in der Vorschau enthalten. Wählen Sie eine Seite in der Projektnavigation.",
+          "pt": "Esta página não está na prévia. Use a navegação do projeto para escolher uma página.",
+          "ja": "このページはプレビューに含まれていません。プロジェクトのナビゲーションからページを選択してください。",
+          "zh": "预览中没有此页面。请使用项目导航选择页面。",
+          "ar": "هذه الصفحة غير موجودة في المعاينة. استخدم تنقل المشروع لاختيار صفحة."
+        }
+      },
+      "blank": {
+        "$type": "string",
+        "$value": "This page is blank.",
+        "$description": "Temporary JSON preview: blank.",
+        "locale": {
+          "es": "Esta página está vacía.",
+          "fr": "Cette page est vide.",
+          "de": "Diese Seite ist leer.",
+          "pt": "Esta página está vazia.",
+          "ja": "このページは空です。",
+          "zh": "此页面为空。",
+          "ar": "هذه الصفحة فارغة."
+        }
+      },
+      "project": {
+        "$type": "string",
+        "$value": "Project preview",
+        "$description": "Temporary JSON preview: project.",
+        "locale": {
+          "es": "Vista previa del proyecto",
+          "fr": "Aperçu du projet",
+          "de": "Projektvorschau",
+          "pt": "Prévia do projeto",
+          "ja": "プロジェクトのプレビュー",
+          "zh": "项目预览",
+          "ar": "معاينة المشروع"
+        }
+      },
+      "untitled": {
+        "$type": "string",
+        "$value": "Untitled",
+        "$description": "Temporary JSON preview: untitled.",
+        "locale": {
+          "es": "Sin título",
+          "fr": "Sans titre",
+          "de": "Ohne Titel",
+          "pt": "Sem título",
+          "ja": "無題",
+          "zh": "无标题",
+          "ar": "بدون عنوان"
+        }
+      },
+      "importProject": {
+        "$type": "string",
+        "$value": "Import as project",
+        "$description": "Preview project import: importProject.",
+        "locale": {
+          "es": "Importar como proyecto",
+          "fr": "Importer comme projet",
+          "de": "Als Projekt importieren",
+          "pt": "Importar como projeto",
+          "ja": "プロジェクトとしてインポート",
+          "zh": "导入为项目",
+          "ar": "استيراد كمشروع"
+        }
+      },
+      "importing": {
+        "$type": "string",
+        "$value": "Importing preview…",
+        "$description": "Preview project import: importing.",
+        "locale": {
+          "es": "Importando vista previa…",
+          "fr": "Importation de l’aperçu…",
+          "de": "Vorschau wird importiert…",
+          "pt": "Importando prévia…",
+          "ja": "プレビューをインポート中…",
+          "zh": "正在导入预览…",
+          "ar": "جارٍ استيراد المعاينة…"
+        }
+      },
+      "imported": {
+        "$type": "string",
+        "$value": "Preview imported as a project.",
+        "$description": "Preview project import: imported.",
+        "locale": {
+          "es": "Vista previa importada como proyecto.",
+          "fr": "Aperçu importé comme projet.",
+          "de": "Vorschau als Projekt importiert.",
+          "pt": "Prévia importada como projeto.",
+          "ja": "プレビューをプロジェクトとしてインポートしました。",
+          "zh": "预览已导入为项目。",
+          "ar": "تم استيراد المعاينة كمشروع."
+        }
+      },
+      "importFailed": {
+        "$type": "string",
+        "$value": "The preview could not be imported. Return to the preview and try again.",
+        "$description": "Preview project import: importFailed.",
+        "locale": {
+          "es": "No se pudo importar la vista previa. Vuelve a la vista previa e inténtalo de nuevo.",
+          "fr": "L’aperçu n’a pas pu être importé. Revenez à l’aperçu et réessayez.",
+          "de": "Die Vorschau konnte nicht importiert werden. Kehren Sie zur Vorschau zurück und versuchen Sie es erneut.",
+          "pt": "Não foi possível importar a prévia. Volte à prévia e tente novamente.",
+          "ja": "プレビューをインポートできませんでした。プレビューに戻って再試行してください。",
+          "zh": "无法导入预览。请返回预览并重试。",
+          "ar": "تعذر استيراد المعاينة. ارجع إلى المعاينة وحاول مجددًا."
+        }
+      },
+      "signInRequired": {
+        "$type": "string",
+        "$value": "Sign in, then return to the preview to import it.",
+        "$description": "Preview project import: signInRequired.",
+        "locale": {
+          "es": "Inicia sesión y vuelve a la vista previa para importarla.",
+          "fr": "Connectez-vous, puis revenez à l’aperçu pour l’importer.",
+          "de": "Melden Sie sich an und kehren Sie zur Vorschau zurück, um sie zu importieren.",
+          "pt": "Entre na sua conta e volte à prévia para importá-la.",
+          "ja": "サインインしてからプレビューに戻り、インポートしてください。",
+          "zh": "请先登录，然后返回预览进行导入。",
+          "ar": "سجّل الدخول، ثم ارجع إلى المعاينة لاستيرادها."
+        }
+      }
+    }
+  }
+}

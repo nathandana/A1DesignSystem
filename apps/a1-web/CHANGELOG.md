@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- **Design with A1** (A1-2738) — added a public guide in Explore and search with React-first prompts, Codex/Claude Code/Cursor/Gemini CLI setup, and the direct A1 JSON validation/preview/import path. Downloadable design.md, React setup and JSON reference files stay synchronized with their canonical sources; all page labels include the seven supported translations.
+
+- **Import a preview** — signed-in users can import a temporary preview as a new project from its toolbar. Imports recheck expiry and validation, wait for workspace hydration, retain internal page links and report feedback through a snackbar. Generated content remains isolated in a sandbox.
+
+- **Temporary JSON previews** (A1-2737 follow-up) — agents can open 24-hour page/project snapshots rendered with A1 components, project navigation and theme support. The standalone preview is isolated from signed-in workspace storage and includes loading, expiry and rendering-error states.
+- **Shared JSON validation** (A1-2737) — page editing and project imports now use the same contract checks as MCP, with exact error paths, localized diagnostics and advisory design warnings. Invalid props and unknown components block preview/import while drafts remain editable. Corrected stale editor starter values and added an accessible name to the import dialog.
+
 ## 0.35.1 — 2026-10-31
 
 - **JSON from MCP** (A1-2731) — the A1 MCP server now exposes copy-ready page and project JSON starters with a structural schema generated from the live component type registry, helping agents produce importable A1 definitions without duplicating component or pattern contracts.

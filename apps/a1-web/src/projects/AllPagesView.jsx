@@ -147,10 +147,8 @@ export function AllPagesView({
   const [jsonValidationResult, setJsonValidationResult] = useState(null)
   const knownTypes = useMemo(() => new Set(Object.keys(componentRegistry)), [])
   const jsonValidation = useMemo(() => {
-    if (!projectJson.trim()) return { errors: ['Project JSON cannot be empty.'], warnings: [] }
-    try { return validateProjectImport(JSON.parse(projectJson), knownTypes) }
-    catch (error) { return { errors: [`Invalid JSON: ${error.message}`], warnings: [] } }
-  }, [projectJson, knownTypes])
+    return validateProjectImport(projectJson, knownTypes, t)
+  }, [projectJson, knownTypes, t])
   const publishedPath = project?.published ? getPublishedProjectPath(project) : ''
   const publishedUrl = publishedPath && typeof window !== 'undefined'
     ? `${window.location.origin}${publishedPath}`

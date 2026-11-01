@@ -2,8 +2,10 @@
 
 This single file is everything an agent needs to **generate valid A1 page-definition JSON** (and project bundles) with no other context. It is self-contained: the JSON format, the full component list with props, the value vocabularies, the rules, and worked examples.
 
+- To use A1 components in a React application, call MCP `get_react_setup` or read `a1://docs/react-setup` for npm installation, CSS/fonts/PostCSS configuration and a minimal example. It distinguishes the indexed source version from the published npm version.
 - The rendered page is **derived from the JSON** — the JSON is the source of truth.
 - Output is rendered by the a1-web Editor (`?page=editor`) and importable via **Projects → Upload JSON**.
+- Before returning JSON, call MCP `validate_json` with `{ kind: "page" | "project", document }`. Repair errors at their JSON Pointer paths and revalidate until `valid` is true; review advisory warnings. Use `get_json_model`, `get_component` and `get_pattern` for the current contracts. Validation does not save or alter the JSON, and rendered layout/accessibility still require separate checks. Full tool contract: `a1://docs/json-validation`.
 - When something here is ambiguous, the ground truth is the code: `apps/a1-web/src/editor/pageTypes.ts` (types), `apps/a1-web/src/editor/componentRegistry.ts` (renderable set), and `packages/react/ai/components.md` (exhaustive per-component props).
 
 ---
@@ -390,3 +392,5 @@ width; its parent layout allocates its width.
 ### NavigationTree pattern
 
 `NavigationTree` (`patternVersion: "1.0.0"`) accepts recursive `items` data, not Slot children. Each item needs a globally unique `id` and visible `label`; optional fields are `icon`, `href`, `disabled`, `category`, `pinned`, `excludeFromAz`, `keywords`, `sortLabel` and `children`. `searchable` and `sortable` default to true. `defaultView` is `tree` or `az`; `defaultSelectedId` and `defaultSearch` seed interactive state. Accessible labels: `aria-label`, `searchLabel`, `sortLabel`, `listViewLabel`. Desktop collapse state is configurable; placement is always start and the collapse button is always in the footer; React hosts control mobile `open` with `onClose`. Starters have `items: []` and no editable component areas. The editor offers unrestricted nested category/item controls.
+
+After `validate_json` succeeds, call `create_preview` with the same arguments to obtain a temporary rendered A1 URL. Open it for layout/accessibility checks; revise and resubmit for a new preview. Snapshots expire after 24 hours and do not import or publish a workspace project. See [JSON validation and previews](json-validation.md).

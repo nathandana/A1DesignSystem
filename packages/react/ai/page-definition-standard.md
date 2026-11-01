@@ -5,6 +5,7 @@ This is the canonical, AI-readable standard for the **A1 page-definition feed** 
 Read this before authoring, editing, importing, or generating any page definition, or before changing the renderer, registry, or types that back it.
 
 - **Reference implementation:** `apps/a1-web/src/editor/` (types, registry, renderer, example) surfaced on the a1-web **Editor** page (`/?page=editor`).
+- **Validation:** call MCP `validate_json` with `kind: "page"` or `"project"` and `document`. It shares the editor/import validator and returns structured errors and advisory warnings. See [JSON validation](json-validation.md) for the repair loop, contract sources and limitations. Success does not certify rendered layout or runtime accessibility.
 - **Status:** Proof of concept. New pages use `schemaVersion: "1.1.0"`; legacy `0.1.0` and `1.0.0` pages remain readable. This is the foundation for a future site builder where the JSON page definition is the source of truth (visual editing, JSON editing, code import/export, wired actions).
 
 ---
