@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 0.36.0 — 2026-11-01
+
+### Highlights
+
+- **Design with A1** — Start with the React library, connect your coding agent and use a downloadable design.md for consistent layouts and components. The new guide includes agent setup, copyable prompts and a direct JSON workflow.
+- **Validate, preview and import** — Agents can validate page and project JSON, repair errors and create a temporary live preview. Signed-in users can import a preview as a new project. The editor uses the same validation rules.
+- **Configure the configurator** — Generate controls from a component’s property contract, customize their presentation and save portable JSON overrides without changing the allowed property values.
+- **Better agent setup** — MCP explains npm installation and React setup, exposes the design document and supplies current JSON models and component contracts.
+- **Simpler project discovery** — Home highlights patterns, and project overviews initially open in List view on small screens while preserving your choice during browser resizing.
+
 ## 0.35.0 — 2026-10-30
 
 ### Highlights

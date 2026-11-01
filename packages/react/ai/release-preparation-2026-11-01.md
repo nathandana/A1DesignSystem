@@ -1,67 +1,40 @@
-# Release preparation — Nov. 1, 2026
+# Release — Nov. 1, 2026
 
-## Scope and versions
+## Scope
 
-Prepared on `release` after integrating A1-2729 and A1-2731.
+Release integrates A1-2729 (Home and mobile project defaults), A1-2731 (MCP JSON discovery), A1-2732 (configurator presentation editor), A1-2737 (shared validation, previews and project import), React npm setup through MCP, and A1-2738 (Design with A1 and generated design.md).
 
-| Package | Previous published/prepared | Prepared |
+| Package | Previous published | Target |
 | --- | --- | --- |
-| A1 Web | 0.35.0 | 0.35.1 |
-| React | 0.34.0 published | 0.34.1 |
-| MCP server | 0.2.0 | 0.3.0 |
-| Pure CSS | 0.4.0 | 0.4.0 |
-| A1 Labs | 0.78.1 | 0.78.1 |
-| React Native | 0.1.1 | 0.1.1 |
+| A1 Web | 0.35.0 | 0.36.0 |
+| React | 0.34.0 | 0.34.1 |
+| MCP | 0.2.0 | 0.4.0 |
+| React Native | 0.1.1 | 0.1.1 (unchanged) |
 
-A1 Web 0.35.1 contains the post-release Home cleanup and the initial-breakpoint
-List default for project overviews on xs and sm. MCP 0.3.0 adds the page/project
-JSON authoring model and ChatGPT-compatible protocol and tool-schema discovery.
-React 0.34.1 was already prepared on the integrated branch and remains pending
-publication; its public changelog contains the page-title placement guidance.
+The earlier 0.35.1/0.3.0 preparation was not completed; its changes are included in these targets. The npm registry confirms React 0.34.1 is unpublished before this release. Pure CSS and Labs are unchanged.
 
-The package lock agrees with the A1 Web and MCP manifests. Pure CSS, Labs and
-React Native have no changes in this release and retain their versions.
+## Deployment and rollback
 
-## Validation completed
+No database migration is required. MCP uses Netlify Blobs for isolated, expiring preview snapshots. The scheduled cleanup removes expired snapshots hourly. `A1_PREVIEW_APP_URL` optionally overrides the default `https://a1design.app`; the app defaults to the production MCP URL. Preview import uses existing Supabase authentication and project storage policies.
 
-- Clean locked dependency install (`npm ci`): passed.
-- Lint and A1 CSS gate: passed with zero errors and 46 existing warnings.
-- A1 Web production build: passed with the existing large-chunk warning.
-- Formal pattern and MCP tests: 28 passed.
-- MCP index freshness: passed.
-- Project initial-view tests: 3 passed.
-- npm publication-script tests: 6 passed.
-- Component history generation check: passed.
-- React package, RSC compatibility and TypeScript checks: passed.
-- Registry check: React is 0.34.0 and React Native is 0.1.1 before publication.
+Deploy MCP and A1 Web from the same verified release. Keep prior Netlify deploy IDs to restore both sites together if needed. Already published npm versions cannot be overwritten; use a new patch for package corrections. Follow [npm releases](npm-releases.md), including the required release-to-main merge after publication and hosted verification.
 
-`npm ci` reports 82 audit findings: 2 low, 62 moderate, 15 high and 3 critical.
-No forced dependency update was applied during release preparation.
+## Verification and publication
 
-## Browser gate follow-up
+In progress. Record final gate, npm workflow, hosted smoke and main synchronization evidence here before completion. The release command now includes the dedicated fake-auth preview tests as well as standard browser, pattern and JSON tests. The fake-auth build never replaces the production build artifact.
 
-The local A1 Web gate completed 38 of 42 tests. The Overflow Menu matrix and
-verification-label checks passed when rerun in isolation. The Custom Block
-persistence fixture was corrected to clear the large sample-project seed data
-before creating its isolated project; otherwise the fixture can exhaust the
-browser storage quota before writing history.
+## Reviewed changes and initial checks
 
-The local runner then reported accelerated Playwright timeout accounting. The
-289-route crawl reached route 104 with no visual or accessibility mismatches,
-then hit its 30-minute test timeout. The isolated Custom Block test likewise
-expired its poll before the editor's 10-second history throttle and 2.5-second
-storage flush could complete in real time. Rerun `npm run release:a1-web:check`
-on the stable macOS release runner before pushing or publishing. Do not accept
-new visual baselines or relax accessibility thresholds for this follow-up.
+The initial full browser pass completed all 291 routes and 46 of 48 test cases. It found unsupported Section `padding: xl` in two shipped examples; these now use `lg`, and every shipped editor example has contract regression coverage. The remaining failure was expected visual drift: Blog/release content and the new configurator tab pushed older Section, Breadcrumb and Line Chart references past the unchanged 2% threshold. Reviewed the rendered pages and refreshed only those five existing references. Added reviewed references for Design with A1 and the new release article. No accessibility or visual thresholds were loosened.
 
-## Publication
+- React/RSC, declarations and tarball checks passed.
+- Publication-script and configurator model tests passed.
+- Component history freshness passed.
+- Dedicated preview/import tests: 6 passed.
+- npm trusted publishers verified for both public packages: `nathandana/A1DesignSystem`, `publish.yml`, direct and staged publishing allowed. No trust configuration was changed.
+- Rollback deployment IDs before release: A1 Web `6ae4a8585f1560007e5c34a6`; MCP `6ae4a9951c8cb817d8e428d9`.
+- Locked install retained the existing 82 npm audit findings; no forced dependency upgrades were introduced.
 
-This preparation does not publish, deploy, tag or push. A release is ready to
-publish only after the full A1 Web gate passes. Push `release`, wait for the
-Publish workflow, verify React 0.34.1 on npm, and verify the deployed MCP with:
+## Final local release gate
 
-```sh
-npm run patterns:verify-mcp -- https://mcp.a1design.app/mcp
-```
-
-No release-only CSS was added.
+`npm run release:a1-web:check` passed on Nov. 1: repository lint (zero errors, 46 existing warnings), CSS gate, 30 pattern/MCP tests, 11 JSON validation/preview tests, 48 browser tests including all 291 production routes and the core-theme/breakpoint matrix, plus all 6 isolated preview/import tests. No test thresholds were relaxed. GitHub publication and hosted verification follow this prepared commit.

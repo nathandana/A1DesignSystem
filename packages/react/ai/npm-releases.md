@@ -34,6 +34,13 @@ can run independently.
    notes are visible. Confirm the npm job summary and registry version for each
    changed public package before reporting it released.
 
+6. After successful publication and hosted verification, merge `release` into
+   `main` and push `main`. This is required after **every release**, including
+   app-only releases. Preserve release history (no squash or force push),
+   resolve any conflicts, and verify that the published release commit is an
+   ancestor of `origin/main`. Wait for the resulting main-branch checks and
+   deployments; an already-published npm version must remain unchanged.
+
 ## Authentication
 
 Use npm trusted publishing (OIDC), scoped to GitHub repository

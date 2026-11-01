@@ -44,7 +44,7 @@ Agent-specific setup was checked against official documentation on Nov. 1, 2026.
 - Architecture: one generator from existing resolved tokens plus authored rationale. Generated public guide copies avoid source drift. The new route uses existing navigation, access and search infrastructure.
 - Responsive: Section's responsive padding and content width; Stack wrapping; Code wrapping. No custom breakpoints or CSS exceptions. Base and A1 light currently resolve to the same root appearance.
 - Coverage: `tests/a1-web/design-with-a1.spec.js` checks navigation, breadcrumb, clipboard, download identity, public setup/JSON references, locale rendering, overflow, four theme selections and xs–xl. MCP integration checks resource discovery and identical contents. Google lint verifies the document format. Remote agent installations and a full screen-reader audit are not automated by these checks.
-- Standards debt: no new design-system exceptions. Public reference files are intentionally generated English technical artifacts. Changes remain uncommitted for review; release work stays paused.
+- Standards debt: no new design-system exceptions. Public reference files are intentionally generated English technical artifacts. Initially delivered uncommitted for review; included in the resumed Nov. 1 release.
 
 ## Verification recorded
 

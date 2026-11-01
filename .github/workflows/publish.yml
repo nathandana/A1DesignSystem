@@ -41,7 +41,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: a1-web-baseline-${{ github.sha }}
-          path: test-results/a1-web/
+          path: |
+            test-results/a1-web/
+            test-results/json-preview/
           retention-days: 30
           if-no-files-found: ignore
 
@@ -70,6 +72,11 @@ jobs:
 
       - name: Install npm with trusted publishing support
         run: npm install --global npm@11.21.0
+
+      - name: Verify publishing identity is available
+        run: |
+          npm --version
+          node --input-type=module -e "for (const key of ['ACTIONS_ID_TOKEN_REQUEST_URL', 'ACTIONS_ID_TOKEN_REQUEST_TOKEN']) { if (!process.env[key]) throw new Error(key + ' is unavailable; check id-token permissions'); } console.log('GitHub OIDC publishing identity is available');"
 
       - name: Build and validate release packages
         run: |

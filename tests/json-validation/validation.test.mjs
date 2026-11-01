@@ -139,3 +139,14 @@ test('design warnings remain advisory and diagnostics have translations', () => 
   for (const [code, message] of Object.entries(messages)) assert.equal(labels[code].$value, message);
   for (const value of Object.values(labels)) for (const locale of ['es', 'fr', 'de', 'pt', 'ja', 'zh', 'ar']) assert.ok(value.locale[locale]);
 });
+
+// All shipped editor starters must survive the same import/render boundary as agent JSON.
+test('every shipped editor example satisfies the JSON contract', async () => {
+  const { build } = await import('esbuild');
+  const output = await build({ entryPoints: ['apps/a1-web/src/editor/examples/index.ts'], bundle: true, platform: 'node', format: 'esm', write: false });
+  const { EDITOR_EXAMPLES } = await import('data:text/javascript;base64,' + Buffer.from(output.outputFiles[0].text).toString('base64'));
+  for (const example of EDITOR_EXAMPLES) {
+    const result = validateJson({ kind: 'page', document: example.definition });
+    assert.equal(result.valid, true, `${example.id}: ${JSON.stringify(result.errors)}`);
+  }
+});

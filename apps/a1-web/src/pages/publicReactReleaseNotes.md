@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## 0.34.1 — 2026-11-01
+
+### Highlights
+
+- **Clearer npm setup** — The package guide covers version selection and a minimal React page. Agents can retrieve the same instructions through MCP.
+- **Consistent page titles** — PageTitle belongs at the top and side edges of its container. Keep body spacing in a separate section below it.
+
 ## 0.34.0 — 2026-10-30
 
 ### Highlights

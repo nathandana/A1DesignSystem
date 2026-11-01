@@ -79,7 +79,7 @@
     "test:qa:update": "sh -c 'node .storybook/qa-setup.mjs && (UPDATE_SNAPSHOTS=true test-storybook --url http://localhost:6006 --testTimeout=60000; CODE=$?; node .storybook/qa-report.mjs; exit $CODE)'",
     "test:a1-web": "npm run build:a1-web:test && playwright test --config playwright.a1-web.config.js",
     "test:a1-web:update": "npm run build:a1-web:test && playwright test --config playwright.a1-web.config.js --update-snapshots",
-    "release:a1-web:check": "npm run lint && npm run test:a1-web",
+    "release:a1-web:check": "npm run lint && npm run test:patterns && npm run test:json-validation && npm run test:a1-web && npm run test:json-preview",
     "a11y:component": "node scripts/a11y/run-component.mjs",
     "a11y:changed": "node scripts/a11y/run-changed.mjs",
     "a11y:playwright": "node scripts/a11y/run-playwright.mjs",

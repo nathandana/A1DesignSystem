@@ -19,7 +19,7 @@ From the repository root, run:
 npm run release:a1-web:check
 ```
 
-The command lints the repository, builds A1-Web, then checks every registered
+The command lints the repository, verifies pattern/MCP and JSON contracts, builds A1-Web, then checks every registered
 production route for all of the following:
 
 - a successful document response with a visible app root and main landmark
@@ -42,6 +42,8 @@ npm run test:a1-web
 
 Never accept a baseline only to make the test pass. Review the changed PNGs and
 keep the accessibility gate green before continuing.
+
+The signed-in JSON preview/import tests run separately against an isolated fake-auth build; they are included in the release command.
 
 ## 3. Update release content
 
@@ -75,6 +77,16 @@ keep the accessibility gate green before continuing.
   failures.
 - Keep the previous release reference and rollback instructions available until
   the hosted smoke test passes.
+
+## 6. Synchronize main after every release
+
+- Merge the verified `release` branch into `main` and push `main` after every
+  release, including app-only releases. Preserve the merge history.
+- Verify the published release commit is an ancestor of `origin/main`.
+- Wait for main's checks and deployments, then repeat hosted smoke checks if
+  they redeploy the sites. Confirm existing npm versions are verified, not
+  republished. Record workflow, registry and deployment evidence in the release
+  preparation document before reporting completion.
 
 Automated accessibility checks do not replace manual review. Before a major
 release, also review keyboard order, focus visibility, screen reader
