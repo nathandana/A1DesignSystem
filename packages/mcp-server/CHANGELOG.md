@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.3.0 — 2026-10-31
+
 - **JSON authoring model** (A1-2731) — added `get_json_model` for a copy-ready page definition or project bundle, paired with a structural JSON Schema whose component type enum comes from the current editor registry. Component props and governed pattern rules continue through the existing specialized MCP tools. MCP initialization now negotiates ChatGPT-supported protocol versions, and tool discovery advertises draft-07 schemas with read-only annotations.
 
 - **Pattern tools on the MCP homepage** (A1-2729) — the landing page now identifies `get_pattern`, `validate_patterns`, `migrate_pattern` and the pattern-contract resource so agents can discover the pattern APIs without first reading the repository documentation.

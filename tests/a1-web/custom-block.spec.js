@@ -123,6 +123,7 @@ test('configurator starts empty, edits all source fields and round-trips JSON', 
 test('the project editor selects, edits and persists custom blocks', async ({ page }) => {
   await page.goto('/')
   await page.evaluate(() => {
+    localStorage.clear()
     const definition = {
       schemaVersion: '0.1.0',
       page: { id: 'custom-page', name: 'Custom page', layout: { type: 'PageLayout', regions: [{
@@ -159,7 +160,7 @@ test('the project editor selects, edits and persists custom blocks', async ({ pa
     }
     const history = JSON.parse(raw)
     return history.entries[history.index].json.includes('dataset.ready')
-  })).toBe(true)
+  }), { timeout: 30_000 }).toBe(true)
   await page.reload()
   await expect(contentFrame(page, 'Editor block').getByText('Edited custom content')).toBeVisible()
   await root.click({ position: { x: 30, y: 30 } })

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.35.1 — 2026-10-31
+
 - **JSON from MCP** (A1-2731) — the A1 MCP server now exposes copy-ready page and project JSON starters with a structural schema generated from the live component type registry, helping agents produce importable A1 definitions without duplicating component or pattern contracts.
 
 - **Mobile project overview** — project overviews now default to List at the xs and sm breakpoints, avoiding the desktop-oriented Canvas controls on compact screens. The existing Canvas default remains at md and larger, and the view switcher still allows an explicit change.

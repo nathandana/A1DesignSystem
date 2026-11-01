@@ -248,6 +248,10 @@ For the Oct. 30 release scope, verification and publication follow-up:
 
 @packages/react/ai/release-preparation-2026-10-30.md
 
+For the Nov. 1 release scope, verification and publication follow-up:
+
+@packages/react/ai/release-preparation-2026-11-01.md
+
 For formal pattern contracts, editable areas, JSON defaults and MCP recommendations:
 
 [Formal patterns](packages/react/ai/pattern-contract-recommendations.md).
