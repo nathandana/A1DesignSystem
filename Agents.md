@@ -256,6 +256,10 @@ For formal pattern contracts, editable areas, JSON defaults and MCP recommendati
 
 [Formal patterns](packages/react/ai/pattern-contract-recommendations.md).
 
+For generated configurator controls and versioned presentation metadata:
+
+[Configurator presentation metadata](packages/react/ai/configurator-presentation.md).
+
 [Generated formal pattern contracts](packages/react/ai/pattern-contracts.generated.md).
 
 [Overflow menu pattern](packages/react/ai/patterns-overflow-menu.md).

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- **Configurator presentation editor** (A1-2732) — component pages can generate a configurator from the existing TypeScript property contract, preview typed controls, customize labels, help, grouping, order, conditional visibility and supported control presentations, and save or reload versioned JSON overrides. Unsupported and changed properties are reported explicitly; presentation metadata cannot redefine allowed values or types.
+
 ## 0.35.1 — 2026-10-31
 
 - **JSON from MCP** (A1-2731) — the A1 MCP server now exposes copy-ready page and project JSON starters with a structural schema generated from the live component type registry, helping agents produce importable A1 definitions without duplicating component or pattern contracts.

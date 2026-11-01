@@ -1,5 +1,9 @@
 # A1 Design System — Component Maintenance Log
 
+## 2026-11-01 — A1-2732 configurator presentation editor
+
+A1 Web component pages now expose a generated configurator editor sourced from the existing React property metadata. The reusable renderer supports strings, longer text, enumerated values, booleans and numbers; presentation overrides cover control choice, label, help, grouping, order and conditional visibility. Versioned JSON stores sparse overrides and contract references, while drift and unsupported properties remain explicit. Existing A1 components provide the complete UI; no CSS, tokens or public React component APIs changed.
+
 ## 2026-10-31 — A1-2731 JSON from MCP
 
 The MCP server adds `get_json_model`, returning a blank page or project starter and a structural JSON Schema generated from the canonical component type registry. Detailed props and governed pattern rules remain owned by `get_component`, `get_pattern` and `validate_patterns`. No UI, CSS, tokens or component APIs changed.
