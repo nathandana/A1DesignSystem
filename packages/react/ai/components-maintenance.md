@@ -15,6 +15,9 @@ Added MCP/HTTP snapshot creation and an isolated A1 Web preview entry using the 
 ## 2026-11-01 — A1-2737 shared JSON validation
 
 MCP adds `validate_json` with structured errors, warnings and repair paths. The page editor and project import/JSON editor share its validator. Prop contracts are generated from TypeScript declarations, adapter config and formal pattern manifests, with freshness gates and MCP/editor parity tests. Validation now blocks unknown components and invalid props; legacy page versions, blank pages and encoded definitions remain supported. Corrected stale button variants and Pagination defaults in the editor example/catalog, and Section padding in the import starter. New diagnostic labels cover all supported locales; the import Dialog has an explicit accessible name. No CSS, tokens or component APIs changed. See [JSON validation](json-validation.md).
+## 2026-11-01 — A1-2732 configurator presentation editor
+
+A1 Web component pages now expose a generated configurator editor sourced from the existing React property metadata. The reusable renderer supports strings, longer text, enumerated values, booleans and numbers; presentation overrides cover control choice, label, help, grouping, order and conditional visibility. Versioned JSON stores sparse overrides and contract references, while drift and unsupported properties remain explicit. Existing A1 components provide the complete UI; no CSS, tokens or public React component APIs changed.
 
 ## 2026-10-31 — A1-2731 JSON from MCP
 

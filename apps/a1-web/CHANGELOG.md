@@ -8,6 +8,7 @@
 
 - **Temporary JSON previews** (A1-2737 follow-up) — agents can open 24-hour page/project snapshots rendered with A1 components, project navigation and theme support. The standalone preview is isolated from signed-in workspace storage and includes loading, expiry and rendering-error states.
 - **Shared JSON validation** (A1-2737) — page editing and project imports now use the same contract checks as MCP, with exact error paths, localized diagnostics and advisory design warnings. Invalid props and unknown components block preview/import while drafts remain editable. Corrected stale editor starter values and added an accessible name to the import dialog.
+- **Configurator presentation editor** (A1-2732) — component pages can generate a configurator from the existing TypeScript property contract, preview typed controls, customize labels, help, grouping, order, conditional visibility and supported control presentations, and save or reload versioned JSON overrides. Unsupported and changed properties are reported explicitly; presentation metadata cannot redefine allowed values or types.
 
 ## 0.35.1 — 2026-10-31
 

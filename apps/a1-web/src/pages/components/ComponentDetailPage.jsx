@@ -80,6 +80,7 @@ import {
   DETAIL_TAB_IDS,
 } from './utils.js'
 import { GENERATED_PROP_TABLES } from './generatedPropTables.js'
+import { ConfiguratorPresentationEditor } from './ConfiguratorPresentationEditor.jsx'
 import { BUTTON_CONTRAST_ROWS, BUTTON_TARGET_SIZE_ROWS } from './accessibilityReports.generated.js'
 
 const PACKAGE_META = {
@@ -3496,6 +3497,7 @@ export function ComponentDetailPage({ catalog = componentsCatalog, component, ca
               <Tab value="configure">Configure</Tab>
               <Tab value="rules">Rules</Tab>
               <Tab value="properties">Properties</Tab>
+              <Tab value="configurator-editor">{t('label.configuratorPresentation.tab', 'Configurator editor')}</Tab>
               <Tab value="accessibility">Accessibility</Tab>
               <Tab value="history">History</Tab>
             </TabList>
@@ -3583,6 +3585,15 @@ export function ComponentDetailPage({ catalog = componentsCatalog, component, ca
                   </Stack>
                 ))}
               </Stack>
+            </TabPanel>
+
+            <TabPanel value="configurator-editor">
+              <ConfiguratorPresentationEditor
+                key={component.id}
+                component={component}
+                tables={normalizePropTables(component, t)}
+                t={t}
+              />
             </TabPanel>
 
             <TabPanel value="accessibility">

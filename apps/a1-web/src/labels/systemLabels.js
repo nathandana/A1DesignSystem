@@ -17,6 +17,7 @@ import verificationDialogLabels from '../../../../system/labels/verification-dia
 import overflowMenuLabels from '../../../../system/labels/overflow-menu.json'
 
 import navigationTreeLabels from '../../../../system/labels/navigation-tree.json'
+import configuratorPresentationLabels from '../../../../system/labels/configurator-presentation.json'
 
 export const SYSTEM_LABELS = {
   label: {
@@ -37,6 +38,7 @@ export const SYSTEM_LABELS = {
     ...statusBarLabels.label,
     ...treeMenuLabels.label,
     ...navigationTreeLabels.label,
+    ...configuratorPresentationLabels.label,
   },
 }
 

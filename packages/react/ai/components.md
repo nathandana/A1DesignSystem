@@ -19,6 +19,11 @@ Components may import them from the package root and render them as client
 boundaries after configuring `transpilePackages`; see
 `packages/react/guidelines/setup.md` for the complete Next.js setup.
 
+Every A1 Web component page includes a **Configurator editor** backed by the
+generated React property tables. It infers controls from existing `.d.ts`
+metadata and stores only versioned presentation overrides; the public component
+contract remains authoritative. See [Configurator presentation metadata](configurator-presentation.md).
+
 ---
 
 ## A1 Web menu hierarchy

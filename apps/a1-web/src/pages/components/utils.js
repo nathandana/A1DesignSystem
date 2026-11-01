@@ -164,7 +164,7 @@ export const componentPageIds = componentCategories.flatMap((category) =>
 // order. Shared with main.jsx so tab state, URL (`?tab=`) deep-linking, and
 // cross-component persistence agree on the valid set. Example tabs use the
 // `example:<id>` form and are handled separately.
-export const DETAIL_TAB_IDS = ['configure', 'rules', 'properties', 'accessibility', 'history']
+export const DETAIL_TAB_IDS = ['configure', 'rules', 'properties', 'configurator-editor', 'accessibility', 'history']
 
 export const componentPageTitles = {
   components: 'Components',
