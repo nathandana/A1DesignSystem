@@ -38,3 +38,5 @@ The initial full browser pass completed all 291 routes and 46 of 48 test cases. 
 ## Final local release gate
 
 `npm run release:a1-web:check` passed on Nov. 1: repository lint (zero errors, 46 existing warnings), CSS gate, 30 pattern/MCP tests, 11 JSON validation/preview tests, 48 browser tests including all 291 production routes and the core-theme/breakpoint matrix, plus all 6 isolated preview/import tests. No test thresholds were relaxed. GitHub publication and hosted verification follow this prepared commit.
+
+GitHub run `41341733572` also passed the full browser gate and package checks, but npm returned `ENEEDAUTH` despite npm 11.21.0 and an available GitHub OIDC identity. Added an early token-exchange check to expose the registry's underlying rejection without logging credentials. Website and MCP deployment candidates passed hosted discovery, validation, preview creation/retrieval and all 5 formal pattern contracts; production remains on the previous release pending publication.

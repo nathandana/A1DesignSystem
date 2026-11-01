@@ -66,7 +66,9 @@ credentials into GitHub secrets. See [npm's trusted publishing documentation](ht
   bypass the release gate or automatically accept visual baselines.
 - **Authentication failure:** inspect the package's trusted publisher, repository,
   workflow filename and direct-publish permission. Retrying cannot fix a wrong
-  trust configuration.
+  trust configuration. The parallel **Verify npm trusted publisher** job checks
+  the actual GitHub-to-npm token exchange before publication and reports the
+  registry's rejection reason. It never persists or logs identity/access tokens.
 - **Registry delay/failure:** inspect npm and retry the failed job. Publication
   is safe to retry once a version exists; it will not upload that version again.
 - **Wrong latest tag:** check the intended stable version before repairing it
