@@ -4,6 +4,8 @@
 
 ## 0.38.1 — 2026-11-01
 
+- **Keep shared previews available** — Existing snapshots remain viewable when content rules change. Recognized abbreviations include GP and ET, while new previews and imports keep their validation checks.
+
 - **Navigation editing** — Alphabetical sorting labels pass content validation, keeping navigation settings editable.
 
 ## 0.38.0 — 2026-11-01

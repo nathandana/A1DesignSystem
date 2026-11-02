@@ -145,7 +145,7 @@ for (const name of componentTypes) if (!components[name]) throw new Error(`Missi
 // separate hand-maintained rule list or a runtime YAML parser.
 const ruleCatalog = fs.readdirSync(file('system/rules')).filter(name => name.endsWith('.yaml')).sort().flatMap(name => {
   const source = parseYaml(fs.readFileSync(file(`system/rules/${name}`), 'utf8'));
-  return (source.rules ?? []).map(rule => ({ id: rule.id, requirement: rule.requirement ?? rule.description ?? rule.id, components: rule.components ?? [source.component ?? 'System'], ...(rule.enforcement?.json ? { json: rule.enforcement.json } : {}) }));
+  return (source.rules ?? []).map(rule => ({ id: rule.id, requirement: rule.requirement ?? rule.description ?? rule.id, components: rule.components ?? [source.component ?? 'System'], ...(rule.exceptions ? { exceptions: rule.exceptions } : {}), ...(rule.enforcement?.json ? { json: rule.enforcement.json } : {}) }));
 });
 for (const rule of ruleCatalog.filter(rule => rule.json)) {
   if (!['authored-text-case', 'heading-sentence-case'].includes(rule.json.check) || !['error', 'warning'].includes(rule.json.severity)) throw new Error(`Unsupported JSON enforcement for ${rule.id}`);

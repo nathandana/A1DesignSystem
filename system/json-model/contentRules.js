@@ -4,8 +4,8 @@ const mandatoryContentRules = contract.ruleCatalog.filter(rule => rule.json);
 const contentRule = mandatoryContentRules.find(rule => rule.json.check === 'authored-text-case');
 const headingRule = mandatoryContentRules.find(rule => rule.json.check === 'heading-sentence-case');
 const policy = contentRule.json;
-const tokens = new Set(policy.exceptions.tokens);
-const approvedToken = (word, locale) => tokens.has(word) || (policy.exceptions.localeTokens?.[locale.split('-')[0]] ?? []).includes(word);
+const tokens = new Set(contentRule.exceptions.tokens);
+const approvedToken = (word, locale) => tokens.has(word) || (contentRule.exceptions.localeTokens?.[locale.split('-')[0]] ?? []).includes(word);
 const textFields = new Set(policy.textFields);
 const collections = new Set(policy.collections);
 const excludedContent = new Set(policy.excludedContentComponents);
@@ -42,13 +42,13 @@ function sentenceSuggestion(text, locale, onlyCaps = false) {
   });
   // Preserve the canonical spelling of explicitly approved names. Suggestions
   // remain proposals: unknown names and locale-specific grammar need review.
-  for (const name of policy.exceptions.names) suggested = suggested.replace(new RegExp(`(?<![\\p{L}\\p{N}])${escapeRegex(name)}(?![\\p{L}\\p{N}])`, 'giu'), name);
+  for (const name of contentRule.exceptions.names) suggested = suggested.replace(new RegExp(`(?<![\\p{L}\\p{N}])${escapeRegex(name)}(?![\\p{L}\\p{N}])`, 'giu'), name);
   return suggested;
 }
 
 function titleCase(text, locale) {
   let remaining = text;
-  for (const name of policy.exceptions.names) remaining = remaining.replace(new RegExp(`(?<![\\p{L}\\p{N}])${escapeRegex(name)}(?![\\p{L}\\p{N}])`, 'gu'), '');
+  for (const name of contentRule.exceptions.names) remaining = remaining.replace(new RegExp(`(?<![\\p{L}\\p{N}])${escapeRegex(name)}(?![\\p{L}\\p{N}])`, 'gu'), '');
   const terms = [...remaining.matchAll(words)].map(match => match[0]).filter(word => cased(word, locale) && !approvedToken(word, locale));
   return terms.length > 1 && terms.every(word => word === firstUpper(lower(word, locale), locale));
 }

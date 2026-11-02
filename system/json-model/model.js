@@ -35,7 +35,7 @@ export function getJsonModel(format = 'project') {
     starter: format === 'project'
       ? { name: 'Untitled project', description: '', icon: 'web', pages: [{ id: 'home', title: 'Home', parentId: null, definition: blankPage('home', 'Home') }] }
       : blankPage(),
-    mandatoryRules: contract.ruleCatalog.map(rule => ({ ruleId: rule.id, requirement: rule.requirement, components: [...rule.components], enforcement: structuredClone(rule.json) ?? { check: 'rendering-or-human-review' } })),
+    mandatoryRules: contract.ruleCatalog.map(rule => ({ ruleId: rule.id, requirement: rule.requirement, components: [...rule.components], ...(rule.exceptions ? { exceptions: structuredClone(rule.exceptions) } : {}), enforcement: structuredClone(rule.json) ?? { check: 'rendering-or-human-review' } })),
     workflow: [
       'Read and follow mandatoryRules before authoring. A valid schema is not full A1 compliance.',
       'For a website, use format: project and represent meaningful destinations as linked pages. Use page only for an explicitly single-page request; do not silently reduce a site to one scrolling page.',

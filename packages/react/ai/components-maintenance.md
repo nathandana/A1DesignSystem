@@ -1,5 +1,13 @@
 # A1 Design System — Component Maintenance Log
 
+## 2026-11-01 — Canonical A1 capitalization ownership
+
+Capitalization exceptions are owned by the A1 content rule itself, outside JSON enforcement metadata. The generated contract, MCP discovery and rule index expose that same definition; the shared validator consumes it for the editor, imports and preview creation. MCP has no independent exception list. See [Content standards](content-standards.md#shared-capitalization-policy).
+
+## 2026-11-01 — Existing preview content compatibility
+
+A user’s shared snapshot exposed false positives for GP and English ET. Added those exact visible exceptions and kept published snapshots viewable when content policy changes. Preview reads still enforce structural/reference/pattern validity and expiry; creation and new project imports retain full content validation. Browser regression covers an older all-caps snapshot rendering unchanged while import is blocked. No CSS, token or interaction changes.
+
 ## 2026-11-01 — Alphabetical navigation validation
 
 The full release gate caught Navigation Tree’s canonical A-Z sort label being classified as uppercase prose after a configuration edit. The visible YAML exception list now accepts exactly A-Z; ordinary all-caps words remain errors. Added a shared-validator regression and reran the real editor configuration flow. A1 Web 0.38.1 carries the correction; MCP 0.5.0 includes it before publication.

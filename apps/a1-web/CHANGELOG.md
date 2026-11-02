@@ -4,6 +4,8 @@
 
 ## 0.38.1 — 2026-11-01
 
+- **Existing preview compatibility** — new content rules no longer hide previously shared snapshots. Structural checks and expiry still apply; new previews and project imports retain current rule enforcement. Recognize GP and English ET as legitimate abbreviations.
+
 - **Alphabetical navigation labels** — accept the exact A-Z sorting label in shared content validation so editing Navigation Tree settings preserves a valid page.
 
 ## 0.38.0 — 2026-11-01

@@ -167,7 +167,8 @@ Page-list titles inherit their definition’s language; project metadata uses th
 first page’s language.
 Case comparisons and suggestions use that language. Non-English heading conventions
 are deferred to human review. Exact acronym, currency, size and approved-name
-exceptions live in `system.yaml`; language-specific exceptions avoid treating
+exceptions belong to the A1 rule’s top-level `exceptions` in `system.yaml`,
+shared by all consumers rather than defined by MCP; language-specific exceptions avoid treating
 French “un” as the English acronym “UN.” There is no page-level rule bypass.
 Suggestions preserve known names but still require review of unknown proper names.
 
@@ -219,7 +220,10 @@ manual assistive-technology audit is claimed.
 After validation, call `create_preview` with the same `{ kind, document,
 contractVersion? }` arguments. It validates again and returns the standard
 validation result, plus `previewId`, `previewUrl` and `expiresAt` only when valid.
-Invalid JSON creates no snapshot. For example:
+Invalid JSON creates no snapshot. Existing stored snapshots retain their authored
+content until expiry: viewing still checks structure, references and pattern
+contracts, but later content-policy violations do not retroactively hide them.
+Editing as a new project still passes the current import checks. For example:
 
 ```json
 {

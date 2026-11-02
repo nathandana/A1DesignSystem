@@ -41,6 +41,7 @@ export function parseRules() {
         do: r.do ?? null,
         dont: r.dont ?? null,
         appliesTo: Array.isArray(r.applies_to) ? r.applies_to : [],
+        ...(r.exceptions ? { exceptions: r.exceptions } : {}),
         enforcement: r.enforcement
           ? { eslint: r.enforcement.eslint ?? null, css: r.enforcement.css === true, ...(r.enforcement.json ? { json: r.enforcement.json } : {}) }
           : null,

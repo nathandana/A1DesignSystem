@@ -89,7 +89,7 @@ test('literal casing styles are blocked including escaped CSS, without executing
 });
 
 test('exceptions are exact and visible; locales and language inheritance avoid English-only assumptions', () => {
-  for (const text of ['A-Z', 'USD', 'S', 'XL', 'SCE', 'API', 'A1:Design', 'New England', 'JSON and CSS']) assert.equal(validate(page(node('Heading', text))).valid, true, text);
+  for (const text of ['Canadian GP starts at 3:00 PM ET.', 'A-Z', 'USD', 'S', 'XL', 'SCE', 'API', 'A1:Design', 'New England', 'JSON and CSS']) assert.equal(validate(page(node('Heading', text))).valid, true, text);
   for (const text of ['SAVE', 'GO', 'BUY', 'SCEE']) assert.equal(validate(page(node('Heading', text))).valid, false, text);
   for (const [lang, text, suggestion] of [['fr', 'CRÉER UN COMPTE', 'Créer un compte'], ['es', 'CREAR CUENTA', 'Crear cuenta'], ['de', 'WILLKOMMEN', 'Willkommen'], ['tr', 'İYİ GÜNLER', 'İyi günler']]) {
     const result = validate(page(node('Heading', text), lang));
@@ -138,12 +138,16 @@ test('MCP discovery mandates rules and JSON → validate → A1 preview, with Re
   const model = modelResult.structuredContent ?? JSON.parse(modelResult.content[0].text);
   assert.equal(model.format, 'project');
   assert.equal(model.mandatoryRules.length, contract.ruleCatalog.length);
-  assert.ok(model.mandatoryRules.find(r => r.ruleId === capsRule).enforcement.exceptions.tokens.includes('SCE'));
+  assert.ok(model.mandatoryRules.find(r => r.ruleId === capsRule).exceptions.tokens.includes('SCE'));
   assert.ok(model.mandatoryRules.some(r => r.ruleId === 'system-tokens-only'));
+  const listedResult = await rpc(handler, 'tools/call', { name: 'list_rules', arguments: { component: 'System' } });
+  const listed = listedResult.structuredContent ?? JSON.parse(listedResult.content[0].text);
+  assert.deepEqual(listed.rules.find(r => r.id === capsRule).exceptions, model.mandatoryRules.find(r => r.ruleId === capsRule).exceptions);
+  assert.equal(model.mandatoryRules.find(r => r.ruleId === capsRule).enforcement.exceptions, undefined);
   assert.match(model.workflow.join(' '), /preview URL as the primary handoff/);
   assert.match(model.guidance.react, /specifically asks/);
   const editableCopy = getJsonModel();
-  editableCopy.mandatoryRules.find(r => r.ruleId === capsRule).enforcement.exceptions.tokens.push('SHOUT');
+  editableCopy.mandatoryRules.find(r => r.ruleId === capsRule).exceptions.tokens.push('SHOUT');
   assert.equal(validate(page(node('Heading', 'SHOUT'))).valid, false);
 });
 
