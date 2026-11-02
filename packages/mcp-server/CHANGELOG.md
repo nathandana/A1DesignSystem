@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.4.1 — 2026-11-01
+
+- **Preview retention** — increased new snapshot retention from 24 hours to 30 days, with matching MCP discovery guidance. Reads and scheduled cleanup continue to honor each snapshot’s recorded expiry.
+
 ## 0.4.0 — 2026-11-01
 
 - **Design context** (A1-2738) — added `a1://docs/design` and initialization guidance for the generated A1 design document. Web and MCP build checks reject stale design downloads.

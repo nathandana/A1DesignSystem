@@ -1,6 +1,34 @@
 {
   "label": {
     "jsonPreview": {
+      "madeWith": {
+        "$type": "string",
+        "$value": "Made with A1:Design",
+        "$description": "Preview attribution: homepage link when expanded, reopen button when collapsed.",
+        "locale": {
+          "es": "Creado con A1:Design",
+          "fr": "Créé avec A1:Design",
+          "de": "Erstellt mit A1:Design",
+          "pt": "Feito com A1:Design",
+          "ja": "A1:Design で作成",
+          "zh": "使用 A1:Design 制作",
+          "ar": "أُنشئ باستخدام A1:Design"
+        }
+      },
+      "collapseBanner": {
+        "$type": "string",
+        "$value": "Collapse preview banner",
+        "$description": "Accessible label for the preview banner's close control.",
+        "locale": {
+          "es": "Contraer el banner de vista previa",
+          "fr": "Réduire la bannière d’aperçu",
+          "de": "Vorschaubanner einklappen",
+          "pt": "Recolher o banner de prévia",
+          "ja": "プレビューバナーを折りたたむ",
+          "zh": "收起预览横幅",
+          "ar": "طي شريط المعاينة"
+        }
+      },
       "title": {
         "$type": "string",
         "$value": "A1 preview",
@@ -157,16 +185,16 @@
       },
       "importProject": {
         "$type": "string",
-        "$value": "Import as project",
-        "$description": "Preview project import: importProject.",
+        "$value": "Edit as project",
+        "$description": "Open an editable project copy from a preview, without requiring sign-in.",
         "locale": {
-          "es": "Importar como proyecto",
-          "fr": "Importer comme projet",
-          "de": "Als Projekt importieren",
-          "pt": "Importar como projeto",
-          "ja": "プロジェクトとしてインポート",
-          "zh": "导入为项目",
-          "ar": "استيراد كمشروع"
+          "es": "Editar como proyecto",
+          "fr": "Modifier comme projet",
+          "de": "Als Projekt bearbeiten",
+          "pt": "Editar como projeto",
+          "ja": "プロジェクトとして編集",
+          "zh": "作为项目编辑",
+          "ar": "تحرير كمشروع"
         }
       },
       "importing": {
@@ -211,18 +239,32 @@
           "ar": "تعذر استيراد المعاينة. ارجع إلى المعاينة وحاول مجددًا."
         }
       },
-      "signInRequired": {
+      "openedLocally": {
         "$type": "string",
-        "$value": "Sign in, then return to the preview to import it.",
-        "$description": "Preview project import: signInRequired.",
+        "$value": "You’re editing a copy saved in this browser.",
+        "$description": "Guest preview editing confirmation.",
         "locale": {
-          "es": "Inicia sesión y vuelve a la vista previa para importarla.",
-          "fr": "Connectez-vous, puis revenez à l’aperçu pour l’importer.",
-          "de": "Melden Sie sich an und kehren Sie zur Vorschau zurück, um sie zu importieren.",
-          "pt": "Entre na sua conta e volte à prévia para importá-la.",
-          "ja": "サインインしてからプレビューに戻り、インポートしてください。",
-          "zh": "请先登录，然后返回预览进行导入。",
-          "ar": "سجّل الدخول، ثم ارجع إلى المعاينة لاستيرادها."
+          "es": "Estás editando una copia guardada en este navegador.",
+          "fr": "Vous modifiez une copie enregistrée dans ce navigateur.",
+          "de": "Sie bearbeiten eine in diesem Browser gespeicherte Kopie.",
+          "pt": "Você está editando uma cópia salva neste navegador.",
+          "ja": "このブラウザーに保存されたコピーを編集中です。",
+          "zh": "您正在编辑保存在此浏览器中的副本。",
+          "ar": "أنت تحرر نسخة محفوظة في هذا المتصفح."
+        }
+      },
+      "accountChanged": {
+        "$type": "string",
+        "$value": "Your sign-in status changed. Return to the preview and choose Edit as project again.",
+        "$description": "Preview edit intent must match the current guest or signed-in session.",
+        "locale": {
+          "es": "Tu estado de inicio de sesión cambió. Vuelve a la vista previa y elige Editar como proyecto otra vez.",
+          "fr": "Votre état de connexion a changé. Revenez à l’aperçu et choisissez à nouveau Modifier comme projet.",
+          "de": "Ihr Anmeldestatus hat sich geändert. Kehren Sie zur Vorschau zurück und wählen Sie erneut Als Projekt bearbeiten.",
+          "pt": "Seu status de login mudou. Volte à prévia e escolha Editar como projeto novamente.",
+          "ja": "サインイン状態が変わりました。プレビューに戻り、もう一度「プロジェクトとして編集」を選択してください。",
+          "zh": "您的登录状态已更改。请返回预览并再次选择“作为项目编辑”。",
+          "ar": "تغيّرت حالة تسجيل الدخول. ارجع إلى المعاينة واختر تحرير كمشروع مرة أخرى."
         }
       }
     }

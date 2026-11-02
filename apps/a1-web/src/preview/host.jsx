@@ -5,10 +5,11 @@ import './preview.css'
 import './host.css'
 import { createRoot } from 'react-dom/client'
 import { useEffect, useRef, useState } from 'react'
-import { Button, LabelsProvider, PageLayout, Snackbar, TopHeader } from '@gtivr4/a1-design-system-react'
+import { Banner, Button, ButtonContainer, IconButton, LabelsProvider, Link, PageLayout, Snackbar } from '@gtivr4/a1-design-system-react'
 import { AuthProvider, useAuth } from '../lib/AuthContext.jsx'
 import { SYSTEM_LABELS, resolveLabel } from '../labels/systemLabels.js'
 import { beginPreviewImport, loadPreview } from './previewClient.js'
+import { schedulePreviewExpiry } from './previewExpiry.js'
 
 const query = new URLSearchParams(location.search)
 const locale = query.get('locale') || navigator.language.split('-')[0]
@@ -23,14 +24,25 @@ function PreviewHost() {
   const frame = useRef(null)
   const [ready, setReady] = useState(false)
   const [message, setMessage] = useState('')
+  const [collapsed, setCollapsed] = useState(false)
+  const restoreBannerFocus = useRef(false)
+  function toggleBanner(nextCollapsed) {
+    restoreBannerFocus.current = true
+    setCollapsed(nextCollapsed)
+  }
+  useEffect(() => {
+    if (!restoreBannerFocus.current) return
+    document.getElementById(collapsed ? 'a1-preview-reopen' : 'a1-preview-collapse')?.focus()
+    restoreBannerFocus.current = false
+  }, [collapsed])
   useEffect(() => {
     const controller = new AbortController()
-    let timer
+    let cancelExpiry
     loadPreview(id, controller.signal).then(snapshot => {
       setReady(true)
-      timer = setTimeout(() => setReady(false), Date.parse(snapshot.expiresAt) - Date.now())
+      cancelExpiry = schedulePreviewExpiry(snapshot.expiresAt, () => setReady(false))
     }).catch(() => setReady(false))
-    return () => { controller.abort(); clearTimeout(timer) }
+    return () => { controller.abort(); cancelExpiry?.() }
   }, [])
   useEffect(() => {
     // Only navigation state crosses this boundary; never accept import requests
@@ -46,14 +58,28 @@ function PreviewHost() {
     return () => { window.removeEventListener('message', receive); window.removeEventListener('hashchange', update) }
   }, [])
   function importProject() {
-    if (!user || loading || !ready) return
-    try { location.assign(beginPreviewImport(id, user.id)) }
+    if (loading || !ready) return
+    try { location.assign(beginPreviewImport(id, user?.id ?? null)) }
     catch { setMessage(t('importFailed')) }
   }
   return <>
-    <PageLayout viewportHeight header={user && !loading ? <TopHeader logo={t('title')} endContent={<Button disabled={!ready} onClick={importProject}>{t('importProject')}</Button>} /> : undefined}>
+    <PageLayout viewportHeight footer={
+      <div id="a1-preview-banner" hidden={collapsed}>
+        <Banner variant="system" status="neutral" icon="auto_awesome" role="group" aria-live="off" action={
+          <ButtonContainer align="end">
+            <Button variant="tertiary" disabled={loading || !ready} onClick={importProject}>{t('importProject')}</Button>
+            <IconButton id="a1-preview-collapse" icon="close" label={t('collapseBanner')} aria-controls="a1-preview-banner" aria-expanded={!collapsed} onClick={() => toggleBanner(true)} />
+          </ButtonContainer>
+        }>
+          <Link href="/">{t('madeWith')}</Link>
+        </Banner>
+      </div>
+    }>
       <iframe ref={frame} className="a1-json-preview-frame" src={`${framePath}${location.hash}`} title={t('title')} sandbox="allow-scripts" referrerPolicy="no-referrer" />
     </PageLayout>
+    {collapsed && <div className="a1-json-preview-attribution">
+      <Button id="a1-preview-reopen" variant="secondary" size="sm" aria-controls="a1-preview-banner" aria-expanded={false} onClick={() => toggleBanner(false)}>{t('madeWith')}</Button>
+    </div>}
     <Snackbar open={!!message} onClose={() => setMessage('')}>{message}</Snackbar>
   </>
 }

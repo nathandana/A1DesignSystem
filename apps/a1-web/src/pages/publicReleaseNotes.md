@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+## 0.37.0 — 2026-11-01
+
+### Highlights
+
+- **Try the editor without signing in** — Choose Edit as project from any valid preview to open an editable copy. Guests save in their browser; signed-in users use their workspace. The shared preview stays unchanged.
+- **More time to share previews** — New preview links last 30 days. Previously created links retain their original expiry.
+- **A simpler preview experience** — A centered spinner appears while the page loads. The Made with A1:Design footer links home and collapses to a small floating control that reopens without reloading the preview.
+- **Clearer project validation** — Imported page links resolve against the containing project. Missing destinations still show precise errors.
+
 ## 0.36.0 — 2026-11-01
 
 ### Highlights

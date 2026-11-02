@@ -50,7 +50,9 @@ export const messages = {
 
 /** Side-effect-free, transport-independent validation. Never repairs input,
  * invokes callbacks, resolves network resources or reads browser storage. */
-export function validateJson({ kind, document, contractVersion } = {}) {
+// Editor-only context lets an individual draft resolve links against its project.
+// MCP requests still validate a complete project bundle to supply that context.
+export function validateJson({ kind, document, contractVersion } = {}, { pageIds: contextPageIds } = {}) {
   const errors = [], warnings = [];
   const add = (code, path, extra = {}, severity = 'error') => {
     const diagnostic = { code, path, message: messages[code], ...extra };
@@ -111,12 +113,13 @@ export function validateJson({ kind, document, contractVersion } = {}) {
     if (values.style || values.className) add('INLINE_STYLE', `${path}/${values.style ? 'style' : 'className'}`, {}, 'warning');
   }
   const pages = kind === 'project' && Array.isArray(document.pages) ? document.pages : [];
-  const pageIds = new Set(pages.map((p, i) => typeof p?.id === 'string' ? p.id : `#${i}`));
+  const hasPageContext = kind === 'page' && Array.isArray(contextPageIds);
+  const pageIds = new Set(hasPageContext ? contextPageIds : pages.map((p, i) => typeof p?.id === 'string' ? p.id : `#${i}`));
   function reference(href, path) {
     if (typeof href !== 'string' || !/^(\/)?\?/.test(href) || href.includes('{{')) return;
     const target = new URLSearchParams(href.slice(href.indexOf('?'))).get('page');
     if (target === null) return;
-    if (kind === 'page') add('REFERENCE_CONTEXT', path, {}, 'warning');
+    if (kind === 'page' && !hasPageContext) add('REFERENCE_CONTEXT', path, {}, 'warning');
     else if (!pageIds.has(target)) add('BROKEN_REFERENCE', path, { allowedValues: [...pageIds] });
   }
   // Only link-bearing prop fields are inspected; arbitrary dataset rows, JS,

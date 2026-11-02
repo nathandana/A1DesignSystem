@@ -1207,7 +1207,12 @@ export function EditorPage({
     return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
 
-  const jsonValidation = useMemo(() => validateJson({ kind: 'page', document: previewJson ?? history.workingJson }), [previewJson, history.workingJson]);
+  const jsonValidation = useMemo(() => validateJson(
+    { kind: 'page', document: previewJson ?? history.workingJson },
+    projectId && documentKind !== 'pattern' && projectPages.length
+      ? { pageIds: projectPages.map(page => page.id) }
+      : undefined,
+  ), [previewJson, history.workingJson, projectId, documentKind, projectPages]);
   const parsedDefinition = useMemo<ParseResult>(() => {
     if (!jsonValidation.valid) return { ok: false, error: formatJsonDiagnostics(jsonValidation.errors, t) };
     try {

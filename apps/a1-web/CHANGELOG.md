@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+## 0.37.0 — 2026-11-01
+
+- **Preview loading** — show a centered page spinner while fetching the preview, with a localized accessible loading label.
+
+- **Try the project editor** — anyone can choose “Edit as project” from a preview. Guests edit a copy saved in their browser; signed-in users use their workspace. Both open directly on the first page, preserving the shared preview.
+
+- **Preview retention** — new page/project preview links remain available for 30 days. Browser expiry timers support the longer lifetime without overflowing; existing snapshots retain their original expiry.
+
+- **Preview attribution banner** — moved “Made with A1:Design” and the project editing action to the bottom of the viewport. Closing the banner leaves a small floating control that reopens it without reloading the preview. Attribution is available to guests, with keyboard focus preserved and no inactive mobile menu.
+
+- **Project link validation** — page and shared-layout editors resolve internal links against their project's pages instead of repeating missing-context warnings after import. Missing destinations still produce precise validation errors; standalone pages and reusable patterns retain context warnings.
+
 ## 0.36.0 — 2026-11-01
 
 - **Design with A1** (A1-2738) — added a public guide in Explore and search with React-first prompts, Codex/Claude Code/Cursor/Gemini CLI setup, and the direct A1 JSON validation/preview/import path. Downloadable design.md, React setup and JSON reference files stay synchronized with their canonical sources; all page labels include the seven supported translations.

@@ -20,7 +20,7 @@
 [functions]
   node_bundler = "esbuild"
 
-# The preview toolbar uses auth; rendered content stays in an opaque-origin iframe.
+# The preview banner resolves identity; rendered content stays in an opaque-origin iframe.
 [[redirects]]
   from = "/preview/*"
   to = "/preview.html"
