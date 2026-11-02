@@ -7,11 +7,12 @@ import '../editor/responsiveVisibility.css'
 import './preview.css'
 import { createRoot } from 'react-dom/client'
 import { Component, useEffect, useMemo, useState } from 'react'
-import { Banner, LabelsProvider, PageTitle, Paragraph, Section, TopHeader } from '@gtivr4/a1-design-system-react'
+import { Banner, CircularProgress, LabelsProvider, PageTitle, Paragraph, Section, Stack, TopHeader } from '@gtivr4/a1-design-system-react'
 import { RenderPageDefinition } from '../editor/pageRenderer'
 import { buildProjectNav, buildProjectBreadcrumb } from '../projects/projectNav'
 import { resolveAutoBreadcrumbs } from '../projects/projectLayout'
 import { loadPreview } from './previewClient.js'
+import { schedulePreviewExpiry } from './previewExpiry.js'
 import { themeClassName, VALID_THEMES } from '../lib/appThemes'
 import { SYSTEM_LABELS, resolveLabel } from '../labels/systemLabels.js'
 
@@ -27,7 +28,10 @@ document.documentElement.dir = locale === 'ar' ? 'rtl' : 'ltr'
 
 function Status({ state }) {
   useEffect(() => { document.documentElement.dataset.a1PreviewState = state }, [state])
-  return <main><PageTitle title={t('title')} /><Section padding="lg" contentWidth="md"><Banner status={state === 'loading' ? 'info' : 'error'}><Paragraph role="status">{t(state)}</Paragraph></Banner></Section></main>
+  if (state === 'loading') return <Stack as="main" align="center" justify="center" style={{ minBlockSize: '100svh' }} aria-label={t('loading')}>
+    <CircularProgress indeterminate size="xl" aria-label={t('loading')} />
+  </Stack>
+  return <main><PageTitle title={t('title')} /><Section padding="lg" contentWidth="md"><Banner status="error"><Paragraph role="status">{t(state)}</Paragraph></Banner></Section></main>
 }
 
 function ReadyMarker() {
@@ -95,18 +99,18 @@ function Preview() {
   const [snapshot, setSnapshot] = useState(null)
   useEffect(() => {
     const controller = new AbortController()
-    let expiryTimer
+    let cancelExpiry
     async function load() {
       try {
         const data = await loadPreview(previewId, controller.signal)
         const remaining = Date.parse(data.expiresAt) - Date.now()
         if (remaining <= 0) { setState('expired'); return }
         setSnapshot(data); setState('ready')
-        expiryTimer = setTimeout(() => { setSnapshot(null); setState('expired') }, remaining)
+        cancelExpiry = schedulePreviewExpiry(data.expiresAt, () => { setSnapshot(null); setState('expired') })
       } catch (error) { if (!controller.signal.aborted) setState(['expired', 'missing', 'invalid'].includes(error.message) ? error.message : 'unavailable') }
     }
     load()
-    return () => { controller.abort(); clearTimeout(expiryTimer) }
+    return () => { controller.abort(); cancelExpiry?.() }
   }, [])
   return state === 'ready' && snapshot ? <PreviewDocument snapshot={snapshot} /> : <Status state={state} />
 }

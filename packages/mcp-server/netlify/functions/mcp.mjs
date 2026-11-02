@@ -286,7 +286,7 @@ class ToolError extends Error {
 const validationTool = TOOLS.find(tool => tool.name === 'validate_json');
 TOOLS.push({
   name: 'create_preview',
-  description: 'Validate page or project JSON and create a temporary A1 rendered preview URL, available for 24 hours to anyone with the link. Returns validation diagnostics and, only when valid, previewId, previewUrl and expiresAt. Stores an expiring snapshot; does not import, save or publish a workspace project. Open the URL to inspect layout and accessibility; submit revised JSON to create a new preview.',
+  description: 'Validate page or project JSON and create a temporary A1 rendered preview URL, available for 30 days to anyone with the link. Returns validation diagnostics and, only when valid, previewId, previewUrl and expiresAt. Stores an expiring snapshot; does not import, save or publish a workspace project. Open the URL to inspect layout and accessibility; submit revised JSON to create a new preview.',
   input: validationTool.input,
   outputSchema: {
     ...validationTool.outputSchema,

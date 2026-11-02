@@ -69,3 +69,25 @@ test('page editor validates stored JSON and displays a repaired page', async ({ 
   await page.getByRole('radio', { name: 'Edit', exact: true }).click()
   await expect(page.locator('[data-editor-node="validated-button"]')).toBeVisible()
 })
+
+test('imported project links use project context in the page editor', async ({ page }) => {
+  const home = definition()
+  home.page.layout.regions[0].nodes[0].props.href = '/?page=about'
+  await page.goto('/projects')
+  await page.getByRole('button', { name: 'Upload JSON', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'Upload project from JSON' })
+  await dialog.locator('textarea').fill(JSON.stringify({
+    name: 'Reference context regression',
+    pages: [{ id: 'home', title: 'Home', definition: home }, { id: 'about', title: 'About' }],
+  }))
+  await dialog.getByRole('button', { name: 'Import project', exact: true }).click()
+  await expect(dialog).not.toBeVisible()
+  await page.getByRole('button', { name: 'Home · LG', exact: true }).dblclick()
+  await expect(page.locator('[data-editor-node="validated-button"]')).toBeVisible()
+  await expect(page.getByText(/Validate the project bundle to check this page reference/)).toHaveCount(0)
+  await page.getByRole('radio', { name: 'Code snippet', exact: true }).click()
+  home.page.layout.regions[0].nodes[0].props.href = '/?page=missing'
+  await page.locator('main textarea').fill(JSON.stringify(home))
+  await page.getByRole('radio', { name: 'Edit', exact: true }).click()
+  await expect(page.getByText(/\/props\/href: Reference an existing page or node/).first()).toBeVisible()
+})

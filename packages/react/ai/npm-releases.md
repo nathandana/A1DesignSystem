@@ -49,8 +49,9 @@ Use npm trusted publishing (OIDC), scoped to GitHub repository
 The publish job grants `id-token: write` and installs npm 11.21.0. It does not
 read the legacy GitHub `NPM_TOKEN` secret.
 
-Both package trust relationships were configured and confirmed on Oct. 12,
-2026, with direct-publish permission for this repository and workflow.
+Both package trust relationships were refreshed and verified through a successful
+OIDC publication on Nov. 1, 2026, with direct-publish permission for this
+repository and workflow.
 React Native's repository metadata is prepared in its Unreleased changes for
 the next version bump; the existing 0.1.1 upload is not replaced.
 

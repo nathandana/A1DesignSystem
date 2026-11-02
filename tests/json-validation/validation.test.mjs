@@ -131,6 +131,21 @@ test('project links, parent references, cycles, empty pages and encoded definiti
   assert.ok(has(validateJson({ kind: 'project', document: { pages: [] } }), 'EMPTY_PROJECT'));
 });
 
+test('page drafts resolve project links when the editor supplies project context', () => {
+  const document = page(node('Button', { href: '/?page=about' }));
+  const request = { kind: 'page', document };
+  assert.ok(validateJson(request).warnings.some(d => d.code === 'REFERENCE_CONTEXT'));
+  const resolved = validateInEditor(request, { pageIds: ['home', 'about'] });
+  assert.equal(resolved.valid, true);
+  assert.equal(resolved.warnings.some(d => d.code === 'REFERENCE_CONTEXT'), false);
+  const missing = validateInEditor(request, { pageIds: ['home'] });
+  assert.ok(has(missing, 'BROKEN_REFERENCE', `${root}/props/href`));
+  assert.deepEqual(missing.errors[0].allowedValues, ['home']);
+  assert.ok(has(validateInEditor(request, { pageIds: [] }), 'BROKEN_REFERENCE'));
+  const project = { pages: [{ id: 'home', definition: document }] };
+  assert.ok(has(validateJson({ kind: 'project', document: project }, { pageIds: ['about'] }), 'BROKEN_REFERENCE'));
+});
+
 test('design warnings remain advisory and diagnostics have translations', () => {
   const result = validate(page(node('Section')));
   assert.equal(result.valid, true);

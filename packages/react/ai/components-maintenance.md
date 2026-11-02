@@ -1,5 +1,25 @@
 # A1 Design System — Component Maintenance Log
 
+## 2026-11-01 — Preview page loading spinner
+
+The isolated preview uses an indeterminate A1 CircularProgress centered in the viewport by Stack while fetching its snapshot. Its accessible name reuses the localized loading label. Error states retain their banners. Only viewport sizing is local; Stack and CircularProgress own layout and visuals, with no new CSS or tokens. Browser coverage holds the response pending to check loading, responsive centering and the transition to content.
+
+## 2026-11-01 — Guest preview editing
+
+The preview banner offers Edit as project to everyone after authentication settles and the snapshot validates. Guests use the existing browser-local project store; signed-in users retain cloud hydration checks. Each import opens its first page directly in the editor. Single-use intents bind to either the guest or signed-in identity and reject sign-in changes. Browser checks cover local editing, persistence, unchanged source snapshots, no guest cloud writes, expiry and identity changes. Labels cover all seven locales. No CSS, tokens or component APIs changed.
+
+## 2026-11-01 — 30-day preview retention
+
+New preview snapshots expire 30 days after creation. The host and isolated renderer share a bounded expiry scheduler because 30 days exceeds the browser timer limit. Existing URLs retain their recorded expiry; reads and cleanup continue to enforce it. MCP discovery, agent guidance and public copy reflect the new lifetime. Covered the 29-day/30-day boundary and timer rollover/cancellation. No CSS or component API changes.
+
+## 2026-11-01 — Collapsible preview attribution
+
+Preview attribution uses an A1 system Banner in PageLayout’s viewport footer, with a homepage Link and project editing action. Closing it leaves a floating A1 Button that restores the banner and keyboard focus without reloading the iframe. Guests retain attribution and can open a browser-local project copy. Existing A1 components own visuals and layout; the only added CSS anchors the collapsed control with existing spacing/sticky tokens and the safe-area inset. New keyboard, responsive, theme and focused axe checks cover both states. No tokens or component APIs changed.
+
+## 2026-11-01 — Editor project reference context
+
+Page and shared-layout draft validation now receives the containing project's page IDs. Valid imported links no longer flood the editor footer with missing-context warnings, while missing targets retain exact-path errors. Standalone pages, reusable patterns and MCP page requests still report unavailable project context. Added import-to-editor regression coverage. No CSS, tokens, component APIs or validation-message presentation changed.
+
 ## 2026-11-01 — A1-2738 Design with A1
 
 Added the public React-first agent guide with localized instructions, prompts, official agent setup sources, and the JSON validation/preview path. Generated `design.md` combines current resolved tokens with maintained design rationale in Google’s DESIGN.md format; the same document is downloadable and exposed as `a1://docs/design`. Build checks reject stale copies. Existing A1 components only; no new CSS or component contracts. See [Design with A1](design-with-a1.md).
