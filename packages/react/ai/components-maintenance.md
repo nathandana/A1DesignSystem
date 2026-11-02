@@ -1,5 +1,9 @@
 # A1 Design System — Component Maintenance Log
 
+## 2026-11-01 — Preview footer intrinsic action sizing
+
+A1 Web 0.37.1 replaces the full-width ButtonContainer inside the intrinsically sized Banner action with an A1 row Stack. ButtonContainer’s inline-size containment supplied no intrinsic width, collapsing the action to a narrow column. Stack preserves the Button and IconButton natural sizes. The release smoke test exposed this on mobile; regression checks now require both controls to fit and bound the button/footer height at 320, 375, 390, 560, 768, 1280 and 1536 pixels. No custom CSS, tokens or shared component changes.
+
 ## 2026-11-01 — Preview page loading spinner
 
 The isolated preview uses an indeterminate A1 CircularProgress centered in the viewport by Stack while fetching its snapshot. Its accessible name reuses the localized loading label. Error states retain their banners. Only viewport sizing is local; Stack and CircularProgress own layout and visuals, with no new CSS or tokens. Browser coverage holds the response pending to check loading, responsive centering and the transition to content.
