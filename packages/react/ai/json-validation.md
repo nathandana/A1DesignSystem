@@ -99,7 +99,13 @@ duplicate IDs, GridItem/ListItem placement, leaf nodes, Slot limits, nested Tabs
 content and formal pattern areas/collections, including nested VerificationDialog.
 Project checks include duplicate page IDs, missing parents, parent cycles and
 local `?page=` links. A single page receives a warning for page links because
-the surrounding project is unavailable. Ordinary app routes and external URLs
+the surrounding project is unavailable. The page and shared-layout editors pass
+their known project page IDs as the validator's optional second argument
+(`{ pageIds }`), so valid links resolve and missing destinations produce the
+same `BROKEN_REFERENCE` errors as bundle validation. This context is separate
+from the JSON request: standalone MCP page requests and reusable patterns retain
+the warning, and project validation always uses the bundle's own IDs.
+Ordinary app routes and external URLs
 are not fetched or treated as project IDs. Legacy blank pages and JSON-encoded
 definitions remain accepted. Unknown components now block import instead of
 silently producing a renderer fallback.
@@ -183,7 +189,7 @@ Successful output includes:
 
 Open `previewUrl` in a browser, inspect/screenshot the real A1 components, then
 submit revised JSON for a new URL. The snapshot is immutable and expires after
-24 hours. Anyone with the URL can view it until then; it is not an authenticated
+30 days. Anyone with the URL can view it until then; it is not an authenticated
 workspace, saved project or publication. `create_preview` advertises a write
 annotation because it stores an expiring snapshot. `validate_json` remains
 read-only. Browser automation can wait for `html[data-a1-preview-state="ready"]` inside the preview iframe;
@@ -211,8 +217,8 @@ Page navigation uses URL fragments, supports Back/Forward and preserves deep
 links. `?theme=<app theme value>`, `?mode=dark` and `?locale=<language>` support
 visual checks; themes default to the submitted project's theme or the A1 base.
 
-The `/preview/:id` route serves a trusted `preview.html` host with an A1 toolbar
-for signed-in users. Generated content stays in a `sandbox="allow-scripts"`
+The `/preview/:id` route serves a trusted `preview.html` host with a collapsible A1 attribution banner
+in the viewport footer. Generated content stays in a `sandbox="allow-scripts"`
 iframe. Netlify also sends `Content-Security-Policy: sandbox allow-scripts` for
 the direct `json-preview.html` URL, with same-origin framing allowed. The preview has an opaque origin and cannot
 read A1 cookies, local storage or IndexedDB, submit forms, open popups or escape
@@ -234,7 +240,9 @@ an explicit error state instead of a blank page.
 The MCP site stores snapshots in a dedicated Netlify Blobs store (no Supabase
 migration or workspace credentials). It uses the installed Blobs client and
 strong consistency. The name is scoped by Netlify `CONTEXT`, defaulting to
-production. `preview-cleanup` runs hourly to remove expired snapshots; read-time
+production. New snapshots receive 30 days; existing snapshots retain their recorded
+expiry. Browser countdowns use bounded waits to avoid the signed 32-bit timer
+limit. `preview-cleanup` runs hourly to remove expired snapshots; read-time
 expiry rejects them even before cleanup, and an open viewer clears at expiry.
 Netlify runs scheduled functions on production; branch/deploy-preview stores
 require manual cleanup when testing on those contexts.
@@ -276,28 +284,50 @@ behavior. The new service is shared by HTTP and MCP, with explicit expiry and
 failure paths; no second validation contract was introduced.
 
 
-### Import a preview into a signed-in workspace
+The isolated viewer shows a centered, indeterminate A1 CircularProgress while
+loading its snapshot, using the localized loading text as its accessible name.
+Error and expiry states retain their explanatory banners.
 
-The trusted preview toolbar shows **Import as project** only after AuthProvider
-has restored a signed-in user. It stays disabled until a valid, unexpired
-snapshot is available. Guests retain the full preview without an import action.
-The toolbar stays outside the sandbox; only page-navigation hashes cross the
+### Edit a preview as a project
+
+The trusted preview banner shows **Edit as project** to everyone. It stays
+disabled until AuthProvider has resolved the current identity and a valid,
+unexpired snapshot is available. Guests edit a copy saved in this browser;
+signed-in users edit a copy in their existing workspace.
+The expanded A1 Banner sits in PageLayout’s viewport footer, reserves space
+below the iframe and links **Made with A1:Design** to `/`. Its close control
+collapses it to a small floating Button with that same text; this button reopens
+the banner rather than navigating. State is local to the current visit. Focus
+moves to the remaining control on collapse and back to the close control on
+expansion. The iframe remains mounted and keeps its navigation state.
+The banner is a quiet group, not a live alert. There is no mobile menu.
+The banner stays outside the sandbox; only page-navigation hashes cross the
 frame boundary. Frame messages cannot request imports or supply project JSON.
 
 A click creates a short-lived, single-use sessionStorage intent bound to the
-signed-in user and opens the existing Projects workspace. The app waits for its
-initial cloud hydration to succeed, fetches the snapshot again, checks expiry
-and validates the contract again, then calls `importProjectJson` and opens the
-new project in the editor. The normal workspace cloud-sync process handles
-persistence. Success/failure feedback uses the existing Snackbar. A bare URL,
-expired intent, changed account or refresh cannot repeat the import. The
-preview remains immutable and available until its original expiry.
+current user ID or `null` for a guest and opens the existing Projects workspace.
+Signed-in imports wait for initial cloud hydration to succeed; guests use local
+storage without cloud writes. Both fetch the snapshot again, check expiry and
+validate the contract again, then call `importProjectJson` and open the first
+page directly in the editor. Normal browser-local or workspace cloud persistence
+handles edits. Success/failure feedback uses the existing Snackbar. A bare URL,
+expired intent, sign-in change or refresh cannot repeat the import. The shared
+preview remains immutable until its original expiry. That expiry does not
+delete the imported project copy.
 
 Page and project imports allocate fresh workspace IDs. The shared import helper
 now remaps internal page hrefs, declared navigate targets and Figma page links
 along with parent references, while keeping authored text and source unchanged.
 The import button and status copy are translated in all seven supported locales.
-Browser coverage includes guests, signed-in page/project imports, keyboard
-activation, xs–xl toolbar fit, duplicate prevention, expired snapshots and
+Browser coverage includes guest page/project editing, local persistence, source
+immutability, sign-in changes, signed-in page/project imports, keyboard
+activation, xs–xl banner fit, collapse/reopen focus, duplicate prevention, expired snapshots and
 failed workspace hydration. Auth and cloud responses are mocked; no production
 account or workspace is touched by those tests.
+
+The collapsed attribution’s local CSS only anchors the existing A1 Button to
+the viewport using spacing/sticky tokens and the device safe-area inset. A1
+Banner, ButtonContainer, Link, IconButton and Button own all visual styling;
+PageLayout owns expanded sizing. A reusable viewport-anchor utility would be
+appropriate if this positioning is needed in other surfaces; no new visual
+component or token was necessary.

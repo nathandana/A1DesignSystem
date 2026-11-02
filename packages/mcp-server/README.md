@@ -54,7 +54,7 @@ The dev server needs a **fresh** `build/json/tokens.json` and `index.json` — r
 |---|---|
 | `get_react_setup` | npm installation, package metadata and the canonical React setup guide, including CSS, fonts, PostCSS, themes and examples |
 | `get_json_model` | Copy-ready page or project starter plus a structural JSON Schema generated from the current component type registry |
-| `create_preview` | Validate JSON and store a temporary rendered preview; returns a 24-hour URL, expiry and diagnostics without saving a workspace project |
+| `create_preview` | Validate JSON and store a temporary rendered preview; returns a 30-day URL, expiry and diagnostics without saving a workspace project |
 | `validate_json` | Shared page/project validation with stable codes, JSON Pointer paths, errors and advisory warnings; never changes or saves input |
 | `list_components` | Coverage list (React/Native/Pure/Web Components/Figma), filterable by category or package. Patterns (`packages/react/src/patterns/`) appear under the `Patterns` category |
 | `get_component` | Full detail for one component: coverage, structured `.d.ts` props, and the relevant components.md excerpt |
@@ -151,9 +151,10 @@ This tool writes temporary storage and advertises `readOnlyHint: false`.
 
 For non-MCP clients, `POST https://mcp.a1design.app/previews` accepts the same
 body. `GET /previews/:id` retrieves the snapshot until expiry. Anyone with the
-link can view it for 24 hours. The isolated viewer cannot read signed-in A1
-workspace storage. Creation does not import or publish a project; signed-in
-viewers can choose **Import as project** from the trusted toolbar. Expired links
+link can view it for 30 days. The isolated viewer cannot read signed-in A1
+workspace storage. Creation does not import or publish a project. Anyone can
+choose **Edit as project** from the trusted banner: guests edit a browser-local
+copy, while signed-in viewers use their workspace. Expired links
 return 410; an hourly function removes expired records.
 
 Deploy both sites together. MCP `A1_PREVIEW_APP_URL` defaults to

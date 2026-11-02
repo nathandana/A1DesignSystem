@@ -32,7 +32,7 @@ export const BLOG_POSTS = [
     {
       "title": "From JSON to a working preview",
       "body": [
-        "Agents can generate an A1 page or project, validate its structure and component props, repair precise errors and request a temporary preview. Preview links expire after 24 hours.",
+        "Agents can generate an A1 page or project, validate its structure and component props, repair precise errors and request a temporary preview. Preview links expire after 30 days.",
         "Signed-in users can import a preview as a new project. Generated content stays isolated from the account interface, and imports recheck validity and preserve internal page links. Contract validation supports the workflow; layout and accessibility still need review."
       ]
     },

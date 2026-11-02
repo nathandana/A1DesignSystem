@@ -1109,7 +1109,10 @@ function App() {
     if (authUser) startCloudSync(authUser.id, { onHydrated: refreshProjects }).then(hydrated => {
       if (active) setPreviewImportWorkspace({ userId: authUser.id, state: hydrated ? 'ready' : 'error' })
     }).catch(() => { if (active) setPreviewImportWorkspace({ userId: authUser.id, state: 'error' }) })
-    else stopCloudSync()
+    else {
+      stopCloudSync()
+      setPreviewImportWorkspace({ userId: null, state: 'ready' })
+    }
     // Point the image library at the user's Supabase storage (or back to local)
     // and rebuild the URL cache so referenced Figures re-resolve.
     setSupabaseImageUser(authUser ? authUser.id : null)
@@ -1219,6 +1222,8 @@ function App() {
       const project = projectStore.importProjectJson(data)
       refreshProjects()
       openProject(project.id)
+      const firstPage = projectStore.loadPages(project.id)[0]
+      if (firstPage) handleOpenPage(firstPage.id)
     },
     onMessage: setEditorMessage,
     t,

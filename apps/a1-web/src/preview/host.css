@@ -1,8 +1,17 @@
 /* Native iframe sizing is a local embedding boundary, not content layout.
-   PageLayout owns the viewport and toolbar; the isolated document owns scrolling. */
+   PageLayout owns the viewport and footer; the isolated document owns scrolling. */
 .a1-json-preview-frame {
   display: block;
   inline-size: 100%;
   block-size: 100%;
   border: 0;
+}
+
+/* Only anchor the collapsed attribution. A1 Button supplies its visual styling;
+   PageLayout's footer reserves space for the expanded Banner. */
+.a1-json-preview-attribution {
+  position: fixed;
+  inset-block-end: calc(var(--base-spacing-16) + env(safe-area-inset-bottom));
+  inset-inline-end: var(--base-spacing-16);
+  z-index: var(--semantic-z-sticky);
 }

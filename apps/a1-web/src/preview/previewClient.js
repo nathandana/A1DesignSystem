@@ -13,7 +13,7 @@ export async function loadPreview(id, signal) {
   return data
 }
 
-export function beginPreviewImport(previewId, userId) {
+export function beginPreviewImport(previewId, userId = null) {
   const nonce = crypto.randomUUID()
   sessionStorage.setItem(`a1-preview-import-${nonce}`, JSON.stringify({ previewId, userId, createdAt: Date.now() }))
   return `/projects?importPreview=${nonce}`
@@ -23,7 +23,7 @@ export function readPreviewImport(nonce) {
   if (!nonce || !/^[a-f0-9-]{36}$/.test(nonce)) return null
   try {
     const value = JSON.parse(sessionStorage.getItem(`a1-preview-import-${nonce}`))
-    return value && PREVIEW_ID.test(value.previewId) && Date.now() - value.createdAt < 300_000 ? value : null
+    return value && (value.userId === null || typeof value.userId === 'string') && PREVIEW_ID.test(value.previewId) && Date.now() - value.createdAt < 300_000 ? value : null
   } catch { return null }
 }
 

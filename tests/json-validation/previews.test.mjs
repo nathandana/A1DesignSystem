@@ -5,6 +5,7 @@ import { PREVIEW_TTL_MS, createPreviewService } from '../../packages/mcp-server/
 import { createPreviewHandler } from '../../packages/mcp-server/netlify/functions/previews.mjs';
 import { createMcpHandler } from '../../packages/mcp-server/netlify/functions/mcp.mjs';
 import { previewFixture } from './preview-fixture.mjs';
+import { schedulePreviewExpiry } from '../../apps/a1-web/src/preview/previewExpiry.js';
 
 const invoke = async (handler, name, args) => {
   const response = await handler(new Request('https://mcp.a1design.app/mcp', { method: 'POST', body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: name === 'list' ? 'tools/list' : 'tools/call', params: { name, arguments: args } }) }));
@@ -51,10 +52,15 @@ test('HTTP creation, missing/expired previews, automatic cleanup and storage err
   assert.equal((await post('x'.repeat(3_000_001))).status, 413);
   const created = await post(JSON.stringify({ kind: 'page', document: JSON.stringify(getJsonModel('page').starter) }));
   assert.equal(created.status, 201);
-  const { previewId } = await created.json();
+  const { previewId, expiresAt } = await created.json();
+  const day = 24 * 60 * 60 * 1000;
+  assert.equal(Date.parse(expiresAt), time + 30 * day);
   assert.equal((await http(new Request('https://mcp.a1design.app/previews/missing'))).status, 404);
   assert.equal((await http(new Request(`https://mcp.a1design.app/previews/${time + PREVIEW_TTL_MS}-${'a'.repeat(48)}`))).status, 404);
-  time += PREVIEW_TTL_MS;
+  time += 29 * day;
+  assert.equal((await http(new Request(`https://mcp.a1design.app/previews/${previewId}`))).status, 200);
+  assert.deepEqual(await service.cleanup(), { deleted: 0 });
+  time += day;
   assert.equal((await http(new Request(`https://mcp.a1design.app/previews/${previewId}`))).status, 410);
   assert.equal(records.size, 1);
   assert.deepEqual(await service.cleanup(), { deleted: 1 });
@@ -66,6 +72,28 @@ test('HTTP creation, missing/expired previews, automatic cleanup and storage err
   const mcp = await invoke(createMcpHandler({ createPreview: input => broken.create(input) }), 'create_preview', { kind: 'page', document: getJsonModel('page').starter });
   assert.equal(mcp.result.isError, true);
   assert.doesNotMatch(JSON.stringify(mcp), /credentials/);
+});
+
+test('browser expiry spans the timer limit and can be cancelled between waits', t => {
+  const start = Date.parse('2026-11-01T00:00:00Z');
+  t.mock.timers.enable({ apis: ['Date', 'setTimeout'], now: start });
+  const lifetime = 30 * 24 * 60 * 60 * 1000;
+  let expired = 0;
+  schedulePreviewExpiry(new Date(start + lifetime).toISOString(), () => expired++);
+  t.mock.timers.tick(1);
+  assert.equal(expired, 0);
+  t.mock.timers.tick(2 ** 31 - 2);
+  assert.equal(expired, 0);
+  t.mock.timers.tick(lifetime - (2 ** 31 - 1) - 1);
+  assert.equal(expired, 0);
+  t.mock.timers.tick(1);
+  assert.equal(expired, 1);
+
+  const cancel = schedulePreviewExpiry(new Date(Date.now() + lifetime).toISOString(), () => expired++);
+  t.mock.timers.tick(2 ** 31 - 1);
+  cancel();
+  t.mock.timers.tick(lifetime);
+  assert.equal(expired, 1);
 });
 
 test('project import remaps page identities and links without changing authored content', async () => {
