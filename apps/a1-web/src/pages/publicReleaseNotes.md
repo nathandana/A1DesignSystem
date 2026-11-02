@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.37.1 — 2026-11-01
+
+- **Compact preview footer** — The project editing button and close control stay readable and fully visible on small screens.
+
 ## 0.37.0 — 2026-11-01
 
 ### Highlights

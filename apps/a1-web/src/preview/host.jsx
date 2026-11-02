@@ -5,7 +5,7 @@ import './preview.css'
 import './host.css'
 import { createRoot } from 'react-dom/client'
 import { useEffect, useRef, useState } from 'react'
-import { Banner, Button, ButtonContainer, IconButton, LabelsProvider, Link, PageLayout, Snackbar } from '@gtivr4/a1-design-system-react'
+import { Banner, Button, IconButton, LabelsProvider, Link, PageLayout, Snackbar, Stack } from '@gtivr4/a1-design-system-react'
 import { AuthProvider, useAuth } from '../lib/AuthContext.jsx'
 import { SYSTEM_LABELS, resolveLabel } from '../labels/systemLabels.js'
 import { beginPreviewImport, loadPreview } from './previewClient.js'
@@ -66,10 +66,10 @@ function PreviewHost() {
     <PageLayout viewportHeight footer={
       <div id="a1-preview-banner" hidden={collapsed}>
         <Banner variant="system" status="neutral" icon="auto_awesome" role="group" aria-live="off" action={
-          <ButtonContainer align="end">
+          <Stack direction="row" align="center" gap="xs">
             <Button variant="tertiary" disabled={loading || !ready} onClick={importProject}>{t('importProject')}</Button>
             <IconButton id="a1-preview-collapse" icon="close" label={t('collapseBanner')} aria-controls="a1-preview-banner" aria-expanded={!collapsed} onClick={() => toggleBanner(true)} />
-          </ButtonContainer>
+          </Stack>
         }>
           <Link href="/">{t('madeWith')}</Link>
         </Banner>

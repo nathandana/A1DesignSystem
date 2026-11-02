@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.37.1 — 2026-11-01
+
+- **Preview footer sizing** — keep Edit as project and the close control at their natural widths on small screens, preventing vertical button text and an oversized footer.
+
 ## 0.37.0 — 2026-11-01
 
 - **Preview loading** — show a centered page spinner while fetching the preview, with a localized accessible loading label.

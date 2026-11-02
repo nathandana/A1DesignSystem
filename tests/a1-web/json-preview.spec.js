@@ -120,9 +120,16 @@ for (const kind of ['page', 'project']) test(`signed-in users import a ${kind} o
   await expect(button).toBeHidden()
   await page.getByRole('button', { name: 'Made with A1:Design', exact: true }).click()
   await expect(button).toBeEnabled()
-  for (const width of [375, 560, 768, 1280, 1536]) {
+  for (const width of [320, 375, 390, 560, 768, 1280, 1536]) {
     await page.setViewportSize({ width, height: 900 })
     await expect(button).toBeVisible()
+    for (const control of [button, page.getByRole('button', { name: 'Collapse preview banner' }), page.getByRole('link', { name: 'Made with A1:Design', exact: true })]) {
+      const bounds = await control.boundingBox()
+      expect(bounds.x).toBeGreaterThanOrEqual(0)
+      expect(bounds.x + bounds.width).toBeLessThanOrEqual(width)
+      expect(bounds.height).toBeLessThan(100)
+    }
+    expect((await page.locator('#a1-preview-banner').boundingBox()).height).toBeLessThan(180)
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
   }
   await button.focus()

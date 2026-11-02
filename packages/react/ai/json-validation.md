@@ -327,7 +327,9 @@ account or workspace is touched by those tests.
 
 The collapsed attribution’s local CSS only anchors the existing A1 Button to
 the viewport using spacing/sticky tokens and the device safe-area inset. A1
-Banner, ButtonContainer, Link, IconButton and Button own all visual styling;
-PageLayout owns expanded sizing. A reusable viewport-anchor utility would be
+Banner, Stack, Link, IconButton and Button own all visual styling;
+PageLayout owns expanded sizing. Use a row Stack for the intrinsically sized
+Banner action; ButtonContainer’s inline-size containment collapses its width
+in that slot. A reusable viewport-anchor utility would be
 appropriate if this positioning is needed in other surfaces; no new visual
 component or token was necessary.
