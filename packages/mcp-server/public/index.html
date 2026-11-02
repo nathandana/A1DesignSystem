@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>A1 Design System — MCP Server</title>
+<title>A1 Design System — MCP server</title>
+<meta name="description" content="Build with A1 through MCP: follow the rules, generate project JSON, validate it and share a rendered A1 preview." />
 <style>
   body { font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; max-width: 640px; margin: 4rem auto; padding: 0 1.5rem; color: #1a1a1a; }
   code, pre { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background: #f4f4f5; border-radius: 4px; }
@@ -14,20 +15,103 @@
 </style>
 </head>
 <body>
+<main>
   <h1>A1 Design System — MCP server</h1>
   <p>
-    A remote <a href="https://modelcontextprotocol.io/">Model Context Protocol</a> server exposing the
-    <a href="https://github.com/nathandana/A1DesignSystem">A1 Design System</a>'s component registry,
-    governed patterns, design tokens, design rules, and page-definition contract to AI coding agents.
+    Help your agent build with the <a href="https://a1design.app/">A1 Design System</a>.
+    This <a href="https://modelcontextprotocol.io/">Model Context Protocol</a> (MCP)
+    server provides component APIs, patterns, tokens, rules and JSON contracts.
+    The recommended workflow is to follow A1’s rules, generate project JSON,
+    validate it and share a rendered A1 preview.
   </p>
-  <p>Endpoint: <code>POST /mcp</code> (MCP Streamable HTTP, stateless — one JSON-RPC request per response).</p>
-  <p>Connect a local MCP client, e.g. with the Claude Code CLI:</p>
-  <pre>claude mcp add --transport http a1-design https://mcp.a1design.app/mcp</pre>
-  <p>Pattern tools: <code>get_pattern</code>, <code>validate_patterns</code>, <code>migrate_pattern</code>.</p>
-  <p>React library installation and setup: <code>get_react_setup</code> or <code>a1://docs/react-setup</code>.</p>
-  <p>JSON authoring, validation and previews: <code>get_json_model</code>, <code>validate_json</code>, <code>create_preview</code>.</p>
-  <p>Other tools: <code>list_components</code>, <code>get_component</code>, <code>search_tokens</code>,
-    <code>get_token</code>, <code>list_themes</code>, <code>list_rules</code>, <code>list_page_types</code>.</p>
-  <p>Resources: <code>a1://docs/design</code>, <code>a1://docs/pattern-contracts</code>, <code>a1://docs/agent-brief</code>, <code>a1://docs/page-definition-standard</code>.</p>
+
+  <h2>Connect your agent</h2>
+  <p>Use this URL in your MCP client’s server configuration:</p>
+  <pre><code>https://mcp.a1design.app/mcp</code></pre>
+  <p>For Claude Code:</p>
+  <pre><code>claude mcp add --transport http a1-design https://mcp.a1design.app/mcp</code></pre>
+  <p>The endpoint accepts MCP Streamable HTTP requests and does not require an account.</p>
+
+  <h2>From JSON to an A1 preview</h2>
+  <ol>
+    <li>
+      <strong>Read the model and rules.</strong> Call <code>get_json_model</code>
+      for the schema, starter and mandatory A1 rules, including visible content
+      exceptions. It defaults to a project bundle. Use linked pages for a website;
+      use a single page when that is what the user requests.
+    </li>
+    <li>
+      <strong>Build with A1.</strong> Consult <code>get_component</code> and
+      <code>get_pattern</code> before authoring. Use supported props, patterns,
+      tokens and project navigation instead of guessing their shapes.
+    </li>
+    <li>
+      <strong>Validate and repair.</strong> Send the complete project to
+      <code>validate_json</code>. Fix errors at the returned JSON paths, review
+      warnings and coverage, then validate again.
+    </li>
+    <li>
+      <strong>Create and review a preview.</strong> Send the validated JSON to
+      <code>create_preview</code>. Open its A1 preview URL, check responsive layout
+      and accessibility, and submit revised JSON for a new preview when needed.
+      Return the preview URL as the primary handoff.
+    </li>
+  </ol>
+  <p>
+    Preview links last 30 days and work for anyone with the link. Choose
+    <strong>Edit as project</strong> in the preview to edit a copy: guests use
+    browser-local storage, while signed-in users use their workspace. Creating a
+    preview does not publish or import a workspace project.
+  </p>
+
+  <h2>What validation checks</h2>
+  <p>
+    The shared validator checks JSON structure, component props, project references,
+    formal pattern contracts and automated content rules. All-caps content and
+    casing transforms produce errors that block new previews and imports.
+    Sentence-case heading warnings remain advisory to allow review of proper names.
+  </p>
+  <p>
+    Diagnostics identify the rule, exact JSON path and offending text, with a
+    suggested correction or recovery instruction. Narrow acronym, size and name
+    exceptions are documented in the rules; invalid drafts remain editable for repair.
+  </p>
+  <p>
+    A valid result is not a full compliance check. Coverage reports what was checked
+    and what still needs rendering or human review, including dynamic content,
+    responsive layout, contrast, keyboard behavior and screen-reader experience.
+  </p>
+
+  <h2>Explore the system</h2>
+  <ul>
+    <li><strong>Components:</strong> <code>list_components</code>, <code>get_component</code> and <code>list_page_types</code></li>
+    <li><strong>Patterns:</strong> <code>get_pattern</code>, <code>validate_patterns</code> and <code>migrate_pattern</code></li>
+    <li><strong>Tokens and themes:</strong> <code>search_tokens</code>, <code>get_token</code> and <code>list_themes</code></li>
+    <li><strong>Rules:</strong> <code>list_rules</code></li>
+  </ul>
+
+  <h2>Use the React library</h2>
+  <p>
+    For React library code or npm integration, call <code>get_react_setup</code>.
+    It provides the install command, peer requirements and setup guidance for CSS,
+    fonts, responsive breakpoints, themes and providers. For site requests, start
+    with the JSON and preview workflow above.
+  </p>
+
+  <h2>Reference resources</h2>
+  <p>Agents can read these resources through MCP:</p>
+  <ul>
+    <li><strong>Design language:</strong> <code>a1://docs/design</code></li>
+    <li><strong>Agent brief:</strong> <code>a1://docs/agent-brief</code></li>
+    <li><strong>Page definitions:</strong> <code>a1://docs/page-definition-standard</code></li>
+    <li><strong>Validation and previews:</strong> <code>a1://docs/json-validation</code></li>
+    <li><strong>Pattern contracts:</strong> <code>a1://docs/pattern-contracts</code></li>
+    <li><strong>React setup:</strong> <code>a1://docs/react-setup</code></li>
+  </ul>
+  <p>
+    Read the <a href="https://a1design.app/design-with-a1">Design with A1 guide</a>
+    or explore the <a href="https://github.com/nathandana/A1DesignSystem">source repository</a>.
+  </p>
+</main>
 </body>
 </html>

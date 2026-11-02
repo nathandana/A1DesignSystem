@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.5.0 — 2026-11-01
+
+- **MCP overview** — explain the rules → project JSON → validation → A1 preview workflow, repair diagnostics, review limits, 30-day previews and project editing. Keep React setup and reference resources easy to find.
+
+- **Rule-guided JSON previews** (A1-2741) — default to project JSON → validation → A1 preview, include mandatory rules and visible exceptions in model discovery, and gate previews on shared content checks. Return exact repair paths and explicit validation coverage; React setup remains available for explicit library requests.
+
 ## 0.4.1 — 2026-11-01
 
 - **Preview retention** — increased new snapshot retention from 24 hours to 30 days, with matching MCP discovery guidance. Reads and scheduled cleanup continue to honor each snapshot’s recorded expiry.

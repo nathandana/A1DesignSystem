@@ -42,7 +42,7 @@ export function parseRules() {
         dont: r.dont ?? null,
         appliesTo: Array.isArray(r.applies_to) ? r.applies_to : [],
         enforcement: r.enforcement
-          ? { eslint: r.enforcement.eslint ?? null, css: r.enforcement.css === true }
+          ? { eslint: r.enforcement.eslint ?? null, css: r.enforcement.css === true, ...(r.enforcement.json ? { json: r.enforcement.json } : {}) }
           : null,
         file: `system/rules/${file}`,
       });

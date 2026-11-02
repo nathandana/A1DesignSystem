@@ -2,16 +2,46 @@
   "label": {
     "jsonValidation": {
       "BOUND_VALUE": {
-        "$type": "string", "$value": "Check this value after its data binding resolves.", "$description": "Validation warning for a value supplied by a runtime dataset binding.",
-        "locale": { "es": "Comprueba este valor después de resolver su enlace de datos.", "fr": "Vérifiez cette valeur après résolution de sa liaison de données.", "de": "Prüfen Sie diesen Wert nach Auflösung seiner Datenbindung.", "pt": "Verifique este valor após resolver sua vinculação de dados.", "ja": "データバインディングの解決後にこの値を確認してください。", "zh": "请在数据绑定解析后检查此值。", "ar": "افحص هذه القيمة بعد حل ربط البيانات." }
+        "$type": "string",
+        "$value": "Check this value after its data binding resolves.",
+        "$description": "Validation warning for a value supplied by a runtime dataset binding.",
+        "locale": {
+          "es": "Comprueba este valor después de resolver su enlace de datos.",
+          "fr": "Vérifiez cette valeur après résolution de sa liaison de données.",
+          "de": "Prüfen Sie diesen Wert nach Auflösung seiner Datenbindung.",
+          "pt": "Verifique este valor após resolver sua vinculação de dados.",
+          "ja": "データバインディングの解決後にこの値を確認してください。",
+          "zh": "请在数据绑定解析后检查此值。",
+          "ar": "افحص هذه القيمة بعد حل ربط البيانات."
+        }
       },
       "importTitle": {
-        "$type": "string", "$value": "Upload project from JSON", "$description": "Visible title and accessible name of the project JSON import dialog.",
-        "locale": { "es": "Cargar proyecto desde JSON", "fr": "Importer un projet depuis JSON", "de": "Projekt aus JSON hochladen", "pt": "Carregar projeto de JSON", "ja": "JSON からプロジェクトをアップロード", "zh": "从 JSON 上传项目", "ar": "تحميل مشروع من JSON" }
+        "$type": "string",
+        "$value": "Upload project from JSON",
+        "$description": "Visible title and accessible name of the project JSON import dialog.",
+        "locale": {
+          "es": "Cargar proyecto desde JSON",
+          "fr": "Importer un projet depuis JSON",
+          "de": "Projekt aus JSON hochladen",
+          "pt": "Carregar projeto de JSON",
+          "ja": "JSON からプロジェクトをアップロード",
+          "zh": "从 JSON 上传项目",
+          "ar": "تحميل مشروع من JSON"
+        }
       },
       "validHelp": {
-        "$type": "string", "$value": "The JSON meets the A1 contract. Check the rendered layout and accessibility separately.", "$description": "Import success explanation distinguishing JSON validation from rendered checks.",
-        "locale": { "es": "El JSON cumple el contrato de A1. Comprueba el diseño renderizado y la accesibilidad por separado.", "fr": "Le JSON respecte le contrat A1. Vérifiez séparément la mise en page et l’accessibilité du rendu.", "de": "Das JSON erfüllt den A1-Vertrag. Prüfen Sie gerendertes Layout und Barrierefreiheit separat.", "pt": "O JSON atende ao contrato A1. Verifique o layout renderizado e a acessibilidade separadamente.", "ja": "JSON は A1 契約を満たしています。描画されたレイアウトとアクセシビリティは別途確認してください。", "zh": "JSON 符合 A1 契约。请单独检查渲染布局和无障碍性。", "ar": "يتوافق JSON مع عقد A1. افحص التخطيط المعروض وإمكانية الوصول بشكل منفصل." }
+        "$type": "string",
+        "$value": "The JSON structure and automated rules passed. Review warnings, rendered layout and accessibility before sharing.",
+        "$description": "JSON content-rule validation: validHelp. Rule IDs, paths and authored values remain separate from translated text.",
+        "locale": {
+          "es": "La estructura JSON y las reglas automatizadas pasaron. Revisa las advertencias, el diseño y la accesibilidad antes de compartir.",
+          "fr": "La structure JSON et les règles automatisées sont validées. Vérifiez les avertissements, le rendu et l’accessibilité avant de partager.",
+          "de": "JSON-Struktur und automatische Regeln sind geprüft. Prüfen Sie Warnungen, Layout und Barrierefreiheit vor dem Teilen.",
+          "pt": "A estrutura JSON e as regras automatizadas passaram. Revise os avisos, o layout e a acessibilidade antes de compartilhar.",
+          "ja": "JSON 構造と自動ルールの検証に合格しました。共有前に警告、描画されたレイアウト、アクセシビリティを確認してください。",
+          "zh": "JSON 结构和自动规则已通过验证。分享前请检查警告、渲染布局和无障碍性。",
+          "ar": "اجتازت بنية JSON والقواعد الآلية التحقق. راجع التحذيرات والتخطيط وإمكانية الوصول قبل المشاركة."
+        }
       },
       "INVALID_JSON": {
         "$type": "string",
@@ -403,6 +433,90 @@
           "ja": "スタイルには A1 プロパティとトークンベースのユーティリティを使用してください。",
           "zh": "请使用 A1 属性和基于令牌的工具设置样式。",
           "ar": "استخدم خصائص A1 والأدوات المبنية على الرموز للتنسيق."
+        }
+      },
+      "RULE_VIOLATION": {
+        "$type": "string",
+        "$value": "Follow the A1 content rule at this path.",
+        "$description": "JSON content-rule validation: RULE_VIOLATION. Rule IDs, paths and authored values remain separate from translated text.",
+        "locale": {
+          "es": "Sigue la regla de contenido de A1 en esta ruta.",
+          "fr": "Respectez la règle de contenu A1 à cet emplacement.",
+          "de": "Befolgen Sie die A1-Inhaltsregel an diesem Pfad.",
+          "pt": "Siga a regra de conteúdo A1 neste caminho.",
+          "ja": "このパスの A1 コンテンツルールに従ってください。",
+          "zh": "请遵循此路径的 A1 内容规则。",
+          "ar": "اتبع قاعدة محتوى A1 في هذا المسار."
+        }
+      },
+      "CONTENT_UPPERCASE": {
+        "$type": "string",
+        "$value": "Use sentence case instead of all-caps content.",
+        "$description": "JSON content-rule validation: CONTENT_UPPERCASE. Rule IDs, paths and authored values remain separate from translated text.",
+        "locale": {
+          "es": "Usa mayúscula inicial en lugar de escribir todo en mayúsculas.",
+          "fr": "Utilisez la casse de phrase plutôt que tout en majuscules.",
+          "de": "Verwenden Sie normale Satzschreibung statt durchgehender Großbuchstaben.",
+          "pt": "Use maiúscula inicial em vez de escrever tudo em maiúsculas.",
+          "ja": "すべて大文字ではなく、文頭のみ大文字にしてください。",
+          "zh": "请使用句首大写，而非全部大写。",
+          "ar": "استخدم حالة الأحرف المناسبة للجملة بدلًا من الأحرف الكبيرة بالكامل."
+        }
+      },
+      "CONTENT_TRANSFORM": {
+        "$type": "string",
+        "$value": "Remove the casing transform and author the text directly.",
+        "$description": "JSON content-rule validation: CONTENT_TRANSFORM. Rule IDs, paths and authored values remain separate from translated text.",
+        "locale": {
+          "es": "Elimina la transformación de mayúsculas y escribe el texto directamente.",
+          "fr": "Supprimez la transformation de casse et rédigez le texte directement.",
+          "de": "Entfernen Sie die Umwandlung der Groß-/Kleinschreibung und schreiben Sie den Text direkt.",
+          "pt": "Remova a transformação de maiúsculas e escreva o texto diretamente.",
+          "ja": "大文字・小文字の変換を削除し、テキストを直接記述してください。",
+          "zh": "请移除大小写转换并直接编写文本。",
+          "ar": "أزل تحويل حالة الأحرف واكتب النص مباشرةً."
+        }
+      },
+      "HEADING_SENTENCE_CASE": {
+        "$type": "string",
+        "$value": "Use sentence case for this heading; preserve proper names.",
+        "$description": "JSON content-rule validation: HEADING_SENTENCE_CASE. Rule IDs, paths and authored values remain separate from translated text.",
+        "locale": {
+          "es": "Usa mayúscula inicial en este encabezado y conserva los nombres propios.",
+          "fr": "Utilisez la casse de phrase pour ce titre et préservez les noms propres.",
+          "de": "Verwenden Sie Satzschreibung für diese Überschrift und bewahren Sie Eigennamen.",
+          "pt": "Use maiúscula inicial neste título e preserve os nomes próprios.",
+          "ja": "固有名詞を保持し、この見出しは文頭のみ大文字にしてください。",
+          "zh": "请为此标题使用句首大写，并保留专有名称。",
+          "ar": "استخدم حالة الأحرف المناسبة للجملة في هذا العنوان مع الحفاظ على أسماء العلم."
+        }
+      },
+      "offendingText": {
+        "$type": "string",
+        "$value": "Text",
+        "$description": "JSON content-rule validation: offendingText. Rule IDs, paths and authored values remain separate from translated text.",
+        "locale": {
+          "es": "Texto",
+          "fr": "Texte",
+          "de": "Text",
+          "pt": "Texto",
+          "ja": "テキスト",
+          "zh": "文本",
+          "ar": "النص"
+        }
+      },
+      "suggestedValue": {
+        "$type": "string",
+        "$value": "Suggested",
+        "$description": "JSON content-rule validation: suggestedValue. Rule IDs, paths and authored values remain separate from translated text.",
+        "locale": {
+          "es": "Sugerencia",
+          "fr": "Suggestion",
+          "de": "Vorschlag",
+          "pt": "Sugestão",
+          "ja": "候補",
+          "zh": "建议",
+          "ar": "المقترح"
         }
       }
     }

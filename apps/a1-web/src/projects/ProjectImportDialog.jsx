@@ -103,7 +103,7 @@ export function ProjectImportDialog({ open, onCancel, onImport }) {
           </Banner>
         ) : (
           <Banner status="success" title="Valid — ready to import">
-            <Paragraph size="sm">{t('label.jsonValidation.validHelp', 'The JSON meets the A1 contract. Check the rendered layout and accessibility separately.')}</Paragraph>
+            <Paragraph size="sm">{t('label.jsonValidation.validHelp', 'The JSON structure and automated rules passed. Review warnings, rendered layout and accessibility before sharing.')}</Paragraph>
           </Banner>
         )}
       </Stack>
