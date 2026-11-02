@@ -26,7 +26,7 @@ test('design guide opens from navigation, copies prompts and downloads the canon
   await expect(codex).toHaveAttribute('aria-expanded', 'true')
   await expect(article.getByText('codex mcp add a1 --url https://mcp.a1design.app/mcp')).toBeVisible()
   await article.getByRole('button', { name: 'Copy code', exact: true }).nth(1).click()
-  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toContain('Read design.md. Build this interface')
+  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe(labels.reactPrompt.$value)
   const downloadEvent = page.waitForEvent('download')
   await page.getByRole('link', { name: 'Download design.md', exact: true }).first().click()
   const download = await downloadEvent

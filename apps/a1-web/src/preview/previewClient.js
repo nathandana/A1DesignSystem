@@ -6,13 +6,17 @@ const api = (import.meta.env.VITE_A1_PREVIEW_API_URL || 'https://mcp.a1design.ap
 export async function loadPreview(id, signal) {
   if (!PREVIEW_ID.test(id)) throw new Error('missing')
   const response = await fetch(`${api}/previews/${id}`, { credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer', signal })
-  if (!response.ok) throw new Error(response.status === 410 ? 'expired' : response.status === 404 ? 'missing' : 'unavailable')
-  const data = await response.json()
-  // Existing snapshots retain their authored content until expiry. New content
-  // policies gate creation and import, not viewing an already shared snapshot.
-  // Structural, reference and pattern errors still block rendering.
-  const invalidStructure = validateJson(data).errors.some(error => error.code !== 'RULE_VIOLATION')
-  if (invalidStructure || !Number.isFinite(Date.parse(data.expiresAt))) throw new Error('invalid')
+  if (!response.ok) throw Object.assign(new Error(response.status === 410 ? 'expired' : response.status === 404 ? 'missing' : 'unavailable'), { status: response.status })
+  let data
+  try { data = await response.json() } catch {
+    // JSON parser messages can embed the response body. Retain the failure type
+    // and status without copying an upstream HTML/error page into the report.
+    throw Object.assign(new Error('invalidResponse'), { status: response.status })
+  }
+  // Structural, reference and pattern errors block rendering. Authored casing
+  // is preserved and is not part of validation.
+  const diagnostics = validateJson(data).errors
+  if (diagnostics.length || !Number.isFinite(Date.parse(data?.expiresAt))) throw Object.assign(new Error('invalid'), { diagnostics })
   if (Date.parse(data.expiresAt) <= Date.now()) throw new Error('expired')
   return data
 }

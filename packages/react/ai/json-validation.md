@@ -83,7 +83,7 @@ definitions, paths below `/pages/N/definition` refer to the decoded definition.
 ## Sources and maintenance
 
 - `system/rules/*.yaml`: authoritative requirements and machine-readable `enforcement.json` metadata.
-- `system/json-model/contentRules.js`: shared content/style rule checks and coverage.
+- `system/json-model/contentCoverage.js`: runtime content and human-review coverage.
 - `system/json-model/validate.js`: pure shared validator and display formatter.
 - `system/json-model/model.js`: MCP discovery schemas and starters from the same artifact.
 - `scripts/build-json-contract.mjs`: uses the TypeScript checker at build time.
@@ -150,49 +150,22 @@ mandatory and are explicitly assigned to rendering or human review. The generate
 JSON contract and MCP rule index read the same YAML; do not duplicate rule policy
 in the editor, preview service or transport handlers.
 
-The shared validator checks literal authored text in content fallbacks, accessible
-labels, display props and known structured collections, including nested Slots,
-Tabs and formal patterns. All-caps words outside the visible exception list are
-errors, including words embedded in otherwise sentence-case prose. Literal
-`textTransform` styles and CustomBlock `text-transform` declarations using
-uppercase, lowercase or capitalize are also errors. CSS comments and quoted
-examples are ignored; custom code is never executed. Error-level violations block
-imports and new previews. Invalid editor/import drafts stay available for repair;
-validation never silently rewrites approved content.
+Capitalization checks have been removed. All-caps content, title-case headings,
+proper names, acronyms and casing transforms are accepted without casing errors
+or warnings. There is no acronym exception list. Sentence case remains writing
+guidance, and validation never rewrites authored text. Structure, prop types,
+references and formal pattern contracts still gate import and preview creation.
 
-English title-style headings receive a sentence-case warning because proper names
-cannot be classified reliably without editorial context. Use `page.layout.props.lang`
-for authored language or `props.lang` on a subtree; otherwise English applies.
-Page-list titles inherit their definition’s language; project metadata uses the
-first page’s language.
-Case comparisons and suggestions use that language. Non-English heading conventions
-are deferred to human review. Exact acronym, currency, size and approved-name
-exceptions belong to the A1 rule’s top-level `exceptions` in `system.yaml`,
-shared by all consumers rather than defined by MCP; language-specific exceptions avoid treating
-French “un” as the English acronym “UN.” There is no page-level rule bypass.
-Suggestions preserve known names but still require review of unknown proper names.
+Every result includes `coverage`: schema checks, rules requiring review, deferred
+dynamic/opaque fields, rendering checks and human-review topics. `automatedRules`
+is currently empty because no catalog rule has a dedicated JSON content checker;
+structural and formal-pattern checks are still reported under `schema`.
+`completeCompliance` is always false. Bound data, resolved localization, custom
+markup, arbitrary datasets and runtime CSS need rendered review.
 
-Content diagnostics include `RULE_VIOLATION`, `ruleId`, `severity`, exact `path`,
-`offendingText`, and a proposed `suggestedValue` where safe. Opaque CSS and mixed
-runtime bindings instead include an explicit `recovery` instruction. UI messages
-and the Text/Suggested labels use the shared locale resolver.
-
-Every result includes `coverage`: schema checks, automated rules with checked-value
-counts, other rules requiring review, deferred dynamic/opaque fields, rendering
-checks and human-review topics. `completeCompliance` is always false: `valid`
-means no detected errors, not a certification. Bound data, resolved localization,
-custom markup, arbitrary datasets and runtime CSS need rendered review. URLs,
-identifiers, code samples and arbitrary data are not treated as authored prose.
-
-Standards review: this feature adds no CSS, tokens, layout, interactions or shared
-component API. Existing Code/Banner/Dialog diagnostics and disabled import controls
-are reused. New messages cover all seven translated locales. Node tests cover
-content, styles, locales, nested paths, discovery and import/MCP/HTTP preview parity;
-browser tests cover blocked import, preserved invalid drafts, repair, themes,
-breakpoints and focused axe. Sentence-case heuristics and runtime content are
-explicitly documented review boundaries, not blanket compliance claims. This ticket
-changes the validator and MCP contract; its generic Banner implementation checklist
-does not apply to the stated rule-enforcement objective.
+Regression coverage accepts capitalization across MCP, HTTP previews, imports
+and the page editor, while malformed structure and invalid props remain blocked.
+No CSS, tokens or shared component API changed as part of removing casing gates.
 
 ## Standards review
 
@@ -201,7 +174,7 @@ added. Existing A1 Code, Banner, Paragraph and Dialog present the results. The
 import Dialog now explicitly receives its localized accessible name; shared
 Dialog title-to-name defaults would benefit from a separate system improvement.
 Existing JSON drafts remain editable when invalid, while import and preview
-require valid structure and no error-level rule violations. Diagnostics use stable labels with es/fr/de/pt/ja/zh/ar
+require valid structure and formal pattern contracts. Diagnostics use stable labels with es/fr/de/pt/ja/zh/ar
 translations; technical paths, codes and allowed values remain literal.
 
 The shared layer replaces duplicated import validation. Generated schemas are
@@ -217,12 +190,35 @@ manual assistive-technology audit is claimed.
 
 ## Temporary rendered previews
 
+### Preview import diagnostics
+
+`usePreviewImport` checks the current import contract before creating a project.
+Failures open `PreviewImportErrorDialog` until dismissed, with a return link to
+the original preview and a copyable report. Preserve the preview ID, timestamp,
+stage (`workspace`, `fetch`, `validation` or `import`), original error and HTTP
+status when available. Keep structured validation errors intact, including codes,
+JSON Pointer paths, rule IDs, offending text, suggestions and recovery guidance.
+Do not collapse these into a generic retry message or a transient snackbar.
+Explain validation failures without implying that retrying repairs JSON.
+Capitalization is accepted by both preview and import validation.
+Do not include auth credentials, account IDs, full snapshots or HTTP response
+bodies in diagnostic reports. Unknown import exceptions retain their message;
+promise-returning import callbacks are awaited so rejection cannot report success.
+
+The dialog reuses A1 components with no custom CSS or tokens. Browser regression
+coverage includes validation, workspace hydration, HTTP, network, malformed JSON
+and structural failures, plus existing successful imports and expiry cases.
+The dialog's accessible name, Escape dismissal, theme/breakpoint fit and focused
+axe scan are checked in the structural-failure regression.
+
+### Creating and viewing snapshots
+
 After validation, call `create_preview` with the same `{ kind, document,
 contractVersion? }` arguments. It validates again and returns the standard
 validation result, plus `previewId`, `previewUrl` and `expiresAt` only when valid.
 Invalid JSON creates no snapshot. Existing stored snapshots retain their authored
 content until expiry: viewing still checks structure, references and pattern
-contracts, but later content-policy violations do not retroactively hide them.
+contracts. Capitalization is not validated.
 Editing as a new project still passes the current import checks. For example:
 
 ```json

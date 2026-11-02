@@ -132,6 +132,7 @@ import { CustomIconFontProvider } from './editor/CustomIconFontProvider.jsx'
 import * as projectStore from './projects/projectStore.ts'
 import { EDITOR_EXAMPLES, makeBlankPage } from './editor/examples/index.ts'
 import { usePreviewImport } from './preview/usePreviewImport.js'
+import { PreviewImportErrorDialog } from './preview/PreviewImportErrorDialog.jsx'
 import { AuthProvider, useAuth } from './lib/AuthContext.jsx'
 import { TProvider } from './labels/useT.js'
 import { AccountPage } from './pages/AccountPage.jsx'
@@ -501,6 +502,7 @@ function App() {
   const settingsAnchorRef = useRef(null)
   const { user: authUser, signOut } = useAuth()
   const [previewImportWorkspace, setPreviewImportWorkspace] = useState({ userId: null, state: 'loading' })
+  const [previewImportError, setPreviewImportError] = useState(null)
   const { canAccessPage, canUseFeature, role: accessRole } = useAccess()
   const backlog = useBacklog()
   const [componentMenuSearch, setComponentMenuSearch] = useState('')
@@ -1226,6 +1228,7 @@ function App() {
       if (firstPage) handleOpenPage(firstPage.id)
     },
     onMessage: setEditorMessage,
+    onError: setPreviewImportError,
     t,
   })
 
@@ -2839,6 +2842,7 @@ function App() {
         </MenuSection>
       </Menu>
 
+      <PreviewImportErrorDialog error={previewImportError} onClose={() => setPreviewImportError(null)} />
       <Snackbar open={!!editorMessage} onClose={() => setEditorMessage('')}>
         {editorMessage}
       </Snackbar>

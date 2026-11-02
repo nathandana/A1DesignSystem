@@ -2,9 +2,8 @@
 /**
  * lint-a1-css — the CSS arm of the A1 design-rule gate.
  *
- * ESLint covers JS/JSX/TS; this covers the hand-authored stylesheets, enforcing the two CSS
- * laws that carry `enforcement.css: true` in `system/rules/*.yaml`:
- *   • system-no-uppercase-content — no `text-transform: uppercase | lowercase | capitalize`.
+ * ESLint covers JS/JSX/TS; this covers the hand-authored stylesheets, enforcing the CSS
+ * rule that carry `enforcement.css: true` in `system/rules/*.yaml`:
  *   • system-tokens-only — no raw `#hex` / `rgb()/rgba()` / `hsl()/hsla()` colour; use a token.
  *     Raw colours inside `var(--token, …)` fallbacks are allowed (the token is the source).
  *
@@ -39,7 +38,6 @@ const files = [
 ].filter((f) => existsSync(f));
 
 // ── Checks ───────────────────────────────────────────────────────────────────
-const UPPERCASE = /text-transform\s*:\s*(uppercase|lowercase|capitalize)/i;
 const RAW_HEX = /#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})\b/i;
 const RAW_FUNC = /\b(?:rgb|rgba|hsl|hsla)\(\s*[\d.]/i;
 
@@ -59,9 +57,6 @@ for (const file of files) {
   const lines = decommented.split('\n');
   lines.forEach((line, i) => {
     const clean = stripIgnorable(line);
-    if (UPPERCASE.test(clean)) {
-      violations.push({ rule: 'system-no-uppercase-content', file: rel, line: i + 1, text: line.trim() });
-    }
     if (RAW_HEX.test(clean) || RAW_FUNC.test(clean)) {
       violations.push({ rule: 'system-tokens-only', file: rel, line: i + 1, text: line.trim() });
     }
@@ -73,7 +68,7 @@ if (violations.length) {
   for (const v of violations) {
     console.error(`  ${v.file}:${v.line}  [${v.rule}]\n      ${v.text.slice(0, 100)}`);
   }
-  console.error('\nUse a design token (var(--…)) and author sentence case. See system/rules/system.yaml.');
+  console.error('\nUse a design token (var(--…)). See system/rules/system.yaml.');
   process.exit(1);
 }
 

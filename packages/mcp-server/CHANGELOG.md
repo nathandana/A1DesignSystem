@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.5.1 — 2026-11-01
+
+- **Capitalization checks removed** — validation and preview creation preserve all authored casing without blocking errors or heading warnings. Removed the casing rules and acronym exceptions from discovery; structural and pattern checks remain active.
+
 ## 0.5.0 — 2026-11-01
 
 - **MCP overview** — explain the rules → project JSON → validation → A1 preview workflow, repair diagnostics, review limits, 30-day previews and project editing. Keep React setup and reference resources easy to find.

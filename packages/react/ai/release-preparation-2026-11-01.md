@@ -55,3 +55,28 @@ GitHub run `41341733572` also passed the full browser gate and package checks, b
 ## Deployment recovery notes
 
 The local Netlify CLI selected the repository-root website configuration when targeting the MCP workspace. An isolated source snapshot with the MCP configuration at its root and an explicit package base allowed packaging. Dependency symlinks must not stand in for deployed dependency files. Preserve the generated function manifest, including custom routes and schedules; verify `/previews/:id`, not only `/mcp`, before promoting a candidate. The ordinary Netlify cloud build correctly resolves the committed MCP configuration.
+
+
+## Preview import follow-up — A1 Web 0.39.0
+
+Publish A1 Web 0.39.0, MCP 0.5.1 and React 0.34.2 together. This release removes
+capitalization enforcement from JSON validation and JavaScript/CSS lint, retains
+structural and pattern checks, adds persistent copyable preview-import diagnostics,
+and simplifies the translated starter prompt. PageTitle flush placement is now a
+catalog rule exposed by the Rules editor and MCP. React's patch publishes the
+updated package guidance; component APIs and tokens are unchanged.
+
+The supplied snapshot validates unchanged after removing casing checks. Focused
+browser coverage verifies import, error reporting, clipboard/navigation, editor
+persistence, locales, themes, breakpoints and accessibility. Full release checks,
+GitHub publication and hosted verification are required before completion.
+
+Rollback references before publication: A1 Web `6ae7f6d821b62469853f5ec3` and MCP
+`6ae7f6d853804580a273e755`. No database migration is required.
+
+
+The 0.39.0 local release gate passed: lint with zero errors and one existing
+Storybook warning, 30 pattern/MCP tests, 18 JSON tests, 49 main browser tests
+including all 291 routes, and 19 preview/import tests. No visual baselines or
+thresholds changed. React RSC/declaration checks, tarball validation and all six
+publication-script tests also passed. Publication and hosted checks follow.

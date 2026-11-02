@@ -20,6 +20,16 @@ rules:
       - consistency
       - layout
 
+  - id: page-title-flush-placement
+    components:
+      - PageTitle
+    requirement: PageTitle sits flush with the top and side edges of its page or containing surface, with no outer margins or inset spacing.
+    do: Keep the pattern's internal padding and apply body spacing to a separate sibling Section below it. Use contentWidth to constrain the inner content while the title surface spans the container.
+    dont: Wrap PageTitle in a padded Section, add outer margins or place a parent gap before the title band.
+    applies_to:
+      - layout
+      - consistency
+
   - id: page-title-one-primary-action-last
     components:
       - PageTitle

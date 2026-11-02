@@ -246,7 +246,7 @@ function groupRulesByComponent(files) {
 
 function RuleExamples({ rule, componentName }) {
   if (rule.id.startsWith("system-")) {
-    return <SystemRuleExamples rule={rule} />;
+    return null;
   }
 
   if (rule.id.startsWith("badge-")) {
@@ -287,34 +287,6 @@ function ExampleLabel({ type }) {
   );
 }
 
-function SystemRuleExamples({ rule }) {
-  const demos = {
-    "system-heading-sentence-case": {
-      do: <Heading as="h2" size="md">Payment details</Heading>,
-      dont: <Heading as="h2" size="md">Payment Details</Heading>
-    },
-    "system-no-uppercase-content": {
-      do: <Heading as="h2" size="md">Submit form</Heading>,
-      dont: <Heading as="h2" size="md" style={{ textTransform: "uppercase" }}>Submit form</Heading>
-    }
-  };
-  const demo = demos[rule.id];
-
-  if (!demo) return null;
-
-  return (
-    <div style={styles.examples}>
-      <div style={styles.example}>
-        <ExampleLabel type="do" />
-        {demo.do}
-      </div>
-      <div style={styles.example}>
-        <ExampleLabel type="dont" />
-        {demo.dont}
-      </div>
-    </div>
-  );
-}
 
 function BadgeRuleExamples({ rule }) {
   const demos = {

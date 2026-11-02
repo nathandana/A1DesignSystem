@@ -266,6 +266,76 @@
           "zh": "您的登录状态已更改。请返回预览并再次选择“作为项目编辑”。",
           "ar": "تغيّرت حالة تسجيل الدخول. ارجع إلى المعاينة واختر تحرير كمشروع مرة أخرى."
         }
+      },
+      "importErrorTitle": {
+        "$type": "string",
+        "$value": "Preview import failed",
+        "$description": "Preview import error dialog: importErrorTitle.",
+        "locale": {
+          "es": "Error al importar la vista previa",
+          "fr": "Échec de l’importation de l’aperçu",
+          "de": "Vorschauimport fehlgeschlagen",
+          "pt": "Falha ao importar a prévia",
+          "ja": "プレビューのインポートに失敗しました",
+          "zh": "预览导入失败",
+          "ar": "فشل استيراد المعاينة"
+        }
+      },
+      "importValidationFailed": {
+        "$type": "string",
+        "$value": "The preview can be viewed, but its JSON does not pass the current import checks. Review the errors below, correct the source JSON and generate a new preview.",
+        "$description": "Preview import error dialog: importValidationFailed.",
+        "locale": {
+          "es": "La vista previa se puede ver, pero su JSON no supera las comprobaciones actuales de importación. Revisa los errores siguientes, corrige el JSON de origen y genera una nueva vista previa.",
+          "fr": "L’aperçu est visible, mais son JSON ne passe pas les contrôles d’importation actuels. Examinez les erreurs ci-dessous, corrigez le JSON source et générez un nouvel aperçu.",
+          "de": "Die Vorschau ist sichtbar, aber ihr JSON besteht die aktuellen Importprüfungen nicht. Prüfen Sie die Fehler unten, korrigieren Sie das Quell-JSON und erstellen Sie eine neue Vorschau.",
+          "pt": "A prévia pode ser visualizada, mas seu JSON não passa nas verificações atuais de importação. Revise os erros abaixo, corrija o JSON de origem e gere uma nova prévia.",
+          "ja": "プレビューは表示できますが、JSON は現在のインポート検証に合格していません。以下のエラーを確認し、元の JSON を修正して新しいプレビューを生成してください。",
+          "zh": "预览可以查看，但其 JSON 未通过当前的导入检查。请查看以下错误，修正源 JSON 并生成新预览。",
+          "ar": "يمكن عرض المعاينة، لكن JSON لا يجتاز فحوصات الاستيراد الحالية. راجع الأخطاء أدناه وصحح JSON المصدر وأنشئ معاينة جديدة."
+        }
+      },
+      "importWorkspaceFailed": {
+        "$type": "string",
+        "$value": "Your workspace could not be loaded, so the preview was not imported. Check your connection, reload the app and try again from the preview.",
+        "$description": "Preview import error dialog: importWorkspaceFailed.",
+        "locale": {
+          "es": "No se pudo cargar tu espacio de trabajo, por lo que no se importó la vista previa. Comprueba tu conexión, vuelve a cargar la aplicación e inténtalo de nuevo desde la vista previa.",
+          "fr": "Votre espace de travail n’a pas pu être chargé, donc l’aperçu n’a pas été importé. Vérifiez votre connexion, rechargez l’application et réessayez depuis l’aperçu.",
+          "de": "Ihr Arbeitsbereich konnte nicht geladen werden. Die Vorschau wurde daher nicht importiert. Prüfen Sie Ihre Verbindung, laden Sie die App neu und versuchen Sie es erneut über die Vorschau.",
+          "pt": "Não foi possível carregar seu espaço de trabalho, por isso a prévia não foi importada. Verifique sua conexão, recarregue o aplicativo e tente novamente a partir da prévia.",
+          "ja": "ワークスペースを読み込めなかったため、プレビューはインポートされませんでした。接続を確認し、アプリを再読み込みしてプレビューから再試行してください。",
+          "zh": "无法加载工作区，因此未导入预览。请检查网络连接，重新加载应用，然后从预览重试。",
+          "ar": "تعذر تحميل مساحة العمل، لذلك لم تُستورد المعاينة. تحقق من اتصالك وأعد تحميل التطبيق وحاول مجددًا من المعاينة."
+        }
+      },
+      "importRequestFailed": {
+        "$type": "string",
+        "$value": "The preview could not be downloaded for import. Check your connection and try again from the preview. If it keeps failing, copy the details below for troubleshooting.",
+        "$description": "Preview import error dialog: importRequestFailed.",
+        "locale": {
+          "es": "No se pudo descargar la vista previa para importarla. Comprueba tu conexión e inténtalo de nuevo desde la vista previa. Si sigue fallando, copia los detalles siguientes para investigar el problema.",
+          "fr": "L’aperçu n’a pas pu être téléchargé pour l’importation. Vérifiez votre connexion et réessayez depuis l’aperçu. Si le problème persiste, copiez les détails ci-dessous pour le diagnostic.",
+          "de": "Die Vorschau konnte nicht zum Import heruntergeladen werden. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut über die Vorschau. Kopieren Sie bei weiteren Fehlern die Details unten zur Fehlerbehebung.",
+          "pt": "Não foi possível baixar a prévia para importação. Verifique sua conexão e tente novamente a partir da prévia. Se a falha persistir, copie os detalhes abaixo para investigar.",
+          "ja": "インポート用のプレビューをダウンロードできませんでした。接続を確認し、プレビューから再試行してください。失敗が続く場合は、以下の詳細をコピーして原因を調べてください。",
+          "zh": "无法下载预览以进行导入。请检查网络连接并从预览重试。如果仍然失败，请复制以下详情以排查问题。",
+          "ar": "تعذر تنزيل المعاينة للاستيراد. تحقق من اتصالك وحاول مجددًا من المعاينة. إذا استمر الفشل، انسخ التفاصيل أدناه لاستكشاف المشكلة."
+        }
+      },
+      "returnToPreview": {
+        "$type": "string",
+        "$value": "Return to preview",
+        "$description": "Preview import error dialog: returnToPreview.",
+        "locale": {
+          "es": "Volver a la vista previa",
+          "fr": "Revenir à l’aperçu",
+          "de": "Zurück zur Vorschau",
+          "pt": "Voltar à prévia",
+          "ja": "プレビューに戻る",
+          "zh": "返回预览",
+          "ar": "العودة إلى المعاينة"
+        }
       }
     }
   }

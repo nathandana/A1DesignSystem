@@ -4,6 +4,12 @@ The public `/design-with-a1` page leads with the npm React workflow, then explai
 
 ## Design document and maintenance
 
+Keep the starter prompt general: reference design.md, the A1 rules, the React
+library, content preservation and verification. Component-specific requirements
+belong in `system/rules/`, exposed by the Rules editor and MCP. In particular,
+`page-title-flush-placement` in `system/rules/page-title.yaml` owns the PageTitle
+placement rule; do not repeat it in the starter prompt or its translations.
+
 `design.md` at the repository root is generated using Google's alpha DESIGN.md format: YAML token values followed by the eight ordered rationale sections. A1's default light appearance is the documented snapshot; theme/mode overrides remain authoritative. It is a selected vocabulary, not an exhaustive token or component API. Never paste these literal values into application styling.
 
 - Token input: `build/json/tokens.json`, generated from the canonical system sources by Style Dictionary. The generator reuses the MCP token reader.

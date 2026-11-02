@@ -61,8 +61,8 @@ a source would otherwise use title or headline case.
   **A1** afterward.
 - Preserve code and repository names exactly, including `a1-web`,
   `@gtivr4/a1-design-system-react`, prop names and token paths.
-- Do not use all caps for emphasis, and do not use CSS or JavaScript to change
-  the case of user-facing text.
+- Prefer authored sentence case for ordinary interface copy; use other casing
+  when the content calls for it.
 - Do not imitate unconventional brand casing when referring to a generic
   concept. Preserve it only when it is part of the official name.
 

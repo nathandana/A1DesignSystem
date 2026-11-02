@@ -81,15 +81,43 @@ test('standalone page and unavailable/expired previews have explicit states', as
   await expect(page.frameLocator('iframe').getByRole('status')).toContainText('no longer meets the A1 contract')
 })
 
-test('existing snapshots remain viewable after content policy changes while new imports stay gated', async ({ page }) => {
+test('preview import reports structural errors with copyable paths and recovery', async ({ page }) => {
   const expiry = Date.now() + 60_000
   const id = `${expiry}-${'b'.repeat(48)}`
   const snapshot = { kind: 'page', contractVersion: '1.1.0', document: definition('LEGACY HEADING'), expiresAt: new Date(expiry).toISOString() }
   await page.route('https://mcp.a1design.app/previews/**', route => route.fulfill({ status: 200, headers: { 'access-control-allow-origin': '*' }, json: snapshot }))
   await page.goto(`/preview/${id}`)
   await expect(page.frameLocator('iframe').getByRole('heading', { name: 'LEGACY HEADING', exact: true })).toBeVisible()
+  const invalidSnapshot = structuredClone(snapshot)
+  invalidSnapshot.document.page.layout.regions[0].nodes[0].children[0].props.size = 'unsupported'
+  await page.route('https://mcp.a1design.app/previews/**', route => route.fulfill({ status: 200, headers: { 'access-control-allow-origin': '*' }, json: invalidSnapshot }))
   await page.getByRole('button', { name: 'Edit as project', exact: true }).click()
-  await expect(page.getByText('The preview could not be imported. Return to the preview and try again.', { exact: true })).toBeVisible()
+  const dialog = page.getByRole('dialog', { name: 'Preview import failed' })
+  await expect(dialog).toBeVisible()
+  await expect(dialog).toContainText('no longer meets the A1 contract')
+  const report = JSON.parse(await dialog.locator('pre').innerText())
+  expect(report.previewId).toBe(id)
+  expect(report.stage).toBe('fetch')
+  expect(report.diagnostics).toEqual(expect.arrayContaining([expect.objectContaining({
+    code: 'UNKNOWN_PROP',
+    path: '/page/layout/regions/0/nodes/0/children/0/props/size',
+  })]))
+  await expect(dialog.getByRole('button', { name: 'Copy code', exact: true })).toBeVisible()
+  await expect(dialog.getByRole('link', { name: 'Return to preview' })).toHaveAttribute('href', `/preview/${id}`)
+  for (const theme of ['', 'a1-theme-light', 'a1-theme-accessible', 'a1-theme-heritage']) {
+    await page.evaluate(theme => { document.documentElement.className = theme }, theme)
+    for (const width of [375, 560, 768, 1280, 1536]) {
+      await page.setViewportSize({ width, height: 900 })
+      const box = await dialog.boundingBox()
+      expect(box.x).toBeGreaterThanOrEqual(0)
+      expect(box.x + box.width).toBeLessThanOrEqual(width)
+      expect(await dialog.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true)
+    }
+  }
+  const scan = await new AxeBuilder({ page }).include('dialog[open]').analyze()
+  expect(scan.violations).toEqual([])
+  await page.keyboard.press('Escape')
+  await expect(dialog).toHaveCount(0)
   expect((await importedProjects(page)).some(project => project.name === 'LEGACY HEADING')).toBe(false)
 })
 
@@ -113,6 +141,20 @@ async function signIn(page, { failHydration = false } = {}) {
     return route.fulfill({ json: request.headers().accept?.includes('object') || path.endsWith('/workspace_labels') ? null : [] })
   })
 }
+
+test('capitalization never blocks importing a rendered preview or changes authored names', async ({ page }) => {
+  const expiry = Date.now() + 60_000
+  const id = `${expiry}-${'c'.repeat(48)}`
+  const title = 'Oscar Hammerstein II, AIDS and T.S. Eliot'
+  const snapshot = { kind: 'page', contractVersion: '1.1.0', document: definition(title), expiresAt: new Date(expiry).toISOString() }
+  await page.route('https://mcp.a1design.app/previews/**', route => route.fulfill({ status: 200, headers: { 'access-control-allow-origin': '*' }, json: snapshot }))
+  await page.goto(`/preview/${id}`)
+  await expect(page.frameLocator('iframe').getByRole('heading', { name: title, exact: true })).toBeVisible()
+  await page.getByRole('button', { name: 'Edit as project', exact: true }).click()
+  await expect(page.getByText('You’re editing a copy saved in this browser.', { exact: true })).toBeVisible()
+  expect((await importedProjects(page)).filter(project => project.name === title)).toHaveLength(1)
+  await expect(page.locator('[data-editor-node="title"]')).toContainText(title)
+})
 
 async function storedJson(page, key) {
   const { gunzipSync, strFromU8 } = await import('fflate')
@@ -248,7 +290,38 @@ test('a failed cloud pull blocks preview import', async ({ page }) => {
   await page.goto(path)
   await expect(page.getByRole('button', { name: 'Edit as project' })).toBeEnabled()
   await page.getByRole('button', { name: 'Edit as project' }).click()
-  await expect(page.getByText('The preview could not be imported. Return to the preview and try again.', { exact: true })).toBeVisible({ timeout: 15000 })
+  const dialog = page.getByRole('dialog', { name: 'Preview import failed' })
+  await expect(dialog).toBeVisible({ timeout: 15000 })
+  await expect(dialog).toContainText('Your workspace could not be loaded')
+  expect(JSON.parse(await dialog.locator('pre').innerText())).toMatchObject({
+    stage: 'workspace', code: 'importWorkspaceFailed', previewId: path.split('/').pop(),
+  })
+  expect((await importedProjects(page)).filter(project => project.name === 'Generated project')).toHaveLength(0)
+})
+
+for (const failure of ['http', 'network', 'json', 'structure']) test(`preview import preserves ${failure} failure details`, async ({ page }) => {
+  const path = await setup(page)
+  await page.goto(path)
+  await expect(page.getByRole('button', { name: 'Edit as project' })).toBeEnabled()
+  await page.route('https://mcp.a1design.app/previews/**', route => {
+    if (failure === 'network') return route.abort('failed')
+    return route.fulfill({
+      status: failure === 'http' ? 503 : 200,
+      headers: { 'access-control-allow-origin': '*' },
+      body: failure === 'json' ? '<html>Service unavailable</html>' : '{}',
+    })
+  })
+  await page.getByRole('button', { name: 'Edit as project' }).click()
+  const dialog = page.getByRole('dialog', { name: 'Preview import failed' })
+  await expect(dialog).toBeVisible()
+  const report = JSON.parse(await dialog.locator('pre').innerText())
+  expect(report.stage).toBe('fetch')
+  expect(report.previewId).toBe(path.split('/').pop())
+  expect(Number.isFinite(Date.parse(report.timestamp))).toBe(true)
+  if (failure === 'http') expect(report.status).toBe(503)
+  if (failure === 'network') expect(report.code).toContain('Failed to fetch')
+  if (failure === 'json') expect(report.code).toBe('invalidResponse')
+  if (failure === 'structure') expect(report.diagnostics.length).toBeGreaterThan(0)
   expect((await importedProjects(page)).filter(project => project.name === 'Generated project')).toHaveLength(0)
 })
 

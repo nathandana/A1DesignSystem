@@ -148,7 +148,7 @@ const ruleCatalog = fs.readdirSync(file('system/rules')).filter(name => name.end
   return (source.rules ?? []).map(rule => ({ id: rule.id, requirement: rule.requirement ?? rule.description ?? rule.id, components: rule.components ?? [source.component ?? 'System'], ...(rule.exceptions ? { exceptions: rule.exceptions } : {}), ...(rule.enforcement?.json ? { json: rule.enforcement.json } : {}) }));
 });
 for (const rule of ruleCatalog.filter(rule => rule.json)) {
-  if (!['authored-text-case', 'heading-sentence-case'].includes(rule.json.check) || !['error', 'warning'].includes(rule.json.severity)) throw new Error(`Unsupported JSON enforcement for ${rule.id}`);
+  throw new Error(`Unsupported JSON enforcement for ${rule.id}: no catalog rule has an automated checker.`);
 }
 const contract = { contractVersion: '1.1.0', supportedVersions: ['0.1.0', '1.0.0', '1.1.0'], componentTypes, nodeSchema, pageSchema, projectSchema, components, definitions, ruleCatalog };
 // Drop intermediate schemas no longer reachable after adapter overrides.
