@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.38.1 — 2026-11-01
+
+- **Alphabetical navigation labels** — accept the exact A-Z sorting label in shared content validation so editing Navigation Tree settings preserves a valid page.
+
 ## 0.38.0 — 2026-11-01
 
 - **MCP rule enforcement** (A1-2741) — shared import/editor/preview validation catches all-caps content and casing transforms, provides localized repair diagnostics, and preserves invalid drafts. Coverage distinguishes automated checks from visual and human review.

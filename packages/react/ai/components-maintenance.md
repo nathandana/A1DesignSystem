@@ -1,5 +1,9 @@
 # A1 Design System — Component Maintenance Log
 
+## 2026-11-01 — Alphabetical navigation validation
+
+The full release gate caught Navigation Tree’s canonical A-Z sort label being classified as uppercase prose after a configuration edit. The visible YAML exception list now accepts exactly A-Z; ordinary all-caps words remain errors. Added a shared-validator regression and reran the real editor configuration flow. A1 Web 0.38.1 carries the correction; MCP 0.5.0 includes it before publication.
+
 ## 2026-11-01 — A1-2741 release preparation
 
 Prepared A1 Web 0.38.0 and MCP 0.5.0 for shared rule enforcement and the JSON-first preview workflow. Updated public release notes and the MCP overview. React and React Native package contents and versions are unchanged. Validation covers shared rules, MCP/import/preview parity, draft repair and persistence, responsive overview content and the release route baseline.

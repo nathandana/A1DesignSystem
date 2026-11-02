@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.38.1 — 2026-11-01
+
+- **Navigation editing** — Alphabetical sorting labels pass content validation, keeping navigation settings editable.
+
 ## 0.38.0 — 2026-11-01
 
 ### Highlights

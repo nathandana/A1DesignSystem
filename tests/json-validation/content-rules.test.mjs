@@ -89,7 +89,7 @@ test('literal casing styles are blocked including escaped CSS, without executing
 });
 
 test('exceptions are exact and visible; locales and language inheritance avoid English-only assumptions', () => {
-  for (const text of ['USD', 'S', 'XL', 'SCE', 'API', 'A1:Design', 'New England', 'JSON and CSS']) assert.equal(validate(page(node('Heading', text))).valid, true, text);
+  for (const text of ['A-Z', 'USD', 'S', 'XL', 'SCE', 'API', 'A1:Design', 'New England', 'JSON and CSS']) assert.equal(validate(page(node('Heading', text))).valid, true, text);
   for (const text of ['SAVE', 'GO', 'BUY', 'SCEE']) assert.equal(validate(page(node('Heading', text))).valid, false, text);
   for (const [lang, text, suggestion] of [['fr', 'CRÉER UN COMPTE', 'Créer un compte'], ['es', 'CREAR CUENTA', 'Crear cuenta'], ['de', 'WILLKOMMEN', 'Willkommen'], ['tr', 'İYİ GÜNLER', 'İyi günler']]) {
     const result = validate(page(node('Heading', text), lang));
@@ -100,6 +100,8 @@ test('exceptions are exact and visible; locales and language inheritance avoid E
   const subtree = node('Stack', null, { lang: 'tr' });
   subtree.children = [node('Heading', 'İYİ GÜNLER', {}, 'heading')];
   assert.equal(violations(validate(page(subtree)))[0].suggestedValue, 'İyi günler');
+  const navigation = createPatternNode('NavigationTree', { props: { items: [], sortLabel: 'A-Z', 'aria-label': 'Project navigation' } });
+  assert.equal(validate(page(navigation)).valid, true);
   const title = validate(page(node('Heading', 'Create Your Account')));
   assert.equal(title.valid, true);
   assert.ok(title.warnings.some(d => d.ruleId === 'system-heading-sentence-case' && d.suggestedValue === 'Create your account'));

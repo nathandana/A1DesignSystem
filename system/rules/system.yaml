@@ -58,7 +58,7 @@ rules:
           Stat: [value, prefix, suffix]
         exceptions:
           # Exact tokens only; never a page-level opt-out. Add approved terms here.
-          tokens: [DTCG, WCAG, WAI, ARIA, RSC, SDK, PNG, JPG, JPEG, GIF, HEIC, AVIF, WEBP, SVG, MP4, MP3, A1, S, M, L, XS, XL, XXL, XXXL, XXS, USD, EUR, GBP, CAD, AUD, JPY, CNY, CHF, SCE, API, APIs, UI, UX, CSS, HTML, JSON, MCP, HTTP, HTTPS, URL, URLs, ID, IDs, UUID, XML, SQL, PDF, CSV, CPU, GPU, RAM, USB, SMS, FAQ, FAQs, AI, ML, AR, VR, USA, US, UK, EU, UTC, GMT, NASA, NHS, IBM, IKEA, BMW, NFL, NBA, NHL, MLB, NCAA, FIFA, FIA, F1, FOM, DRS, ERS, DNA, RGB, HSL, HEX]
+          tokens: [A-Z, DTCG, WCAG, WAI, ARIA, RSC, SDK, PNG, JPG, JPEG, GIF, HEIC, AVIF, WEBP, SVG, MP4, MP3, A1, S, M, L, XS, XL, XXL, XXXL, XXS, USD, EUR, GBP, CAD, AUD, JPY, CNY, CHF, SCE, API, APIs, UI, UX, CSS, HTML, JSON, MCP, HTTP, HTTPS, URL, URLs, ID, IDs, UUID, XML, SQL, PDF, CSV, CPU, GPU, RAM, USB, SMS, FAQ, FAQs, AI, ML, AR, VR, USA, US, UK, EU, UTC, GMT, NASA, NHS, IBM, IKEA, BMW, NFL, NBA, NHL, MLB, NCAA, FIFA, FIA, F1, FOM, DRS, ERS, DNA, RGB, HSL, HEX]
           localeTokens:
             en: [UN, WHO, AM, PM]
           names: [A1 Design System, A1 Design, A1:Design, New England, New York, React, React Native, JavaScript, TypeScript, Supabase, Netlify, Figma, OpenAI, ChatGPT, GitHub, Storybook]
