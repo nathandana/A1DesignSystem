@@ -81,6 +81,18 @@ test('standalone page and unavailable/expired previews have explicit states', as
   await expect(page.frameLocator('iframe').getByRole('status')).toContainText('no longer meets the A1 contract')
 })
 
+test('existing snapshots remain viewable after content policy changes while new imports stay gated', async ({ page }) => {
+  const expiry = Date.now() + 60_000
+  const id = `${expiry}-${'b'.repeat(48)}`
+  const snapshot = { kind: 'page', contractVersion: '1.1.0', document: definition('LEGACY HEADING'), expiresAt: new Date(expiry).toISOString() }
+  await page.route('https://mcp.a1design.app/previews/**', route => route.fulfill({ status: 200, headers: { 'access-control-allow-origin': '*' }, json: snapshot }))
+  await page.goto(`/preview/${id}`)
+  await expect(page.frameLocator('iframe').getByRole('heading', { name: 'LEGACY HEADING', exact: true })).toBeVisible()
+  await page.getByRole('button', { name: 'Edit as project', exact: true }).click()
+  await expect(page.getByText('The preview could not be imported. Return to the preview and try again.', { exact: true })).toBeVisible()
+  expect((await importedProjects(page)).some(project => project.name === 'LEGACY HEADING')).toBe(false)
+})
+
 async function signIn(page, { failHydration = false } = {}) {
   const user = { id: 'a1000000-0000-4000-8000-000000000001', aud: 'authenticated', role: 'authenticated', email: 'preview@example.test', app_metadata: { role: 'user' }, user_metadata: {} }
   const expiresAt = Math.floor(Date.now() / 1000) + 3600

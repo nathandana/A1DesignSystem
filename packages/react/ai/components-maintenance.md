@@ -1,5 +1,29 @@
 # A1 Design System — Component Maintenance Log
 
+## 2026-11-01 — Canonical A1 capitalization ownership
+
+Capitalization exceptions are owned by the A1 content rule itself, outside JSON enforcement metadata. The generated contract, MCP discovery and rule index expose that same definition; the shared validator consumes it for the editor, imports and preview creation. MCP has no independent exception list. See [Content standards](content-standards.md#shared-capitalization-policy).
+
+## 2026-11-01 — Existing preview content compatibility
+
+A user’s shared snapshot exposed false positives for GP and English ET. Added those exact visible exceptions and kept published snapshots viewable when content policy changes. Preview reads still enforce structural/reference/pattern validity and expiry; creation and new project imports retain full content validation. Browser regression covers an older all-caps snapshot rendering unchanged while import is blocked. No CSS, token or interaction changes.
+
+## 2026-11-01 — Alphabetical navigation validation
+
+The full release gate caught Navigation Tree’s canonical A-Z sort label being classified as uppercase prose after a configuration edit. The visible YAML exception list now accepts exactly A-Z; ordinary all-caps words remain errors. Added a shared-validator regression and reran the real editor configuration flow. A1 Web 0.38.1 carries the correction; MCP 0.5.0 includes it before publication.
+
+## 2026-11-01 — A1-2741 release preparation
+
+Prepared A1 Web 0.38.0 and MCP 0.5.0 for shared rule enforcement and the JSON-first preview workflow. Updated public release notes and the MCP overview. React and React Native package contents and versions are unchanged. Validation covers shared rules, MCP/import/preview parity, draft repair and persistence, responsive overview content and the release route baseline.
+
+## 2026-11-01 — MCP overview workflow
+
+The static MCP overview now leads with rules, project JSON, validation/repair and the A1 preview handoff. It explains validation coverage, 30-day previews, guest/workspace editing and the separate React setup path, and lists the validation resource. Uses semantic headings, lists and a main landmark with the existing page styling; no new CSS, tokens or components. This is English technical documentation, consistent with the MCP README and agent resources.
+
+## 2026-11-01 — A1-2741 MCP rule enforcement
+
+MCP now prioritizes project JSON, mandatory rules, validation/repair and the A1 preview route. YAML rule metadata drives shared all-caps/style checks, advisory English heading checks, visible acronym/name exceptions and locale-aware suggestions. Import, editor and preview use the same diagnostics and coverage; invalid drafts remain editable. Existing A1 diagnostics only, with all seven translations and no CSS, tokens or component API changes. See [JSON validation](json-validation.md#content-rules-and-coverage-a1-2741).
+
 ## 2026-11-01 — Preview footer intrinsic action sizing
 
 A1 Web 0.37.1 replaces the full-width ButtonContainer inside the intrinsically sized Banner action with an A1 row Stack. ButtonContainer’s inline-size containment supplied no intrinsic width, collapsing the action to a narrow column. Stack preserves the Button and IconButton natural sizes. The release smoke test exposed this on mobile; regression checks now require both controls to fit and bound the button/footer height at 320, 375, 390, 560, 768, 1280 and 1536 pixels. No custom CSS, tokens or shared component changes.

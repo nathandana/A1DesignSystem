@@ -8,7 +8,11 @@ export async function loadPreview(id, signal) {
   const response = await fetch(`${api}/previews/${id}`, { credentials: 'omit', cache: 'no-store', referrerPolicy: 'no-referrer', signal })
   if (!response.ok) throw new Error(response.status === 410 ? 'expired' : response.status === 404 ? 'missing' : 'unavailable')
   const data = await response.json()
-  if (!validateJson(data).valid || !Number.isFinite(Date.parse(data.expiresAt))) throw new Error('invalid')
+  // Existing snapshots retain their authored content until expiry. New content
+  // policies gate creation and import, not viewing an already shared snapshot.
+  // Structural, reference and pattern errors still block rendering.
+  const invalidStructure = validateJson(data).errors.some(error => error.code !== 'RULE_VIOLATION')
+  if (invalidStructure || !Number.isFinite(Date.parse(data.expiresAt))) throw new Error('invalid')
   if (Date.parse(data.expiresAt) <= Date.now()) throw new Error('expired')
   return data
 }

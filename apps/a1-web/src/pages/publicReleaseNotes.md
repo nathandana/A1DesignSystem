@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+## 0.38.1 — 2026-11-01
+
+- **Keep shared previews available** — Existing snapshots remain viewable when content rules change. Recognized abbreviations include GP and ET, while new previews and imports keep their validation checks.
+
+- **Navigation editing** — Alphabetical sorting labels pass content validation, keeping navigation settings editable.
+
+## 0.38.0 — 2026-11-01
+
+### Highlights
+
+- **A clearer agent workflow** — MCP now starts with A1 rules and project JSON, guides agents through validation and repair, and prioritizes sharing an A1 preview.
+- **Content checks before import and preview** — All-caps content and casing transforms produce precise repair diagnostics. Invalid drafts stay editable, with narrow exceptions for approved acronyms, sizes and names.
+- **Honest validation coverage** — Results distinguish automated checks from the layout, accessibility and editorial review still needed. Sentence-case heading warnings remain advisory for proper-name review.
+- **Updated MCP overview** — Find connection instructions, preview editing, 30-day retention, reference resources and the separate React library setup path.
+
 ## 0.37.1 — 2026-11-01
 
 - **Compact preview footer** — The project editing button and close control stay readable and fully visible on small screens.

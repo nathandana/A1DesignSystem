@@ -7,12 +7,21 @@ Keep intentional migrations separate and review their output before validation.
 
 ## Agent workflow
 
-1. Call `get_json_model` with `format: "page"` or `"project"`.
-2. Read `get_component` for React props and the JSON-specific `jsonPropsSchema`.
-   Read `get_pattern` for formal patterns and empty governed areas.
-3. Generate the document, then call `validate_json` with `kind` and `document`.
-4. Repair errors at the returned JSON Pointer paths; review warnings and resubmit.
-5. Import only when `valid` is true, then check rendered layout and accessibility.
+1. Start with `get_json_model` (defaults to `format: "project"`) and follow its
+   mandatory rules. Use a linked project for a website; reserve `page` for an
+   explicitly single-page request. Do not reduce a site to one scrolling page.
+2. Read `get_component` for props and `get_pattern` for governed areas before
+   authoring. Prefer A1 patterns and project navigation over custom substitutes.
+3. Generate JSON, then call `validate_json` with `kind` and `document`.
+4. Repair errors at the returned JSON Pointer paths, review warnings and coverage,
+   then revalidate the complete project so internal links resolve.
+5. Call `create_preview`, open the returned A1 `/preview/` URL, and inspect
+   responsive layout and accessibility. Revise and create another preview as needed.
+6. Return the A1 preview URL as the primary handoff, alongside the JSON and any
+   remaining review limitations. Anyone can choose **Edit as project** there.
+
+React/npm setup remains available through `get_react_setup` when explicitly
+requested. The default MCP site workflow is JSON → validation → A1 preview.
 
 ```json
 {
@@ -46,7 +55,9 @@ An unsupported pin returns `UNSUPPORTED_VERSION`. Page `schemaVersion` also
 accepts the existing `0.1.0` and `1.0.0` shapes; no implicit migration occurs.
 
 The tool advertises input/output schemas and read-only annotations. Successful
-tool execution returns the same result in `structuredContent` and text content:
+tool execution returns the same result in `structuredContent` and text content.
+The following examples show selected fields; every result also includes the
+`coverage` object described below:
 
 ```json
 {
@@ -54,6 +65,7 @@ tool execution returns the same result in `structuredContent` and text content:
   "contractVersion": "1.1.0",
   "errors": [{
     "code": "INVALID_VALUE",
+    "severity": "error",
     "path": "/page/layout/regions/0/nodes/0/props/variant",
     "message": "Use a value allowed by the contract.",
     "allowedValues": ["success", "primary", "secondary", "tertiary", "destructive"]
@@ -63,13 +75,15 @@ tool execution returns the same result in `structuredContent` and text content:
 ```
 
 `valid` means no errors; warnings do not block import. Diagnostics always include
-`code`, `path` and `message`. Depending on the check, they also include
+`code`, `severity`, `path` and `message`. Depending on the check, they also include
 `allowedValues`, `expectedType`, or a pattern `ruleId`, `detail` and `recovery`.
 An empty path identifies the document root. For legacy JSON-encoded page
 definitions, paths below `/pages/N/definition` refer to the decoded definition.
 
 ## Sources and maintenance
 
+- `system/rules/*.yaml`: authoritative requirements and machine-readable `enforcement.json` metadata.
+- `system/json-model/contentRules.js`: shared content/style rule checks and coverage.
 - `system/json-model/validate.js`: pure shared validator and display formatter.
 - `system/json-model/model.js`: MCP discovery schemas and starters from the same artifact.
 - `scripts/build-json-contract.mjs`: uses the TypeScript checker at build time.
@@ -128,6 +142,58 @@ No scripts, HTML, CSS, actions or remote references are executed. These checks d
 not certify rendered visual layout, contrast, keyboard behavior, screen-reader
 experience or custom-block accessibility. Those require rendering checks.
 
+## Content rules and coverage (A1-2741)
+
+`get_json_model` includes the rule catalog, component scope and automated-check
+metadata alongside its starter/schema. Rules without automated checks remain
+mandatory and are explicitly assigned to rendering or human review. The generated
+JSON contract and MCP rule index read the same YAML; do not duplicate rule policy
+in the editor, preview service or transport handlers.
+
+The shared validator checks literal authored text in content fallbacks, accessible
+labels, display props and known structured collections, including nested Slots,
+Tabs and formal patterns. All-caps words outside the visible exception list are
+errors, including words embedded in otherwise sentence-case prose. Literal
+`textTransform` styles and CustomBlock `text-transform` declarations using
+uppercase, lowercase or capitalize are also errors. CSS comments and quoted
+examples are ignored; custom code is never executed. Error-level violations block
+imports and new previews. Invalid editor/import drafts stay available for repair;
+validation never silently rewrites approved content.
+
+English title-style headings receive a sentence-case warning because proper names
+cannot be classified reliably without editorial context. Use `page.layout.props.lang`
+for authored language or `props.lang` on a subtree; otherwise English applies.
+Page-list titles inherit their definition’s language; project metadata uses the
+first page’s language.
+Case comparisons and suggestions use that language. Non-English heading conventions
+are deferred to human review. Exact acronym, currency, size and approved-name
+exceptions belong to the A1 rule’s top-level `exceptions` in `system.yaml`,
+shared by all consumers rather than defined by MCP; language-specific exceptions avoid treating
+French “un” as the English acronym “UN.” There is no page-level rule bypass.
+Suggestions preserve known names but still require review of unknown proper names.
+
+Content diagnostics include `RULE_VIOLATION`, `ruleId`, `severity`, exact `path`,
+`offendingText`, and a proposed `suggestedValue` where safe. Opaque CSS and mixed
+runtime bindings instead include an explicit `recovery` instruction. UI messages
+and the Text/Suggested labels use the shared locale resolver.
+
+Every result includes `coverage`: schema checks, automated rules with checked-value
+counts, other rules requiring review, deferred dynamic/opaque fields, rendering
+checks and human-review topics. `completeCompliance` is always false: `valid`
+means no detected errors, not a certification. Bound data, resolved localization,
+custom markup, arbitrary datasets and runtime CSS need rendered review. URLs,
+identifiers, code samples and arbitrary data are not treated as authored prose.
+
+Standards review: this feature adds no CSS, tokens, layout, interactions or shared
+component API. Existing Code/Banner/Dialog diagnostics and disabled import controls
+are reused. New messages cover all seven translated locales. Node tests cover
+content, styles, locales, nested paths, discovery and import/MCP/HTTP preview parity;
+browser tests cover blocked import, preserved invalid drafts, repair, themes,
+breakpoints and focused axe. Sentence-case heuristics and runtime content are
+explicitly documented review boundaries, not blanket compliance claims. This ticket
+changes the validator and MCP contract; its generic Banner implementation checklist
+does not apply to the stated rule-enforcement objective.
+
 ## Standards review
 
 No CSS, inline styles, visual tokens, layout rules or new UI components were
@@ -135,7 +201,7 @@ added. Existing A1 Code, Banner, Paragraph and Dialog present the results. The
 import Dialog now explicitly receives its localized accessible name; shared
 Dialog title-to-name defaults would benefit from a separate system improvement.
 Existing JSON drafts remain editable when invalid, while import and preview
-require valid structure. Diagnostics use stable labels with es/fr/de/pt/ja/zh/ar
+require valid structure and no error-level rule violations. Diagnostics use stable labels with es/fr/de/pt/ja/zh/ar
 translations; technical paths, codes and allowed values remain literal.
 
 The shared layer replaces duplicated import validation. Generated schemas are
@@ -154,7 +220,10 @@ manual assistive-technology audit is claimed.
 After validation, call `create_preview` with the same `{ kind, document,
 contractVersion? }` arguments. It validates again and returns the standard
 validation result, plus `previewId`, `previewUrl` and `expiresAt` only when valid.
-Invalid JSON creates no snapshot. For example:
+Invalid JSON creates no snapshot. Existing stored snapshots retain their authored
+content until expiry: viewing still checks structure, references and pattern
+contracts, but later content-policy violations do not retroactively hide them.
+Editing as a new project still passes the current import checks. For example:
 
 ```json
 {

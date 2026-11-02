@@ -4,6 +4,14 @@ rules:
     components:
       - System
       - Heading
+    enforcement:
+      json:
+        check: heading-sentence-case
+        severity: warning
+        locales: [en]
+        components: [Heading, PageTitle, Card, OverviewCard, Banner, Dialog, VerificationDialog, EmptyState]
+        fields: [title, heading, headline, emptyTitle]
+        reason: Title-case detection is advisory because proper names and language-specific capitalization need human review.
     requirement: Use sentence case for headings.
     do: Write headings like "Create account", "Payment details", or "Recent activity".
     dont: Write headings in title case like "Create Account", "Payment Details", or "Recent Activity".
@@ -37,6 +45,24 @@ rules:
     enforcement:
       eslint: no-uppercase-text
       css: true
+      json:
+        check: authored-text-case
+        severity: error
+        transforms: [uppercase, lowercase, capitalize]
+        textFields: [label, title, heading, headline, subtitle, description, text, message, caption, alt, placeholder, helperText, hint, errorMessage, successMessage, emptyMessage, legend, eyebrow, kicker, logo, logoText, menuLabel, actionLabel, actionsLabel, anchorLabel, backLabel, bubbleLabel, cancelLabel, clearLabel, confirmLabel, copiedLabel, copyLabel, createLabel, emptyText, emptyTitle, footerLabel, formatLabel, listViewLabel, moreText, overflowLabel, searchLabel, showToolbarLabel, sortLabel, statusLabel, sublabel, subtext, aria-label, aria-description, aria-valuetext, aria-braillelabel]
+        collections: [items, options, actions, menuActions, details, columns, navItems, tabs, panels, tools, links, groups, children]
+        excludedContentComponents: [Code, CustomBlock, Icon]
+        displayValues:
+          DefinitionList: [value]
+          OverviewCard: [value]
+          Stat: [value, prefix, suffix]
+    exceptions:
+      # A1-wide content policy, shared by every consumer; never an MCP-only or page-level opt-out.
+      # Exact tokens and canonical names only.
+      tokens: [A-Z, DTCG, WCAG, WAI, ARIA, RSC, SDK, PNG, JPG, JPEG, GIF, HEIC, AVIF, WEBP, SVG, MP4, MP3, A1, S, M, L, XS, XL, XXL, XXXL, XXS, USD, EUR, GBP, CAD, AUD, JPY, CNY, CHF, SCE, API, APIs, UI, UX, CSS, HTML, JSON, MCP, HTTP, HTTPS, URL, URLs, ID, IDs, UUID, XML, SQL, PDF, CSV, CPU, GPU, RAM, USB, SMS, FAQ, FAQs, AI, ML, AR, VR, USA, US, UK, EU, UTC, GMT, NASA, NHS, IBM, IKEA, BMW, NFL, NBA, NHL, MLB, NCAA, FIFA, FIA, F1, GP, FOM, DRS, ERS, DNA, RGB, HSL, HEX]
+      localeTokens:
+        en: [UN, WHO, AM, PM, ET]
+      names: [A1 Design System, A1 Design, A1:Design, New England, New York, React, React Native, JavaScript, TypeScript, Supabase, Netlify, Figma, OpenAI, ChatGPT, GitHub, Storybook]
 
   - id: system-tokens-only
     components:

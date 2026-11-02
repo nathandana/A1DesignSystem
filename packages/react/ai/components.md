@@ -2,6 +2,8 @@
 
 **Keep this file current.** Update it whenever a component is added, removed, renamed, or its package coverage changes. This is part of the component addition checklist in `packages/react/ai/project-context.md`.
 
+MCP and editor content validation: [mandatory rules, JSON preview workflow and coverage](json-validation.md#content-rules-and-coverage-a1-2741).
+
 ## Package key
 
 | Column             | What it covers                                                                                                                                                                                          |

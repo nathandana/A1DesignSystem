@@ -51,3 +51,12 @@ Before returning content:
    localization context.
 5. Surface unresolved conflicts or missing facts instead of inventing a
    decision.
+
+## Shared capitalization policy
+
+The authoritative machine-readable casing policy is `system-no-uppercase-content`
+in `system/rules/system.yaml`. Approved abbreviations, size labels and canonical
+names belong to that A1 rule’s top-level `exceptions`, not to MCP or a JSON-only
+policy. MCP exposes the same rule data consumed by the shared validator in the
+editor, project import and preview creation. Do not add service-specific exception
+lists or relax the policy for an individual generated page.

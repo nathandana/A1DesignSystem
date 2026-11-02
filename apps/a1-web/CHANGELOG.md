@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+## 0.38.1 — 2026-11-01
+
+- **Existing preview compatibility** — new content rules no longer hide previously shared snapshots. Structural checks and expiry still apply; new previews and project imports retain current rule enforcement. Recognize GP and English ET as legitimate abbreviations.
+
+- **Alphabetical navigation labels** — accept the exact A-Z sorting label in shared content validation so editing Navigation Tree settings preserves a valid page.
+
+## 0.38.0 — 2026-11-01
+
+- **MCP rule enforcement** (A1-2741) — shared import/editor/preview validation catches all-caps content and casing transforms, provides localized repair diagnostics, and preserves invalid drafts. Coverage distinguishes automated checks from visual and human review.
+
 ## 0.37.1 — 2026-11-01
 
 - **Preview footer sizing** — keep Edit as project and the close control at their natural widths on small screens, preventing vertical button text and an oversized footer.
