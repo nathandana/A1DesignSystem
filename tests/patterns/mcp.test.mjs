@@ -81,7 +81,8 @@ test('MCP discovery exposes the same versioned manifest and empty starter as the
 });
 
 test('MCP exposes copy-ready page and project JSON models from the registered types', async () => {
-  const page = await call('get_json_model', {});
+  const page = await call('get_json_model', { format: 'page' });
+  assert.equal((await call('get_json_model', {})).format, 'project');
   assert.equal(page.format, 'page');
   assert.equal(page.starter.schemaVersion, '1.1.0');
   assert.equal(page.starter.page.layout.type, 'PageLayout');

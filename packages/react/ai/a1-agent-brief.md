@@ -2,10 +2,11 @@
 
 This single file is everything an agent needs to **generate valid A1 page-definition JSON** (and project bundles) with no other context. It is self-contained: the JSON format, the full component list with props, the value vocabularies, the rules, and worked examples.
 
-- To use A1 components in a React application, call MCP `get_react_setup` or read `a1://docs/react-setup` for npm installation, CSS/fonts/PostCSS configuration and a minimal example. It distinguishes the indexed source version from the published npm version.
+- **Default to JSON and an A1 preview.** Start with MCP `get_json_model` (defaults to a project bundle), read and follow its mandatory rules, and consult `get_component`/`get_pattern` before using their contracts. A website normally has linked pages; use `page` only for an explicitly single-page request.
 - The rendered page is **derived from the JSON** — the JSON is the source of truth.
-- Output is rendered by the a1-web Editor (`?page=editor`) and importable via **Projects → Upload JSON**.
-- Before returning JSON, call MCP `validate_json` with `{ kind: "page" | "project", document }`. Repair errors at their JSON Pointer paths and revalidate until `valid` is true; review advisory warnings. Use `get_json_model`, `get_component` and `get_pattern` for the current contracts. Validation does not save or alter the JSON, and rendered layout/accessibility still require separate checks. Full tool contract: `a1://docs/json-validation`.
+- Call `validate_json` for the complete project, repair errors at their exact paths, and review warnings and coverage. All-caps content and casing transforms block import/preview; schema validity does not certify overall compliance. Use the visible narrow exceptions and set `page.layout.props.lang` for localized content.
+- Call `create_preview`, open its A1 `/preview/` URL and review layout/accessibility. Return that preview URL as the primary handoff, with the JSON and remaining review limitations. Anyone can choose **Edit as project** from the preview; JSON is also importable via **Projects → Upload JSON**. Full contract: `a1://docs/json-validation`.
+- For an explicit React-library or npm integration request, call `get_react_setup` or read `a1://docs/react-setup`. It covers CSS/fonts/PostCSS and distinguishes indexed source versions from published npm versions.
 - When something here is ambiguous, the ground truth is the code: `apps/a1-web/src/editor/pageTypes.ts` (types), `apps/a1-web/src/editor/componentRegistry.ts` (renderable set), and `packages/react/ai/components.md` (exhaustive per-component props).
 
 ---

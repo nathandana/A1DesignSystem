@@ -1,4 +1,5 @@
 import Ajv from 'ajv';
+import { createContentRuleChecker, contentLocale } from './contentRules.js';
 import contract from './contract.generated.json' with { type: 'json' };
 import { validatePatterns } from '../../packages/react/src/patterns/patternValidation.js';
 import { getPatternManifest } from '../../packages/react/src/patterns/patternPolicies.js';
@@ -17,6 +18,10 @@ const propChecks = new Map();
 // Stable messages also key the UI label catalogue; values/paths stay separate
 // from translated prose. Pattern-specific detail remains available to agents.
 export const messages = {
+  RULE_VIOLATION: 'Follow the A1 content rule at this path.',
+  CONTENT_UPPERCASE: 'Use sentence case instead of all-caps content.',
+  CONTENT_TRANSFORM: 'Remove the casing transform and author the text directly.',
+  HEADING_SENTENCE_CASE: 'Use sentence case for this heading; preserve proper names.',
   INVALID_JSON: 'Provide valid JSON.',
   INVALID_DOCUMENT: 'Provide a JSON object.',
   INVALID_KIND: 'Choose page or project validation.',
@@ -55,11 +60,13 @@ export const messages = {
 export function validateJson({ kind, document, contractVersion } = {}, { pageIds: contextPageIds } = {}) {
   const errors = [], warnings = [];
   const add = (code, path, extra = {}, severity = 'error') => {
-    const diagnostic = { code, path, message: messages[code], ...extra };
+    const diagnostic = { code, path, severity, message: messages[extra.messageKey] ?? messages[code], ...extra };
     const list = severity === 'error' ? errors : warnings;
     if (!list.some(d => d.code === code && d.path === path && d.ruleId === diagnostic.ruleId)) list.push(diagnostic);
   };
-  const result = () => ({ valid: errors.length === 0, contractVersion: CONTRACT_VERSION, errors, warnings });
+  const content = createContentRuleChecker(add);
+  let schemaChecked = false;
+  const result = () => ({ valid: errors.length === 0, contractVersion: CONTRACT_VERSION, errors, warnings, coverage: content.coverage(schemaChecked) });
   if (!['page', 'project'].includes(kind)) { add('INVALID_KIND', '', { allowedValues: ['page', 'project'] }); return result(); }
   if (contractVersion !== undefined && contractVersion !== CONTRACT_VERSION) {
     add('UNSUPPORTED_VERSION', '', { allowedValues: [CONTRACT_VERSION] }); return result();
@@ -85,6 +92,7 @@ export function validateJson({ kind, document, contractVersion } = {}, { pageIds
   }
 
   function check(checker, value, base, prop = false) {
+    schemaChecked = true;
     if (checker(value)) return;
     for (const error of checker.errors ?? []) {
       // anyOf's branch details already identify the offending field.
@@ -102,7 +110,7 @@ export function validateJson({ kind, document, contractVersion } = {}, { pageIds
       add(code, path, { ...(error.params.allowedValues ? { allowedValues: error.params.allowedValues } : {}), ...(error.params.type ? { expectedType: error.params.type } : {}) });
     }
   }
-  function props(type, values = {}, path, collections) {
+  function props(type, values = {}, path, collections, locale = 'en') {
     if (!object(values) || !contract.components[type]) return;
     if (!propChecks.has(type)) propChecks.set(type, compile(contract.components[type]));
     // Data-bound collections are populated by the renderer. Their required
@@ -110,6 +118,7 @@ export function validateJson({ kind, document, contractVersion } = {}, { pageIds
     const supplied = { ...values };
     for (const key of Object.keys(collections ?? {})) if (!(key in supplied)) supplied[key] = [];
     check(propChecks.get(type), supplied, path, true);
+    content.props(type, values, path, locale);
     if (values.style || values.className) add('INLINE_STYLE', `${path}/${values.style ? 'style' : 'className'}`, {}, 'warning');
   }
   const pages = kind === 'project' && Array.isArray(document.pages) ? document.pages : [];
@@ -145,7 +154,10 @@ export function validateJson({ kind, document, contractVersion } = {}, { pageIds
     const page = input.page;
     if (!object(page) || !object(page.layout) || !Array.isArray(page.layout.regions)) return;
     if (page.layout.type !== 'PageLayout') add('INVALID_LAYOUT', `${base}/page/layout/type`, { allowedValues: ['PageLayout'] });
-    props('PageLayout', page.layout.props, `${base}/page/layout/props`);
+    const pageLocale = contentLocale(page.layout.props?.lang);
+    content.text(page.name, `${base}/page/name`, pageLocale);
+    content.text(page.description, `${base}/page/description`, pageLocale);
+    props('PageLayout', page.layout.props, `${base}/page/layout/props`, undefined, pageLocale);
     const ids = new Set(), regionIds = new Set(), domIds = new Set(), localRefs = [];
     const register = (id, path) => {
       if (typeof id !== 'string' || !id.trim()) add('EMPTY_ID', path);
@@ -154,7 +166,7 @@ export function validateJson({ kind, document, contractVersion } = {}, { pageIds
     };
     if (typeof page.id !== 'string' || !page.id.trim()) add('EMPTY_ID', `${base}/page/id`);
     const interactive = new Set(['Button', 'IconButton', 'Link', 'TextField', 'SelectField', 'Switch', 'Menu', 'Tabs', 'CheckboxGroup', 'RadioGroup']);
-    function nodes(list, path, parent, inCard = false, single = false) {
+    function nodes(list, path, parent, inCard = false, single = false, locale = pageLocale) {
       if (!Array.isArray(list)) return;
       const cardCount = list.filter(n => n?.type === 'Card').length;
       if (parent === 'ButtonContainer' && list.filter(n => n?.type === 'Button' && (n.props?.variant ?? 'primary') === 'primary').length > 1) add('PRIMARY_ACTIONS', path, {}, 'warning');
@@ -164,7 +176,9 @@ export function validateJson({ kind, document, contractVersion } = {}, { pageIds
         if (!object(node)) return;
         register(node.id, `${np}/id`);
         if (!contract.componentTypes.includes(node.type)) { add('UNKNOWN_COMPONENT', `${np}/type`, { allowedValues: contract.componentTypes }); return; }
-        props(node.type, node.props, `${np}/props`, node.collections);
+        const nodeLocale = contentLocale(node.props?.lang, locale);
+        props(node.type, node.props, `${np}/props`, node.collections, nodeLocale);
+        content.node(node, np, nodeLocale);
         if (typeof node.props?.id === 'string') {
           if (domIds.has(node.props.id)) add('DUPLICATE_ID', `${np}/props/id`);
           domIds.add(node.props.id);
@@ -179,6 +193,7 @@ export function validateJson({ kind, document, contractVersion } = {}, { pageIds
             if (!Number.isInteger(link.start) || !Number.isInteger(link.end) || link.start < end || link.end <= link.start || link.end > (node.content?.fallback?.length ?? 0)) add('INVALID_VALUE', lp);
             end = link.end;
             reference(link.props?.href, `${lp}/props/href`);
+            content.props('Link', link.props, `${lp}/props`, nodeLocale);
           });
         }
         for (const [event, action] of Object.entries(node.actions ?? {})) if (action?.type === 'navigate') reference(action.target, `${np}/actions/${pointer(event)}/target`);
@@ -196,15 +211,15 @@ export function validateJson({ kind, document, contractVersion } = {}, { pageIds
         if (node.type === 'Card' && parent !== 'Grid' && cardCount > 1) add('CARD_GRID', np, {}, 'warning');
         if (node.type === 'Figure' && parent === 'Card' && !node.props?.aspectRatio) add('CARD_IMAGE_RATIO', `${np}/props/aspectRatio`, {}, 'warning');
         if (inCard && interactive.has(node.type)) add('NESTED_INTERACTION', np, {}, 'warning');
-        nodes(node.children, `${np}/children`, node.type, inCard || node.type === 'Card' && (!!node.props?.href || node.props?.variant === 'navigation'));
+        nodes(node.children, `${np}/children`, node.type, inCard || node.type === 'Card' && (!!node.props?.href || node.props?.variant === 'navigation'), false, nodeLocale);
         if (node.type === 'Tabs') for (const key of ['items', 'panels']) {
-          if (Array.isArray(node.props?.[key])) node.props[key].forEach((item, i) => nodes(item?.children, `${np}/props/${key}/${i}/children`, 'Tabs'));
+          if (Array.isArray(node.props?.[key])) node.props[key].forEach((item, i) => nodes(item?.children, `${np}/props/${key}/${i}/children`, 'Tabs', false, false, nodeLocale));
         }
         for (const collection of getPatternManifest(node.type)?.collections ?? []) {
           const key = collection.path.split('/').at(-1);
           if (Array.isArray(node.props?.[key])) node.props[key].forEach((item, i) => {
             for (const field of Object.keys(collection.patterns ?? {})) if (item?.[field]) {
-              nodes([item[field]], `${np}/props/${key}/${i}/${pointer(field)}`, node.type, false, true);
+              nodes([item[field]], `${np}/props/${key}/${i}/${pointer(field)}`, node.type, false, true, nodeLocale);
             }
           });
         }
@@ -232,6 +247,7 @@ export function validateJson({ kind, document, contractVersion } = {}, { pageIds
     try {
       for (const diagnostic of validatePatterns(input).diagnostics) add('PATTERN_CONTRACT', `${base}${diagnostic.path}`, { ruleId: diagnostic.ruleId, detail: diagnostic.message, recovery: diagnostic.recovery }, diagnostic.severity);
     } catch { add('PATTERN_CONTRACT', base); }
+    return pageLocale;
   }
   if (kind === 'page') validatePage(document, '');
   else {
@@ -239,6 +255,7 @@ export function validateJson({ kind, document, contractVersion } = {}, { pageIds
     if (!pages.length) add('EMPTY_PROJECT', '/pages');
     const seen = new Set();
     const parents = new Map();
+    let projectLocale = 'en';
     pages.forEach((page, i) => {
       if (!object(page)) return;
       const id = page.id ?? `#${i}`;
@@ -247,8 +264,13 @@ export function validateJson({ kind, document, contractVersion } = {}, { pageIds
       seen.add(id);
       parents.set(id, page.parentId);
       if (page.parentId && !pageIds.has(page.parentId)) add('BROKEN_REFERENCE', `/pages/${i}/parentId`, { allowedValues: [...pageIds] });
-      if (page.definition != null) validatePage(page.definition, `/pages/${i}/definition`);
+      const pageLocale = page.definition != null ? validatePage(page.definition, `/pages/${i}/definition`) : 'en';
+      if (i === 0) projectLocale = pageLocale;
+      content.text(page.title, `/pages/${i}/title`, pageLocale);
+      content.text(page.description, `/pages/${i}/description`, pageLocale);
     });
+    content.text(document.name, '/name', projectLocale);
+    content.text(document.description, '/description', projectLocale);
     pages.forEach((page, i) => {
       let id = page?.id ?? `#${i}`;
       const chain = new Set();
@@ -263,5 +285,12 @@ export function validateJson({ kind, document, contractVersion } = {}, { pageIds
 
 /** Keep the full structured result available; format only at the UI boundary. */
 export function formatJsonDiagnostics(diagnostics, t) {
-  return diagnostics.map(d => `${d.path || '/'}: ${t ? t(`label.jsonValidation.${d.code}`, d.message) : d.message}${d.allowedValues ? ` (${d.allowedValues.map(v => JSON.stringify(v)).join(', ')})` : ''}`).join('\n');
+  const label = (key, fallback) => t ? t(`label.jsonValidation.${key}`, fallback) : fallback;
+  return diagnostics.map(d => {
+    const message = label(d.messageKey ?? d.code, d.message);
+    const rule = d.ruleId ? ` [${d.ruleId}]` : '';
+    const offending = d.offendingText !== undefined ? ` ${label('offendingText', 'Text')}: ${JSON.stringify(d.offendingText)}.` : '';
+    const suggestion = d.suggestedValue !== undefined ? ` ${label('suggestedValue', 'Suggested')}: ${JSON.stringify(d.suggestedValue)}.` : '';
+    return `${d.path || '/'}:${rule} ${message}${offending}${suggestion}${d.allowedValues ? ` (${d.allowedValues.map(v => JSON.stringify(v)).join(', ')})` : ''}`;
+  }).join('\n');
 }

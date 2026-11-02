@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.38.0 — 2026-11-01
+
+- **MCP rule enforcement** (A1-2741) — shared import/editor/preview validation catches all-caps content and casing transforms, provides localized repair diagnostics, and preserves invalid drafts. Coverage distinguishes automated checks from visual and human review.
+
 ## 0.37.1 — 2026-11-01
 
 - **Preview footer sizing** — keep Edit as project and the close control at their natural widths on small screens, preventing vertical button text and an oversized footer.

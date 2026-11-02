@@ -4,6 +4,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import ts from 'typescript';
+import { parse as parseYaml } from 'yaml';
 import { fileURLToPath } from 'node:url';
 import { patternManifests } from '../packages/react/src/patterns/patternPolicies.js';
 
@@ -140,7 +141,16 @@ for (const manifest of patternManifests) {
 }
 for (const name of componentTypes) if (!components[name]) throw new Error(`Missing JSON prop contract for ${name}`);
 
-const contract = { contractVersion: '1.1.0', supportedVersions: ['0.1.0', '1.0.0', '1.1.0'], componentTypes, nodeSchema, pageSchema, projectSchema, components, definitions };
+// YAML remains the policy source; browsers consume generated data, never a
+// separate hand-maintained rule list or a runtime YAML parser.
+const ruleCatalog = fs.readdirSync(file('system/rules')).filter(name => name.endsWith('.yaml')).sort().flatMap(name => {
+  const source = parseYaml(fs.readFileSync(file(`system/rules/${name}`), 'utf8'));
+  return (source.rules ?? []).map(rule => ({ id: rule.id, requirement: rule.requirement ?? rule.description ?? rule.id, components: rule.components ?? [source.component ?? 'System'], ...(rule.enforcement?.json ? { json: rule.enforcement.json } : {}) }));
+});
+for (const rule of ruleCatalog.filter(rule => rule.json)) {
+  if (!['authored-text-case', 'heading-sentence-case'].includes(rule.json.check) || !['error', 'warning'].includes(rule.json.severity)) throw new Error(`Unsupported JSON enforcement for ${rule.id}`);
+}
+const contract = { contractVersion: '1.1.0', supportedVersions: ['0.1.0', '1.0.0', '1.1.0'], componentTypes, nodeSchema, pageSchema, projectSchema, components, definitions, ruleCatalog };
 // Drop intermediate schemas no longer reachable after adapter overrides.
 const reachable = new Set();
 function collect(value) {

@@ -104,7 +104,7 @@ claude mcp add --transport http a1-design https://mcp.a1design.app/mcp  # deploy
 
 Call `get_react_setup` with `{}` to get the npm install command, package page,
 React peer requirements and complete setup instructions. Clients that support
-resources can also read `a1://docs/react-setup`. MCP initialization points agents
+resources can also read `a1://docs/react-setup`. For explicit React/npm requests, MCP initialization points agents
 to this tool, and `get_component` links back to the setup resource.
 
 The guide is indexed directly from the React package's canonical setup document;
@@ -116,21 +116,30 @@ pinning a version that may not have been published yet.
 
 ## Validate generated JSON
 
-Read the model, generate JSON, then call `validate_json` with
+For site requests, start with `get_json_model` (default: project), follow its
+mandatory rules and consult component/pattern contracts. Generate linked project
+JSON, validate and repair it, then call `create_preview`. Open the A1 preview route
+for rendered review and return its URL as the primary handoff. Use a single page
+only when explicitly requested; React/npm integration has its own setup tool.
+
+For example, call `validate_json` with
 `{ "kind": "page", "document": { "schemaVersion": "1.1.0", "page": { ... } } }`.
 Use `kind: "project"` for a project bundle. `document` also accepts JSON text;
 malformed text returns diagnostics. Optional `contractVersion: "1.1.0"` pins the
 validator contract; unsupported pins are rejected explicitly.
 
-Results contain `valid`, `contractVersion`, `errors` and `warnings`, returned as
+Results contain `valid`, `contractVersion`, `errors`, `warnings` and `coverage`, returned as
 both MCP `structuredContent` and JSON text. Each diagnostic includes a stable
 `code`, a JSON Pointer `path` and a readable `message`, plus allowed values or
 pattern recovery details where applicable. Repair errors and revalidate; warnings
-are advisory. No JSON is modified, persisted, executed or published.
+are advisory. Content errors include the rule ID, offending text and proposed
+correction or recovery instruction. All-caps text and literal casing transforms
+block import and preview through the same shared validator. Coverage distinguishes
+automated checks from runtime, visual and human review; validity is not full compliance. No JSON is modified, persisted, executed or published.
 
 The shared core lives in `system/json-model/validate.js`. Run
 `npm run build:json-contract` after changing page/project declarations, React
-props, adapter config or formal patterns, then `npm run build:mcp-index`.
+props, adapter config, formal patterns or YAML rule metadata, then `npm run build:mcp-index`.
 `npm run json-contract:check` and `npm run test:json-validation` verify freshness
 and MCP/editor parity. See [the full contract and limitations](../react/ai/json-validation.md).
 

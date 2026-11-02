@@ -52,7 +52,7 @@ function findComponent(index, name) {
 const TOOLS = [
   {
     name: 'get_react_setup',
-    description: 'Start here to install and use the A1 React component library from npm. Returns the npm package, install command, React peer requirements and canonical setup guide: global CSS order, fonts, PostCSS breakpoints, Vite/Next.js, themes, client boundaries and a working example. The indexed source version is not a live npm registry lookup.',
+    description: 'For explicit React library or npm integration requests, get the A1 React installation and setup guide. For building a site, prefer get_json_model → validate_json → create_preview and return the A1 preview URL. Returns the npm package, install command, React peer requirements and canonical setup guide: global CSS order, fonts, PostCSS breakpoints, Vite/Next.js, themes, client boundaries and a working example. The indexed source version is not a live npm registry lookup.',
     input: z.object({}),
     handler(_args, index) {
       const { name, sourceVersion, peerDependencies } = index.reactPackage;
@@ -72,23 +72,30 @@ const TOOLS = [
   },
   {
     name: 'validate_json',
-    description: 'Validate A1 page or project JSON against the shared component, structural and formal pattern contracts. Returns valid, contractVersion, errors and warnings with JSON Pointer paths and stable codes. Read get_json_model, generate JSON, validate, repair and revalidate. Does not save, render or modify the document; success does not certify visual layout or runtime accessibility.',
+    description: 'Required before preview or import: validate A1 JSON structure, component props, formal patterns and automated content rules. Returns rule IDs, exact JSON paths, offending text, suggested corrections and explicit coverage. Repair errors and review warnings; valid does not mean complete compliance. Then call create_preview and return its A1 preview URL. Does not save, render or modify the document.',
     input: z.object({
       kind: z.enum(['page', 'project']),
       document: z.unknown().describe('A parsed JSON document or JSON text to validate'),
       contractVersion: z.string().optional().describe('Optional validator contract version; omit to use the current version'),
     }),
     outputSchema: {
-      type: 'object', required: ['valid', 'contractVersion', 'errors', 'warnings'],
+      type: 'object', required: ['valid', 'contractVersion', 'errors', 'warnings', 'coverage'],
       properties: {
         valid: { type: 'boolean' }, contractVersion: { type: 'string' },
+        coverage: { type: 'object', required: ['schema', 'automatedRules', 'rulesRequiringReview', 'deferred', 'requiresRendering', 'requiresHumanReview', 'completeCompliance'], properties: {
+          schema: { type: 'object' }, automatedRules: { type: 'array', items: { type: 'object' } },
+          rulesRequiringReview: { type: 'array', items: { type: 'object' } }, deferred: { type: 'array', items: { type: 'object' } },
+          requiresRendering: { type: 'array', items: { type: 'string' } }, requiresHumanReview: { type: 'array', items: { type: 'string' } },
+          completeCompliance: { const: false },
+        } },
         errors: { type: 'array', items: { $ref: '#/definitions/diagnostic' } },
         warnings: { type: 'array', items: { $ref: '#/definitions/diagnostic' } },
       },
       definitions: { diagnostic: {
-        type: 'object', required: ['code', 'path', 'message'],
+        type: 'object', required: ['code', 'path', 'message', 'severity'],
         properties: {
-          code: { type: 'string' }, path: { type: 'string' }, message: { type: 'string' },
+          code: { type: 'string' }, path: { type: 'string' }, message: { type: 'string' }, severity: { enum: ['error', 'warning'] },
+          messageKey: { type: 'string' }, offendingText: { type: 'string' }, suggestedValue: { type: 'string' },
           allowedValues: { type: 'array', items: {} }, expectedType: { type: 'string' },
           ruleId: { type: 'string' }, detail: { type: 'string' }, recovery: { type: 'string' },
         },
@@ -98,10 +105,10 @@ const TOOLS = [
   },
   {
     name: 'get_json_model',
-    description: 'Get a copy-ready A1 page or project JSON starter plus a structural JSON Schema generated from the current registered component types.',
+    description: 'Start here for A1 sites: returns mandatory A1 rules and visible content exceptions, a copy-ready JSON starter, schema and the required validation → A1 preview workflow. Prefer project for a website with linked pages; use page only for an explicitly single-page request. Read and follow the rules before generating JSON. React setup is a separate path when the user requests library code.',
     input: z.object({
-      format: z.enum(['page', 'project']).optional().default('page')
-        .describe('Return a single page definition or an importable multi-page project bundle'),
+      format: z.enum(['page', 'project']).optional().default('project')
+        .describe('Use project for a site and its linked destinations (default); page is for an explicitly single-page request'),
     }),
     handler(args, index) { return getJsonModel(args.format, index.pageTypes); },
   },
@@ -286,7 +293,7 @@ class ToolError extends Error {
 const validationTool = TOOLS.find(tool => tool.name === 'validate_json');
 TOOLS.push({
   name: 'create_preview',
-  description: 'Validate page or project JSON and create a temporary A1 rendered preview URL, available for 30 days to anyone with the link. Returns validation diagnostics and, only when valid, previewId, previewUrl and expiresAt. Stores an expiring snapshot; does not import, save or publish a workspace project. Open the URL to inspect layout and accessibility; submit revised JSON to create a new preview.',
+  description: 'Use this for the primary handoff after validate_json: validate the same page or project JSON and create a temporary A1 rendered preview URL, available for 30 days to anyone with the link. Returns validation diagnostics and, only when valid, previewId, previewUrl and expiresAt. Stores an expiring snapshot; does not import, save or publish a workspace project. Open the URL to inspect layout and accessibility; submit revised JSON to create a new preview.',
   input: validationTool.input,
   outputSchema: {
     ...validationTool.outputSchema,
@@ -349,7 +356,7 @@ async function handleMethod(method, params, index, services) {
           : PROTOCOL_VERSION,
         capabilities: { tools: {}, resources: {} },
         serverInfo: { name: SERVER_NAME, version: SERVER_VERSION },
-        instructions: 'Read a1://docs/design for A1 design language and token rationale. For React projects, start with get_react_setup to install the npm library and configure CSS, fonts and responsive breakpoints. Then use get_component/get_pattern for APIs. For A1 page/project JSON, use get_json_model, validate_json and create_preview.',
+        instructions: 'Prioritize A1 JSON and the A1 preview route for site requests. Start with get_json_model (project for a site; page only for an explicitly single-page request), read and follow its mandatory rules, and consult get_component/get_pattern before authoring. Validate with validate_json, repair errors, review warnings and coverage, then call create_preview. Open and review the A1 /preview/ URL and return that link as the primary handoff; users can choose Edit as project. A valid schema is not complete compliance. Read a1://docs/design for design language and tokens. Use get_react_setup when the user specifically requests React library code or npm installation.',
       };
     case 'tools/list':
       return toolsListResult();
