@@ -115,16 +115,16 @@
       },
       "reactPrompt": {
         "$type": "string",
-        "$value": "Read design.md. Build this interface with @gtivr4/a1-design-system-react. Use get_react_setup and inspect the relevant component and pattern APIs first. Preserve my content and hierarchy. Use A1 props and tokens; keep PageTitle flush to its container. Check keyboard access, themes and xs–xl layouts. Show the working React implementation and verification results.",
-        "$description": "Design with A1 guide: reactPrompt.",
+        "$value": "Read design.md and follow the A1 design rules. Build this interface with @gtivr4/a1-design-system-react, preserving my content and hierarchy. Verify that it works across screen sizes and is accessible.",
+        "$description": "General React starter prompt. Component-specific requirements belong in the system rules catalog.",
         "locale": {
-          "es": "Lee design.md. Crea esta interfaz con @gtivr4/a1-design-system-react. Usa get_react_setup y consulta primero las API de componentes y patrones pertinentes. Conserva mi contenido y jerarquía. Usa props y tokens de A1; coloca PageTitle al ras del contenedor. Comprueba el acceso por teclado, los temas y los diseños xs–xl. Muestra la implementación React y los resultados de verificación.",
-          "fr": "Lisez design.md. Créez cette interface avec @gtivr4/a1-design-system-react. Utilisez get_react_setup et consultez les API des composants et modèles concernés. Conservez mon contenu et sa hiérarchie. Utilisez les props et tokens A1 ; placez PageTitle au bord de son conteneur. Vérifiez le clavier, les thèmes et les mises en page xs–xl. Présentez le code React fonctionnel et les vérifications.",
-          "de": "Lies design.md. Baue diese Oberfläche mit @gtivr4/a1-design-system-react. Nutze get_react_setup und prüfe zuerst die relevanten Komponenten- und Muster-APIs. Bewahre meinen Inhalt und seine Hierarchie. Nutze A1-Props und Tokens; PageTitle liegt bündig am Container. Prüfe Tastaturbedienung, Themes und xs–xl-Layouts. Zeige die funktionierende React-Implementierung und Prüfergebnisse.",
-          "pt": "Leia design.md. Crie esta interface com @gtivr4/a1-design-system-react. Use get_react_setup e consulte primeiro as APIs dos componentes e padrões relevantes. Preserve meu conteúdo e hierarquia. Use props e tokens do A1; mantenha PageTitle junto à borda do contêiner. Verifique teclado, temas e layouts xs–xl. Mostre a implementação React funcional e os resultados.",
-          "ja": "design.md を読んでください。@gtivr4/a1-design-system-react でこの画面を構築します。最初に get_react_setup と関連するコンポーネントおよびパターンの API を確認してください。内容と階層を維持し、A1 の props とトークンを使い、PageTitle をコンテナの端に配置します。キーボード操作、テーマ、xs–xl のレイアウトを確認し、動作する React 実装と検証結果を示してください。",
-          "zh": "阅读 design.md。使用 @gtivr4/a1-design-system-react 构建此界面。先使用 get_react_setup 并检查相关组件和模式 API。保留我的内容和层级。使用 A1 属性和令牌，让 PageTitle 紧贴容器边缘。检查键盘访问、主题和 xs–xl 布局。展示可运行的 React 实现及验证结果。",
-          "ar": "اقرأ design.md. ابنِ هذه الواجهة باستخدام @gtivr4/a1-design-system-react. استخدم get_react_setup وافحص واجهات المكونات والأنماط أولًا. حافظ على المحتوى والتسلسل الهرمي. استخدم خصائص A1 ورموزه، وضع PageTitle بمحاذاة حافة الحاوية. تحقّق من لوحة المفاتيح والسمات وتخطيطات xs–xl. اعرض تنفيذ React العامل ونتائج التحقق."
+          "es": "Lee design.md y sigue las reglas de diseño de A1. Crea esta interfaz con @gtivr4/a1-design-system-react, conservando mi contenido y jerarquía. Verifica que funcione en distintos tamaños de pantalla y sea accesible.",
+          "fr": "Lisez design.md et suivez les règles de conception A1. Créez cette interface avec @gtivr4/a1-design-system-react en préservant mon contenu et sa hiérarchie. Vérifiez qu’elle fonctionne sur différentes tailles d’écran et qu’elle est accessible.",
+          "de": "Lies design.md und befolge die A1-Designregeln. Baue diese Oberfläche mit @gtivr4/a1-design-system-react und bewahre meinen Inhalt und seine Hierarchie. Prüfe, dass sie auf verschiedenen Bildschirmgrößen funktioniert und barrierefrei ist.",
+          "pt": "Leia design.md e siga as regras de design do A1. Crie esta interface com @gtivr4/a1-design-system-react, preservando meu conteúdo e hierarquia. Verifique se funciona em diferentes tamanhos de tela e é acessível.",
+          "ja": "design.md を読み、A1 のデザインルールに従ってください。内容と階層を維持しながら、@gtivr4/a1-design-system-react でこのインターフェースを構築してください。さまざまな画面サイズで動作し、アクセシブルであることを確認してください。",
+          "zh": "阅读 design.md 并遵循 A1 设计规则。使用 @gtivr4/a1-design-system-react 构建此界面，保留我的内容和层级。验证它能在不同屏幕尺寸上正常工作，并具有无障碍访问支持。",
+          "ar": "اقرأ design.md واتبع قواعد تصميم A1. ابنِ هذه الواجهة باستخدام @gtivr4/a1-design-system-react مع الحفاظ على المحتوى والتسلسل الهرمي. تحقّق من أنها تعمل عبر أحجام الشاشات المختلفة وتدعم إمكانية الوصول."
         }
       },
       "agentsTitle": {

@@ -4,7 +4,7 @@ This single file is everything an agent needs to **generate valid A1 page-defini
 
 - **Default to JSON and an A1 preview.** Start with MCP `get_json_model` (defaults to a project bundle), read and follow its mandatory rules, and consult `get_component`/`get_pattern` before using their contracts. A website normally has linked pages; use `page` only for an explicitly single-page request.
 - The rendered page is **derived from the JSON** — the JSON is the source of truth.
-- Call `validate_json` for the complete project, repair errors at their exact paths, and review warnings and coverage. All-caps content and casing transforms block import/preview; schema validity does not certify overall compliance. Use the visible narrow exceptions and set `page.layout.props.lang` for localized content.
+- Call `validate_json` for the complete project, repair errors at their exact paths, and review warnings and coverage. Capitalization and casing transforms do not block import or preview; schema validity does not certify overall compliance. Preserve authored content and set `page.layout.props.lang` for localized content.
 - Call `create_preview`, open its A1 `/preview/` URL and review layout/accessibility. Return that preview URL as the primary handoff, with the JSON and remaining review limitations. Anyone can choose **Edit as project** from the preview; JSON is also importable via **Projects → Upload JSON**. Full contract: `a1://docs/json-validation`.
 - For an explicit React-library or npm integration request, call `get_react_setup` or read `a1://docs/react-setup`. It covers CSS/fonts/PostCSS and distinguishes indexed source versions from published npm versions.
 - When something here is ambiguous, the ground truth is the code: `apps/a1-web/src/editor/pageTypes.ts` (types), `apps/a1-web/src/editor/componentRegistry.ts` (renderable set), and `packages/react/ai/components.md` (exhaustive per-component props).
@@ -102,7 +102,7 @@ A few components take their text via a **named prop**, not `content`: **Fieldset
 4. **Utilities use `utilities`, not fake props.** One-off tokenized width/spacing adjustments go in `utilities`; do not emit raw `className` utility strings unless you are preserving an existing class.
 5. **Tokens, not raw values.** Use the scale values (`gap: "md"`, `size: "lg"`, `color: "muted"`) — never raw px/hex/rem in props. There is no host `style` escape hatch. `CustomBlock` source props are the narrow exception below.
 6. **Semantic structure.** A heading is a `Heading`, an action is a `Button`, navigation is a `Link`. Pick the component by meaning, not looks.
-7. **Never uppercase.** Author text in sentence case ("Create account"). Never ALL-CAPS content.
+7. **Preserve authored casing.** Prefer sentence case for new interface copy; proper names, acronyms and intentional capitalization are accepted.
 8. **Layout via layout components.** Use `Section`/`Stack`/`Grid`/`Card`, not ad-hoc wrappers. Put width/padding/gap on `Section` (see §5).
 9. **Accessibility.** Icon-only buttons need `props["aria-label"]` (or `a11y.label`). Label form regions; don't rely on color alone.
 10. **One primary action per area.** Only one `Button variant="primary"` per form/dialog/group.

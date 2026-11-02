@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+## 0.39.0 — 2026-11-01
+
+- **Simpler starter prompt** — Design with A1 now points to the shared design rules without prescribing individual component details. PageTitle placement is a dedicated rule in the Rules editor and MCP catalog.
+
+- **Capitalization checks removed** — previews, project imports and the editor accept all-caps text, title-case headings, names, acronyms and casing transforms without errors or warnings. Other JSON and pattern validation remains active.
+
+- **Preview import diagnostics** — failures stay open in a copyable dialog with the preview ID, failed stage, time, HTTP status when available and the original error. Validation failures include every rule code, JSON path, affected value and recovery detail; workspace and download failures have distinct guidance. Successful imports retain their existing confirmation.
+
 ## 0.38.1 — 2026-11-01
 
 - **Existing preview compatibility** — new content rules no longer hide previously shared snapshots. Structural checks and expiry still apply; new previews and project imports retain current rule enforcement. Recognize GP and English ET as legitimate abbreviations.

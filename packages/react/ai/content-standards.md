@@ -31,7 +31,7 @@ content owner and system owner to resolve.
   would otherwise use title or headline case.
 - Preserve **A1 Design System**, **A1**, official brand names, code identifiers,
   package names and token paths exactly.
-- Never transform user-facing copy to uppercase in content, CSS or JavaScript.
+- Preserve intentional capitalization, proper names and acronyms. Sentence case is an editorial preference, not an automated gate.
 - Use figures for values people scan, compare, enter or act on in an interface,
   even where AP prose would spell out a small number.
 - An en dash is allowed for a compact range in UI copy (`10–12 items`); prefer
@@ -52,11 +52,10 @@ Before returning content:
 5. Surface unresolved conflicts or missing facts instead of inventing a
    decision.
 
-## Shared capitalization policy
+## Capitalization is editorial guidance
 
-The authoritative machine-readable casing policy is `system-no-uppercase-content`
-in `system/rules/system.yaml`. Approved abbreviations, size labels and canonical
-names belong to that A1 rule’s top-level `exceptions`, not to MCP or a JSON-only
-policy. MCP exposes the same rule data consumed by the shared validator in the
-editor, project import and preview creation. Do not add service-specific exception
-lists or relax the policy for an individual generated page.
+Capitalization rules were removed from the system rule catalog, JSON validator,
+ESLint plugin and CSS gate. Do not reintroduce casing errors, title-case warnings
+or acronym exception lists. Prefer sentence case for new copy while preserving
+supplied text and intentional casing. Structural, reference and pattern checks
+still apply to imports and previews.

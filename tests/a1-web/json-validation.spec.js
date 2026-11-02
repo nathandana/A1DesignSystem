@@ -42,14 +42,13 @@ test('import validation blocks invalid props, preserves drafts and enables repai
       expect(box.x + box.width).toBeLessThanOrEqual(width + 1)
     }
   }
-  const shouting = definition()
-  shouting.page.layout.regions[0].nodes[0].content.fallback = 'CREATE ACCOUNT'
-  const shoutingJson = JSON.stringify(shouting)
-  await editor.fill(shoutingJson)
-  await expect(importButton).toBeDisabled()
-  await expect(dialog.getByText(/system-no-uppercase-content/)).toBeVisible()
-  await expect(dialog.getByText(/Suggested: \"Create account\"/)).toBeVisible()
-  await expect(editor).toHaveValue(shoutingJson)
+  const capitalized = definition()
+  capitalized.page.layout.regions[0].nodes[0].content.fallback = 'CREATE ACCOUNT'
+  const capitalizedJson = JSON.stringify(capitalized)
+  await editor.fill(capitalizedJson)
+  await expect(importButton).toBeEnabled()
+  await expect(dialog.getByText(/system-no-uppercase-content/)).toHaveCount(0)
+  await expect(editor).toHaveValue(capitalizedJson)
   await editor.fill('{')
   await expect(dialog.getByText(/Provide valid JSON/)).toBeVisible()
   await expect(editor).toHaveValue('{')
@@ -74,21 +73,21 @@ test('page editor validates stored JSON and displays a repaired page', async ({ 
   await expect(page.getByText(/\/props\/variant: Use a value allowed by the contract/).first()).toBeVisible()
   await expect(page.locator('[data-editor-node="validated-button"]')).toHaveCount(0)
   await page.getByRole('radio', { name: 'Code snippet', exact: true }).click()
-  const shouting = definition()
-  shouting.page.layout.regions[0].nodes[0].content.fallback = 'CREATE ACCOUNT'
-  await page.locator('main textarea').fill(JSON.stringify(shouting, null, 2))
+  const capitalized = definition()
+  capitalized.page.layout.regions[0].nodes[0].content.fallback = 'CREATE ACCOUNT'
+  await page.locator('main textarea').fill(JSON.stringify(capitalized, null, 2))
   await page.getByRole('radio', { name: 'Edit', exact: true }).click()
-  await expect(page.getByText(/system-no-uppercase-content/).first()).toBeVisible()
+  await expect(page.locator('[data-editor-node="validated-button"]')).toContainText('CREATE ACCOUNT')
   await expect.poll(async () => {
     const raw = await page.evaluate(() => localStorage.getItem('a1-editor-history-validation-page'))
     if (!raw) return null
     const saved = JSON.parse(raw.charCodeAt(0) === 31 ? gunzipSync(Buffer.from(raw, 'latin1')).toString() : raw)
     return saved.entries[saved.index].json
-  }).toBe(JSON.stringify(shouting, null, 2))
+  }).toBe(JSON.stringify(capitalized, null, 2))
   await page.reload()
-  await expect(page.getByText(/system-no-uppercase-content/).first()).toBeVisible()
+  await expect(page.locator('[data-editor-node="validated-button"]')).toContainText('CREATE ACCOUNT')
   await page.getByRole('radio', { name: 'Code snippet', exact: true }).click()
-  await expect(page.locator('main textarea')).toHaveValue(JSON.stringify(shouting, null, 2))
+  await expect(page.locator('main textarea')).toHaveValue(JSON.stringify(capitalized, null, 2))
   await page.locator('main textarea').fill(JSON.stringify(definition(), null, 2))
   await page.getByRole('radio', { name: 'Edit', exact: true }).click()
   await expect(page.locator('[data-editor-node="validated-button"]')).toBeVisible()

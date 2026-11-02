@@ -33,17 +33,11 @@ Writing a local CSS rule that patches a visual issue without using the component
 
 Custom `display: flex` or `display: grid` CSS is only justified when no layout component supports the pattern and the pattern is genuinely unique to that context. Document why in a comment.
 
-### The law: never uppercase text
+### Capitalization guidance
 
-**Never convert text to all-uppercase — anywhere, in any package, by any mechanism.** This applies to:
-
-- **CSS:** never use `text-transform: uppercase` (or `lowercase`/`capitalize`) on content text. Screen readers may spell out individual letters, and it breaks localized strings.
-- **JS/JSX:** never call `.toUpperCase()` (or equivalent) on a whole word, label, heading, button text, badge, or any user-facing string.
-- **Content:** author labels and headings in sentence case directly ("Create account", not "Create Account" or "CREATE ACCOUNT").
-
-**The only permitted casing transform** is capitalizing the *first letter* of a single token to produce sentence case from a lowercase enum value (e.g. `value.charAt(0).toUpperCase() + value.slice(1)` to turn `"compact"` into `"Compact"` for a control label). Title-casing or upper-casing entire words is not allowed.
-
-If a design or brand asset shows uppercase text, treat it as a visual style to be rejected — flag it rather than reproducing it.
+Prefer sentence case for newly authored interface copy. Preserve supplied content,
+proper names, acronyms and intentional casing. Capitalization and text transforms
+are not enforced by JSON validation, ESLint or the CSS gate.
 
 ### The law: all values from tokens
 
@@ -197,7 +191,7 @@ Priority Guides are pre-approved content documents that define the information h
 - **Do not invent content.** If a label, heading, description, or value is specified in a Priority Guide or JSON data structure, use it exactly. Do not substitute synonyms, reorder items, or collapse sections.
 - **Do not omit items.** Every item in an approved content structure must appear in the output. Silently dropping content breaks the contract with the content author.
 - **Preserve hierarchy.** The nesting, grouping, and order of a Priority Guide map directly to the visual hierarchy of the resulting UI. Do not flatten, reorder, or restructure without explicit instruction.
-- **Flag conflicts explicitly.** If the agreed content conflicts with a system rule (e.g. a label that violates sentence case), flag it rather than silently correcting it. The content owner and system owner must resolve the conflict.
+- **Flag conflicts explicitly.** If the agreed content conflicts with a system rule (e.g. an inaccessible interactive structure), flag it rather than silently correcting it. The content owner and system owner must resolve the conflict.
 
 ### Using JSON data in components
 
@@ -264,7 +258,6 @@ These rules cannot be broken regardless of context. They are a union of the Agen
 
 **Content**
 8. **Preserve agreed content.** Content from Priority Guides, approved JSON, or design specs is not a suggestion. Preserve it exactly — do not invent, reword, reorder, or omit.
-8a. **Never uppercase text.** No `text-transform: uppercase` in any CSS and no `.toUpperCase()` on whole strings in any JS/JSX, in any package. Author content in sentence case. The only allowed transform is capitalizing the first letter of a single enum token for a sentence-case label. See "The law: never uppercase text" in [Style and CSS Rules](#style-and-css-rules).
 
 **Documentation**
 9. **Document every change.** Token additions, API changes, new variants, new themes, new components, feature additions, and feature removals all require updated Storybook stories, example pages, documentation, and changelog entries in the same commit.

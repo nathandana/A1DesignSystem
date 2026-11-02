@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.39.0 — 2026-11-01
+
+- **Import without capitalization errors** — Names, acronyms, headings and intentional casing no longer block previews or project imports. Structural and pattern checks still apply.
+- **Useful import errors** — Failed imports show a persistent, copyable report with the cause, affected JSON paths, preview ID and HTTP status when available.
+- **A simpler starter prompt** — Design with A1 points to the shared rules. PageTitle placement is documented in the Rules editor instead of the prompt.
+
 ## 0.38.1 — 2026-11-01
 
 - **Keep shared previews available** — Existing snapshots remain viewable when content rules change. Recognized abbreviations include GP and ET, while new previews and imports keep their validation checks.

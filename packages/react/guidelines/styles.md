@@ -125,9 +125,8 @@ For your own container-responsive CSS, use the standard thresholds: 320 / 480 /
 
 ## Content and state rules
 
-- **Never uppercase text** — no `text-transform: uppercase` in CSS, no
-  `.toUpperCase()` on user-facing strings. Author everything in sentence case
-  ("Create account"). Screen readers may spell out uppercased words.
+- **Prefer sentence case for new copy.** Preserve intentional capitalization,
+  names and acronyms. Casing transforms are not blocked by validation or lint.
 - **Never change `font-weight` on state** (`:hover`, `:focus`, `:active`,
   `aria-selected`, `aria-current`) — it causes layout reflow. Use color,
   border, background, or underline.

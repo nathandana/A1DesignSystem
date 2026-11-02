@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 0.34.2 — 2026-11-01
+
+- **PageTitle placement rule** — registered flush placement in the shared rule catalog so consumers discover it through component rules instead of the general starter prompt.
+
+- **Capitalization is guidance** — removed the mandatory casing rules, Storybook rule examples and matching JavaScript/CSS lint gates. Updated authoring guidance to preserve intentional casing; component behavior is unchanged.
+
 ## 0.34.1 — 2026-11-01
 
 - **Design guidance** (A1-2738) — added maintained design rationale and generation of root design.md from resolved A1 tokens, following Google’s DESIGN.md format. Documents the React-first workflow, flush PageTitle placement, themes and accessibility without changing component APIs.

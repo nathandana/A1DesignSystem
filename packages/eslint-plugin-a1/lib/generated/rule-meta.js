@@ -27,19 +27,6 @@ export const ruleMeta = {
     ],
     "css": true
   },
-  "no-uppercase-text": {
-    "id": "system-no-uppercase-content",
-    "file": "system.yaml",
-    "requirement": "Do not use uppercase transforms on content text.",
-    "do": "Write \"Submit form\" or \"Recent activity\" — sentence-case content reads clearly for all users.",
-    "dont": "Apply text-transform uppercase or write all-caps content, as screen readers may spell out individual characters.",
-    "appliesTo": [
-      "content",
-      "typography",
-      "accessibility"
-    ],
-    "css": true
-  },
   "single-primary-button": {
     "id": "button-single-primary-action",
     "file": "button.yaml",

@@ -207,7 +207,7 @@ tooltip, or surrounding text so meaning is not communicated by color alone.
 - **Fix styling with component props, not CSS overrides.** If something looks
   wrong, look for a prop (`gap`, `padding`, `surface`, `align`, `size`) or the
   missing layout wrapper before writing any CSS.
-- **Sentence case everywhere.** Never uppercase text via CSS or JS; author
-  headings and labels in sentence case ("Create account").
+- **Prefer sentence case for new copy.** Preserve supplied names, acronyms and
+  intentional capitalization. Casing is not a validation or build requirement.
 - **Don't shadow imports.** Name your own components `AppHeader`, not
   `TopHeader`.

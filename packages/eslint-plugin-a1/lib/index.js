@@ -7,7 +7,6 @@
  * `lib/generated/rule-meta.js` from those, and this file overlays that metadata onto each
  * rule's `meta.docs` so every lint message links back to its rule id.
  */
-import noUppercaseText from './rules/no-uppercase-text.js';
 import noRawColor from './rules/no-raw-color.js';
 import noNestedInteractiveInCard from './rules/no-nested-interactive-in-card.js';
 import singlePrimaryButton from './rules/single-primary-button.js';
@@ -15,7 +14,6 @@ import { ruleMeta } from './generated/rule-meta.js';
 import { docUrl } from './util.js';
 
 const rawRules = {
-  'no-uppercase-text': noUppercaseText,
   'no-raw-color': noRawColor,
   'no-nested-interactive-in-card': noNestedInteractiveInCard,
   'single-primary-button': singlePrimaryButton,
@@ -47,7 +45,6 @@ plugin.configs = {
     name: 'a1/recommended',
     plugins: { a1: plugin },
     rules: {
-      'a1/no-uppercase-text': 'error',
       'a1/no-raw-color': 'error',
       'a1/no-nested-interactive-in-card': 'error',
       'a1/single-primary-button': 'error',

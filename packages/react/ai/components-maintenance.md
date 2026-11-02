@@ -1,5 +1,17 @@
 # A1 Design System — Component Maintenance Log
 
+## 2026-11-01 — General starter prompt and canonical PageTitle placement rule
+
+Simplified the Design with A1 React prompt in all eight languages. The `page-title-flush-placement` rule now owns the existing placement requirement in `system/rules/page-title.yaml`, surfaced by the Rules editor, component rule panel and MCP. Starter prompts refer to shared rules instead of embedding component-specific instructions. No component behavior, CSS or tokens changed.
+
+## 2026-11-01 — Remove capitalization enforcement
+
+Removed both capitalization rules and their exception lists from the system catalog, JSON validator, MCP discovery, ESLint plugin, CSS gate and Storybook rule examples. Names, acronyms, title-case headings, all-caps text and casing transforms are accepted without casing errors or warnings. Sentence case remains editorial guidance. Structural, reference, prop and formal-pattern checks continue to block invalid JSON; detailed import errors remain available. See [JSON validation](json-validation.md#content-rules-and-coverage-a1-2741) and [content standards](content-standards.md#capitalization-is-editorial-guidance).
+
+## 2026-11-01 — Preview import failure details
+
+Preview import errors now use a persistent A1 Dialog and copyable Code report instead of a generic snackbar. The report retains the preview ID, failure stage, timestamp, HTTP status where available, original cause and structured validation diagnostics. Current structural and pattern validation runs before mutation. Workspace and request failures receive distinct recovery guidance. Reuses existing Dialog, Stack, Paragraph, Button and Code without CSS or token changes; labels cover all seven locales. See [JSON validation](json-validation.md#preview-import-diagnostics).
+
 ## 2026-11-01 — Canonical A1 capitalization ownership
 
 Capitalization exceptions are owned by the A1 content rule itself, outside JSON enforcement metadata. The generated contract, MCP discovery and rule index expose that same definition; the shared validator consumes it for the editor, imports and preview creation. MCP has no independent exception list. See [Content standards](content-standards.md#shared-capitalization-policy).

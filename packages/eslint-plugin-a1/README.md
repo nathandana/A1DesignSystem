@@ -9,7 +9,6 @@ build** instead of living only as documentation.
 
 | Rule | Enforces (YAML) | Flags |
 |------|-----------------|-------|
-| `a1/no-uppercase-text` | `system-no-uppercase-content` | `.toUpperCase()` on whole strings, `textTransform: "uppercase\|lowercase\|capitalize"`, and `text-transform: …` in CSS-in-JS. Allows first-letter capitalisation (`s.charAt(0).toUpperCase()`, `s.replace(/^\w/, c => c.toUpperCase())`). |
 | `a1/no-raw-color` | `system-tokens-only` | Raw `#hex` / `rgb()` / `hsl()` in a colour-bearing style declaration (`color`, `background`, `borderColor`, `boxShadow`, …). Allows `var(--token)`, `transparent`, `currentColor`. |
 | `a1/no-nested-interactive-in-card` | `card-navigation-no-nested-interactive` | Interactive elements (button/link/field/menu/tabs/…) inside a `<Card variant="navigation">` or `<Card href>`. |
 | `a1/single-primary-button` | `button-single-primary-action` | More than one primary `<Button>` (no `variant` = primary) within a `form` / `Dialog` / `ButtonContainer` / `StickyActions`. |
@@ -33,7 +32,7 @@ Add a new enforced rule by writing `lib/rules/<name>.js`, adding
 ## Usage
 
 The repo's root [`eslint.config.mjs`](../../eslint.config.mjs) wires the recommended config onto
-`packages/react/src` and `apps/a1-web/src`. The CSS laws (`no-uppercase`, `tokens-only`) are also
+`packages/react/src` and `apps/a1-web/src`. The CSS token rule is also
 enforced on hand-authored stylesheets by `scripts/lint-a1-css.mjs`. Run the whole gate with
 `npm run lint`; the plugin's own tests with `npm run lint:rules`.
 

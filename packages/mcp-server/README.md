@@ -132,9 +132,9 @@ Results contain `valid`, `contractVersion`, `errors`, `warnings` and `coverage`,
 both MCP `structuredContent` and JSON text. Each diagnostic includes a stable
 `code`, a JSON Pointer `path` and a readable `message`, plus allowed values or
 pattern recovery details where applicable. Repair errors and revalidate; warnings
-are advisory. Content errors include the rule ID, offending text and proposed
-correction or recovery instruction. All-caps text and literal casing transforms
-block import and preview through the same shared validator. Coverage distinguishes
+are advisory. Capitalization and casing transforms are accepted without casing
+errors or warnings. Structure, prop types, references and pattern contracts still
+gate imports and previews. Coverage distinguishes
 automated checks from runtime, visual and human review; validity is not full compliance. No JSON is modified, persisted, executed or published.
 
 The shared core lives in `system/json-model/validate.js`. Run

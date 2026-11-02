@@ -4,9 +4,10 @@
  * first mismatch, failing that test.
  */
 import test from 'node:test';
-import { RuleTester } from 'eslint';
+import assert from 'node:assert/strict';
+import { Linter, RuleTester } from 'eslint';
+import plugin from '../lib/index.js';
 
-import noUppercaseText from '../lib/rules/no-uppercase-text.js';
 import noRawColor from '../lib/rules/no-raw-color.js';
 import noNestedInteractiveInCard from '../lib/rules/no-nested-interactive-in-card.js';
 import singlePrimaryButton from '../lib/rules/single-primary-button.js';
@@ -19,30 +20,13 @@ const ruleTester = new RuleTester({
   },
 });
 
-test('no-uppercase-text', () => {
-  ruleTester.run('no-uppercase-text', noUppercaseText, {
-    valid: [
-      // The one allowed transform: first-letter capitalisation → sentence case.
-      'const x = s.charAt(0).toUpperCase() + s.slice(1);',
-      'const x = s[0].toUpperCase() + s.slice(1);',
-      'const x = s.slice(0, 1).toUpperCase() + s.slice(1);',
-      'const x = s.at(0).toUpperCase() + s.slice(1);',
-      // capitalize-first-letter via .replace() callback (regex matches a single char) — allowed
-      'const x = s.replace(/^\\w/, (c) => c.toUpperCase());',
-      'const x = s.replace(/\\b\\w/g, (c) => c.toUpperCase());',
-      "const a = <div style={{ textTransform: 'none' }} />;",
-      "const css = '.x { color: red; }';",
-      // lowercasing is not the uppercase law's concern (normalization is fine)
-      'const x = email.toLowerCase();',
-    ],
-    invalid: [
-      { code: 'const x = label.toUpperCase();', errors: [{ messageId: 'toUpperCase' }] },
-      { code: 'const x = "hi".toLocaleUpperCase();', errors: [{ messageId: 'toUpperCase' }] },
-      { code: "const a = <div style={{ textTransform: 'uppercase' }} />;", errors: [{ messageId: 'textTransform' }] },
-      { code: "const css = '.x { text-transform: capitalize; }';", errors: [{ messageId: 'textTransform' }] },
-      { code: 'const css = `.x { text-transform: uppercase; }`;', errors: [{ messageId: 'textTransform' }] },
-    ],
-  });
+test('recommended lint accepts capitalization and casing transforms', () => {
+  assert.equal(plugin.rules['no-uppercase-text'], undefined);
+  const messages = new Linter().verify(
+    'const title = "T.S. Eliot".toUpperCase(); const style = { textTransform: "capitalize" };',
+    plugin.configs.recommended,
+  );
+  assert.deepEqual(messages, []);
 });
 
 test('no-raw-color', () => {

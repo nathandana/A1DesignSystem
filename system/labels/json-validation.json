@@ -435,62 +435,6 @@
           "ar": "استخدم خصائص A1 والأدوات المبنية على الرموز للتنسيق."
         }
       },
-      "RULE_VIOLATION": {
-        "$type": "string",
-        "$value": "Follow the A1 content rule at this path.",
-        "$description": "JSON content-rule validation: RULE_VIOLATION. Rule IDs, paths and authored values remain separate from translated text.",
-        "locale": {
-          "es": "Sigue la regla de contenido de A1 en esta ruta.",
-          "fr": "Respectez la règle de contenu A1 à cet emplacement.",
-          "de": "Befolgen Sie die A1-Inhaltsregel an diesem Pfad.",
-          "pt": "Siga a regra de conteúdo A1 neste caminho.",
-          "ja": "このパスの A1 コンテンツルールに従ってください。",
-          "zh": "请遵循此路径的 A1 内容规则。",
-          "ar": "اتبع قاعدة محتوى A1 في هذا المسار."
-        }
-      },
-      "CONTENT_UPPERCASE": {
-        "$type": "string",
-        "$value": "Use sentence case instead of all-caps content.",
-        "$description": "JSON content-rule validation: CONTENT_UPPERCASE. Rule IDs, paths and authored values remain separate from translated text.",
-        "locale": {
-          "es": "Usa mayúscula inicial en lugar de escribir todo en mayúsculas.",
-          "fr": "Utilisez la casse de phrase plutôt que tout en majuscules.",
-          "de": "Verwenden Sie normale Satzschreibung statt durchgehender Großbuchstaben.",
-          "pt": "Use maiúscula inicial em vez de escrever tudo em maiúsculas.",
-          "ja": "すべて大文字ではなく、文頭のみ大文字にしてください。",
-          "zh": "请使用句首大写，而非全部大写。",
-          "ar": "استخدم حالة الأحرف المناسبة للجملة بدلًا من الأحرف الكبيرة بالكامل."
-        }
-      },
-      "CONTENT_TRANSFORM": {
-        "$type": "string",
-        "$value": "Remove the casing transform and author the text directly.",
-        "$description": "JSON content-rule validation: CONTENT_TRANSFORM. Rule IDs, paths and authored values remain separate from translated text.",
-        "locale": {
-          "es": "Elimina la transformación de mayúsculas y escribe el texto directamente.",
-          "fr": "Supprimez la transformation de casse et rédigez le texte directement.",
-          "de": "Entfernen Sie die Umwandlung der Groß-/Kleinschreibung und schreiben Sie den Text direkt.",
-          "pt": "Remova a transformação de maiúsculas e escreva o texto diretamente.",
-          "ja": "大文字・小文字の変換を削除し、テキストを直接記述してください。",
-          "zh": "请移除大小写转换并直接编写文本。",
-          "ar": "أزل تحويل حالة الأحرف واكتب النص مباشرةً."
-        }
-      },
-      "HEADING_SENTENCE_CASE": {
-        "$type": "string",
-        "$value": "Use sentence case for this heading; preserve proper names.",
-        "$description": "JSON content-rule validation: HEADING_SENTENCE_CASE. Rule IDs, paths and authored values remain separate from translated text.",
-        "locale": {
-          "es": "Usa mayúscula inicial en este encabezado y conserva los nombres propios.",
-          "fr": "Utilisez la casse de phrase pour ce titre et préservez les noms propres.",
-          "de": "Verwenden Sie Satzschreibung für diese Überschrift und bewahren Sie Eigennamen.",
-          "pt": "Use maiúscula inicial neste título e preserve os nomes próprios.",
-          "ja": "固有名詞を保持し、この見出しは文頭のみ大文字にしてください。",
-          "zh": "请为此标题使用句首大写，并保留专有名称。",
-          "ar": "استخدم حالة الأحرف المناسبة للجملة في هذا العنوان مع الحفاظ على أسماء العلم."
-        }
-      },
       "offendingText": {
         "$type": "string",
         "$value": "Text",
